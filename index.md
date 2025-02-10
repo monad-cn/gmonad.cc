@@ -4,8 +4,7 @@ layout: home
 
 hero:
   name: "Monad 中文社区"
-  text: "Monad 中文社区"
-  tagline: My great project tagline
+  tagline: Gmonad 欢迎一起建设 Moand!	
   actions:
     - theme: brand
       text: Markdown Examples
@@ -15,11 +14,11 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 100% EVM兼容
+    details: 利用现有的EVM生态系统来提高您的优势。
+  - title: 10,000 TPS
+    details: 令人难以置信的快速交易速度创造了无缝的用户体验。
+  - title: 0 Gas
+    details: 允许对最苛刻的应用程序具有极高的可扩展性
 ---
 

@@ -1,0 +1,38 @@
+- name: Deploy LandingPage
+  hosts: web    
+  become: yes  
+  vars:
+    project_dir: "/root/app/docs"
+    git_repo: "https://github.com/monad-cn/docs"
+    git_branch: "main"
+
+  tasks:
+    - name: Ensure the project directory exists
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+
+    - name: Clone the repository
+      git:
+        repo: "{{ git_repo }}"
+        dest: "{{ project_dir }}"
+        version: "{{ git_branch }}"
+        force: yes
+      register: git_clone
+
+    - name: Install dependencies
+      npm:
+        path: "{{ project_dir }}"
+        state: present
+      when: git_clone.changed
+
+    - name: Build the project
+      command: "npm run docs:build"
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Copy for nginx
+      command: "cp -r ./landingpage/.vitepress/dist /var/www/"
+      args:
+        chdir: "{{ project_dir }}"
+
