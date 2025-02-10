@@ -2,8 +2,8 @@
   hosts: web    
   become: yes  
   vars:
-    project_dir: "/root/app/docs"
-    git_repo: "https://github.com/monad-cn/docs"
+    project_dir: "/root/app/gmonad.cc"
+    git_repo: "https://github.com/monad-cn/gmonad.cc"
     git_branch: "main"
 
   tasks:
@@ -32,7 +32,7 @@
         chdir: "{{ project_dir }}"
 
     - name: Copy for nginx
-      command: "cp -r ./landingpage/.vitepress/dist /var/www/"
+      command: "cp -r .vitepress/dist /var/www/"
       args:
         chdir: "{{ project_dir }}"
 
