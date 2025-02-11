@@ -1,0 +1,42 @@
+:root {
+  --vp-c-text-1: #6E54FF; /* Main text color */
+  /* --vp-c-text-2: #6E54FF; /1* Secondary text color *1/ */
+  --vp-c-text-3: #6E54FF; /* Tertiary text color */
+
+  /* Navigation colors */
+  --vp-nav-text-color: #6E54FF;
+  --vp-nav-text-hover: #3eaf7c;
+
+  /* Title colors */
+  --vp-home-hero-name-color: #6E54FF;
+  --vp-home-hero-text-color: #2c3e50;
+
+  /* Custom link colors */
+  --vp-c-brand: #3eaf7c;
+  --vp-c-brand-light: #4abf8a;
+  --vp-c-brand-dark: #389d70;
+  --vp-c-brand-3: #6E54FF;
+}
+
+/* Additional custom styles */
+.nav-bar-title {
+  color: var(--vp-nav-text-color) !important;
+}
+
+.nav-link {
+  color: var(--vp-nav-text-color) !important;
+}
+
+.nav-link:hover {
+  color: var(--vp-nav-text-hover) !important;
+}
+
+.VPHero .name {
+  color: var(--vp-home-hero-name-color) !important;
+}
+
+.VPHero .text {
+  color: var(--vp-home-hero-text-color) !important;
+}
+
+
