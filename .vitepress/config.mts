@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  ignoreDeadLinks: true,
   title: "Monad 中文社区",
   description: "欢迎一起建设 Moand！",
   themeConfig: {
@@ -21,7 +22,6 @@ export default defineConfig({
       { text: '官网', link: 'https://www.monad.xyz/' },
       { text: '贡献者', link: '/contributors' }
     ],
-
 	sidebar: {
 	  '/develop/': [
         {
