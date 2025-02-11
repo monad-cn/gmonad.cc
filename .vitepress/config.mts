@@ -17,18 +17,20 @@ export default defineConfig({
       }
     },
     // https://vitepress.dev/reference/default-theme-config
-	logo: '/icon.png',
+	logo: 'https://avatars.githubusercontent.com/u/184135503',
     nav: [
+      { text: '首页', link: '/index' },
+      { text: '生态导航', link: '/ecosystem' },
       { text: '活动', link: '/event' },
+      { text: '贡献者', link: '/contributors/index' },
       { text: '官网', link: 'https://www.monad.xyz/' },
-      { text: '贡献者', link: '/contributors' }
     ],
 	sidebar: {
 	  '/develop/': [
         {
           text: '中文开发文档',
           children: [
-            '/develop/index.md',  
+            '/develop/index.md',
           ]
         },
       ],
@@ -36,24 +38,36 @@ export default defineConfig({
         {
           text: '活动',
           children: [
-            '/event/index.md',  
-            '/event/monad101.md',  
+            '/event/index.md',
+            '/event/monad101.md',
           ]
         },
 	  ],
 	  '/ecosystem/': [
         {
-          text: '生态系统',
+          text: '生态导航',
           children: [
-            '/ecosystem/index.md',  
+            '/ecosystem/index.md',
           ]
         },
 	  ],
 	  '/contributors/': [
         {
-          text: '贡献者',
-          children: [
-            '/contributors/index.md',  
+          text: '社区贡献者',
+          collapsed: true,
+          link: '/contributors/index' ,
+          items: [
+            { text: '社区贡献者计划', link: '/contributors/index' },
+            { text: '社区贡献者名单', link: '/contributors/contributors' },
+          ]
+        },
+        {
+          text: '社区大使',
+          collapsed: true,
+          link: '/contributors/ambassador',
+          items: [
+            { text: 'Monad 社区大使计划', link: '/contributors/ambassador_intro' },
+            { text: '社区大使名单', link: '/contributors/ambassador' },
           ]
         },
 	  ],

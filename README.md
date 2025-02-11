@@ -11,7 +11,7 @@
 首先，克隆本项目到本地：
 
 ```bash
-git clone https://github.com/monad-cn/gmonad.cc.git
+git clone git@github.com:monad-cn/gmonad.cc.git
 cd gmonad.cc
 ```
 

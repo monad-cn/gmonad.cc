@@ -4,20 +4,20 @@ layout: home
 
 hero:
   name: "Monad 中文社区"
-  tagline: Gmonad 欢迎一起建设 Moand!	
+  tagline: GMonad, 欢迎一起建设 Moand!	
   actions:
     - theme: brand
       text: Monad 中文教程
       link: https://monad.docszh.com/
+    - theme: brand
+      text: Monad 中文社区大使
+      link: /contributors/ambassador_intro
     - theme: alt
       text: 中文开发文档
       link: /develop
     - theme: alt
-      text: Monad101-Bootcamp
+      text: Monad 101 Bootcamp (Soon)
       link: /event/monad101
-    - theme: alt
-      text: 生态系统 
-      link: /ecosystem
 
 features:
   - title: 100% EVM兼容
