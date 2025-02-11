@@ -14,7 +14,7 @@ const members = [
 ]
 </script>
 
-# 社区贡献者们
+# 社区大使们
 
 Say hello 👋 to our awesome Ambassador 🧑‍💻.
 <VPTeamMembers size="small" :members="members" />

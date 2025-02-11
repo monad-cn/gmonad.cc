@@ -25,6 +25,6 @@ const members = [
 
 # 社区贡献者们
 
-Say hello 👋 to our awesome contributors 🧑‍💻.
+Say hello 👋 to our awesome Contributors 🧑‍💻.
 
 <VPTeamMembers size="small" :members="members" />

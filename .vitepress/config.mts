@@ -22,7 +22,7 @@ export default defineConfig({
       { text: '首页', link: '/index' },
       { text: '生态导航', link: '/ecosystem' },
       { text: '活动', link: '/event' },
-      { text: '贡献者', link: '/contributors/index' },
+      { text: '贡献者', link: '/contributors/' },
       { text: '官网', link: 'https://www.monad.xyz/' },
     ],
 	sidebar: {
@@ -53,21 +53,27 @@ export default defineConfig({
 	  ],
 	  '/contributors/': [
         {
+          text: '如何参与 Monad 社区？',
+          children: [
+            '/contributors/index',
+          ]
+        },
+        {
           text: '社区贡献者',
-          collapsed: true,
-          link: '/contributors/index' ,
+          collapsed: false,
+          link: '/contributors/' ,
           items: [
-            { text: '社区贡献者计划', link: '/contributors/index' },
-            { text: '社区贡献者名单', link: '/contributors/contributors' },
+            { text: '社区贡献者们', link: '/contributors/contributors' },
+            { text: '社区贡献者计划', link: '/contributors/contributor_intro' },
           ]
         },
         {
           text: '社区大使',
-          collapsed: true,
+          collapsed: false,
           link: '/contributors/ambassador',
           items: [
+            { text: '社区大使们', link: '/contributors/ambassador' },
             { text: 'Monad 社区大使计划', link: '/contributors/ambassador_intro' },
-            { text: '社区大使名单', link: '/contributors/ambassador' },
           ]
         },
 	  ],
