@@ -5,6 +5,7 @@ export default defineConfig({
   ignoreDeadLinks: true,
   title: "Monad 中文社区",
   description: "欢迎一起建设 Moand！",
+  head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
   themeConfig: {
 	search: {
       provider: 'algolia',
