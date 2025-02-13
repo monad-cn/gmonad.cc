@@ -17,7 +17,7 @@ hero:
       link: /develop
     - theme: alt
       text: Monad 101 Bootcamp (Soon)
-      link: /event/monad101
+      link: /event/monad101/bootcamp
 
 features:
   - title: 100% EVM兼容

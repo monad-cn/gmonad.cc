@@ -1,7 +1,7 @@
 :root {
   --vp-c-text-1: #6E54FF; /* Main text color */
-  /* --vp-c-text-2: #6E54FF; /1* Secondary text color *1/ */
-  --vp-c-text-3: #6E54FF; /* Tertiary text color */
+  --vp-c-text-2: #67676C; /* Secondary text color */
+  /* --vp-c-text-3: #; /1* Tertiary text color *1/ */
 
   /* Navigation colors */
   --vp-nav-text-color: #6E54FF;

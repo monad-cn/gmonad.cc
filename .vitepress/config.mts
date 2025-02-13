@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   ignoreDeadLinks: true,
+  lang: 'zh-CN',
   title: "Monad 中文社区",
   description: "欢迎一起建设 Moand！",
   head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
@@ -30,7 +31,7 @@ export default defineConfig({
         {
           text: '中文开发文档',
           children: [
-            '/develop/index.md',
+            '/develop/index',
           ]
         },
       ],
@@ -38,16 +39,23 @@ export default defineConfig({
         {
           text: '活动',
           children: [
-            '/event/index.md',
-            '/event/monad101.md',
+            '/event/index',
           ]
+        },
+        {
+          text: 'Monad 101',
+          collapsed: false,
+          link: '/event/monad101' ,
+          items: [
+            { text: '巡回活动 —— 香港站', link: '/event/monad101/hk' },
+            { text: 'Bootcamp', link: '/event/monad101/bootcamp' }, ]
         },
 	  ],
 	  '/ecosystem/': [
         {
           text: '生态导航',
           children: [
-            '/ecosystem/index.md',
+            '/ecosystem/index',
           ]
         },
 	  ],
@@ -61,7 +69,7 @@ export default defineConfig({
         {
           text: '社区贡献者',
           collapsed: false,
-          link: '/contributors/' ,
+          link: '/contributors/contributors' ,
           items: [
             { text: '社区贡献者们', link: '/contributors/contributors' },
             { text: '社区贡献者计划', link: '/contributors/contributor_intro' },
