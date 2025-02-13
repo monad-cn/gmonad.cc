@@ -5,7 +5,7 @@ export default defineConfig({
   ignoreDeadLinks: true,
   lang: 'zh-CN',
   title: "Monad 中文社区",
-  description: "欢迎一起建设 Moand！",
+  description: "GMonad, 欢迎一起建设 Monad！",
   head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
   themeConfig: {
 	search: {
