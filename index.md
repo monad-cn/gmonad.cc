@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Monad 中文社区"
-  tagline: GMonad, 欢迎一起建设 Moand!	
+  tagline: GMonad, 欢迎一起建设 Monad!	
   actions:
     - theme: brand
       text: Monad 中文教程
