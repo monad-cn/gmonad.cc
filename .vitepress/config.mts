@@ -24,6 +24,7 @@ export default defineConfig({
       { text: '生态导航', link: '/ecosystem' },
       { text: '活动', link: '/event' },
       { text: '贡献者', link: '/contributors/' },
+      { text: 'FAQ', link: '/FAQ/' },
       { text: '官网', link: 'https://www.monad.xyz/' },
     ],
 	sidebar: {
@@ -56,6 +57,14 @@ export default defineConfig({
           text: '生态导航',
           children: [
             '/ecosystem/index',
+          ]
+        },
+	  ],
+	  '/FAQ/': [
+        {
+          text: 'FAQ',
+          children: [
+            '/FAQ/index',
           ]
         },
 	  ],
