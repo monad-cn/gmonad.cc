@@ -25,6 +25,7 @@ export default defineConfig({
       { text: '活动', link: '/event' },
       { text: '贡献者', link: '/contributors/' },
       { text: 'FAQ', link: '/FAQ/' },
+      { text: '水龙头', link: 'https://faucet.openbuild.xyz/' },
       { text: '官网', link: 'https://www.monad.xyz/' },
     ],
 	sidebar: {
