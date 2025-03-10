@@ -42,6 +42,16 @@ const members = [
       { icon: 'twitter', link: 'https://x.com/0xqiuqiuu' }
     ]
   },
+  {
+    avatar: 'https://avatars.githubusercontent.com/u/867580?v=4',
+    name: '大帅老猿',
+    title: 'Developer / Creator / Influencer',
+    links: [
+      { icon: 'github', link: 'https://github.com/ezshine' },
+      { icon: 'twitter', link: 'https://x.com/ezshine' }
+      { icon: 'youtube', link: 'https://youtube.com/@ezshine' }
+    ]
+  }
 ]
 </script>
 
