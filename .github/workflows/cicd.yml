@@ -1,16 +1,18 @@
-name: Deploy Gmonad.cc 
+name: CI/CD for Gmonad.cc
 
 on:
+  pull_request:
+    branches:
+      - main  
   push:
     branches:
       - main  
 
 jobs:
-  build-and-deploy:
+  build:  
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -18,12 +20,30 @@ jobs:
         with:
           node-version: 18  
 
-      - name: Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Build
+        run: npm run docs:build  
+
+  deploy:  
+    needs: build  
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  
+
+      - name: Install Dependencies
         run: npm install
 
       - name: Build VitePress site
-        run: |
-          npm run docs:build 
+        run: npm run docs:build  
 
       - name: Deploy to Remote Server via SSH
         uses: appleboy/scp-action@v0.1.7
@@ -33,3 +53,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }} 
           source: ".vitepress/dist"  
           target: "/var/www/gmonad.cc/"
+
