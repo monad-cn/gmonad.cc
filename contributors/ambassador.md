@@ -7,8 +7,8 @@ const members = [
     name: '小符',
     title: 'Blockchain Developer/Gopher/React',
     links: [
-      { icon: 'github', link: 'https://github.com/smallfu6' },
-      { icon: 'twitter', link: 'https://x.com/smallfu666' }
+      { icon: 'github', link: 'https://github.com/phoouze' },
+      { icon: 'twitter', link: 'https://x.com/Phoouze' }
     ]
   },
   {
@@ -48,7 +48,7 @@ const members = [
     title: 'Developer / Creator / Influencer',
     links: [
       { icon: 'github', link: 'https://github.com/ezshine' },
-      { icon: 'twitter', link: 'https://x.com/ezshine' }
+      { icon: 'twitter', link: 'https://x.com/ezshine' },
       { icon: 'youtube', link: 'https://youtube.com/@ezshine' }
     ]
   }
