@@ -9,12 +9,23 @@ export default defineConfig({
   head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
   themeConfig: {
 	search: {
-      provider: 'algolia',
+      provider: 'local',
       options: {
-        appId: '...',
-        apiKey: '...',
-        indexName: '...',
-		placeholder: '请输入搜索内容'
+        extractField: 'text',
+        tokenize: true,
+        locales: {
+          zh: {
+            button: '搜索文档',
+            modal: {
+              noResults: '无法找到相关结果',
+              resetButtonTitle: '清除查询条件'
+            },
+            select: {
+              text: '选择',
+              navigate: '切换'
+            }
+          }
+        }
       }
     },
     // https://vitepress.dev/reference/default-theme-config
