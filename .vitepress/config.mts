@@ -12,13 +12,13 @@ export default defineConfig({
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "Monad 中文社区" }],
     ["meta", { property: "og:description", content: "GMonad, 欢迎一起建设 Monad！" }],
-    ["meta", { property: "og:image", content: "/opengraph/basic.png" }],
+    ["meta", { property: "og:image", content: "https://gmonad.cc/opengraph/basic.png" }],
     ["meta", { property: "og:url", content: "https://gmonad.cc" }],
     // Twitter 卡片
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
     ["meta", { name: "twitter:title", content: "Monad 中文社区" }],
     ["meta", { name: "twitter:description", content: "GMonad, 欢迎一起建设 Monad！" }],
-    ["meta", { name: "twitter:image", content: "/opengraph/basic.png" }],
+    ["meta", { name: "twitter:image", content: "https://gmonad.cc/opengraph/basic.png" }],
   ],
   themeConfig: {
 	search: {
