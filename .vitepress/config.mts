@@ -6,7 +6,20 @@ export default defineConfig({
   lang: 'zh-CN',
   title: "Monad 中文社区",
   description: "GMonad, 欢迎一起建设 Monad！",
-  head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
+  head: [
+    ["link", { rel: "icon", type: "image/png", href: "/icon.png" }],
+    // OpenGraph 标签
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { property: "og:title", content: "Monad 中文社区" }],
+    ["meta", { property: "og:description", content: "GMonad, 欢迎一起建设 Monad！" }],
+    ["meta", { property: "og:image", content: "https://gmonad.cc/opengraph/basic.png" }],
+    ["meta", { property: "og:url", content: "https://gmonad.cc" }],
+    // Twitter 卡片
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:title", content: "Monad 中文社区" }],
+    ["meta", { name: "twitter:description", content: "GMonad, 欢迎一起建设 Monad！" }],
+    ["meta", { name: "twitter:image", content: "https://gmonad.cc/opengraph/basic.png" }],
+  ],
   themeConfig: {
 	search: {
       provider: 'local',
