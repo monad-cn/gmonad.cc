@@ -24,18 +24,24 @@ export default defineConfig({
 	search: {
       provider: 'local',
       options: {
-        extractField: 'text',
-        tokenize: true,
         locales: {
-          zh: {
-            button: '搜索文档',
-            modal: {
-              noResults: '无法找到相关结果',
-              resetButtonTitle: '清除查询条件'
-            },
-            select: {
-              text: '选择',
-              navigate: '切换'
+          root: {
+            translations: {
+              button: {
+                buttonText: '搜索',
+                buttonAriaLabel: '搜索'
+              },
+              modal: {
+                noResultsText: '无法找到相关结果',
+                resetButtonTitle: '清除查询条件',
+                footer: {
+                  selectText: '选择',
+                  navigateText: '切换',
+                  closeText: '关闭'
+                },
+                displayDetails: '显示详情',
+                backButtonTitle: '返回',
+              }
             }
           }
         }
@@ -125,6 +131,21 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/monad-cn/gmonad.cc' },
       { icon: 'twitter', link: 'https://x.com/monad_zw' },
       { icon: 'discord', link: 'https://discord.gg/monad' }
-    ]
+    ],
+
+    returnToTopLabel: '返回顶部',
+    sidebarMenuLabel: '菜单',
+    lightModeSwitchTitle: '切换到浅色模式',
+    darkModeSwitchTitle: '切换到深色模式',
+    
+    outline: {
+      label: '页面导航',
+      level: 'deep'
+    },
+    
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇'
+    },
   }
 })
