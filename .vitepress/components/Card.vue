@@ -1,6 +1,24 @@
 <script setup>
+import './card.css'
+
 defineProps({
   title: {
+    type: String,
+    required: true
+  },
+  image: {
+    type: String,
+    required: true
+  },
+  logo: {
+    type: String,
+    required: true
+  },
+  twitter: {
+    type: String,
+    required: true
+  },
+  globe: {
     type: String,
     required: true
   },
@@ -22,36 +40,31 @@ defineProps({
 <template>
   <div class="info-card">
     <div class="info-card__header">
-      <div class="info-card__header-content">
-        <svg class="info-card__header-logo" viewBox="0 0 24 24" width="24" height="24">
-          <path fill="currentColor" d="M12 3L4 15h16L12 3zm0 3.5L16.5 13h-9L12 6.5z"/>
-        </svg>
-        <span class="info-card__header-text">AGORA</span>
-      </div>
+      <div class="info-card__image-wrapper">
+        <img class="info-card__image" :src="image" alt="Image" >
+	  </div>
       <div class="info-card__header-right">
         <span class="info-card__category">{{ category }}</span>
         <div class="info-card__icons">
-          <button class="info-card__icon-button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+		  <a class="info-card__icon-twitter" :href="twitter" target="_blank">
+		    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+			  <path d="M9 4.5H3.75L9.94565 12.7609L4.08746 19.4999H6.07498L10.8662 13.9883L15 19.5H20.25L13.7938 10.8917L19.3501 4.5H17.3626L12.8732 9.66434L9 4.5ZM15.75 18L6.75 6H8.25L17.25 18H15.75Z" fill="currentColor" fill-opacity="1"></path>
             </svg>
-          </button>
-          <button class="info-card__icon-button">
+		  </a>
+		  <a class="info-card__icon-globe" :href="globe" target="_blank">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+			  <path d="M12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2C17.523 2 22 6.477 22 12C22 17.523 17.523 22 12 22ZM9.71 19.667C8.72341 17.5743 8.15187 15.3102 8.027 13H4.062C4.25659 14.5389 4.89392 15.9882 5.89657 17.1717C6.89922 18.3552 8.22401 19.2221 9.71 19.667V19.667ZM10.03 13C10.181 15.439 10.878 17.73 12 19.752C13.1523 17.6766 13.8254 15.3695 13.97 13H10.03V13ZM19.938 13H15.973C15.8481 15.3102 15.2766 17.5743 14.29 19.667C15.776 19.2221 17.1008 18.3552 18.1034 17.1717C19.1061 15.9882 19.7434 14.5389 19.938 13V13ZM4.062 11H8.027C8.15187 8.68979 8.72341 6.42569 9.71 4.333C8.22401 4.77788 6.89922 5.64475 5.89657 6.8283C4.89392 8.01184 4.25659 9.4611 4.062 11V11ZM10.031 11H13.969C13.8248 8.6306 13.152 6.32353 12 4.248C10.8477 6.32345 10.1746 8.63052 10.03 11H10.031ZM14.29 4.333C15.2766 6.42569 15.8481 8.68979 15.973 11H19.938C19.7434 9.4611 19.1061 8.01184 18.1034 6.8283C17.1008 5.64475 15.776 4.77788 14.29 4.333V4.333Z" fill="currentColor" fill-opacity="1"></path>
             </svg>
-          </button>
+          </a>
         </div>
       </div>
     </div>
     <div class="info-card__content">
       <div class="info-card__logo-wrapper">
-        <svg class="info-card__logo" viewBox="0 0 24 24" width="24" height="24">
-          <path fill="currentColor" d="M12 3L4 15h16L12 3zm0 3.5L16.5 13h-9L12 6.5z"/>
-        </svg>
+        <img class="info-card__logo" :src="logo" alt="Logo" width="64" height="64"/>
       </div>
-      <h3 class="info-card__title">{{ title }}</h3>
+      <div class="info-card__title">{{ title }}</div>
       <p class="info-card__description">{{ description }}</p>
       <div class="info-card__tags">
         <span v-for="(tag, index) in tags" :key="index" class="info-card__tag">

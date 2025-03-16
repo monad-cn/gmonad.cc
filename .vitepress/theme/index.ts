@@ -6,7 +6,6 @@ import './style.css'
 import './home.css'
 import './ambassador.css'
 import './event.css'
-import './card.css'
 
 export default {
   extends: DefaultTheme,
