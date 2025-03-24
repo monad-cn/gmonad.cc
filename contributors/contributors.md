@@ -20,6 +20,15 @@ const members = [
       { icon: 'twitter', link: 'https://x.com/smallfu666' }
     ]
   },
+   {
+    avatar: 'https://avatars.githubusercontent.com/u/57891230?v=4',
+    name: 'Seven',
+    title: 'Developer/Front-end/Node',
+    links: [
+      { icon: 'github', link: 'https://github.com/Wangmbo' },
+      { icon: 'twitter', link: 'https://x.com/_Seven7777777' }
+    ]
+  },
 ]
 </script>
 
