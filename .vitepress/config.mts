@@ -80,7 +80,9 @@ export default defineConfig({
           link: '/event/monad101' ,
           items: [
             { text: '巡回活动 —— 香港站', link: '/event/monad101/hk' },
-            { text: 'Bootcamp', link: '/event/monad101/bootcamp' }, ]
+            { text: 'Bootcamp', link: '/event/monad101/bootcamp' }, 
+            { text: '巡回活动 —— 深圳站', link: '/event/monad101/sz' },
+          ]
         },
 	  ],
 	  '/ecosystem/': [
