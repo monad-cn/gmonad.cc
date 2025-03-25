@@ -41,15 +41,9 @@ const members = [
 ]
 </script>
 
-# 社区贡献者 | Contributors
+# 社区贡献者 
 
-感谢所有为 GMonad 项目做出贡献的开发者们！🙏
-
-Thanks to all the developers who have contributed to the GMonad project! 🙏
-
-## 核心团队 | Core Team
-
-这些是持续为 GMonad 项目贡献的核心成员。
+感谢所有为项目做出贡献的开发者们！🙏
 
 <VPTeamMembers size="medium" :members="members" />
 
@@ -65,6 +59,6 @@ Thanks to all the developers who have contributed to the GMonad project! 🙏
 
 <!-- 加入我们的 [Discord](https://discord.gg/your-invite-link) 或 [Telegram](https://t.me/your-group) 群组，与其他贡献者交流！ -->
 
-:::tip
+:::tip 
 通过 [GitHub Issues](https://github.com/monad-cn/gmonad.cc/issues) 提交问题或建议。
 :::

@@ -5,7 +5,7 @@
   padding: 2rem;
 }
 
-._contributors_ambassador_intro p {
+._contributors_ambassador_intro p , tr {
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1.5em;

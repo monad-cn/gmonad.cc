@@ -5,6 +5,7 @@ import DefaultTheme from 'vitepress/theme'
 import './style.css'
 import './home.css'
 import './ambassador.css'
+import './contributors.css'
 import './event.css'
 import './faq.css'
 
