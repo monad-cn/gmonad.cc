@@ -58,4 +58,4 @@ const members = [
 # 社区大使们
 
 Say hello 👋 to our awesome Ambassador 🧑‍💻.
-<VPTeamMembers size="small" :members="members" />
+<VPTeamMembers size="medium" :members="members" />

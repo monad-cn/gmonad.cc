@@ -1,19 +1,54 @@
-._event p {
-	color: #67676C;
-}
-
-._event li {
-	color: #67676C;
-}
-
-._event_monad101 p {
-	color: #67676C;
-}
-
-._event_monad101_hk p, ._event_monad101_sz p, ._event_monad101_sz td {
-	color: #67676C;
-}
-
+/* 活动页面通用样式 */
+._event p, ._event li,
+._event_monad101 p,
+._event_monad101_hk p,
+._event_monad101_sz p,
+._event_monad101_sz td,
 ._event_monad101_bootcamp p {
-	color: #67676C;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+/* 活动标题样式 */
+._event h1,
+._event_monad101 h1,
+._event_monad101_hk h1,
+._event_monad101_sz h1,
+._event_monad101_bootcamp h1 {
+  color: var(--vp-c-text-1);
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 1em;
+}
+
+/* 活动列表样式 */
+._event ul,
+._event_monad101 ul {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* 活动表格样式 */
+._event_monad101_sz table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+._event_monad101_sz td {
+  padding: 0.75em;
+  border: 1px solid var(--vp-c-border);
+}
+
+/* 活动图片样式 */
+._event img,
+._event_monad101 img,
+._event_monad101_hk img,
+._event_monad101_sz img,
+._event_monad101_bootcamp img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1.5em 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

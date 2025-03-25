@@ -52,7 +52,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/index' },
       { text: '生态导航', link: '/ecosystem' },
-      { text: '活动', link: '/event' },
+      { text: '生态活动', link: '/event' },
       { text: '贡献者', link: '/contributors/' },
       { text: 'FAQ', link: '/FAQ/' },
       { text: '水龙头', link: 'https://faucet.openbuild.xyz/' },

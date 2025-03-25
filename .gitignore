@@ -3,3 +3,4 @@ package-lock.json
 .vitepress/dist
 .vitepress/cache
 ansible.sh
+pnpm-lock.yaml
