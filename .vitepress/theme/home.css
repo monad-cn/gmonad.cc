@@ -1,26 +1,24 @@
 :root {
-  /* 主题颜色 */
-  --vp-c-brand: var(--vp-c-primary);
-  --vp-c-brand-light: var(--vp-c-primary-light);
-  --vp-c-brand-dark: var(--vp-c-primary-dark);
-  
-  /* 导航颜色 */
-  --vp-nav-bg-color: rgba(255, 255, 255, 0.95);
-  --vp-nav-text-color: var(--vp-c-text-1);
-  --vp-nav-text-hover: var(--vp-c-primary);
-  
-  /* 首页标题颜色 */
-  --vp-home-hero-name-color: var(--vp-c-primary);
-  --vp-home-hero-text-color: var(--vp-c-text-1);
-  
-  /* 特性卡片样式 */
+  --vp-c-text-1: #6E54FF; /* Main text color */
+  --vp-c-text-2: #67676C; /* Secondary text color */
+  /* --vp-c-text-3: #; /1* Tertiary text color *1/ */
+
+  /* Navigation colors */
+  --vp-nav-text-color: #6E54FF;
+  --vp-nav-text-hover: #3eaf7c;
+
+  /* Title colors */
+  --vp-home-hero-name-color: #6E54FF;
+  --vp-home-hero-text-color: #2c3e50;
+
   --vp-features-bg: var(--vp-c-bg-soft);
   --vp-features-border: var(--vp-c-border);
   --vp-features-hover-bg: var(--vp-c-bg);
   --vp-features-hover-border: var(--vp-c-primary);
+
 }
 
-/* 导航栏样式 */
+
 .VPNav {
   backdrop-filter: saturate(50%) blur(8px);
   border-bottom: 1px solid var(--vp-c-border);
@@ -29,28 +27,16 @@
 .nav-bar-title {
   font-weight: 600;
   background: linear-gradient(120deg, var(--vp-c-primary), var(--vp-c-primary-light));
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.nav-link {
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.nav-link:hover {
-  color: var(--vp-c-primary) !important;
-}
-
-/* 首页英雄区样式 */
 .VPHero {
   padding: 96px 24px;
 }
 
 .VPHero .name {
   background: linear-gradient(120deg, var(--vp-c-primary), var(--vp-c-primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: 700;
 }
 
@@ -62,12 +48,11 @@
   margin: 24px auto 40px;
 }
 
-/* 特性卡片样式 */
-.VPFeatures {
-  padding: 64px 24px;
-  background: var(--vp-features-bg);
-  border-top: 1px solid var(--vp-features-border);
-}
+/* .VPFeatures { */
+/*   padding: 64px 24px; */
+/*   background: var(--vp-features-bg); */
+/*   border-top: 1px solid var(--vp-features-border); */
+/* } */
 
 .VPFeatures .box {
   background: var(--vp-c-bg);
