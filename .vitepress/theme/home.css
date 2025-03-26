@@ -18,6 +18,42 @@
 
 }
 
+.dark {
+  /* 主题基础颜色 */
+  --vp-c-primary: #8B76FF;
+  --vp-c-primary-light: #A799FF;
+  --vp-c-primary-lighter: #C4BBFF;
+  --vp-c-primary-dark: #5240CC;
+  --vp-c-primary-darker: #3D2E99;
+
+  /* 文本颜色 */
+  --vp-c-text-1: #F1F5F9;
+  --vp-c-text-2: #CBD5E1;
+  --vp-c-text-3: #94A3B8;
+
+  /* 背景颜色 */
+  --vp-c-bg: #1c1c26;
+  --vp-c-bg-soft: #1c1c26;
+  --vp-c-bg-mute: #1c1c26;
+
+  /* 边框颜色 */
+  --vp-c-border: #475569;
+  --vp-c-divider: #475569;
+
+  /* 代码块颜色 */
+  --vp-code-block-bg: #1E293B;
+  --vp-code-block-border: #475569;
+
+  /* 自定义组件颜色 */
+  --vp-custom-block-tip-border: var(--vp-c-primary);
+  --vp-custom-block-tip-text: var(--vp-c-primary-light);
+  --vp-custom-block-tip-bg: rgba(110, 84, 255, 0.1)
+
+  /* 自定义组件颜色 */
+  --vp-custom-block-tip-border: var(--vp-c-primary);
+  --vp-custom-block-tip-text: var(--vp-c-primary-dark);
+  --vp-custom-block-tip-bg: #F3F4FF;
+}
 
 .VPNav {
   backdrop-filter: saturate(50%) blur(8px);
