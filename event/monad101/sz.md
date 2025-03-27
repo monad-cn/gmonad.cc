@@ -1,7 +1,7 @@
 ---
 title: Monad 201 深圳
 description: Monad 201 深圳站：技术深度探索，助力生态建设
-image: /monad101/hk2.png
+image: /monad101/sz1.png
 ---
 
 # Monad 201 深圳
