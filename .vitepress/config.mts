@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitepress'
+import { getOpenGraphImage } from '../utils/opengraph'
+import type { TransformContext, HeadConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,18 +10,31 @@ export default defineConfig({
   description: "GMonad, 欢迎一起建设 Monad！",
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/icon.png" }],
-    // OpenGraph 标签
-    ["meta", { property: "og:type", content: "website" }],
-    ["meta", { property: "og:title", content: "Monad 中文社区" }],
-    ["meta", { property: "og:description", content: "GMonad, 欢迎一起建设 Monad！" }],
-    ["meta", { property: "og:image", content: "https://gmonad.cc/opengraph/basic.png" }],
-    ["meta", { property: "og:url", content: "https://gmonad.cc" }],
-    // Twitter 卡片
-    ["meta", { name: "twitter:card", content: "summary_large_image" }],
-    ["meta", { name: "twitter:title", content: "Monad 中文社区" }],
-    ["meta", { name: "twitter:description", content: "GMonad, 欢迎一起建设 Monad！" }],
-    ["meta", { name: "twitter:image", content: "https://gmonad.cc/opengraph/basic.png" }],
   ],
+  transformHead: (context: TransformContext) => {    
+    if (!context.pageData) {
+      return []
+    }
+
+    const ogImage = getOpenGraphImage(context.pageData)
+    const pageTitle = context.pageData.title || "Monad 中文社区"
+    const pageDesc = context.pageData.description || "GMonad, 欢迎一起建设 Monad！"
+    const pageUrl = `https://gmonad.cc${context.pageData.relativePath?.replace(/\.md$/, '') || ''}`
+
+    const head: HeadConfig[] = [
+      ["meta", { property: "og:type", content: "website" }],
+      ["meta", { property: "og:title", content: pageTitle }],
+      ["meta", { property: "og:description", content: pageDesc }],
+      ["meta", { property: "og:image", content: ogImage }],
+      ["meta", { property: "og:url", content: pageUrl }],
+      ["meta", { name: "twitter:card", content: "summary_large_image" }],
+      ["meta", { name: "twitter:title", content: pageTitle }],
+      ["meta", { name: "twitter:description", content: pageDesc }],
+      ["meta", { name: "twitter:image", content: ogImage }],
+    ]
+
+    return head
+  },
   themeConfig: {
 	search: {
       provider: 'local',
