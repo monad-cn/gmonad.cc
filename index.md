@@ -16,7 +16,7 @@ hero:
       text: 中文开发文档
       link: /develop
     - theme: alt
-      text: Monad 101 Bootcamp
+      text: Monad 101 Bootcamp 🔥
       link: /event/monad101/bootcamp
 
 features:
