@@ -1,3 +1,9 @@
+---
+title: Monad vs Rollups
+description: Monad vs Rollups 有何优势？
+image: /blog/monad_vs_rollups_2.png
+---
+
 # Monad vs Rollups
 
 :::tip 原文
