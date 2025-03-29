@@ -68,6 +68,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '生态导航', link: '/ecosystem/' },
       { text: '活动', link: '/event/' },
+      { text: '博客', link: '/blog/' },
       { text: '贡献者', link: '/contributors/' },
       { text: 'FAQ', link: '/FAQ/' },
       { text: '水龙头', link: 'https://faucet.openbuild.xyz/' },
@@ -91,6 +92,16 @@ export default defineConfig({
             { text: 'Monad 201 深圳', link: '/event/monad201_sz' },
             { text: 'Monad 101 Bootcamp', link: '/event/monad101_bootcamp' }, 
             { text: 'Monad 101 香港', link: '/event/monad101_hk' },
+          ]
+        },
+	  ],
+	  '/blog/': [
+        {
+          text: '博客',
+          collapsed: false,
+          link: '/blog' ,
+          items: [
+            { text: 'Monad vs Rollups', link: '/blog/monad_vs_rollups' },
           ]
         },
 	  ],

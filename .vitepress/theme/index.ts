@@ -8,6 +8,7 @@ import './ambassador.css'
 import './contributors.css'
 import './event.css'
 import './faq.css'
+import './blog.css'
 
 export default {
   extends: DefaultTheme,
