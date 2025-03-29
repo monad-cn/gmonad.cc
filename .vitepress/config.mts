@@ -67,7 +67,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '生态导航', link: '/ecosystem/' },
-      { text: '生态活动', link: '/event/' },
+      { text: '活动', link: '/event/' },
       { text: '贡献者', link: '/contributors/' },
       { text: 'FAQ', link: '/FAQ/' },
       { text: '水龙头', link: 'https://faucet.openbuild.xyz/' },
@@ -85,18 +85,12 @@ export default defineConfig({
 	  '/event/': [
         {
           text: '活动',
-          children: [
-            '/event/index',
-          ]
-        },
-        {
-          text: 'Monad 101',
           collapsed: false,
-          link: '/event/monad101' ,
+          link: '/event' ,
           items: [
-            { text: '巡回活动 —— 香港站', link: '/event/monad101/hk' },
-            { text: 'Bootcamp', link: '/event/monad101/bootcamp' }, 
-            { text: '巡回活动 —— 深圳站', link: '/event/monad101/sz' },
+            { text: 'Monad 201 深圳', link: '/event/monad201_sz' },
+            { text: 'Monad 101 Bootcamp', link: '/event/monad101_bootcamp' }, 
+            { text: 'Monad 101 香港', link: '/event/monad101_hk' },
           ]
         },
 	  ],

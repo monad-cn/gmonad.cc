@@ -1,11 +1,17 @@
-# Bootcamp
+---
+title: Monad 101 Bootcamp
+description: Monad 101 Bootcamp：开启高性能区块链之旅！
+image: /monad101/bootcamp1.png
+---
+
+# Monad 101 Bootcamp
 
 ![bootcamp1](/monad101/bootcamp1.png)
 
 Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可处理 10,000 笔交易（TPS）的吞吐量，并在 1 秒内生成新的区块，提供单时隙最终性。
 
 ## 💯  Monad 解决了什么问题？
-🔥 行业痛点：EVM生态的“十年之困” 
+🔥 行业痛点：EVM生态的“十年之困”   
 以太坊作为智能合约的奠基者，创造了千亿级 DeFi 生态，但其 10 TPS 的性能天花板和动辄 $50 的 Gas 费，已成为开发者创新的枷锁。Layer2的碎片化更让流动性割裂，用户体验雪上加霜。Monad 旨在解决这些问题，通过高性能和EVM兼容性，助力区块链的广泛应用。值得一提的是，**Paradigm 已领投30亿美金估值，80+ 生态项目蓄势待发，预示着 Monad 生态将迎来蓬勃发展。**
 
 🚀 Monad 是高性能 EVM 的终极答案，2025年，Monad 以四大创新技术为区块链的大规模应用提供可能：   

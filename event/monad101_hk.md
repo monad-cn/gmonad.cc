@@ -1,4 +1,10 @@
-# Monad 101 香港站
+---
+title: Monad 101 香港
+description: Monad 101 香港站：实战 Workshop，深度体验 Monad！
+image: /monad101/hk1.png
+---
+
+# Monad 101 香港
 
 ## 【Monad 101 香港站圆满落幕】
 
@@ -44,11 +50,12 @@
 
 
 ## 免费报名
-
-> 📅 日期：2025年2月18号  
+::: tip Monad 201 深圳
+ 📅 日期：2025年2月18号  
 ⏰ 时间：14:30 - 17:30（GMT+8）  
 🌏 地点：香港（报名以查看详细地址）  
 🔗 报名：https://lu.ma/70nr61pv  
+:::
 
 
 ## 活动议程 
