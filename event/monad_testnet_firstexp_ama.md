@@ -15,6 +15,7 @@ image: /ama/testnet_firstexp.jpg
 - **主持人**：秋秋，来自OpenBuild
 - **主办方**：OpenBuild
 - **主题**：Monad测试网开发者初体验
+- **回放链接**：[Monad 测试网初体验 AMA 直播回放](https://x.com/OpenBuildxyz/status/1902687847574094018)
 :::
 
 ![活动概览](/ama/testnet_firstexp.jpg)
@@ -24,7 +25,7 @@ image: /ama/testnet_firstexp.jpg
 - **大帅**：阿里云专家讲师，拥有近20年开发经验，Monad中文大使
 - **大圣**：前端Web3讲师，Monad中文大使
 - **张宇**：后端及智能合约工程师（RSS3），Monad中文大使
-- **Truck**：独立开发者，"MGas"工具创建者
+- **Chuck**：独立开发者，"MGas"工具创建者
 
 ## Monad 测试网性能与数据
 
@@ -63,9 +64,9 @@ Box提到，3月28日将在深圳举办Monad 201，重点讲解Monad的共识机
 
 张宇通过他正在开发的Web3开发者社区数据指标项目分析了Monad生态的发展。他观察到测试网上线后，开源项目数量、社区参与度和链上交互量都在迅速增长。他指出，Monad对开发者的重视，特别是对中国开发者社区的支持，为其长期发展奠定了良好基础。
 
-### Truck 
+### Chuck 
 
-Truck分享了开发"MGas"工具的经历，这是一个用于追踪gas使用情况的工具，源于社区需求。他提到开发过程相对顺利，主要得益于Monad与EVM的兼容性。但他也指出Monad的基础设施还有改进空间，例如节点设置教程和资源支持。
+Chuck分享了开发"MGas"工具的经历，这是一个用于追踪gas使用情况的工具，源于社区需求。他提到开发过程相对顺利，主要得益于Monad与EVM的兼容性。但他也指出Monad的基础设施还有改进空间，例如节点设置教程和资源支持。
 
 ## 生态发展与项目
 
@@ -80,7 +81,7 @@ Box介绍了Monad生态内涌现的众多小型工具和项目，特别是中国
 - **大圣**：关注链上分析项目
 - **大帅**：探索利用Monad高并发特性开发多人互动游戏和应用
 - **张宇**：关注链上数据分析、可视化工具和基础设施建设
-- **Truck**：希望Monad继续发展，为开发者提供更好的基础设施
+- **Chuck**：希望Monad继续发展，为开发者提供更好的基础设施
 
 ## 社区参与与未来计划
 
@@ -102,7 +103,7 @@ Box强调，社区认可度和参与度是项目成功的关键指标，比交�
 嘉宾们给出了以下建议：
 
 - **学习路径**：从GitHub上的开源项目入手，学习区块链基础知识（如WTF Solidity教程），参加Monad 101 Bootcamp 等课程
-- **项目选择**：开发解决社区痛点的小工具，如Truck的MGas工具
+- **项目选择**：开发解决社区痛点的小工具，如Chuck的MGas工具
 - **成长策略**：通过参与新生态积累经验，参加黑客松，提升社区影响力
 - **技能提升**：大帅建议Web3开发者掌握前端、智能合约和基础密码学知识
 
@@ -135,4 +136,7 @@ Box强调，开发者应该有明确目标和社区价值，避免"无效开发"
 :::
 
 ## 资源链接
-[Monad 测试网 AMA 直播回放](https://x.com/OpenBuildxyz/status/1902687847574094018)
+
+- [Monad 测试网 AMA 预告：开发者初体验分享 (OpenBuild推特)](https://x.com/OpenBuildxyz/status/1902377506520674421?t=afo4AFjqyksTFriVzYSYeQ&s=19)
+- [Monad 测试网 AMA 预告：开发者初体验分享 (Monad中文公众号)](https://mp.weixin.qq.com/s/i434nNxYYppJTUo8Zr_Wcg)
+- [Monad 测试网 AMA 预告：开发者初体验分享 (OpenBuild公众号)](https://mp.weixin.qq.com/s/Pv_xcgzOkIRwmHXYlqvjgw)
