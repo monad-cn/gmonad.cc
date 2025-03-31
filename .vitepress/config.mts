@@ -37,7 +37,8 @@ export default defineConfig({
   },
   themeConfig: {
     editLink: {
-      pattern: 'https://github.com/monad-cn/gmonad.cc/edit/main/:path'
+      pattern: 'https://github.com/monad-cn/gmonad.cc/edit/main/:path',
+      text: '在 GitHub 上编辑此页'
     },
 	  search: {
       provider: 'local',
