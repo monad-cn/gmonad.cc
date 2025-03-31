@@ -36,7 +36,10 @@ export default defineConfig({
     return head
   },
   themeConfig: {
-	search: {
+    editLink: {
+      pattern: 'https://github.com/monad-cn/gmonad.cc/edit/main/:path'
+    },
+	  search: {
       provider: 'local',
       options: {
         locales: {
