@@ -8,12 +8,12 @@ image: /ama/testnet_firstexp.jpg
 
 ## 活动回顾
 
-本次 AMA 由 Monad 中文社区 联合 [OpenBuild](https://openbuild.xyz/) 举办，主题为"开发者的 Monad 测试网初体验"，于2025年3月20日晚8点（UTC+8）举行，旨在分享开发者在 Monad 测试网上的初步体验，讨论开发环境、部署体验、性能及生态项目进展。活动由主持人[秋秋](https://x.com/0xqiuqiuu)（来自OpenBuild）主持，邀请了多位在 Monad 生态中活跃的开发者参与讨论。
+本次 AMA 由 Monad 中文社区联合 [OpenBuild](https://openbuild.xyz/) 举办，主题为"开发者的 Monad 测试网初体验"，于2025年3月20日晚8点（UTC+8）举行，旨在分享开发者在 Monad 测试网上的初步体验，讨论开发环境、部署体验、性能及生态项目进展。活动由主持人[秋秋](https://x.com/0xqiuqiuu)（来自OpenBuild）主持，邀请了多位在 Monad 生态中活跃的开发者参与讨论。
 
 ::: tip 活动概览
 - **日期时间**：2025年3月20日晚8点（UTC+8）
 - **主持人**：秋秋
-- **主办方**：OpenBuild
+- **主办方**：Monad 中文社区 x OpenBuild
 - **主题**：Monad测试网开发者初体验
 - **回放链接**：[开发者的 Monad 测试网初体验](https://x.com/OpenBuildxyz/status/1902687847574094018)
 :::
