@@ -1,6 +1,6 @@
 ---
 title: Monad Testnet AMA：开发者的测试网初体验
-description: 由 OpenBuild 主办的 Monad 开发者测试网初体验 AMA 活动总结，分享开发者在 Monad 测试网上的初步体验、技术讨论与生态项目进展。
+description: 分享 Monad 测试网最新数据，探讨开发者在测试网上的初步体验、技术讨论与生态项目进展。
 image: /ama/testnet_firstexp.jpg
 ---
 
