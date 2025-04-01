@@ -1,10 +1,8 @@
 # Monad 中文社区
 
-欢迎访问 [Monad 中文社区](https://gmonad.cc/) ，Monad 中文社区旨在为开发者提供丰富的文档、教程和学习资源，帮助你更好地理解和应用 Monad 技术。
+欢迎访问 [Monad 中文社区](https://gmonad.cc/) ，Monad 中文社区旨在为开发者提供丰富的文档、教程、学习资源以及活动资讯，助力开发者快速加入 Monad 生态，一起构建高性能 Dapp。
 
 ## 快速开始
-
-以下是如何在本地运行 Monad 中文社区文档站点和参与贡献的简要步骤：
 
 ### 克隆仓库
 
@@ -27,9 +25,13 @@ npm install
 npm run docs:dev
 ```
 
-在浏览器中访问 http://localhost:5173/ ！
+在浏览器中访问 http://localhost:5173
 
 
+## 贡献者 ✨
 
+感谢这些优秀的贡献者（按贡献时间排序）：
+
+[![Contributors](https://contrib.rocks/image?repo=monad-cn/gmonad.cc)](https://github.com/monad-cn/gmonad.cc/graphs/contributors)
 
 
