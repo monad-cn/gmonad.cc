@@ -26,8 +26,8 @@ features:
     details: 令人难以置信的快速交易速度创造了无缝的用户体验。
   - title: 0 Gas
     details: 允许对最苛刻的应用程序具有极高的可扩展性  
-  - title: 1s
-    details: 出块时间达到 1s
+  - title: 0.5s
+    details: 出块时间达到 0.5s
 
 ---
 
