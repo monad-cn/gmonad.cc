@@ -107,6 +107,7 @@ export default defineConfig({
           link: '/blog' ,
           items: [
             { text: 'Monad vs Rollups', link: '/blog/monad_vs_rollups' },
+            { text: 'Monad的安全优势', link: '/blog/security_benefits_of_monad' },
           ]
         },
 	  ],
