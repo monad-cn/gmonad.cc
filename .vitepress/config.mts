@@ -108,6 +108,7 @@ export default defineConfig({
           items: [
             { text: 'Monad vs Rollups', link: '/blog/monad_vs_rollups' },
             { text: 'Monad 的安全优势', link: '/blog/security_benefits_of_monad' },
+            { text: '浅析 MonadBFT', link: '/blog/monadbft_intro' },
           ]
         },
 	  ],

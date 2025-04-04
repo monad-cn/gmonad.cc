@@ -1,5 +1,6 @@
 ._blog p,
-._blog_monad_vs_rollups p {
+._blog_monad_vs_rollups p,
+._blog_monadbft_intro p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -12,7 +13,8 @@
 }
 
 ._blog img,
-._blog_monad_vs_rollups img {
+._blog_monad_vs_rollups img,
+._blog_monadbft_intro img {
   width: 100%;
   border-radius: 8px;
   margin: 1.5em 0;
