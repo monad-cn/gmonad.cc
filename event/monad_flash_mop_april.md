@@ -21,7 +21,6 @@ image: /event/monad_flash_mop_april_meta.png
 
 Monad 最受欢迎的活动「Founder Lounge」第四届将在香港登场！ 这是一场仅限创办人参加的私密聚会，让 Founder 可以面对面、近距离地聊聊最真实的创业旅程，碰撞想法、找到同行人。准备好加入这场只属于创办人的深度对话了吗？
 
----
 
 ## GMonad Exhibition Day 
 
@@ -32,7 +31,6 @@ Monad 最受欢迎的活动「Founder Lounge」第四届将在香港登场！ �
 
 让我们隆重介绍首届 GMonad Exhibition Day！ 这是一场结合 Monad 艺术、生态项目和社区文化氛围的盛会，让测试网的乐趣不再只是技术，而是更有趣、更有感的体验。快来深入认识 Monad 基金会和合作伙伴吧！
 
----
 
 ## Monad Chinads Madnight HK 
 
@@ -43,7 +41,6 @@ Monad 最受欢迎的活动「Founder Lounge」第四届将在香港登场！ �
 
 香港的露天烧烤派对时光！一个充满加密能量的 Monad 社区活动——Just For Fun。一起与 Monad 团队还有 Nads 交流，边玩游戏边享受美味的烧烤和饮料\~~
 
---- 
 
 ## Monad Madness HK 最终战 
 
