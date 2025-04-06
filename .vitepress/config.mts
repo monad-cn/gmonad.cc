@@ -93,6 +93,7 @@ export default defineConfig({
           collapsed: false,
           link: '/event' ,
           items: [
+            { text: '四月 Flash Mop（香港）', link: '/event/monad_flash_mop_april' },
             { text: 'Monad 201 深圳', link: '/event/monad201_sz' },
             { text: 'Testnet AMA：开发者初体验', link: '/event/monad_testnet_firstexp_ama' },
             { text: 'Monad 101 Bootcamp', link: '/event/monad101_bootcamp' }, 
@@ -107,6 +108,8 @@ export default defineConfig({
           link: '/blog' ,
           items: [
             { text: 'Monad vs Rollups', link: '/blog/monad_vs_rollups' },
+            { text: 'Monad 的安全优势', link: '/blog/security_benefits_of_monad' },
+            { text: '浅析 MonadBFT', link: '/blog/monadbft_intro' },
           ]
         },
 	  ],

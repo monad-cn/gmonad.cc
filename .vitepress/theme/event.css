@@ -5,6 +5,7 @@
 ._event_monad101_hk p,
 ._event_monad201_sz p,
 ._event_monad201_sz td,
+._event_monad_flash_mop_april p,
 ._event_monad101_bootcamp p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
@@ -52,4 +53,24 @@
   border-radius: 8px;
   margin: 1.5em 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+._event_monad_flash_mop_april img {
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+  width: 40%;
+  /* max-width: 100%; */
+  height: auto;
+}
+
+.flash_mop_sub_title {
+	margin: 48px 0 16px;
+    border-top: 1px solid var(--vp-c-divider);
+    padding-top: 24px;
+    letter-spacing: -0.02em;
+    line-height: 32px;
+    font-size: 24px;
+	font-weight: bold;
+	text-align: center;
 }
