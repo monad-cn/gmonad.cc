@@ -7,8 +7,9 @@ image: /blog/monadbft_1.png
 # 浅析 MonadBFT
 
 :::tip 原文
-- https://x.com/category_xyz/status/1907442601822707922
-- https://x.com/Harveycww/status/1907636324368285734
+https://x.com/category_xyz/status/1907442601822707922  
+https://x.com/Harveycww/status/1907636324368285734  
+翻译： Harvey
 :::
 
 Category Labs 正式发布 @monad_xyz 的下一代共识协议 —— MonadBFT。它专为高速度（可达 10,000 笔交易/秒）、安全性以及亚秒级最终确认（sub-second finality）而设计，确保网络能更高效地在有效区块上达成共识。

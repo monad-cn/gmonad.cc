@@ -7,7 +7,8 @@ image: /blog/security_benefits_1.png
 # Monad 的安全优势
 
 :::tip 原文
- https://monadxyz.substack.com/p/the-security-benefits-of-monad-7884c4c9b398
+https://monadxyz.substack.com/p/the-security-benefits-of-monad-7884c4c9b398   
+翻译：小符
 :::
 
 ![security_benefits_1](/blog/security_benefits_1.png)

@@ -1,20 +1,21 @@
 ---
 title: 探究 Monad：Who、What、How、Why、When
-description: Monad 5W 分析
-image: /blog/106_who.png
+description: Monad 代表了一种愿景，可以兼得高性能和高度去中心化。
+image: /blog/5w_what.png
 ---
 
-# 探究 Monad：Who、What、How、Why、When
+# 认识 Monad：Who、What、How、Why、When
 
 :::tip 原文
-https://x.com/cryptunez/status/1865077152623788354
+https://x.com/cryptunez/status/1865077152623788354  
+翻译：小符
 :::
 
 ### Who 
 
 Monad 由前 Jump 高频交易(HFT)市场做市商创办，他们曾在传统市场运营了一个交易团队，年交易量达到 1 万亿美元。随后，他们加入了 Jump(Jump Trading 是一家总部位于美国的全球领先的高频交易和市场做市公司，成立于 2008 年) 并领导了 Solana DeFi 团队。这种人才在加密领域非常稀缺。过去三年，Monad 招募了顶尖人才来解决非常困难的问题，目前团队已接近40名顶尖工程师，其中许多开发人员具有丰富的高频交易和做市背景。 Monad 由加密货币领域极优秀的团队创立。
 
-![106_who](/blog/106_who.png)
+![5w_who](/blog/5w_who.png)
 
 
 ### What
@@ -28,7 +29,7 @@ Solana 的支持者则认为以太坊的设计是错误的，他们认为 Layer1
 Solana 优先考虑性能而非去中心化，而以太坊则优先考虑去中心化而非性能。这基本上体现了 Vitalik Buterin 最初提出的“扩展困境”（scaling trilemma）。 Monad之所以特别，是因为它可以比 Solana 获得更高的性能，同时又能够在去中心化方面做得更好，可以说 Monad 是扩展困境的最佳解决方案。
 
 
-![106_when](/blog/106_when.png)
+![5w_what](/blog/5w_what.png)
 
 
 关于性能：Solana 的峰值 TPS 大约为6500。而 Monad 经过以太坊 L1 历史的基准测试，能够处理10,000+ TPS。特别提到以太坊的基准测试，是因为通过进行不切实际的模拟来测量区块链能处理的 TPS 很容易被夸大和误导。或许有100个不同的区块链承诺能够处理100,000+ TPS（包括以太坊和 Solana），但没有任何链能够接近这个数字。（可以在这里阅读更多关于TPS的骗局：monad.xyz/wtf-is-tps ）
@@ -41,23 +42,23 @@ Monad 承诺将成为一个真正去中心化且高性能的 Layer1 区块链 �
 
 Monad完全专注于处理尽可能多的交易。 首先，Monad采用了异步执行，实际上意味着共识和执行是分开的。这一点很重要，因为通常情况下，共识过程会占用执行预算的绝大部分（执行预算 = 进行更多 TPS 的能力）。仅仅这个技巧，就能大幅提升你的 TPS。
 
-![106_how1](/blog/106_how1.png)
+![5w_how1](/blog/5w_how1.png)
 
 其次，Monad采用了并行执行，这意味着只要多个交易不涉及同一份状态，它们就可以在完全相同的时间发生。例如，如果我给你发送10美元，而 Cobie 给 GCR 发送1000万美元，这两个交易就可以同时进行。但这不是目前大多数区块链的工作方式。
 
 
-![106_how2](/blog/106_how2.png)
+![5w_how2](/blog/5w_how2.png)
 
 第三，Monad 构建了 MonadDB，这是一个从零开始开发的自定义数据库，专门优化了并行执行。实际上，这意味着 Monad 重新设计了一个版本的“Excel表格”，用来记录每个人的余额。区块链其实很简单，它们主要的作用就是帮助转移资金。区块链的“状态”本质上是使用该区块链的所有用户的当前余额。如果你希望你的链能够处理10,000 TPS，它就需要以光速更新状态（即那个“Excel表格”）。如今的每个区块链基本上都使用商品化的数据库来存储状态，而这非常低效。
 
 
-![106_how3](/blog/106_how3.png)
+![5w_how3](/blog/5w_how3.png)
 
 当将这三者（异步执行、并行执行和自定义数据库）结合在一起时，就得到了非常强大的性能。这三项功能共同作用，极大地提升了性能。
 
 接下来出现的问题是共识问题，全球各地的节点必须就区块链的状态达成一致。这会显著拖慢速度。 因此，第四点，Monad 构建了 MonadBFT。这是2阶段 Hot Stuff 和 DiemBFT 的衍生版本，并进行了额外改进，允许全球成千上万的节点以每秒10,000次交易的速度传播数据。
 
-![106_how4](/blog/106_how4.png)
+![5w_how4](/blog/5w_how4.png)
 
 Monad 所实现的所有性能都非常惊人，但当考虑到它实际上会非常去中心化时，就显得非常特别。再加上它将是1:1兼容EVM，这为区块链领域带来了潜在的范式转变。（可以阅读Monad文档： docs.monad.xyz ）
 
@@ -74,7 +75,7 @@ Monad 所实现的所有性能都非常惊人，但当考虑到它实际上会�
 
 Monad 代表了一种愿景：可以兼得高性能和高度去中心化。
 
-![106_why](/blog/106_why.png)
+![5w_why](/blog/5w_why.png)
 
 
 这个愿景已经向所有 EVM 开发者展示，他们也已经开始关注 Monad，因为有数百个团队承诺将会在主网上部署。 但在主网之前需要先运行一个测试网。
@@ -89,7 +90,7 @@ Monad 代表了一种愿景：可以兼得高性能和高度去中心化。
 
 实际上，之前没有人尝试过创建 Monad，因为他们要么认为这是不可能的，要么意识到在这个行业里有无数更简单的方式能赚到钱。是的，确实需要时间，但这完全有其合理的原因。
 
-!106_when](/blog/106_when.png)
+![5w_when](/blog/5w_when.png)
 
 许多团队已经加入了公开测试网，主网很快就会推出。
 
@@ -101,20 +102,20 @@ Monad 代表了一种愿景：可以兼得高性能和高度去中心化。
 - Why - 为 EVM 带来最佳的用户体验（性能 + 去中心化）
 - When - 很快，Gmonad 💜
 
-![gmonad1](/blog/gmonad1.png)
+![5w_gmonad1](/blog/5w_gmonad1.png)
 
-![gmonad2](/blog/gmonad2.png)
+![5w_gmonad2](/blog/5w_gmonad2.png)
 
-![gmonad3](/blog/gmonad3.png)
+![5w_gmonad3](/blog/5w_gmonad3.png)
 
-![gmonad4](/blog/gmonad4.png)
+![5w_gmonad4](/blog/5w_gmonad4.png)
 
-![gmonad5](/blog/gmonad5.png)
+![5w_gmonad5](/blog/5w_gmonad5.png)
 
-![gmonad6](/blog/gmonad6.png)
+![5w_gmonad6](/blog/5w_gmonad6.png)
 
-![gmonad7](/blog/gmonad7.png)
+![5w_gmonad7](/blog/5w_gmonad7.png)
 
-您可以在这里加入社区：discord.com/invite/monad
+可以在这里加入社区：[discord.com/invite/monad](https://discord.com/invite/monad)
 
-此外，如果您有兴趣在 Monad 上进行构建，您可以在这里加入开发者社区：discord.com/invite/monaddev
+此外，如果有兴趣在 Monad 上构建，可以加入开发者社区：[discord.com/invite/monaddev](https://discord.com/invite/monaddev)
