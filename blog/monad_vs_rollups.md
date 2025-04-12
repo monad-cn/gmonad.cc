@@ -7,7 +7,8 @@ image: /blog/monad_vs_rollups_2.png
 # Monad vs Rollups
 
 :::tip 原文
-https://www.monad.xyz/post/monad-vs-rollups
+https://www.monad.xyz/post/monad-vs-rollups  
+翻译：小符
 :::
 
 Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可
