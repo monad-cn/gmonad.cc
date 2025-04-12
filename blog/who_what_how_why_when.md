@@ -1,5 +1,5 @@
 ---
-title: 探究 Monad：Who、What、How、Why、When
+title: 认识 Monad：Who、What、How、Why、When
 description: Monad 代表了一种愿景，可以兼得高性能和高度去中心化。
 image: /blog/5w_what.png
 ---
