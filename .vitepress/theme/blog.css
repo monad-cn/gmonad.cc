@@ -1,12 +1,8 @@
 ._blog p,
 ._blog_monad_vs_rollups p,
+._blog_who_what_how_why_when p,
+._blog_security_benefits_of_monad p,
 ._blog_monadbft_intro p {
-  color: var(--vp-c-text-2);
-  line-height: 1.6;
-  margin-bottom: 1em;
-}
-
-._blog_security_benefits_of_monad p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -21,6 +17,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+._blog_who_what_how_why_when img,
 ._blog_security_benefits_of_monad img {
   max-width: 100%;
   border-radius: 8px;
