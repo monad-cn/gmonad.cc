@@ -10,7 +10,6 @@ image: /ama/bootcamp_ama.png
 ## 活动回顾
 本次 AMA 由 Monad 中文社区联合 OpenBuild 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 13 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 Monad 101 Bootcamp 课程学员的疑问。活动由主持人秋秋（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师张宇（pseudoyu）参与讨论。
 
----
 
 ## 活动概览
 - **日期时间**：2025 年 4 月 13 日晚 8 点（UTC+8）
@@ -19,13 +18,13 @@ image: /ama/bootcamp_ama.png
 - **主题**：Monad 技术解析与开发者答疑
 - **回放链接**：[monad & openbuild space](https://x.com/i/spaces/1BRKjmljgRNxw)
 
----
+
 
 ## 嘉宾信息
 - **张宇（pseudoyu）**：Monad 中文社区第一期大使，Bootcamp 前三节课讲师，智能合约开发工程师，具备 Web3 前后端开发经验。
 - **秋秋**：OpenBuild 社区成员，活动主持人，致力于帮助 Web2 开发者过渡到 Web3。
 
----
+
 
 ## Monad 技术解析
 张宇老师详细介绍了 Monad 的技术原理和创新点，以下是主要内容：
@@ -51,15 +50,14 @@ image: /ama/bootcamp_ama.png
 
 张宇老师强调，Monad 通过软件算法创新，在保持 EVM 兼容性的同时，解决了性能瓶颈，为开发者提供了更广阔的应用空间。
 
----
 
 ## Bootcamp 课程回顾
+
 张宇老师回顾了 Monad 101 Bootcamp 前三节课的内容：
 1. **第一节课**：Web3 基础知识，包括区块链、智能合约简介及安全注意事项。
 2. **第二节课**：Solidity 入门，介绍开发工具和语法基础。
 3. **第三节课**：项目实战，指导编写和部署 ERC20 与 ERC721 合约。
 
----
 
 ## 作业答疑
 张宇老师解答了 Bootcamp 作业中的常见问题：
@@ -75,7 +73,6 @@ image: /ama/bootcamp_ama.png
   - `revert`：自定义错误，回滚交易。
 - **合约继承**：多重继承时，后继承的合约方法优先级更高。
 
----
 
 ## 开发者体验与生态发展
 ### 1. 开发者体验
@@ -98,7 +95,7 @@ image: /ama/bootcamp_ama.png
 - **线上线下活动**：如香港嘉年华、Madness Demo Pitch。
 - **生态建设**：支持开发者探索高性能应用。
 
----
+
 
 ## 给新手开发者的建议
 ### 1. 学习路径
@@ -113,7 +110,6 @@ image: /ama/bootcamp_ama.png
 - **钱包隔离**：区分冷热钱包，重资产使用硬件钱包。
 - **私钥管理**：避免联网存储私钥或助记词。
 
----
 
 ## 常见问题解答
 1. **Q：Monad 与 EVM 的区别是什么？**  
@@ -125,12 +121,10 @@ image: /ama/bootcamp_ama.png
 3. **Q：Monad 适合哪些应用场景？**  
    **A**：高频交易、链上游戏、DeFi 等需要低延迟和高性能的场景。
 
----
 
 ## 总结
 本次 AMA 深入探讨了 Monad 的技术优势、开发者体验及生态潜力。张宇老师通过通俗的讲解和类比，帮助参与者理解 Monad 的创新点，并为 Bootcamp 学员提供了实用的答疑支持。活动凸显了 Monad 在性能和兼容性上的突破，以及对开发者社区的重视。
 
----
 
 ::: tip 如何参与？
 如果你对 Monad 开发感兴趣，可通过以下方式参与：
@@ -138,7 +132,7 @@ image: /ama/bootcamp_ama.png
 - 报名 Monad 101 Bootcamp 课程。
 - 关注官方活动和黑客松。
 :::
----
+
 
 ## 相关链接
 - [Monad 中文社区](https://gmonad.cc/)
