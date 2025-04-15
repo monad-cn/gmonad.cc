@@ -1,28 +1,28 @@
 ---
-title: Monad 101 Bootcamp AMA：技术解析与开发者答疑!
-description: 亲爱的 Monad 学习者，准备好在 2025 年 4 月 7 日晚 8 点（UTC+8），与 Monad 中文社区和 OpenBuild 一起，深入剖析 Monad 的技术内核，并由特邀讲师章鱼（pseudoyu）解答你的疑问了吗？加入这场线上 AMA，点燃你的 Web3 开发激情！
+title: Monad Bootcamp AMA：技术解析与开发者答疑!
+description: 加入 AMA，与 Monad 中文社区和 OpenBuild 一起深入剖析 Monad 的技术原理！
 image: /ama/bootcamp_ama.png
 ---
-# Monad 101 Bootcamp AMA：技术解析与开发者答疑
+# Monad Bootcamp AMA：技术解析与开发者答疑
 
-![monad bootcamp AMA](/ama/bootcamp_ama.png)
 
 ## 活动回顾
-本次 AMA 由 Monad 中文社区联合 OpenBuild 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 13 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 Monad 101 Bootcamp 课程学员的疑问。活动由主持人秋秋（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师章鱼（pseudoyu）参与讨论。
+本次 AMA 由 Monad 中文社区联合 [OpenBuild](https://openbuild.xyz/) 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 7 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 [Monad 101 Bootcamp](/https://openbuild.xyz/learn/challenges/2060691796) 课程学员的疑问。活动由主持人[秋秋](https://x.com/0xqiuqiuu)（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师[章鱼（pseudoyu）](https://x.com/pseudo_yu)参与讨论。
 
 
 ## 活动概览
 - **日期时间**：2025 年 4 月 7 日晚 8 点（UTC+8）
-- **主持人**：秋秋（OpenBuild 社区成员）
+- **主持人**：秋秋
 - **主办方**：Monad 中文社区 x OpenBuild
 - **主题**：Monad 技术解析与开发者答疑
-- **回放链接**：[monad & openbuild space](https://x.com/i/spaces/1BRKjmljgRNxw)
+- **回放链接**：[技术解析与开发者答疑](https://x.com/i/spaces/1BRKjmljgRNxw)
 
+![monad bootcamp AMA](/ama/bootcamp_ama.png)
 
 
 ## 嘉宾信息
-- **章鱼（pseudoyu）**：Monad 中文社区第一期大使，Bootcamp 前三节课讲师，智能合约开发工程师，具备 Web3 前后端开发经验。
-- **秋秋 (0xqiuqiu)**：OpenBuild 社区成员，活动主持人，致力于帮助 Web2 开发者过渡到 Web3。
+- [章鱼(pseudoyu)](https://x.com/pseudo_yu)：后端 & 智能合约工程师，Bootcamp 前三节课讲师，Monad
+	中文社区大使
 
 
 
@@ -129,12 +129,14 @@ image: /ama/bootcamp_ama.png
 ::: tip 如何参与？
 如果你对 Monad 开发感兴趣，可通过以下方式参与：
 - 加入 Monad 中文社区。
-- 报名 Monad 101 Bootcamp 课程。
+- 报名 [Monad 101 Bootcamp](https://openbuild.xyz/learn/challenges/2060691796)课程。
 - 关注官方活动和黑客松。
 :::
 
 
 ## 相关链接
-- [Monad 中文社区](https://gmonad.cc/)
-- [Monad Bootcamp AMA 课程页面](https://x.com/OpenBuildxyz/status/1908554292266713525)
+- [Monad 101 Bootcamp](https://openbuild.xyz/learn/challenges/2060691796)
 - [OpenBuild 社区](https://x.com/OpenBuildxyz)
+- https://x.com/OpenBuildxyz/status/1908554292266713525
+- https://mp.weixin.qq.com/s/PaTQsqjfvKZ6ScNPqclkcQ
+- https://mp.weixin.qq.com/s/4KO01ieGQ5V19FpuQHTU1g
