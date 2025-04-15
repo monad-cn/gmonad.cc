@@ -1,6 +1,6 @@
 ---
 title: Monad 101 Bootcamp AMA：技术解析与开发者答疑!
-description: 亲爱的 Monad 学习者，准备好在 2025 年 4 月 13 日晚 8 点（UTC+8），与 Monad 中文社区和 OpenBuild 一起，深入剖析 Monad 的技术内核，并由特邀讲师张宇（pseudoyu）解答你的疑问了吗？加入这场线上 AMA，点燃你的 Web3 开发激情！
+description: 亲爱的 Monad 学习者，准备好在 2025 年 4 月 7 日晚 8 点（UTC+8），与 Monad 中文社区和 OpenBuild 一起，深入剖析 Monad 的技术内核，并由特邀讲师章鱼（pseudoyu）解答你的疑问了吗？加入这场线上 AMA，点燃你的 Web3 开发激情！
 image: /ama/bootcamp_ama.png
 ---
 # Monad 101 Bootcamp AMA：技术解析与开发者答疑
@@ -8,11 +8,11 @@ image: /ama/bootcamp_ama.png
 ![monad bootcamp AMA](/ama/bootcamp_ama.png)
 
 ## 活动回顾
-本次 AMA 由 Monad 中文社区联合 OpenBuild 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 13 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 Monad 101 Bootcamp 课程学员的疑问。活动由主持人秋秋（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师张宇（pseudoyu）参与讨论。
+本次 AMA 由 Monad 中文社区联合 OpenBuild 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 13 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 Monad 101 Bootcamp 课程学员的疑问。活动由主持人秋秋（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师章鱼（pseudoyu）参与讨论。
 
 
 ## 活动概览
-- **日期时间**：2025 年 4 月 13 日晚 8 点（UTC+8）
+- **日期时间**：2025 年 4 月 7 日晚 8 点（UTC+8）
 - **主持人**：秋秋（OpenBuild 社区成员）
 - **主办方**：Monad 中文社区 x OpenBuild
 - **主题**：Monad 技术解析与开发者答疑
@@ -21,13 +21,13 @@ image: /ama/bootcamp_ama.png
 
 
 ## 嘉宾信息
-- **张宇（pseudoyu）**：Monad 中文社区第一期大使，Bootcamp 前三节课讲师，智能合约开发工程师，具备 Web3 前后端开发经验。
-- **秋秋**：OpenBuild 社区成员，活动主持人，致力于帮助 Web2 开发者过渡到 Web3。
+- **章鱼（pseudoyu）**：Monad 中文社区第一期大使，Bootcamp 前三节课讲师，智能合约开发工程师，具备 Web3 前后端开发经验。
+- **秋秋 (0xqiuqiu)**：OpenBuild 社区成员，活动主持人，致力于帮助 Web2 开发者过渡到 Web3。
 
 
 
 ## Monad 技术解析
-张宇老师详细介绍了 Monad 的技术原理和创新点，以下是主要内容：
+章鱼老师详细介绍了 Monad 的技术原理和创新点，以下是主要内容：
 
 ### 1. 技术特点
 - **100% EVM 兼容**：现有以太坊智能合约和工具可无缝运行。
@@ -48,19 +48,19 @@ image: /ama/bootcamp_ama.png
 - **全球分布式网络**：验证节点分布无区域限制，增强去中心化。
 - **用户体验**：低延迟、高 TPS，适合高频交易和实时应用。
 
-张宇老师强调，Monad 通过软件算法创新，在保持 EVM 兼容性的同时，解决了性能瓶颈，为开发者提供了更广阔的应用空间。
+章鱼老师强调，Monad 通过软件算法创新，在保持 EVM 兼容性的同时，解决了性能瓶颈，为开发者提供了更广阔的应用空间。
 
 
 ## Bootcamp 课程回顾
 
-张宇老师回顾了 Monad 101 Bootcamp 前三节课的内容：
+章鱼老师回顾了 Monad 101 Bootcamp 前三节课的内容：
 1. **第一节课**：Web3 基础知识，包括区块链、智能合约简介及安全注意事项。
 2. **第二节课**：Solidity 入门，介绍开发工具和语法基础。
 3. **第三节课**：项目实战，指导编写和部署 ERC20 与 ERC721 合约。
 
 
 ## 作业答疑
-张宇老师解答了 Bootcamp 作业中的常见问题：
+章鱼老师解答了 Bootcamp 作业中的常见问题：
 - **合约部署流程**：本地编译为字节码后部署至链上，可使用 Remix IDE 或本地工具。
 - **用户与合约交互**：通过钱包（如 MetaMask）连接区块链，调用合约方法。
 - **Solidity 语法要点**：
@@ -123,7 +123,7 @@ image: /ama/bootcamp_ama.png
 
 
 ## 总结
-本次 AMA 深入探讨了 Monad 的技术优势、开发者体验及生态潜力。张宇老师通过通俗的讲解和类比，帮助参与者理解 Monad 的创新点，并为 Bootcamp 学员提供了实用的答疑支持。活动凸显了 Monad 在性能和兼容性上的突破，以及对开发者社区的重视。
+本次 AMA 深入探讨了 Monad 的技术优势、开发者体验及生态潜力。章鱼老师通过通俗的讲解和类比，帮助参与者理解 Monad 的创新点，并为 Bootcamp 学员提供了实用的答疑支持。活动凸显了 Monad 在性能和兼容性上的突破，以及对开发者社区的重视。
 
 
 ::: tip 如何参与？
