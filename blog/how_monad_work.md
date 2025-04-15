@@ -4,12 +4,14 @@ description: Monad 的核心目标是通过改进共识算法和执行算法，�
 image: /blog/how_monad_work_1.png
 ---
 
-# Monad 工作原理
+# 一文梳理 Monad 工作原理
 
 :::tip 原文
 https://x.com/keonehd/status/1891738830534766710  
 翻译：大帅
 :::
+
+![how_monad_work_1](/blog/how_monad_work_1.png)
 
 ## 摘要
 
