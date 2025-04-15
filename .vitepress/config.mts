@@ -112,6 +112,7 @@ export default defineConfig({
             { text: 'Monad 的安全优势', link: '/blog/security_benefits_of_monad' },
             { text: '浅析 MonadBFT', link: '/blog/monadbft_intro' },
             { text: '认识 Monad：4W1H', link: '/blog/who_what_how_why_when' },
+            { text: 'Monad 工作原理', link: '/blog/how_monad_work' },
           ]
         },
 	  ],
