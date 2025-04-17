@@ -2,6 +2,7 @@
 ._blog_monad_vs_rollups p,
 ._blog_who_what_how_why_when p,
 ._blog_security_benefits_of_monad p,
+._blog_testnet_data_first_day p,
 ._blog_monadbft_intro p,
 ._blog_how_monad_work p {
   color: var(--vp-c-text-2);
@@ -14,6 +15,7 @@
 ._blog_monadbft_intro img,
 ._blog_who_what_how_why_when img,
 ._blog_security_benefits_of_monad img,
+._blog_testnet_data_first_day img,
 ._blog_how_monad_work img {
   width: 100%;
   border-radius: 8px;
