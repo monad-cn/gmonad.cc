@@ -124,7 +124,7 @@ export default defineConfig({
           collapsed: false,
           link: '/guide' ,
           items: [
-            { text: '像素格子画布 PixelGrid', link: '/guide/pixel_grid_guide' },
+            { text: '如何开发你的第一个 Web3 项目', link: '/guide/pixel_grid_guide' },
           ]
         },
 	  ],
