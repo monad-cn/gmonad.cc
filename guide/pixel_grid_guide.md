@@ -4,11 +4,11 @@ description: 本文将解析 PixelGrid 的核心实现，帮助开发者理解�
 image: /guide/pixel_grid_guide_1.png
 ---
 
-# 开发你的第一个 Web3 项目 —— PixelGrid
+# 如何开发你的第一个 Web3 项目?
 
-Monad 是一个高性能的 Layer-1 区块链，专为解决以太坊的可扩展性问题而设计。它采用了创新的状态管理方法和优化的执行环境，使开发者能够构建高吞吐量的去中心化应用。作为一个兼容 EVM（以太坊虚拟机）的公链，Monad 保留了以太坊的开发便利性，同时显著提升了交易处理速度和降低了 Gas 费用。
+>  想真正入门Web3？别再只读白皮书了，直接动手！在测试网上完成一笔交易、部署一个智能合约、部署自己的 DApp，只有亲自体验链上操作，才算真正入门。
 
-通过学习 `Monad` 联合 `OpenBuild` 推出的 [Monad 101 Bootcamp](https://openbuild.xyz/learn/challenges/2060691796)，在课程讲师[大帅](https://x.com/ezshine)老师的指导下，开发了基于 Monad 的像素画布 [PixelGrid](https://pixel-grid-chain.vercel.app/)。 本文将解析 PixelGrid 的核心实现，帮助开发者理解如何在 Monad 上开发去中心化应用程序。
+一位后端同学（奕）通过学习 `Monad` 联合 `OpenBuild` 推出的 [Monad 101 Bootcamp](https://openbuild.xyz/learn/challenges/2060691796)，在课程讲师[大帅](https://x.com/ezshine)老师的指导下，成功开发了一个基于 Monad 的像素画布项目 —— [PixelGrid](https://pixel-grid-chain.vercel.app/)。 本文将解析 PixelGrid 的核心实现，帮助开发者快速开发一个自己的 DApp。
 
 ![Pixel Grid界面示例](/guide/pixel_grid_guide_1.png)
 
@@ -32,7 +32,7 @@ PixelGrid 是一个基于区块链的像素艺术平台，具有以下核心功�
 
 ## 技术栈详解
 
-本项目采用现代Web3开发栈：
+本项目采用现代 Web3 开发栈：
 
 | 技术领域 | 使用的库/框架 | 用途 |
 |---------|-------------|------|
@@ -42,6 +42,7 @@ PixelGrid 是一个基于区块链的像素艺术平台，具有以下核心功�
 | Web3连接 | wagmi、RainbowKit | 简化钱包连接流程 |
 | 合约交互 | viem | 处理智能合约调用 |
 | 区块链网络 | Monad Testnet | 存储数字资产 |
+
 
 ## 核心功能实现
 
@@ -268,6 +269,11 @@ const TileImage = styled.img`
 - 当只有颜色时，显示纯色背景
 - 当只有图片时，显示高清图片
 - 当同时有颜色和图片时，创建半透明混合效果
+
+
+## 关于 Monad
+Monad 是一个高性能的 Layer-1 区块链，专为解决以太坊的可扩展性问题而设计。它采用了创新的状态管理方法和优化的执行环境，使开发者能够构建高吞吐量的去中心化应用。作为一个兼容 EVM（以太坊虚拟机）的公链，Monad 保留了以太坊的开发便利性，同时显著提升了交易处理速度和降低了 Gas 费用。
+
 
 ## 总结
 
