@@ -1,6 +1,6 @@
 ---
-title: 开发你的第一个 Web3 项目 —— PixelGrid
-description: 本文将解析 PixelGrid 的核心实现，帮助开发者理解如何在 Monad 上开发去中心化应用程序。
+title: 如何开发你的第一个 Web3 项目
+description: 本文将解析 PixelGrid 的核心实现，帮助开发者在 Monad 上快速开发一个自己的 DApp。
 image: /guide/pixel_grid_guide_1.png
 ---
 
