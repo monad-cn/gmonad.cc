@@ -14,7 +14,7 @@ hero:
       link: /contributors/ambassador_intro
     - theme: alt
       text: 中文开发文档
-      link: /develop
+      link: /guide
     - theme: alt
       text: Monad 101 Bootcamp 🔥
       link: /event/monad101/bootcamp

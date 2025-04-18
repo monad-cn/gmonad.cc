@@ -10,6 +10,7 @@ import './contributors.css'
 import './event.css'
 import './faq.css'
 import './blog.css'
+import './guide.css'
 
 export default {
   extends: DefaultTheme,
