@@ -1,10 +1,10 @@
 ---
-title: Monad 创始人 Keone Hon 深度访谈 
+title: 联创 Keone Hon 访谈 
 description: Monad创始人Keone Hon分享了Monad如何通过并行执行和优化的共识机制以及他对Web3未来的展望
 image: /blog/KeoneHon_Interview.png
 ---
 
-# Monad 创始人 Keone Hon 深度访谈
+# Keone Hon 访谈：Monad的愿景与区块链的未来
 
 :::tip 来源
 https://www.youtube.com/watch?v=aW3KlttN814
