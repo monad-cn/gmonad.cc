@@ -84,7 +84,7 @@ image: /ama/bootcamp_ama.png
 - **社区项目**：如 Madness 入选项目，展示 Monad 高性能潜力。
 - **官方支持**：举办黑客松、Bootcamp 等活动，鼓励开发者创新。
 
----
+
 
 ## 社区参与与未来计划
 ### 1. 社区反馈
