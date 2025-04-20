@@ -4,7 +4,7 @@ description: Monad创始人Keone Hon分享了Monad如何通过并行执行和优
 image: /blog/KeoneHon_Interview.png
 ---
 
-# Keone Hon 访谈：Monad的愿景与区块链的未来
+# 联创 Keone Hon 访谈：Monad的愿景与区块链的未来
 
 :::tip 来源
 https://www.youtube.com/watch?v=aW3KlttN814
