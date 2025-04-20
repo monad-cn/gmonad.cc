@@ -115,6 +115,7 @@ export default defineConfig({
             { text: '认识 Monad：4W1H', link: '/blog/who_what_how_why_when' },
             { text: '一文梳理 Monad 工作原理', link: '/blog/how_monad_work' },
             { text: 'Monad 测试网首日表现', link: '/blog/testnet_data_first_day' },
+            { text: '联创 Keone Hon 访谈', link: '/blog/interview_KeoneHon.md'},
           ]
         },
 	  ],
