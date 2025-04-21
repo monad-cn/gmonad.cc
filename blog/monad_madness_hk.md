@@ -1,5 +1,5 @@
 ---
-title: Monad Madness Hong Kong 活动回顾
+title: Monad Madness Hong Kong 项目回顾
 description: 一起回顾入围的16个项目，期待见证他们未来的成长和进步。
 image: /blog/monad_madness_hk_title.png
 ---
