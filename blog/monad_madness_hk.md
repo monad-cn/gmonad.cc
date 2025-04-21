@@ -1,13 +1,14 @@
 ---
-title: Monad Madness Hong Kong 项目回顾
-description: Monad Madness Hong Kong 项目回顾
+title: Monad Madness Hong Kong 活动回顾
+description: 一起回顾入围的16个项目，期待见证他们未来的成长和进步。
 image: /blog/monad_madness_hk_title.png
 ---
 
-# Monad Madness Hong Kong 活动个人思考和收获
+# Monad Madness Hong Kong 活动回顾
 
 :::tip 原文
 https://x.com/michael_lwy/status/1911668057258532993  
+作者：Michael  
 翻译：LeoWei  
 :::
 
@@ -23,7 +24,6 @@ Monad Madness Hong Kong 是我加入 Monad 以来参与的最大的活动。这�
 生态系统不是靠活动建立起来的，而是靠活动之后发生的事情。 这 16 个团队刚刚开始他们的 Monad 之旅，我期待着见证他们未来的成长和进步。
 
 下面，我想与大家分享这些项目的一些成果（按字母顺序倒序排列）
-
 
 ## 1/ Zona 
 
