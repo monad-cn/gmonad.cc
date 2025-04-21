@@ -4,7 +4,7 @@ description: 一起回顾入围的16个项目，期待见证他们未来的成�
 image: /blog/monad_madness_hk_title.png
 ---
 
-# Monad Madness Hong Kong 活动回顾
+# Monad Madness Hong Kong 项目回顾
 
 :::tip 原文
 https://x.com/michael_lwy/status/1911668057258532993  
