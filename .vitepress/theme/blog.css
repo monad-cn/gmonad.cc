@@ -5,7 +5,8 @@
 ._blog_testnet_data_first_day p,
 ._blog_monad_madness_hk p,
 ._blog_monadbft_intro p,
-._blog_how_monad_work p {
+._blog_how_monad_work p,
+._blog_interview_KeoneHon p{
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -18,7 +19,8 @@
 ._blog_security_benefits_of_monad img,
 ._blog_testnet_data_first_day img,
 ._blog_monad_madness_hk img,
-._blog_how_monad_work img {
+._blog_how_monad_work img,
+._blog_interview_KeoneHon img {
   width: 100%;
   border-radius: 8px;
   margin: 1.5em 0;
