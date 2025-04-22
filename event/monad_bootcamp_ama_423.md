@@ -1,7 +1,7 @@
 ---
 title: Monad Bootcamp AMA：开发者如何入门 Web3?
 description: 想进入 Web3 但不知道从何开始？一起来聊聊开发者如何高效入门 Web3！
-image: /ama/bootcamp_ama.png
+image: /ama/bootcamp_ama_423.png
 ---
 
 # Monad Bootcamp AMA：开发者如何入门 Web3?
