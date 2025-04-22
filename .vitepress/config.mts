@@ -96,6 +96,7 @@ export default defineConfig({
           collapsed: false,
           link: '/event' ,
           items: [
+            { text: 'Monad Bootcamp AMA(4.23)', link: '/event/monad_bootcamp_ama_423' },
             { text: 'Monad Bootcamp AMA(4.7)', link: '/event/monad_bootcamp_ama' },
             { text: '四月 Flash Mop（香港）', link: '/event/monad_flash_mop_april' },
             { text: 'Monad 201 深圳', link: '/event/monad201_sz' },

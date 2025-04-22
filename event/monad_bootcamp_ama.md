@@ -7,13 +7,13 @@ image: /ama/bootcamp_ama.png
 
 
 ## 活动回顾
-本次 AMA 由 Monad 中文社区联合 [OpenBuild](https://openbuild.xyz/) 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 7 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 [Monad 101 Bootcamp](/https://openbuild.xyz/learn/challenges/2060691796) 课程学员的疑问。活动由主持人[秋秋](https://x.com/0xqiuqiuu)（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师[章鱼（pseudoyu）](https://x.com/pseudo_yu)参与讨论。
+本次 AMA 由 Monad 中文开发者社区联合 [OpenBuild](https://openbuild.xyz/) 举办，主题为“Monad 技术解析与开发者答疑”，于 2025 年 4 月 7 日晚 8 点（UTC+8）举行。活动旨在帮助开发者深入了解 Monad 的技术原理，并解答参与 [Monad 101 Bootcamp](/https://openbuild.xyz/learn/challenges/2060691796) 课程学员的疑问。活动由主持人[秋秋](https://x.com/0xqiuqiuu)（来自 OpenBuild）主持，特邀 Monad 中文社区大使、Bootcamp 讲师[章鱼（pseudoyu）](https://x.com/pseudo_yu)参与讨论。
 
 
 ## 活动概览
 - **日期时间**：2025 年 4 月 7 日晚 8 点（UTC+8）
 - **主持人**：秋秋
-- **主办方**：Monad 中文社区 x OpenBuild
+- **主办方**：Monad 中文开发者社区 x OpenBuild
 - **主题**：Monad 技术解析与开发者答疑
 - **回放链接**：[技术解析与开发者答疑](https://x.com/i/spaces/1BRKjmljgRNxw)
 
