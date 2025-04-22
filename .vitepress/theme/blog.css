@@ -6,6 +6,7 @@
 ._blog_monad_madness_hk p,
 ._blog_monadbft_intro p,
 ._blog_how_monad_work p,
+._blog_hyperliquid_monad_sonic p,
 ._blog_interview_KeoneHon p{
   color: var(--vp-c-text-2);
   line-height: 1.6;
@@ -20,6 +21,7 @@
 ._blog_testnet_data_first_day img,
 ._blog_monad_madness_hk img,
 ._blog_how_monad_work img,
+._blog_hyperliquid_monad_sonic img,
 ._blog_interview_KeoneHon img {
   width: 100%;
   border-radius: 8px;
