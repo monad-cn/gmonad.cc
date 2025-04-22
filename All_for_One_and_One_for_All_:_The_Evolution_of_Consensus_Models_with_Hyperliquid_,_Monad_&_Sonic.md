@@ -1,7 +1,7 @@
 ---
 title: The Evolution of Consensus Models with Hyperliquid, Monad & Sonic
 description: Hyperliquid、Monad 和 Sonic 共识模型的演变
-image: /blog/a0.png
+image: /blog/a0.jpg
 ---
 
 # All for One and One for All: The Evolution of Consensus Models with Hyperliquid, Monad & Sonic
