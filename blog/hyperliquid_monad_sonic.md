@@ -1,6 +1,6 @@
 ---
 title: Hyperliquid、Monad 和 Sonic 共识模型的演变
-description: 本文深入探讨了 Hyperliquidx、Monad 和 Sonic 这些项目如何应对区块链的三难困境，并进一步推进共识设计。
+description: 本文深入探讨了 Hyperliquid、Monad 和 Sonic 这些项目如何应对区块链的三难困境，并进一步推进共识设计。
 image: /blog/hyperliquid_monad_sonic_1.png
 ---
 
