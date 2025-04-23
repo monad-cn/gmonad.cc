@@ -7,17 +7,17 @@ image: /blog/monad_game_cipher_challenge.png
 # Monad Games 密码挑战赛技术深度探讨
 
 :::tip 原文
-https://x.com/HarpalJadeja11/status/1913303414844408043?t=A9lsXw1JOLMeOkti2XUcTw&s=09  
+https://x.com/HarpalJadeja11/status/1913303414844408043  
 作者：[HarpalJadeja11](https://x.com/HarpalJadeja11)  
 翻译：LeoWei  
 :::
 
-Monad Games 是一场有趣的竞赛，参与者是一些精选的社区成员，他们竞争的目标是赢取测试网 $MON 和 $5000，然后将这些奖励赠送给他们的社区。
+Monad Games 是一场有趣的竞赛，参与者是一些精选的社区成员，他们竞争的目标是赢取测试网 \$MON 和 \$5000，然后将这些奖励赠送给他们的社区。
 
 你可以在这里观看完整的视频：
 https://www.youtube.com/watch?v=rMKgIvN962o
 
-为了增加趣味性，让观众能够参与进来，我们在视频中隐藏了一个秘密密码，这个密码能让任何人通过 Monad Testnet 上的智能合约，领取一大笔锁定的测试网 $MON。
+为了增加趣味性，让观众能够参与进来，我们在视频中隐藏了一个秘密密码，这个密码能让任何人通过 Monad Testnet 上的智能合约，领取一大笔锁定的测试网 \$MON。
 
 我们将这个活动称为“Monad Games 密码挑战”。
 
