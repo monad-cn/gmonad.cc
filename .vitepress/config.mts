@@ -118,6 +118,7 @@ export default defineConfig({
             { text: '认识 Monad：4W1H', link: '/blog/who_what_how_why_when' },
             { text: '一文梳理 Monad 工作原理', link: '/blog/how_monad_work' },
             { text: 'Monad 测试网首日表现', link: '/blog/testnet_data_first_day' },
+            { text: 'Monad Games密码挑战赛深度探讨', link: 'blog/monad_games_cipher_challenge'},
             { text: 'Madness Hong Kong 项目回顾', link: '/blog/monad_madness_hk'},
             { text: '联创 Keone Hon 访谈', link: '/blog/interview_KeoneHon'},
             { text: 'Hyperliquid、Monad 和 Sonic 共识模型的演变', link: '/blog/hyperliquid_monad_sonic'},
