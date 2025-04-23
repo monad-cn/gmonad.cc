@@ -67,6 +67,14 @@
   border-bottom: 2px solid var(--vp-nav-text-color);
 }
 
+/* 覆盖 VPNavScreen 的样式 */
+.VPNavScreen {
+  /* 移除 bottom，让高度由内容撑开 */
+  bottom: auto !important;
+  /* 确保 padding 不影响高度计算 */
+  box-sizing: border-box;
+}
+
 .nav-bar-title {
   font-weight: 600;
   background: linear-gradient(120deg, var(--vp-c-primary), var(--vp-c-primary-light));
