@@ -1,7 +1,7 @@
 ---
 title: Monad Games 密码挑战赛技术深度探讨
 description: Monad Games 密码挑战赛技术深度探讨
-image: /blog/monad_game_cipher_challenge.png
+image: /blog/monad_game_cipher_challenge_title.png
 ---
 
 # Monad Games 密码挑战赛技术深度探讨
