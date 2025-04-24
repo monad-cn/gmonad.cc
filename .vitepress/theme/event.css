@@ -8,7 +8,8 @@
 ._event_monad_flash_mop_april p,
 ._event_monad101_bootcamp p,
 ._event_monad_bootcamp_ama_423 p,
-._event_monad_bootcamp_ama p {
+._event_monad_bootcamp_ama p 
+._event_monad_mcp_abc p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -50,6 +51,8 @@
 ._event_monad101 img,
 ._event_monad101_hk img,
 ._event_monad_bootcamp_ama_423 img,
+._event_monad_mcp_abc img,
+._event_monad_mcp_abc iframe,
 /* ._event_monad201_sz img, */
 ._event_monad101_bootcamp img {
   width: 100%;
