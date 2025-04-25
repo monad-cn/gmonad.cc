@@ -4,3 +4,5 @@ package-lock.json
 .vitepress/cache
 ansible.sh
 pnpm-lock.yaml
+
+.DS_Store
