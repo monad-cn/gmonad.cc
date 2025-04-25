@@ -1,14 +1,13 @@
 ---
 title: MonadBFT 解析（上）：如何解决尾部分叉问题
-description: MonadBFT 解析（上）：如何解决尾部分叉问题
+description: 本文回顾了传统 PBFT 共识的基本机制，梳理了 HotStuff 协议的发展路径，并重点讲解了 MonadBFT 如何从协议层结构上，解决流水线 HotStuff 内生的尾部分叉问题。
 image: /blog/monadbft_pt1_1.png
 ---
 
 # MonadBFT 解析（上）：如何解决尾部分叉问题
 
 :::tip 原文
-https://x.com/michael_lwy/status/1912870081421517030
-翻译：Siri
+https://x.com/michael_lwy/status/1915440192951050641
 :::
 
 区块链的核心在于实现一种严格的全球共识（strict global consensus）：也就是说，不管网络节点分布在哪个国家、哪个时区，所有参与者最后都必须对一组客观结果达成一致。
