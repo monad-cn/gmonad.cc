@@ -121,7 +121,7 @@ export default defineConfig({
             { text: 'Monad 测试网首日表现', link: '/blog/testnet_data_first_day' },
             { text: 'Monad Games密码挑战赛深度探讨', link: 'blog/monad_games_cipher_challenge'},
             { text: 'Madness Hong Kong 项目回顾', link: '/blog/monad_madness_hk'},
-            { text: '联创 Keone Hon 访谈', link: '/blog/interview_KeoneHon'},
+            { text: '联创 Keone Hon 访谈', link: '/blog/keonehon_interview'},
             { text: 'Hyperliquid、Monad 和 Sonic 共识模型的演变', link: '/blog/hyperliquid_monad_sonic'},
             { text: 'MonadBFT 解析（上）：如何解决尾部分叉问题', link: '/blog/monadbft_deep_dive_p1'},
           ]

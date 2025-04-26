@@ -9,7 +9,7 @@
 ._blog_how_monad_work p,
 ._blog_hyperliquid_monad_sonic p,
 ._blog_monadbft_deep_dive_p1 p,
-._blog_interview_KeoneHon p{
+._blog_keonehon_interview p{
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -26,7 +26,7 @@
 ._blog_how_monad_work img,
 ._blog_hyperliquid_monad_sonic img,
 ._blog_monadbft_deep_dive_p1 img,
-._blog_interview_KeoneHon img {
+._blog_keonehon_interview img {
   width: 100%;
   border-radius: 8px;
   margin: 1.5em 0;
