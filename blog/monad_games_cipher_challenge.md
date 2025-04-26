@@ -1,6 +1,6 @@
 ---
 title: Monad Games 密码挑战赛技术深度探讨
-description: Monad Games 密码挑战赛技术深度探讨
+description: Monad Games 是一场有趣的竞赛，参与者是一些精选的社区成员，他们竞争的目标是赢取测试网 \$MON 和 \$5000，然后将这些奖励赠送给他们的社区。
 image: /blog/monad_game_cipher_challenge_title.png
 ---
 
