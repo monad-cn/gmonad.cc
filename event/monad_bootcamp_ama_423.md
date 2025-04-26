@@ -23,7 +23,7 @@ image: /ama/bootcamp_ama_423.png
 ![monad bootcamp AMA](/ama/bootcamp_ama_423.png)
 
 :::tip
-欢迎大家提交在 Moand 测试网开发中遇到的问题，一起来聊 Web3 开发那些事！
+欢迎大家提交在 Monad 测试网开发中遇到的问题，一起来聊 Web3 开发那些事！
 https://docs.google.com/forms/d/1sRcWjJgckVzIND2w9mDS6ZmBZKEOxXXwcRNl_pppJZA
 :::
 
@@ -193,7 +193,7 @@ https://docs.google.com/forms/d/1sRcWjJgckVzIND2w9mDS6ZmBZKEOxXXwcRNl_pppJZA
 
 ##### 🔹 秋秋:
 - Web3 有**大量免费资源**（如 OpenBuild 平台的开源项目），可先参与。
-- 推荐参加线下 **Hack House**，免费住宿，沉浸式学习，结识前辈，加速入行。
+- 推荐参加线下 **HackHouse**，免费住宿，沉浸式学习，结识前辈，加速入行。
 
 #### Q5：Web3 开发岗位需求量如何？国内外招聘比例如何？
 
@@ -233,7 +233,7 @@ https://docs.google.com/forms/d/1sRcWjJgckVzIND2w9mDS6ZmBZKEOxXXwcRNl_pppJZA
 
 ## 总结与建议
 
-Web3 充满机遇，适合有**创意**、接受**不确定性**的开发者。Monad Bootcamp 提供从基础到实战的系统学习路径，帮助开发者快速上手并在 Monad 生态构建 DApp。Web3 不仅限于开发，还鼓励产品设计、活动组织等多元贡献，天然开放，欢迎创新想法。加入 **Monad 中文社区**、参与**黑客松**和 **Hack House** 是融入 Web3 圈子的有效途径。OpenBuild 欢迎开发者加入，共同探索 Web3 的无限可能。
+Web3 充满机遇，适合有**创意**、接受**不确定性**的开发者。Monad Bootcamp 提供从基础到实战的系统学习路径，帮助开发者快速上手并在 Monad 生态构建 DApp。Web3 不仅限于开发，还鼓励产品设计、活动组织等多元贡献，天然开放，欢迎创新想法。加入 **Monad 中文社区**、参与**黑客松**和 **HackHouse** 是融入 Web3 圈子的有效途径。OpenBuild 欢迎开发者加入，共同探索 Web3 的无限可能。
 
 
 ## 相关链接
