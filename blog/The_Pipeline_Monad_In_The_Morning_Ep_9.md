@@ -9,8 +9,8 @@ image: /blog/pipeline.jpg
 ![pipeline](/blog/pipeline.jpg)
 
 :::tip 原文
-https://x.com/HhhhHannah/status/1915034347591417938 
-翻译：keyneszeng
+ https://x.com/HhhhHannah/status/1915034347591417938 
+翻译：@HhhhHannah
 :::
 
 ## 共识可以修复区块链吗？
