@@ -24,11 +24,11 @@ https://x.com/i/broadcasts/1eaJbWLmeNvxX
 ### Keone 的观点
 ![pipeline_keone](/blog/pipeline_keone.png)
 
-#### 问题1： 打开了去中心化金融的大门，究竟是什么让USDC（USD Coin）在产生有效的吸引力？
-- 回答： USDC 的主要吸引力在于对 DeFi 赛道上最关键的"信任"的营造。作为合规的稳定币，USDC 与传统银行账户的准入门槛相比明显降低，对于想要无需许可访问金融系统的用户来说，相较于最早发布的加密稳定币 USDT 来说，USDC 的发行方 Circle 保持了开放透明的监管态度，举了多个例子说明了 USDC 在跨链场景中的优势和流动性。
+#### 主持人： 对于一个处于早期阶段的生态系统，尤其是对DEFI而言，拥有原生的美元稳定币（USDC）会产生怎样的影响呢
+#### Keone： USDC原生集成到Monad对Defi意义重大，解决了USDC多版本的碎片化问题。作为值得信赖的稳定币发行商，Circle将在Monad主网上线首日即提供USDC支持。这意味着从第一天起，Monad的Defi生态及整个生态系统将全力启动，势头强劲。
 
-#### 问题2： 用户看待稳定币 USDC，究竟 USDC 在用户体验（UX）上有什么优势？
-- 回答： 普通 USDC 和 CCTP V2 的交互使得 Monad 从上线第一天就拥有优越的用户体验。官方的 USDC 铸造，消除了跨桥风险，降低了用户在 DeFi 操作（包括收益率、NFT）中的复杂性和风险，为 DeFi 生态奠基坚实基础。
+#### 主持人： 对于普通的链上用户，原生USDC与碎片化的USDC在用户体验（UX）上有什么差别？
+#### Keone： 原生USDC和 CCTP V2 的支持使Monad从上线第一天起提供无缝、官方的USDC体验，消除了碎片化问题，降低了用户在Defi操作（如交易迷因币、NFT）中的复杂性和风险，对Defi生态发展意义重大。
 
 #### 问题3： 最近有一个流行 NFT 社区？
 - 回答： rtards、Skrumpys、Monshape Hopium、La Mouch、Foggy
