@@ -25,11 +25,11 @@ https://x.com/i/broadcasts/1eaJbWLmeNvxX
 ![pipeline_keone](/blog/pipeline_keone.png)
 
 #### 主持人： 对于一个处于早期阶段的生态系统，尤其是对DEFI而言，拥有原生的美元稳定币（USDC）会产生怎样的影响呢
-#### Keone： USDC原生集成到Monad对Defi意义重大，解决了USDC多版本的碎片化问题。作为值得信赖的稳定币发行商，Circle将在Monad主网上线首日即提供USDC支持。这意味着从第一天起，Monad的Defi生态及整个生态系统将全力启动，势头强劲。
+- 回答： USDC原生集成到Monad对Defi意义重大，解决了USDC多版本的碎片化问题。作为值得信赖的稳定币发行商，Circle将在Monad主网上线首日即提供USDC支持。这意味着从第一天起，Monad的Defi生态及整个生态系统将全力启动，势头强劲。
 
 
 #### 主持人： 对于普通的链上用户，原生USDC与碎片化的USDC在用户体验（UX）上有什么差别？
-#### Keone： 原生USDC和 CCTP V2 的支持使Monad从上线第一天起提供无缝、官方的USDC体验，消除了碎片化问题，降低了用户在Defi操作（如交易迷因币、NFT）中的复杂性和风险，对Defi生态发展意义重大。
+- 回答： 原生USDC和 CCTP V2 的支持使Monad从上线第一天起提供无缝、官方的USDC体验，消除了碎片化问题，降低了用户在Defi操作（如交易迷因币、NFT）中的复杂性和风险，对Defi生态发展意义重大。
 
 
 #### 问题3： 最近有一个流行 NFT 社区？
