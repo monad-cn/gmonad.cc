@@ -64,6 +64,10 @@ https://x.com/i/broadcasts/1eaJbWLmeNvxX
 ### Karma 的观点
 ![pipeline_KARMA](/blog/pipeline_KARMA.png)
 
+#### 主持人: 现在NFT市场整体行情怎么样？
+- 回答： 整体NFT市场过去两年持续低迷，交易量和活跃地址数大幅下降，接近周期底部。OpenSea和Blur仍主导EVM链的NFT交易市场。推荐通过由 @hildobby 创建的Dune仪表板分析交易量情况（过滤了刷单交易）。但近期也有两个项目让人眼前一亮。其一是Opepen（@jackbutcher 的持续性社区驱动项目，最新版本“Select Animals ZOO Pepen”因视觉效果惊艳而受到喜爱，交易量激增），其二是@Courtyard（一个新兴项目，通过将实体收藏卡（如棒球卡、宝可梦卡）代币化并与链上NFT绑定，结合线上“扭蛋”机制，连接数字与实体资产，近期交易量巨大，令人兴奋）。熊市是孕育机会的时刻！在Monad上，新团队更能吸引全新受众。
+
+
 #### 主持人：Monad 测试网上的 NFT 怎么样呢？
 
 #### Karma： 介绍几个令人兴奋的NFT项目，分享他们的特点和最新动态
