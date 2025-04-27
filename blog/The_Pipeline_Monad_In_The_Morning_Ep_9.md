@@ -19,4 +19,5 @@ image: /blog/pipeline.jpg
 ## 清晨的Monad 第9集原视频
 https://x.com/i/broadcasts/1eaJbWLmeNvxX
 
+![pipeline_1](/blog/pipeline_1.png)
 
