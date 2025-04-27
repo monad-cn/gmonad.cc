@@ -11,6 +11,7 @@ image: /blog/pipeline.jpg
 :::tip 原文
  https://x.com/HhhhHannah/status/1915034347591417938 
 翻译：@HhhhHannah
+编辑：keyneszeng
 :::
 
 ## The Pipeline : Monad 的媒体传播机构
