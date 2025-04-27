@@ -24,7 +24,7 @@ https://x.com/i/broadcasts/1eaJbWLmeNvxX
 ### Keone 的观点
 ![pipeline_keone](/blog/pipeline_keone.png)
 
-- 问题1： 打开了去中心化金融的大门，究竟是什么让USDC（USD Coin）在产生有效的吸引力？
+#### 问题1： 打开了去中心化金融的大门，究竟是什么让USDC（USD Coin）在产生有效的吸引力？
 - 回答： USDC 的主要吸引力在于对 DeFi 赛道上最关键的"信任"的营造。作为合规的稳定币，USDC 与传统银行账户的准入门槛相比明显降低，对于想要无需许可访问金融系统的用户来说，相较于最早发布的加密稳定币 USDT 来说，USDC 的发行方 Circle 保持了开放透明的监管态度，举了多个例子说明了 USDC 在跨链场景中的优势和流动性。
 
 - 问题2： 用户看待稳定币 USDC，究竟 USDC 在用户体验（UX）上有什么优势？
