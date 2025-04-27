@@ -16,6 +16,7 @@ image: /blog/pipeline.jpg
 ## The Pipeline : Monad 的媒体传播机构
 (https://linktr.ee/thepipeline_xyz) 
 
- 
+## 清晨的Monad 第9集原视频
+https://x.com/i/broadcasts/1eaJbWLmeNvxX
 
 
