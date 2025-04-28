@@ -1,18 +1,21 @@
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_1.png)
-
-
+---
+title: 我为何如此钟爱Monad
+description: 我为何如此钟爱Monad
+image: /blog/why_love_monad_1.png
+---
 
 # 我为何如此钟爱Monad
+:::tip 原文
+https://x.com/0x_xifeng/status/1914656344948568203
+:::
 
 Monad是我跟的最长的一个项目，从无人问津跟到了圈内皆知，很多人问过我为什么喜欢Monad，这次我将从CEO、社区、生态项目展开说明。
-
-
 
 ## 亲近社区的Keone
 
 [@keoneHD](https://x.com/@keoneHD)，我认为他是个很有意思的人，我第一次与他接触是我22年10月底进入Monad的discord社区的时候，那个时候他的头像是一只黄色的狗，不知道有没有人记得。
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_2.png)
+![Image](/blog/why_love_monad_2.png)
 
 keone毕业于麻省理工学院，在高频交易（HFT）领域有丰富经验，曾在 Jump Trading 工作 8 年，2021 年加入 Jump Crypto，22年创立Monad，简单概括下背景，但背景不代表为人，我们还是得看他做了什么。
 
@@ -22,14 +25,13 @@ keone毕业于麻省理工学院，在高频交易（HFT）领域有丰富经验
 
 https://x.com/keoneHD/status/1871960558708076977
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_3.png)
+![Image](/blog/why_love_monad_3.png)
 
 还有就是大家写Monad的推文，估计很多人都收到过keone的点赞吧？甚至还会有时候评论你，当然，也有可能他会给你点上关注，甚至有人表示，keone貌似是24小时推特在线，难道keone的账号被团队接管了吗？这恐怕需要知情人来解释下了，但keone确实在推特很活跃，并且高喊community first的口号，甚至不止一次公开场合介绍Monad社区。
 
 以上信息都表明，keone很重视Monad社区，这应该也是Monad社区强大的原因，他真的和那些高高在上的CEO们不一样！
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_4.png)
-
+![Image](/blog/why_love_monad_4.png)
 
 
 ## Monad社区究竟强大在哪里？
@@ -38,7 +40,7 @@ https://x.com/keoneHD/status/1871960558708076977
 
 社区是22年10月底邀请第一批用户进入，我很幸运是第一批社区用户之一，早期的社区用户人数较少，并且是封闭的形式，通过社区成员去邀请其他人加入社区来进行社区人数的增长，但人数控制在1000以内。项目最开始过"Pioneer Role"角色进行激励，拥有这个角色的都是老nads了。
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_5.png)
+![Image](/blog/why_love_monad_5.png)
 
 早期社区以技术爱好者和区块链开发者为主，讨论集中在 Monad 的并行执行、MonadDb 和 EVM 兼容性等技术细节。这也是Keone当时经常活跃在dc社区的原因，如果CEO都无法解释明白什么是Monad，那Monad这个项目当时我也就直接跳过了。
 
@@ -46,7 +48,7 @@ https://x.com/keoneHD/status/1871960558708076977
 
 https://monad.center/wiki/index.php/Main_Page
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_6.png)
+![Image](/blog/why_love_monad_6.png)
 
 Monad社区在测试网还未推出，就已经打出了邪教的名声，邪教也足以形容Monad社区的强大，而且Monad社区在建设阶段就收到了虫洞、OMNI、XION项目的空投，我想问，有哪个项目在测试网还未推出时就已经有了一个名声在外的强大社区？哪个社区在建设阶段就收到了好几个其他合作项目的空投？
 
@@ -56,7 +58,7 @@ https://portdeveloper.github.io/monadcommunitycalendar/
 
 
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_7.png)
+![Image](/blog/why_love_monad_7.png)
 
 除了线上活动，还会有一些线下活动，部分是nads们自行组织的，大家从线上走到了线下，从面对屏幕变成了面对面，nads们同时也认识了更多的朋友，就是不知道有没有看对眼好上的😂
 
@@ -70,11 +72,11 @@ https://portdeveloper.github.io/monadcommunitycalendar/
 
 Madness链接：https://madness.monad.xyz/zh/events
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_8.png)
+![Image](/blog/why_love_monad_8.png)
 
 到目前为止，Monad生态项目已经有500+，不过Moand测试网官方展示出来的只有73个，这是因为很多项目目前还是隐身模式，他们并未公开出现在大家的视线中，他们也许还在建设中，未上线测试网，又或者是上线了测试网但还未公开。
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_9.png)
+![Image](/blog/why_love_monad_9.png)
 
 只说这些，大家应该感受不到Monad生态系统到底有多强，需要列出一些已经融资的生态项目，用数据来说话。
 
@@ -116,7 +118,7 @@ Madness链接：https://madness.monad.xyz/zh/events
 
 请先容许我打个小广告， [@monad_zw](https://x.com/@monad_zw) 目前已经2万粉丝了，从几个粉丝成长到现在，有一种爸爸看女儿长大了的感觉，应该不少Monad社区成员是看着这个账号从几百粉丝成长到现在的，如果还没关注Monad中文账号的，现在就可以关注起来了。如果有机会的话，也可以写写这个Monad中文账号的故事。
 
-![Image](/Users/wangyongjie/Desktop/FORK/gmonad.cc/public/blog/why_love_monad_10.png)
+![Image](/blog/why_love_monad_10.png)
 
 我是22年底加入的Monad社区，所以我见证了整个Monad社区的成长过程，在meme文化未盛行起来之前，Monad社区也是没热度，真正火起来是23年靠meme文化迅速火起来的，再到后面的2.25亿融资，madness的举办，生态项目也是从无到有，从0到500+，keone也为项目宣传做出了很大牺牲，毕竟很多他的恶搞meme图，说他是首席CXO("传销官")不过分吧。
 
