@@ -125,6 +125,7 @@ export default defineConfig({
             { text: 'Hyperliquid、Monad 和 Sonic 共识模型的演变', link: '/blog/hyperliquid_monad_sonic'},
             { text: 'MonadBFT 解析（上）：如何解决尾部分叉问题', link: '/blog/monadbft_deep_dive_p1'},
             { text: '我为何如此钟爱Monad', link: '/blog/why_i_love_monad_so_much'},
+            { text: 'Monad测试网你应该关注的项目', link: '/blog/monad_testnet_important_projects'},
           ]
         },
 	  ],
