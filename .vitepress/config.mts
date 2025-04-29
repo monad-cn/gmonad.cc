@@ -96,6 +96,7 @@ export default defineConfig({
           collapsed: false,
           link: '/event' ,
           items: [
+            { text: 'Madness 香港获奖项目AMA', link: '/event/monad_madness_hk_ama' },
             { text: 'MCP 入门及 MCP 在 Monad 上的实战', link: '/event/monad_mcp_abc' },
             { text: 'Monad Bootcamp AMA(4.23)', link: '/event/monad_bootcamp_ama_423' },
             { text: 'Monad Bootcamp AMA(4.7)', link: '/event/monad_bootcamp_ama' },
