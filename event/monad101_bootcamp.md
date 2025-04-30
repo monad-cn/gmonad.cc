@@ -29,10 +29,12 @@ Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区�
 ⭐ 免费学习 + Monad 生态深度赋能，资源丰富  
 ⭐ 学习奖励 + NFT 证书，真实项目实战，提升竞争力  
 
+![merchandise](/monad101/merchandise.png)
+
 
 ## 🙋  立即报名 
 ::: tip Monad 101 Bootcamp
-📅 时间：2025年3月18日 - 4月30日  
+📅 时间：2025年3月18日 - 5月18日  
 🔗 链接： https://openbuild.xyz/learn/challenges/2060691796
 :::
 

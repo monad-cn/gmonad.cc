@@ -105,6 +105,7 @@ export default defineConfig({
             { text: 'Testnet AMA：开发者初体验', link: '/event/monad_testnet_firstexp_ama' },
             { text: 'Monad 101 Bootcamp 🔥', link: '/event/monad101_bootcamp' }, 
             { text: 'Monad 101 香港', link: '/event/monad101_hk' },
+            { text: 'Monad Madness 香港 AMA(4.24)', link: '/event/monad_madness_hk_ama_424' },
           ]
         },
 	  ],
