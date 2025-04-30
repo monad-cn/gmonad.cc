@@ -105,6 +105,7 @@ export default defineConfig({
             { text: 'Monad 101 Bootcamp 🔥', link: '/event/monad101_bootcamp' }, 
             { text: 'Monad 101 香港', link: '/event/monad101_hk' },
             { text: 'Monad Madness 香港 AMA(4.24)', link: '/event/monad_madness_hk_ama_424' },
+            { text: 'Madness 香港获奖项目AMA(4.23)', link: '/event/monad_madness_hk_ama' },
           ]
         },
 	  ],
