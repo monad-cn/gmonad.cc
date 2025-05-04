@@ -1,10 +1,10 @@
 ---
-title: MonadBFT 解析（下）：MonadBFT 对开发者和用户意味着什么
-description: MonadBFT 对开发者和用户意味着什么。
+title: MonadBFT 解析（下）：对开发者和用户意味着什么
+description: 探讨 MonadBFT 的投机最终性和乐观响应性，以及对开发者的影响
 image: /blog/monadbft_pt2_1.png
 ---
 
-# MonadBFT 解析（下）：MonadBFT 对开发者和用户意味着什么
+# MonadBFT 解析（下）：对开发者和用户意味着什么
 
 :::tip 原文
 https://x.com/michael_lwy/status/1917406798606393626

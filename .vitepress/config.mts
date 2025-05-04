@@ -128,7 +128,7 @@ export default defineConfig({
             { text: 'MonadBFT 解析（上）：如何解决尾部分叉问题', link: '/blog/monadbft_deep_dive_p1'},
             { text: '我为何如此钟爱Monad', link: '/blog/why_i_love_monad_so_much'},
             { text: 'Monad测试网你应该关注的项目', link: '/blog/monad_testnet_important_projects'},
-            { text: 'MonadBFT 解析（下）：MonadBFT 对开发者和用户意味着什么', link: '/blog/monadbft_deep_dive_p2'},
+            { text: 'MonadBFT 解析（下）：对开发者的影响', link: '/blog/monadbft_deep_dive_p2'},
           ]
         },
 	  ],
