@@ -129,6 +129,7 @@ export default defineConfig({
             { text: '我为何如此钟爱Monad', link: '/blog/why_i_love_monad_so_much'},
             { text: 'Monad测试网你应该关注的项目', link: '/blog/monad_testnet_important_projects'},
             { text: 'MonadBFT 解析（下）：对开发者的影响', link: '/blog/monadbft_deep_dive_p2'},
+            { text: 'Multisynq × Monad：构建实时去中心化应用层的底层基础设施', link: '/blog/multisynq_monad'},
           ]
         },
 	  ],
