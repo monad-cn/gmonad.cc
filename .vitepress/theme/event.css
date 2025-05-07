@@ -9,6 +9,7 @@
 ._event_monad101_bootcamp p,
 ._event_monad_bootcamp_ama_423 p,
 ._event_monad_bootcamp_ama p,
+._event_break_monad_v2 p,
 ._event_monad_mcp_abc p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
@@ -29,6 +30,7 @@
 
 /* 活动列表样式 */
 ._event ul,
+._event_break_monad_v2 ul,
 ._event_monad101 ul {
   padding-left: 1.5em;
   margin-bottom: 1.5em;
@@ -55,6 +57,7 @@
 ._event_monad_mcp_abc img,
 ._event_monad_mcp_abc iframe,
 /* ._event_monad201_sz img, */
+._event_break_monad_v2 img,
 ._event_monad101_bootcamp img {
   width: 100%;
   border-radius: 8px;
