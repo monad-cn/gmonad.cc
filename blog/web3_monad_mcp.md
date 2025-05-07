@@ -318,7 +318,7 @@ main().catch((error) => {
 
 ### 在 Cursor Settings 中点击 `Add new global MCP server` 打开 `mcp.json`文件
 
-![image-20250504202317098](/blog/image-20250504202317098.png)
+![image-monad_mcp_practice_1](/blog/monad_mcp_practice_1.png)
 
 ### 在 mcp.json 文件中添加服务器配置并保存
 
@@ -348,11 +348,11 @@ Monad testnet MCP Server running on stdio
 
 ### Cursor 使用示例
 
-![image-20250504213749924](/blog/image-20250504213749924.png)
+![image-monad_mcp_practice_2](/blog/monad_mcp_practice_2.png)
 
 ### Windsurf 使用示例
 
-![image-20250504213915228](/blog/image-20250504213915228.png)
+![image-monad_mcp_practice_3](/blog/monad_mcp_practice_3.png)
 
 ## 总结
 
