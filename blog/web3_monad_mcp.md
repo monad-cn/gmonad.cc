@@ -1,7 +1,7 @@
 ---
 title: Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
 description: Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
-image: /blog/mcp_monad.jpg
+image: /blog/monad_mcp_practice_title.png
 ---
 
 # Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
