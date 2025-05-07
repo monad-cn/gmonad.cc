@@ -6,6 +6,8 @@ image: /event/break_monad_v2_1.jpeg
 
 # Break Monad v2：Farcaster 版！
 
+![Break Monad v2：Farcaster 版！](/event/break_monad_v2_1.jpeg)
+
 ## 活动详情
 
 想象一下，如果你的应用程序能够访问用户的社交关系网，它能做些什么？
@@ -26,8 +28,6 @@ image: /event/break_monad_v2_1.jpeg
 - 每位参与者获得 250 个 MON
 
 详情请联系 Monad DevRel [Box](https://x.com/BoxMrChen)
-
-![Break Monad v2：Farcaster 版！](/event/break_monad_v2_1.jpeg)
 
 ## 相关链接
 
