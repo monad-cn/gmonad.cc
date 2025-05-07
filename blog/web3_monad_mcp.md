@@ -1,13 +1,13 @@
 ---
 title: Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
-description: Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
+description: 本文通过详尽的实操教程，展示了如何基于 Monad 的 Model Context Protocol（MCP）搭建一个与 Monad 测试网交互的服务器，轻松实现 MON 代币余额查询功能。
 image: /blog/monad_mcp_practice_title.png
 ---
 
 # Web3 实战：解锁 Monad MCP，轻松查询 MON 余额
 
 :::tip 原文
-<https://mp.weixin.qq.com/s/_g_Y0esvTKPvjM8YbqQJhw?poc_token=HBULG2ijN0MJcRFsvfzZtZOgxRbr3W9_zZlMqKBc>
+<https://mp.weixin.qq.com/s/_g_Y0esvTKPvjM8YbqQJhw>
 :::
 
 在 Web3 浪潮席卷全球的今天，Monad 作为高性能 Layer 1 区块链，正以其高效的交易处理能力和开发者友好的生态吸引着无数目光。Model Context Protocol（MCP）作为 Monad 的重要工具，为开发者提供了与区块链交互的便捷方式。本文将带你走进 Web3 实战，通过一步步的教程解锁 Monad MCP 的潜力，轻松搭建服务器并实现 MON 代币余额查询。无论你是区块链新手还是资深开发者，这篇指南都将为你打开 Monad 生态的大门，激发 Web3 开发的无限可能！
