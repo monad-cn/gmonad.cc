@@ -43,6 +43,8 @@ jobs:
         run: npm install
 
       - name: Build VitePress site
+        env:
+          VITE_GOOGLE_ANALYTICS_TAG_ID: ${{ secrets.GOOGLE_ANALYTICS_TAG_ID }}
         run: npm run docs:build  
 
       - name: Deploy to Remote Server via SSH
