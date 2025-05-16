@@ -2,9 +2,14 @@ import { defineConfig } from 'vitepress'
 import { getOpenGraphImage } from '../utils/opengraph'
 import { getBlogPosts } from '../utils/getBlogPosts'
 import type { TransformContext, HeadConfig } from 'vitepress'
-
+import mathjax3 from 'markdown-it-mathjax3'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(mathjax3)
+    }
+  },
   ignoreDeadLinks: true,
   lang: 'zh-CN',
   title: "Monad 中文社区",
