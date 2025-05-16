@@ -11,6 +11,18 @@ export default defineConfig({
   description: "GMonad, 欢迎一起建设 Monad！",
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/icon.png" }],
+    [
+      'script',
+      { async: '', src: `https://www.googletagmanager.com/gtag/js?id=${process.env.VITE_GOOGLE_ANALYTICS_TAG_ID}` }
+    ],
+    [
+      'script',
+      {},
+      `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${process.env.VITE_GOOGLE_ANALYTICS_TAG_ID}');`
+    ]
   ],
   transformHead: (context: TransformContext) => {    
     if (!context.pageData) {
