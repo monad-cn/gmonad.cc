@@ -43,3 +43,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+._blog_raptorCast mjx-container{
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
