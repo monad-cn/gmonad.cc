@@ -14,6 +14,8 @@
 ._blog_keonehon_interview p,
 ._blog_multisynq_monad p,
 ._blog_web3_monad_mcp p,
+._blog_monad_mcp_tutorial p,
+._blog_raptorCast p,
 ._blog_why_i_love_monad_so_much p{
   color: var(--vp-c-text-2);
   line-height: 1.6;
@@ -39,5 +41,11 @@
   border-radius: 8px;
   margin: 1.5em 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+._blog_raptorCast mjx-container{
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin-bottom: 1em;
 }
 

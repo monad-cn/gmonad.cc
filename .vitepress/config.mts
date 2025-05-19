@@ -2,9 +2,14 @@ import { defineConfig } from 'vitepress'
 import { getOpenGraphImage } from '../utils/opengraph'
 import { getBlogPosts } from '../utils/getBlogPosts'
 import type { TransformContext, HeadConfig } from 'vitepress'
-
+import mathjax3 from 'markdown-it-mathjax3'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(mathjax3)
+    }
+  },
   ignoreDeadLinks: true,
   lang: 'zh-CN',
   title: "Monad 中文社区",
@@ -144,6 +149,9 @@ export default defineConfig({
             { text: 'MonadBFT 解析（下）：对开发者的影响', link: '/blog/monadbft_deep_dive_p2'},
             { text: 'Multisynq × Monad：构建实时去中心化应用层的底层基础设施', link: '/blog/multisynq_monad'},
             { text: 'Web3 实战：解锁 Monad MCP，轻松查询 MON 余额', link: '/blog/web3_monad_mcp'},
+            { text: 'Monad MCP Server 教程：与 Monad 测试网交互的利器', link: '/blog/monad_mcp_tutorial'},
+            { text: 'RaptorCast: 设计一个消息传递层', link: '/blog/raptorCast'},
+          
           ]
         },
 	  ],
