@@ -1,37 +1,41 @@
-# Monad 中文社区
+# Website
 
-欢迎访问 [Monad 中文社区](https://gmonad.cc/) ，Monad 中文社区旨在为开发者提供丰富的文档、教程、学习资源以及活动资讯，助力开发者快速加入 Monad 生态，一起构建高性能 Dapp。
+This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-## 快速开始
+### Installation
 
-### 克隆仓库
-
-首先，克隆本项目到本地：
-
-```bash
-git clone git@github.com:monad-cn/gmonad.cc.git
-cd gmonad.cc
+```
+$ yarn
 ```
 
-### 安装依赖
+### Local Development
 
-```bash
-npm install
+```
+$ yarn start
 ```
 
-### 启动服务
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-```bash
-npm run docs:dev
+### Build
+
+```
+$ yarn build
 ```
 
-在浏览器中访问 http://localhost:5173
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
+### Deployment
 
-## 贡献者 ✨
+Using SSH:
 
-感谢这些优秀的贡献者（按贡献时间排序）：
+```
+$ USE_SSH=true yarn deploy
+```
 
-[![Contributors](https://contrib.rocks/image?repo=monad-cn/gmonad.cc)](https://github.com/monad-cn/gmonad.cc/graphs/contributors)
+Not using SSH:
 
+```
+$ GIT_USER=<Your GitHub username> yarn deploy
+```
 
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
