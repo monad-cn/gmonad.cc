@@ -5,7 +5,7 @@ image:
 ---
 
 
-# RaptorCast: Designing a Messaging Layer
+# RaptorCast：设计一个消息传递层
 
 :::tip 原文
 https://www.category.xyz/blogs/raptorcast-designing-a-messaging-layer  
