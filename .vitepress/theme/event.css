@@ -10,7 +10,8 @@
 ._event_monad_bootcamp_ama_423 p,
 ._event_monad_bootcamp_ama p,
 ._event_break_monad_v2 p,
-._event_monad_mcp_abc p {
+._event_monad_mcp_abc p,
+._event_monad_blitz_shenzhen p {
   color: var(--vp-c-text-2);
   line-height: 1.6;
   margin-bottom: 1em;
@@ -58,7 +59,8 @@
 ._event_monad_mcp_abc iframe,
 /* ._event_monad201_sz img, */
 ._event_break_monad_v2 img,
-._event_monad101_bootcamp img {
+._event_monad101_bootcamp img,
+._event_monad_blitz_shenzhen img {
   width: 100%;
   border-radius: 8px;
   margin: 1.5em 0;

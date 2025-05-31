@@ -112,6 +112,7 @@ export default defineConfig({
             { text: 'Monad Madness 香港 AMA(4.24)', link: '/event/monad_madness_hk_ama_424' },
             { text: 'Madness 香港获奖项目AMA(4.23)', link: '/event/monad_madness_hk_ama' },
             { text: 'Break Monad v2：Farcaster 版！', link: '/event/break_monad_v2' },
+            { text: 'Monad Blitz 深圳黑客松｜限时 1 日冲刺，挑战 2000 美元奖金', link: '/event/monad_blitz_shenzhen' },
           ]
         },
 	  ],
