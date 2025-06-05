@@ -17,7 +17,7 @@ import {
   ChevronDown,
 } from "lucide-react"
 import { useEffect, useState } from "react"
-import styles from "./monad-community.module.css"
+import styles from "./index.module.css"
 
 export default function MonadCommunity() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -167,18 +167,9 @@ export default function MonadCommunity() {
   ]
 
   const members = [
-    { name: "张伟", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "李小明", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "王芳", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "陈浩", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "刘敏", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "赵强", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "孙丽", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "周杰", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "吴磊", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "郑雪", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "马云飞", avatar: "/placeholder.svg?height=60&width=60" },
-    { name: "林晓", avatar: "/placeholder.svg?height=60&width=60" },
+    { name: "小张", avatar: "/placeholder.svg?height=60&width=60" },
+    { name: "小李", avatar: "/placeholder.svg?height=60&width=60" },
+    { name: "小王", avatar: "/placeholder.svg?height=60&width=60" },
   ]
 
   const duplicatedMembers = [...members, ...members]
