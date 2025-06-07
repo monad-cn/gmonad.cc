@@ -1,25 +1,10 @@
-import {
-  Calendar,
-  Users,
-  Github,
-  Twitter,
-  Globe,
-  MapPin,
-  Zap,
-  Rocket,
-  Star,
-  Code,
-  Shield,
-  Cpu,
-  Database,
-  BookOpen,
-  GitBranch,
-  ChevronDown,
-} from "lucide-react"
+"use client"
+
+import { Users, Calendar, MapPin, Zap, Rocket, Star, Code, Shield, Cpu, Database, BookOpen, Globe, GitBranch } from 'lucide-react'
 import { useEffect, useState } from "react"
 import styles from "./index.module.css"
 
-export default function MonadCommunity() {
+export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isVisible, setIsVisible] = useState(false)
   const [stats, setStats] = useState({
@@ -29,21 +14,13 @@ export default function MonadCommunity() {
     commits: 1250,
   })
 
-  const [showNewsBanner, setShowNewsBanner] = useState(true)
-
   useEffect(() => {
     setIsVisible(true)
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      setShowNewsBanner(scrollY < 50) // 滚动超过50px时隐藏新闻栏
-    }
-
     window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("scroll", handleScroll)
 
     // 模拟实时数据更新
     const interval = setInterval(() => {
@@ -57,7 +34,6 @@ export default function MonadCommunity() {
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("scroll", handleScroll)
       clearInterval(interval)
     }
   }, [])
@@ -176,60 +152,6 @@ export default function MonadCommunity() {
 
   return (
     <div className={styles.homepage}>
-      {/* News Banner */}
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.container}>
-          <div className={styles.headerContent}>
-            <div className={styles.logo}>
-              <div className={styles.logoIcon}>
-                <span className={styles.logoText}>M</span>
-                <div className={styles.logoGlow}></div>
-              </div>
-              <span className={styles.logoTitle}>Monad中文社区</span>
-            </div>
-            <nav className={styles.nav}>
-              <div className={styles.navItem}>
-                <span>生态系统</span>
-                <ChevronDown className={styles.navIcon} />
-              </div>
-              <div className={styles.navItem}>
-                <span>开发者</span>
-                <ChevronDown className={styles.navIcon} />
-              </div>
-              <div className={styles.navItem}>
-                <span>资源</span>
-                <ChevronDown className={styles.navIcon} />
-              </div>
-              <button className={styles.navButton}>加入测试网</button>
-            </nav>
-          </div>
-        </div>
-        {/* Floating News Banner */}
-        {showNewsBanner && (
-          <div className={styles.floatingNewsBanner}>
-            <div className={styles.newsSlider}>
-              <div className={styles.newsSlide}>
-                <span className={styles.newsBadge}>🔥 热门</span>
-                <span className={styles.newsText}>Monad测试网即将上线！</span>
-              </div>
-              <div className={styles.newsSlide}>
-                <span className={styles.newsBadge}>📢 公告</span>
-                <span className={styles.newsText}>社区开发者大会报名开始</span>
-              </div>
-              <div className={styles.newsSlide}>
-                <span className={styles.newsBadge}>⚡ 更新</span>
-                <span className={styles.newsText}>新版本SDK已发布，性能提升50%</span>
-              </div>
-              <div className={styles.newsSlide}>
-                <span className={styles.newsBadge}>🎉 活动</span>
-                <span className={styles.newsText}>技术分享会本周五举行</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </header>
-
       {/* Hero Section with Cool Effects */}
       <section className={styles.hero}>
         {/* Animated Background */}
@@ -509,91 +431,6 @@ export default function MonadCommunity() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.footerContent}>
-            <div className={styles.footerSection}>
-              <div className={styles.footerLogo}>
-                <div className={styles.footerLogoIcon}>
-                  <span className={styles.footerLogoText}>M</span>
-                  <div className={styles.footerLogoGlow}></div>
-                </div>
-                <span className={styles.footerLogoTitle}>Monad中文社区</span>
-              </div>
-              <p className={styles.footerDescription}>致力于为中文开发者提供最优质的Monad技术支持和交流平台</p>
-            </div>
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerSectionTitle}>生态系统</h3>
-              <ul className={styles.footerLinks}>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    DeFi协议
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    NFT市场
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    游戏应用
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    基础设施
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerSectionTitle}>开发者</h3>
-              <ul className={styles.footerLinks}>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    开发文档
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    API参考
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    SDK工具
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className={styles.footerLink}>
-                    测试网络
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerSectionTitle}>联系我们</h3>
-              <div className={styles.footerSocial}>
-                <button className={styles.socialButton}>
-                  <Github className={styles.socialIcon} />
-                </button>
-                <button className={styles.socialButton}>
-                  <Twitter className={styles.socialIcon} />
-                </button>
-                <button className={styles.socialButton}>
-                  <Globe className={styles.socialIcon} />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className={styles.footerBottom}>
-            <p className={styles.footerCopyright}>&copy; 2024 Monad中文社区. 保留所有权利.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
