@@ -712,7 +712,7 @@
     margin: 0 auto;
     margin-bottom: 3rem;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 /* Stats Section */

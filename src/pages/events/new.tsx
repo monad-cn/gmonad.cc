@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, MapPin, Users, Video, Globe, FileText, ImageIcon, 
 import Link from "next/link"
 import { useState } from "react"
 import styles from "./new.module.css"
+import router from "next/router"
 
 export default function NewEventPage() {
   const [eventType, setEventType] = useState<"online" | "offline">("online")
@@ -25,7 +26,7 @@ export default function NewEventPage() {
     // 这里处理表单提交逻辑
     console.log("提交活动创建表单")
     // 可以跳转回活动列表页面
-    // router.push('/')
+    router.push('/events')
   }
 
   return (
