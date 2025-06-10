@@ -7,10 +7,7 @@
 .header {
   max-width: 1200px;
   margin: 0 auto;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .backButton {
@@ -32,11 +29,19 @@
   height: 1rem;
 }
 
+.titleSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
 .title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: #111827;
   margin: 0;
+  line-height: 1.2;
 }
 
 .form {
@@ -58,11 +63,16 @@
   gap: 2rem;
 }
 
+/* 覆盖 Ant Design Card 样式 */
 .section {
-  background-color: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  background-color: white !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+}
+
+.section .ant-card-body {
+  padding: 1.5rem !important;
 }
 
 .sectionTitle {
@@ -83,6 +93,22 @@
   color: #8b5cf6;
 }
 
+/* 覆盖 Ant Design Form.Item 样式 */
+.form .ant-form-item {
+  margin-bottom: 1.5rem;
+}
+
+.form .ant-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form .ant-form-item-label>label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  height: auto;
+}
+
 .formGroup {
   margin-bottom: 1.5rem;
 }
@@ -97,34 +123,35 @@
   gap: 1rem;
 }
 
-.label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.5rem;
-}
-
+/* 覆盖 Ant Design Input 样式 */
 .input,
 .textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s !important;
+  box-shadow: none !important;
+}
+
+.input:hover,
+.textarea:hover {
+  border-color: #d1d5db !important;
 }
 
 .input:focus,
-.textarea:focus {
-  outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+.textarea:focus,
+.input.ant-input-focused,
+.textarea.ant-input-focused {
+  outline: none !important;
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
 .textarea {
-  resize: vertical;
-  min-height: 100px;
+  resize: vertical !important;
+  min-height: 100px !important;
 }
 
 .inputWithIcon {
@@ -139,100 +166,300 @@
   width: 1rem;
   height: 1rem;
   color: #6b7280;
+  z-index: 10;
 }
 
 .inputWithIconField {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
+  padding-left: 2.5rem !important;
 }
 
-.inputWithIconField:focus {
-  outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
-
+/* 覆盖 Ant Design Radio 样式 */
 .radioGroup {
-  display: flex;
-  gap: 1rem;
+  display: flex !important;
+  gap: 1rem !important;
+  width: 100% !important;
 }
 
-.radioLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  flex: 1;
+.radioOption {
+  flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.radioLabel:hover {
-  border-color: #8b5cf6;
-  background-color: #faf5ff;
+.radioOption .ant-radio {
+  display: none !important;
 }
 
-.radio {
-  margin: 0;
+.radioOption .ant-radio+span {
+  padding: 0 !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.radioContent {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.5rem !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 0.75rem !important;
+  background-color: white !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  min-height: 3.5rem !important;
+}
+
+.radioContent:hover {
+  border-color: #8b5cf6 !important;
+  background-color: #faf5ff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.radioOption.ant-radio-wrapper-checked .radioContent {
+  border-color: #8b5cf6 !important;
+  background-color: #faf5ff !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+.radioOption.ant-radio-wrapper-checked .radioContent::before {
+  border-color: #8b5cf6 !important;
+  background-color: #8b5cf6 !important;
+  box-shadow: inset 0 0 0 3px white !important;
 }
 
 .radioIcon {
-  width: 1rem;
-  height: 1rem;
-  color: #6b7280;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  color: #6b7280 !important;
+  transition: color 0.2s ease !important;
 }
 
-.radioLabel:has(.radio:checked) {
-  border-color: #8b5cf6;
-  background-color: #faf5ff;
+.radioText {
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  transition: color 0.2s ease !important;
 }
 
-.radioLabel:has(.radio:checked) .radioIcon {
+.radioOption.ant-radio-wrapper-checked .radioIcon {
+  color: #8b5cf6 !important;
+}
+
+.radioOption.ant-radio-wrapper-checked .radioText {
+  color: #8b5cf6 !important;
+}
+
+/* 移除之前的 radioButton 样式 */
+.radioButton {
+  display: none !important;
+}
+
+/* 覆盖 Ant Design Checkbox 样式 */
+.checkbox {
+  font-size: 0.875rem !important;
+  color: #374151 !important;
+}
+
+.checkbox .ant-checkbox {
+  margin-right: 0.5rem !important;
+}
+
+.checkbox .ant-checkbox-inner {
+  width: 1rem !important;
+  height: 1rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #8b5cf6 !important;
+  border-color: #8b5cf6 !important;
+}
+
+/* 覆盖 Ant Design Upload 样式 */
+.imageUpload {
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  transition: all 0.2s !important;
+}
+
+.imageUpload:hover {
+  border-color: #8b5cf6 !important;
+  background-color: #faf5ff !important;
+}
+
+.imageUpload .ant-upload-drag-container {
+  padding: 2rem 1rem !important;
+}
+
+.uploadIcon {
+  margin-bottom: 1rem !important;
+}
+
+.uploadIconSvg {
+  width: 3rem;
+  height: 3rem;
   color: #8b5cf6;
 }
 
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  color: #374151;
+.uploadText {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  margin-bottom: 0.5rem !important;
 }
 
-.checkbox {
-  margin: 0;
-  width: 1rem;
-  height: 1rem;
+.uploadHint {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  margin: 0 !important;
 }
 
-/* Image Upload */
-.imageUpload {
+/* 覆盖 Ant Design Upload 的默认样式 */
+.imageUpload .ant-upload-list {
+  margin-top: 1rem !important;
+}
+
+.imageUpload .ant-upload-list-item {
+  border-radius: 0.5rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.imageUpload .ant-upload-list-item-thumbnail img {
+  border-radius: 0.25rem !important;
+}
+
+/* 图片预览容器样式 */
+.imagePreviewContainer {
   position: relative;
-}
-
-.imagePreview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  border: 2px dashed #d1d5db;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
   background-color: #f9fafb;
-  cursor: pointer;
+  border: 2px solid #e5e7eb;
   transition: all 0.2s;
 }
 
-.imagePreview:hover {
+.imagePreviewContainer:hover {
   border-color: #8b5cf6;
-  background-color: #faf5ff;
+}
+
+.previewImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.imagePreviewContainer:hover .imageOverlay {
+  opacity: 1;
+}
+
+.imageActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.imageActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageActionButton:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.1);
+}
+
+.imageActionButton.removeButton:hover {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
+.imageActionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+}
+
+.imageActionButton.removeButton:hover .imageActionIcon {
+  color: #ef4444;
+}
+
+.imageInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 1rem 0.75rem 0.75rem 0.75rem;
+  color: white;
+}
+
+.imageName {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imageSize {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.imagePreview {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 200px !important;
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  padding: 1rem !important;
+}
+
+.imagePreview:hover {
+  border-color: #8b5cf6 !important;
+  background-color: #faf5ff !important;
+}
+
+.imagePreview .ant-upload-drag-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
 }
 
 .imageIcon {
@@ -253,55 +480,47 @@
   font-size: 0.75rem;
   color: #6b7280;
   margin: 0.25rem 0 0 0;
+  line-height: 1.4;
 }
 
-.fileInput {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-/* Tags */
+/* 覆盖 Ant Design Tag 样式 */
 .tagsContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .tag {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  padding: 0.5rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background-color: #f3f4f6 !important;
+  color: #374151 !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border: none !important;
+  margin: 0 !important;
 }
 
-.tagRemove {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  background-color: transparent;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.tag .ant-tag-close-icon {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+  margin-left: 0.25rem !important;
 }
 
-.tagRemove:hover {
-  background-color: #e5e7eb;
+.tag .ant-tag-close-icon:hover {
+  color: #374151 !important;
 }
 
-.tagRemoveIcon {
-  width: 0.75rem;
-  height: 0.75rem;
-  color: #6b7280;
+.tagInput {
+  width: 80px !important;
+  height: 28px !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0.25rem !important;
 }
 
 .addTagButton {
@@ -352,6 +571,8 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
+  height: auto;
+  line-height: normal;
 }
 
 .cancelButton:hover {
@@ -360,28 +581,101 @@
   color: #8b5cf6;
 }
 
+/* 覆盖 Ant Design Button 样式 */
 .submitButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #8b5cf6;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  background-color: #8b5cf6 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  height: auto !important;
+  line-height: normal !important;
+  box-shadow: none !important;
 }
 
 .submitButton:hover {
-  background-color: #7c3aed;
-  transform: translateY(-1px);
+  background-color: #7c3aed !important;
+  transform: translateY(-1px) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.submitButton:focus {
+  background-color: #7c3aed !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .submitIcon {
   width: 1rem;
   height: 1rem;
+}
+
+/* 覆盖 Ant Design DatePicker 和 TimePicker 样式 */
+.form .ant-picker {
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s !important;
+  box-shadow: none !important;
+}
+
+.form .ant-picker:hover {
+  border-color: #d1d5db !important;
+}
+
+.form .ant-picker.ant-picker-focused {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* 覆盖 Ant Design InputNumber 样式 */
+.form .ant-input-number {
+  width: 100% !important;
+  padding: 0 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s !important;
+  box-shadow: none !important;
+}
+
+.form .ant-input-number .ant-input-number-input {
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+}
+
+.form .ant-input-number:hover {
+  border-color: #d1d5db !important;
+}
+
+.form .ant-input-number.ant-input-number-focused {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* 添加到现有的 CSS 文件中 */
+.uploadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.uploadingText {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
 }
 
 /* Responsive Design */
@@ -401,18 +695,12 @@
     padding: 1rem;
   }
 
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
   .title {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
-  .section {
-    padding: 1rem;
+  .section .ant-card-body {
+    padding: 1rem !important;
   }
 
   .formRow {
@@ -421,7 +709,29 @@
   }
 
   .radioGroup {
-    flex-direction: column;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .radioContent {
+    padding: 0.875rem 1rem !important;
+    min-height: 3rem !important;
+  }
+
+  .radioContent::before {
+    top: 0.625rem !important;
+    right: 0.625rem !important;
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+  }
+
+  .radioIcon {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+
+  .radioText {
+    font-size: 0.8125rem !important;
   }
 
   .submitSection {

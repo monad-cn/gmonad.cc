@@ -1,198 +1,407 @@
-import type React from "react"
-
-import { ArrowLeft, Calendar, MapPin, Users, Video, Globe, FileText, ImageIcon, Save, X, Plus } from "lucide-react"
-import Link from "next/link"
 import { useState } from "react"
+import {
+  Form,
+  Input,
+  Radio,
+  DatePicker,
+  TimePicker,
+  InputNumber,
+  Checkbox,
+  Upload,
+  Button,
+  Card,
+  Tag,
+  message,
+} from "antd"
+import type { UploadProps, UploadFile } from "antd"
+import {
+  ArrowLeft,
+  Calendar,
+  MapPin,
+  Users,
+  Video,
+  Globe,
+  FileText,
+  ImageIcon,
+  Save,
+  Plus,
+  X,
+  RotateCcw,
+} from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import styles from "./new.module.css"
-import router from "next/router"
+import { apiClient, createEvent } from "../api/event"
+
+const { TextArea } = Input
+const { Dragger } = Upload
 
 export default function NewEventPage() {
+  const [form] = Form.useForm()
+  const router = useRouter()
   const [eventType, setEventType] = useState<"online" | "offline">("online")
   const [tags, setTags] = useState<string[]>(["技术分享"])
+  const [inputVisible, setInputVisible] = useState(false)
+  const [inputValue, setInputValue] = useState("")
+  const [coverImage, setCoverImage] = useState<UploadFile | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleAddTag = () => {
-    const newTag = prompt("请输入标签名称:")
-    if (newTag && !tags.includes(newTag)) {
-      setTags([...tags, newTag])
+  // 格式化时间为字符串
+  const formatDateTime = (date: any, time: any) => {
+    if (!date || !time) return ""
+
+    const dateStr = date.format("YYYY-MM-DD")
+    const timeStr = time.format("HH:mm:ss")
+    return `${dateStr} ${timeStr}`
+  }
+
+  const handleSubmit = async (values: any) => {
+    try {
+      setIsSubmitting(true)
+
+      // 构建完整的表单数据
+      const formData = {
+        ...values,
+        tags: tags, // 添加标签数据
+        coverImage: coverImage, // 添加封面图片
+        eventType: eventType, // 确保活动类型被包含
+      }
+
+      console.log("完整表单数据:", formData)
+      console.log("标签数据:", tags)
+      console.log("封面图片:", coverImage)
+
+      const createEventRequest = {
+        title: values.title || "",
+        desc: values.description || "",
+        categary: eventType, // online 或 offline
+        location: eventType === "offline" ? values.location || "" : "",
+        link: eventType === "online" ? values.location || "" : "",
+        start_time: formatDateTime(values.startDate, values.startTime),
+        end_time: formatDateTime(values.endDate, values.endTime),
+        // cover_img: coverImage,
+        cover_img: "dfgd",
+        tags: tags,
+      }
+
+      // 调用创建事件接口
+      const result = await createEvent(createEventRequest)
+
+      console.log("创建事件结果:", result)
+
+      if (result.success) {
+        message.success({
+          content: result.message || "活动创建成功！",
+          duration: 2,
+          onClose: () => {
+            router.push("/events")
+          },
+        })
+
+        setTimeout(() => {
+          router.push("/")
+        }, 2000)
+      } else {
+        message.error(result.message || "创建活动失败")
+      }
+    } catch (error) {
+      console.error("创建活动失败:", error)
+      message.error("创建活动失败，请重试")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove))
+  const handleAddTag = () => {
+    if (inputValue && !tags.includes(inputValue)) {
+      const newTags = [...tags, inputValue]
+      setTags(newTags)
+      setInputValue("")
+      console.log("添加标签后:", newTags)
+    }
+    setInputVisible(false)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // 这里处理表单提交逻辑
-    console.log("提交活动创建表单")
-    // 可以跳转回活动列表页面
-    router.push('/events')
+  const handleRemoveTag = (tagToRemove: string) => {
+    const newTags = tags.filter((tag) => tag !== tagToRemove)
+    setTags(newTags)
+    console.log("删除标签后:", newTags)
+  }
+
+  const handleImageChange = (info: any) => {
+    const { file, fileList } = info
+
+    // 只保留最新上传的一个文件
+    if (fileList.length > 0) {
+      const latestFile = fileList[fileList.length - 1]
+      setCoverImage(latestFile)
+      console.log("上传图片:", latestFile)
+
+      // 创建预览URL
+      if (latestFile.originFileObj) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setPreviewUrl(e.target?.result as string)
+        }
+        reader.readAsDataURL(latestFile.originFileObj)
+      }
+    } else {
+      setCoverImage(null)
+      setPreviewUrl("")
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setCoverImage(null)
+    setPreviewUrl("")
+    form.setFieldValue("cover", undefined)
+    console.log("删除图片")
+  }
+
+  const handleReplaceImage = () => {
+    // 触发文件选择
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "image/*"
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (file) {
+        // 创建一个符合 UploadFile 接口的对象
+        const uploadFile: UploadFile = {
+          uid: Date.now().toString(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified,
+          lastModifiedDate: new Date(file.lastModified),
+          status: "done",
+          percent: 100,
+          // 使用类型断言来处理 originFileObj
+          originFileObj: file as any,
+        }
+
+        setCoverImage(uploadFile)
+        console.log("更换图片:", uploadFile)
+
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setPreviewUrl(e.target?.result as string)
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+    input.click()
+  }
+
+  const uploadProps: UploadProps = {
+    name: "file",
+    multiple: false,
+    accept: "image/*",
+    showUploadList: false,
+    beforeUpload: (file) => {
+      const isImage = file.type.startsWith("image/")
+      if (!isImage) {
+        message.error("只能上传图片文件!")
+        return false
+      }
+
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isLt5M) {
+        message.error("图片大小不能超过 5MB!")
+        return false
+      }
+
+      return false // 阻止自动上传
+    },
+    onChange: handleImageChange,
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/events" className={styles.backButton}>
+        <Link href="/" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回活动列表
         </Link>
+      </div>
+
+      <div className={styles.titleSection}>
         <h1 className={styles.title}>新建活动</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className={styles.form}
+        initialValues={{
+          eventType: "online",
+          publishImmediately: true,
+        }}
+      >
         <div className={styles.formGrid}>
           {/* 左侧表单 */}
           <div className={styles.leftColumn}>
             {/* 基本信息 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <FileText className={styles.sectionIcon} />
                 基本信息
               </h2>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>活动标题 *</label>
-                <input type="text" className={styles.input} placeholder="请输入活动标题" required />
-              </div>
+              <Form.Item label="活动标题" name="title" rules={[{ required: true, message: "请输入活动标题" }]}>
+                <Input placeholder="请输入活动标题" className={styles.input} />
+              </Form.Item>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>活动描述 *</label>
-                <textarea className={styles.textarea} placeholder="请详细描述活动内容、目标和亮点" rows={4} required />
-              </div>
+              <Form.Item label="活动描述" name="description" rules={[{ required: true, message: "请输入活动描述" }]}>
+                <TextArea placeholder="请详细描述活动内容、目标和亮点" rows={4} className={styles.textarea} />
+              </Form.Item>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>活动类型 *</label>
-                <div className={styles.radioGroup}>
-                  <label className={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name="eventType"
-                      value="online"
-                      checked={eventType === "online"}
-                      onChange={(e) => setEventType(e.target.value as "online" | "offline")}
-                      className={styles.radio}
-                    />
-                    <Video className={styles.radioIcon} />
-                    线上活动
-                  </label>
-                  <label className={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name="eventType"
-                      value="offline"
-                      checked={eventType === "offline"}
-                      onChange={(e) => setEventType(e.target.value as "online" | "offline")}
-                      className={styles.radio}
-                    />
-                    <MapPin className={styles.radioIcon} />
-                    线下活动
-                  </label>
-                </div>
-              </div>
-            </div>
+              <Form.Item label="活动类型" name="eventType" rules={[{ required: true, message: "请选择活动类型" }]}>
+                <Radio.Group onChange={(e) => setEventType(e.target.value)} className={styles.radioGroup}>
+                  <Radio value="online" className={styles.radioOption}>
+                    <div className={styles.radioContent}>
+                      <Video className={styles.radioIcon} />
+                      <span className={styles.radioText}>线上活动</span>
+                    </div>
+                  </Radio>
+                  <Radio value="offline" className={styles.radioOption}>
+                    <div className={styles.radioContent}>
+                      <MapPin className={styles.radioIcon} />
+                      <span className={styles.radioText}>线下活动</span>
+                    </div>
+                  </Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Card>
 
             {/* 时间和地点 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <Calendar className={styles.sectionIcon} />
                 时间和地点
               </h2>
 
               <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>开始日期 *</label>
-                  <input type="date" className={styles.input} required />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>开始时间 *</label>
-                  <input type="time" className={styles.input} required />
-                </div>
+                <Form.Item label="开始日期" name="startDate" rules={[{ required: true, message: "请选择开始日期" }]}>
+                  <DatePicker className={styles.input} />
+                </Form.Item>
+                <Form.Item label="开始时间" name="startTime" rules={[{ required: true, message: "请选择开始时间" }]}>
+                  <TimePicker className={styles.input} format="HH:mm" />
+                </Form.Item>
               </div>
 
               <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>结束日期</label>
-                  <input type="date" className={styles.input} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>结束时间</label>
-                  <input type="time" className={styles.input} />
-                </div>
+                <Form.Item label="结束日期" name="endDate">
+                  <DatePicker className={styles.input} />
+                </Form.Item>
+                <Form.Item label="结束时间" name="endTime">
+                  <TimePicker className={styles.input} format="HH:mm" />
+                </Form.Item>
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>{eventType === "online" ? "活动链接" : "活动地址"} *</label>
+              <Form.Item
+                label={eventType === "online" ? "活动链接" : "活动地址"}
+                name="location"
+                rules={[{ required: true, message: `请输入${eventType === "online" ? "活动链接" : "活动地址"}` }]}
+              >
                 <div className={styles.inputWithIcon}>
                   {eventType === "online" ? (
                     <Globe className={styles.inputIcon} />
                   ) : (
                     <MapPin className={styles.inputIcon} />
                   )}
-                  <input
-                    type="text"
-                    className={styles.inputWithIconField}
+                  <Input
                     placeholder={eventType === "online" ? "请输入会议链接或直播地址" : "请输入详细地址"}
-                    required
+                    className={styles.inputWithIconField}
                   />
                 </div>
-              </div>
-            </div>
+              </Form.Item>
+            </Card>
 
             {/* 参与设置 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <Users className={styles.sectionIcon} />
                 参与设置
               </h2>
 
               <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>最大参与人数</label>
-                  <input type="number" className={styles.input} placeholder="不限制请留空" min="1" />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>报名截止时间</label>
-                  <input type="datetime-local" className={styles.input} />
-                </div>
+                <Form.Item label="最大参与人数" name="maxParticipants">
+                  <InputNumber placeholder="不限制请留空" min={1} className={styles.input} />
+                </Form.Item>
+                <Form.Item label="报名截止时间" name="registrationDeadline">
+                  <DatePicker showTime className={styles.input} />
+                </Form.Item>
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" className={styles.checkbox} />
-                  需要审核报名
-                </label>
-              </div>
+              <Form.Item name="requireApproval" valuePropName="checked" className={styles.formGroup}>
+                <Checkbox className={styles.checkbox}>需要审核报名</Checkbox>
+              </Form.Item>
 
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" className={styles.checkbox} />
-                  允许候补报名
-                </label>
-              </div>
-            </div>
+              <Form.Item name="allowWaitlist" valuePropName="checked" className={styles.formGroup}>
+                <Checkbox className={styles.checkbox}>允许候补报名</Checkbox>
+              </Form.Item>
+            </Card>
           </div>
 
           {/* 右侧表单 */}
           <div className={styles.rightColumn}>
             {/* 活动封面 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <ImageIcon className={styles.sectionIcon} />
                 活动封面
               </h2>
 
-              <div className={styles.imageUpload}>
-                <div className={styles.imagePreview}>
-                  <ImageIcon className={styles.imageIcon} />
-                  <p className={styles.imageText}>点击上传活动封面</p>
-                  <p className={styles.imageHint}>建议尺寸: 1200x630px</p>
+              <Form.Item name="cover">
+                <div className={styles.imageUpload}>
+                  {previewUrl ? (
+                    <div className={styles.imagePreviewContainer}>
+                      <img src={previewUrl || "/placeholder.svg"} alt="活动封面预览" className={styles.previewImage} />
+                      <div className={styles.imageOverlay}>
+                        <div className={styles.imageActions}>
+                          <button
+                            type="button"
+                            onClick={handleReplaceImage}
+                            className={styles.imageActionButton}
+                            title="更换图片"
+                          >
+                            <RotateCcw className={styles.imageActionIcon} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleRemoveImage}
+                            className={`${styles.imageActionButton} ${styles.removeButton}`}
+                            title="删除图片"
+                          >
+                            <X className={styles.imageActionIcon} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className={styles.imageInfo}>
+                        <span className={styles.imageName}>{coverImage?.name}</span>
+                        <span className={styles.imageSize}>
+                          {coverImage?.originFileObj
+                            ? `${(coverImage.originFileObj.size / 1024 / 1024).toFixed(2)} MB`
+                            : ""}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <Dragger {...uploadProps} className={styles.imagePreview}>
+                      <ImageIcon className={styles.imageIcon} />
+                      <p className={styles.imageText}>点击或拖拽上传活动封面</p>
+                      <p className={styles.imageHint}>建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB</p>
+                    </Dragger>
+                  )}
                 </div>
-                <input type="file" accept="image/*" className={styles.fileInput} />
-              </div>
-            </div>
+              </Form.Item>
+            </Card>
 
             {/* 标签 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <Plus className={styles.sectionIcon} />
                 活动标签
@@ -200,45 +409,46 @@ export default function NewEventPage() {
 
               <div className={styles.tagsContainer}>
                 {tags.map((tag, index) => (
-                  <div key={index} className={styles.tag}>
-                    <span>{tag}</span>
-                    <button type="button" onClick={() => handleRemoveTag(tag)} className={styles.tagRemove}>
-                      <X className={styles.tagRemoveIcon} />
-                    </button>
-                  </div>
+                  <Tag key={index} closable onClose={() => handleRemoveTag(tag)} className={styles.tag}>
+                    {tag}
+                  </Tag>
                 ))}
-                <button type="button" onClick={handleAddTag} className={styles.addTagButton}>
-                  <Plus className={styles.addTagIcon} />
-                  添加标签
-                </button>
+                {inputVisible ? (
+                  <Input
+                    type="text"
+                    size="small"
+                    className={styles.tagInput}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onBlur={handleAddTag}
+                    onPressEnter={handleAddTag}
+                    autoFocus
+                  />
+                ) : (
+                  <button type="button" onClick={() => setInputVisible(true)} className={styles.addTagButton}>
+                    <Plus className={styles.addTagIcon} />
+                    添加标签
+                  </button>
+                )}
               </div>
-            </div>
+            </Card>
 
             {/* 其他设置 */}
-            <div className={styles.section}>
+            <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>其他设置</h2>
 
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" className={styles.checkbox} />
-                  活动结束后发送感谢邮件
-                </label>
-              </div>
+              <Form.Item name="sendThankYouEmail" valuePropName="checked" className={styles.formGroup}>
+                <Checkbox className={styles.checkbox}>活动结束后发送感谢邮件</Checkbox>
+              </Form.Item>
 
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" className={styles.checkbox} />
-                  允许参与者邀请朋友
-                </label>
-              </div>
+              <Form.Item name="allowInviteFriends" valuePropName="checked" className={styles.formGroup}>
+                <Checkbox className={styles.checkbox}>允许参与者邀请朋友</Checkbox>
+              </Form.Item>
 
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input type="checkbox" defaultChecked className={styles.checkbox} />
-                  立即发布活动
-                </label>
-              </div>
-            </div>
+              <Form.Item name="publishImmediately" valuePropName="checked" className={styles.formGroup}>
+                <Checkbox className={styles.checkbox}>立即发布活动</Checkbox>
+              </Form.Item>
+            </Card>
           </div>
         </div>
 
@@ -247,12 +457,18 @@ export default function NewEventPage() {
           <Link href="/" className={styles.cancelButton}>
             取消
           </Link>
-          <button type="submit" className={styles.submitButton}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.submitButton}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
             <Save className={styles.submitIcon} />
-            创建活动
-          </button>
+            {isSubmitting ? "创建中..." : "创建活动"}
+          </Button>
         </div>
-      </form>
+      </Form>
     </div>
   )
 }

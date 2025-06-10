@@ -5,18 +5,18 @@ import styles from "../styles/Header.module.css"
 export default function Header() {
   const [showNewsBanner, setShowNewsBanner] = useState(true)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      setShowNewsBanner(scrollY < 50) // 滚动超过50px时隐藏新闻栏
-    }
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollY = window.scrollY
+  //     setShowNewsBanner(scrollY < 50) // 滚动超过50px时隐藏新闻栏
+  //   }
 
-    window.addEventListener("scroll", handleScroll)
+  //   window.addEventListener("scroll", handleScroll)
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll)
+  //   }
+  // }, [])
 
   return (
     <header className={styles.header}>
@@ -47,7 +47,7 @@ export default function Header() {
         </div>
       </div>
       {/* Floating News Banner */}
-      {showNewsBanner && (
+      {/* {showNewsBanner && (
         <div className={styles.floatingNewsBanner}>
           <div className={styles.newsSlider}>
             <div className={styles.newsSlide}>
@@ -68,7 +68,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </header>
   )
 }

@@ -228,30 +228,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className={styles.features}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>技术特色</h2>
-            <p className={styles.sectionDescription}>
-              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
-            </p>
-          </div>
-          <div className={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <div key={index} className={styles.featureCard}>
-                <div className={styles.featureCardGlow}></div>
-                <div className={styles.featureCardContent}>
-                  <div className={styles.featureIconWrapper}>{feature.icon}</div>
-                  <h3 className={styles.featureTitle}>{feature.title}</h3>
-                  <p className={styles.featureDescription}>{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Activities Section */}
       <section className={styles.activities}>
         <div className={styles.container}>
@@ -307,6 +283,31 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Features Section */}
+      <section className={styles.features}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>技术特色</h2>
+            <p className={styles.sectionDescription}>
+              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
+            </p>
+          </div>
+          <div className={styles.featuresGrid}>
+            {features.map((feature, index) => (
+              <div key={index} className={styles.featureCard}>
+                <div className={styles.featureCardGlow}></div>
+                <div className={styles.featureCardContent}>
+                  <div className={styles.featureIconWrapper}>{feature.icon}</div>
+                  <h3 className={styles.featureTitle}>{feature.title}</h3>
+                  <p className={styles.featureDescription}>{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* Milestones Section */}
       <section className={styles.milestones}>
