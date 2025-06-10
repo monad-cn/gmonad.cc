@@ -31,7 +31,7 @@ export default function NewEventPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/" className={styles.backButton}>
+        <Link href="/events" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回活动列表
         </Link>
