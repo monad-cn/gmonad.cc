@@ -1,7 +1,6 @@
-"use client"
-
 import { Users, Calendar, MapPin, Zap, Rocket, Star, Code, Shield, Cpu, Database, BookOpen, Globe, GitBranch } from 'lucide-react'
 import { useEffect, useState } from "react"
+import Link from 'next/link'
 import styles from "./index.module.css"
 
 export default function Home() {
@@ -269,9 +268,8 @@ export default function Home() {
                 <div className={styles.activityCardHeader}>
                   <div className={styles.activityMeta}>
                     <span
-                      className={`${styles.activityBadge} ${
-                        activity.status === "即将开始" ? styles.activityBadgeActive : styles.activityBadgeInactive
-                      }`}
+                      className={`${styles.activityBadge} ${activity.status === "即将开始" ? styles.activityBadgeActive : styles.activityBadgeInactive
+                        }`}
                     >
                       {activity.status}
                     </span>
@@ -300,10 +298,12 @@ export default function Home() {
             ))}
           </div>
           <div className={styles.sectionFooter}>
-            <button className={styles.moreButton}>
-              <Calendar className={styles.buttonIcon} />
-              查看更多活动
-            </button>
+            <Link href="/events">
+              <button className={styles.moreButton}>
+                <Calendar className={styles.buttonIcon} />
+                查看更多活动
+              </button>
+            </Link>
           </div>
         </div>
       </section>
