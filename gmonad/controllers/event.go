@@ -68,7 +68,7 @@ func QueryEvents(c *gin.Context) {
 	}
 
 	var response = QueryEventsResponse{
-		Data:     events,
+		Events:   events,
 		Page:     page,
 		PageSize: pageSize,
 		Total:    total,

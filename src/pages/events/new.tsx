@@ -98,10 +98,6 @@ export default function NewEventPage() {
             router.push("/events")
           },
         })
-
-        setTimeout(() => {
-          router.push("/")
-        }, 2000)
       } else {
         message.error(result.message || "创建活动失败")
       }

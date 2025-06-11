@@ -17,6 +17,19 @@ export interface CreateEventParams {
   allow_waitlist?: boolean
 }
 
+// 定义获取事件列表的查询参数接口
+export interface GetEventsParams {
+  keyword?: string // 搜索关键词
+  tag?: string // 标签筛选
+  order?: "asc" | "desc" // 排序方式，默认 desc
+  page?: number // 页码，默认 1
+  pageSize?: number // 每页数量，默认 10
+  category?: string // 事件类型（保留兼容性）
+  status?: string // 事件状态（保留兼容性）
+}
+
+
+
 // 定义 API 响应接口
 export interface EventApiResponse {
   code: number
@@ -24,11 +37,33 @@ export interface EventApiResponse {
   data: any
 }
 
-// 定义返回结果接口
+export interface Event {
+  ID: number
+  title: string
+  CreatedAt: string
+  UpdatedAt: string
+  description: string
+  categary: string
+  location: string
+  start_time: string  // 或者 Date
+  end_time: string
+  cover_img: string
+  tags: string[]
+}
+
+// 返回结构（分页数据）
+export interface PaginatedEventData {
+  events: Event[]
+  page: number
+  page_size: number
+  total: number
+}
+
+// API 统一返回结构
 export interface EventResult {
   success: boolean
   message: string
-  data?: any
+  data?: PaginatedEventData
 }
 
 // 创建事件接口
@@ -112,24 +147,50 @@ export const createEvent = async (eventParams: CreateEventParams): Promise<Event
   }
 }
 
-// 获取事件列表接口
-export const getEvents = async (params?: {
-  page?: number
-  limit?: number
-  category?: string
-  status?: string
-}): Promise<EventResult> => {
+// 获取事件列表接口 - 适配后端参数
+export const getEvents = async (params?: GetEventsParams): Promise<EventResult> => {
   try {
-    // 构造查询参数
+    // 构造查询参数，使用后端期望的参数名
     const queryParams = new URLSearchParams()
-    if (params?.page) queryParams.append("page", params.page.toString())
-    if (params?.limit) queryParams.append("limit", params.limit.toString())
-    if (params?.category) queryParams.append("category", params.category)
-    if (params?.status) queryParams.append("status", params.status)
 
-    const endpoint = `/events${queryParams.toString() ? `?${queryParams.toString()}` : ""}`
+    // 搜索关键词
+    if (params?.keyword && params.keyword.trim()) {
+      queryParams.append("keyword", params.keyword.trim())
+    }
+
+    // 标签筛选
+    if (params?.tag && params.tag.trim()) {
+      queryParams.append("tag", params.tag.trim())
+    }
+
+    // 排序方式，默认 desc
+    const order = params?.order || "desc"
+    queryParams.append("order", order)
+
+    // 页码，默认 1
+    const page = params?.page || 1
+    queryParams.append("page", page.toString())
+
+    // 每页数量，默认 10
+    const pageSize = params?.pageSize || 10
+    queryParams.append("pageSize", pageSize.toString())
+
+    // 兼容性参数（如果后端也支持这些参数）
+    if (params?.category && params.category.trim()) {
+      queryParams.append("category", params.category.trim())
+    }
+
+    if (params?.status && params.status.trim()) {
+      queryParams.append("status", params.status.trim())
+    }
+
+    const endpoint = `/events?${queryParams.toString()}`
+
+    console.log("获取事件列表请求URL:", endpoint)
 
     const response = await apiRequest<EventApiResponse>(endpoint, "GET")
+
+    console.log("获取事件列表响应:", response)
 
     if (response.code === 200) {
       return {

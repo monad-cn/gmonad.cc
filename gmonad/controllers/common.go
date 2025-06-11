@@ -1,5 +1,7 @@
 package controllers
 
+import "gmonad/models"
+
 type CreateEventRequest struct {
 	Title     string   `json:"title" binding:"required"`
 	Desc      string   `json:"desc" binding:"required"`
@@ -13,8 +15,8 @@ type CreateEventRequest struct {
 }
 
 type QueryEventsResponse struct {
-	Data     interface{} `json:"data"`
-	Page     int         `json:"page"`
-	PageSize int         `json:"page_size"`
-	Total    int64       `json:"total"`
+	Events   []models.Event `json:"events"`
+	Page     int            `json:"page"`
+	PageSize int            `json:"page_size"`
+	Total    int64          `json:"total"`
 }

@@ -1,5 +1,8 @@
-import { useState } from "react"
-import { Pagination } from "antd"
+"use client"
+
+import { useState, useEffect } from "react"
+import { Pagination, Input, Select, Button, Tag } from "antd"
+import dayjs from "dayjs"
 import {
   Calendar,
   Users,
@@ -7,8 +10,6 @@ import {
   Clock,
   Plus,
   Edit,
-  Search,
-  Filter,
   MoreHorizontal,
   Eye,
   Trash2,
@@ -16,146 +17,192 @@ import {
   Share2,
   Download,
   Settings,
-  ChevronDown,
   Video,
   Globe,
   Bookmark,
   ExternalLink,
   LayoutGrid,
   List,
+  TagIcon,
 } from "lucide-react"
 import Link from "next/link"
 import styles from "./index.module.css"
+import { getEvents } from "../api/event"
 
-const allEvents = [
-  {
-    id: 1,
-    title: "Monad 技术分享会",
-    description: "深入探讨Monad区块链的技术架构和创新特性",
-    status: "upcoming",
-    statusText: "即将开始",
-    participants: 156,
-    date: "2024年12月15日",
-    time: "14:00",
-    location: "线上直播",
-    type: "online",
-    featured: true,
-    category: "技术分享",
-  },
-  {
-    id: 2,
-    title: "开发者工作坊",
-    description: "Monad智能合约开发实战训练营",
-    status: "ended",
-    statusText: "已结束",
-    participants: 89,
-    date: "2024年11月28日",
-    time: "10:00",
-    location: "北京 中关村",
-    type: "offline",
-    featured: false,
-    category: "工作坊",
-  },
-  {
-    id: 3,
-    title: "社区AMA问答",
-    description: "与Monad核心团队直接对话，解答技术疑问",
-    status: "ended",
-    statusText: "已结束",
-    participants: 234,
-    date: "2024年11月10日",
-    time: "20:00",
-    location: "Discord语音频道",
-    type: "online",
-    featured: true,
-    category: "AMA问答",
-  },
-  {
-    id: 4,
-    title: "区块链入门讲座",
-    description: "面向新手的区块链基础知识讲解",
-    status: "upcoming",
-    statusText: "即将开始",
-    participants: 78,
-    date: "2024年12月20日",
-    time: "19:00",
-    location: "腾讯会议",
-    type: "online",
-    featured: false,
-    category: "技术分享",
-  },
-  {
-    id: 5,
-    title: "DeFi 协议深度解析",
-    description: "深入分析主流DeFi协议的技术实现和经济模型",
-    status: "upcoming",
-    statusText: "即将开始",
-    participants: 145,
-    date: "2024年12月22日",
-    time: "15:30",
-    location: "上海 浦东新区",
-    type: "offline",
-    featured: true,
-    category: "技术分享",
-  },
-  {
-    id: 6,
-    title: "NFT 创作工作坊",
-    description: "学习如何创建和发布自己的NFT作品",
-    status: "ended",
-    statusText: "已结束",
-    participants: 67,
-    date: "2024年11月15日",
-    time: "13:00",
-    location: "深圳 南山区",
-    type: "offline",
-    featured: false,
-    category: "工作坊",
-  },
-  {
-    id: 7,
-    title: "Web3 安全审计工作坊",
-    description: "学习智能合约安全审计的最佳实践",
-    status: "upcoming",
-    statusText: "即将开始",
-    participants: 92,
-    date: "2024年12月25日",
-    time: "16:00",
-    location: "广州 天河区",
-    type: "offline",
-    featured: false,
-    category: "工作坊",
-  },
-  {
-    id: 8,
-    title: "Layer 2 扩容方案解析",
-    description: "深入了解各种 Layer 2 解决方案的技术原理",
-    status: "upcoming",
-    statusText: "即将开始",
-    participants: 178,
-    date: "2024年12月28日",
-    time: "19:30",
-    location: "Zoom 会议",
-    type: "online",
-    featured: true,
-    category: "技术分享",
-  },
-]
+const { Search: AntSearch } = Input
+const { Option } = Select
 
 type ViewMode = "grid" | "list"
+
+export function formatTime(isoTime: string): string {
+  return dayjs(isoTime).format("YYYY-MM-DD HH:mm")
+}
 
 export default function EventsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid")
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 4
-  // 计算分页数据
-  const startIndex = (currentPage - 1) * pageSize
-  const endIndex = startIndex + pageSize
-  const currentEvents = allEvents.slice(startIndex, endIndex)
+  const [pageSize, setPageSize] = useState(10)
+  const [events, setEvents] = useState<any[]>([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [searchKeyword, setSearchKeyword] = useState("")
+  const [selectedTag, setSelectedTag] = useState("")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+  // 加载事件列表
+  const loadEvents = async (params?: {
+    keyword?: string
+    tag?: string
+    order?: "asc" | "desc"
+    page?: number
+    pageSize?: number
+  }) => {
+    try {
+      setLoading(true)
+
+      const queryParams = {
+        keyword: params?.keyword || searchKeyword,
+        tag: params?.tag || selectedTag,
+        order: params?.order || sortOrder,
+        page: params?.page || currentPage,
+        pageSize: params?.pageSize || pageSize,
+      }
+
+      console.log("加载事件列表参数:", queryParams)
+
+      const result = await getEvents(queryParams)
+
+      if (result.success && result.data) {
+        // 处理后端返回的数据结构
+        if (result.data.events && Array.isArray(result.data.events)) {
+          setEvents(result.data.events)
+          setCurrentPage(result.data.page || 1)
+          setPageSize(result.data.page_size || 10)
+          setTotal(result.data.total || result.data.events.length)
+        } else if (Array.isArray(result.data)) {
+          setEvents(result.data)
+          setTotal(result.data.length)
+        } else {
+          console.warn("API 返回的数据格式不符合预期:", result.data)
+          setEvents([])
+          setTotal(0)
+        }
+      } else {
+        console.error("获取事件列表失败:", result.message)
+        setEvents([])
+        setTotal(0)
+      }
+    } catch (error) {
+      console.error("加载事件列表异常:", error)
+      setEvents([])
+      setTotal(0)
+    } finally {
+      setLoading(false)
+    }
   }
+
+
+  // 搜索事件
+  const handleSearch = async (keyword: string) => {
+    setSearchKeyword(keyword)
+    setCurrentPage(1) // 重置到第一页
+    await loadEvents({ keyword, page: 1 })
+  }
+
+  // 按标签筛选
+  const handleTagFilter = async (tag: string) => {
+    setSelectedTag(tag)
+    setCurrentPage(1) // 重置到第一页
+    await loadEvents({ tag, page: 1 })
+  }
+
+  // 排序切换
+  const handleSortChange = async (order: "asc" | "desc") => {
+    setSortOrder(order)
+    await loadEvents({ order })
+  }
+
+  // 分页处理
+  const handlePageChange = async (page: number, size?: number) => {
+    setCurrentPage(page)
+    if (size && size !== pageSize) {
+      setPageSize(size)
+    }
+    await loadEvents({ page, pageSize: size || pageSize })
+  }
+
+  // 清除筛选
+  const handleClearFilters = async () => {
+    setSearchKeyword("")
+    setSelectedTag("")
+    setSortOrder("desc")
+    setCurrentPage(1)
+    await loadEvents({
+      keyword: "",
+      tag: "",
+      order: "desc",
+      page: 1,
+    })
+  }
+
+  // 组件挂载时加载数据
+  useEffect(() => {
+    loadEvents()
+  }, [])
+
+  // 计算当前显示的事件
+  const startIndex = (currentPage - 1) * pageSize + 1
+  const endIndex = Math.min(currentPage * pageSize, total)
+
+  const currentEvents = events // 服务端已经处理了分页
+
+  // 获取事件类型显示文本
+  const getCategoryText = (categary: string) => {
+    switch (categary) {
+      case "online":
+        return "线上活动"
+      case "offline":
+        return "线下活动"
+      default:
+        return categary
+    }
+  }
+
+  // 获取事件状态显示文本
+  const getStatusText = (event: any) => {
+    const now = dayjs()
+    const startTime = dayjs(event.start_time)
+    const endTime = event.end_time ? dayjs(event.end_time) : null
+
+    if (endTime && now.isAfter(endTime)) {
+      return "已结束"
+    } else if (now.isAfter(startTime)) {
+      return "进行中"
+    } else {
+      return "即将开始"
+    }
+  }
+
+  // 获取事件状态类名
+  const getStatusClass = (event: any) => {
+    const now = dayjs()
+    const startTime = dayjs(event.start_time)
+    const endTime = event.end_time ? dayjs(event.end_time) : null
+
+    if (endTime && now.isAfter(endTime)) {
+      return styles.ended
+    } else if (now.isAfter(startTime)) {
+      return styles.ongoing
+    } else {
+      return styles.upcoming
+    }
+  }
+
+  useEffect(() => {
+    if (searchKeyword === '') {
+      handleSearch('');
+    }
+  }, [searchKeyword]);
 
   return (
     <div className={styles.container}>
@@ -181,15 +228,34 @@ export default function EventsPage() {
       {/* Search and Filter Bar */}
       <div className={styles.searchSection}>
         <div className={styles.searchBar}>
-          <Search className={styles.searchIcon} />
-          <input type="text" placeholder="搜索活动..." className={styles.searchInput} />
+          <AntSearch
+            placeholder="搜索活动标题、描述..."
+            allowClear
+            enterButton="搜索"
+            value={searchKeyword}
+            onChange={(e) => handleSearch(e.target.value)}
+            onSearch={handleSearch}
+            loading={loading}
+          />
         </div>
         <div className={styles.filterButtons}>
-          <button className={styles.filterButton}>
-            <Filter className={styles.buttonIcon} />
-            筛选
-            <ChevronDown className={styles.chevronIcon} />
-          </button>
+          <Select
+            size="large"
+            placeholder="选择标签"
+            // allowClear
+            value={selectedTag || undefined}
+            onChange={handleTagFilter}
+          >
+            <Option value="技术分享">技术分享</Option>
+            <Option value="工作坊">工作坊</Option>
+            <Option value="AMA问答">AMA问答</Option>
+            <Option value="社区活动">社区活动</Option>
+          </Select>
+          <Select value={sortOrder} style={{ width: 100 }} onChange={handleSortChange}>
+            <Option value="desc">最新</Option>
+            <Option value="asc">最早</Option>
+          </Select>
+          <Button onClick={handleClearFilters}>清除筛选</Button>
           <button className={styles.exportButton}>
             <Download className={styles.buttonIcon} />
             导出
@@ -216,35 +282,37 @@ export default function EventsPage() {
           </button>
         </div>
         <div className={styles.resultsInfo}>
-          显示 {startIndex + 1}-{Math.min(endIndex, allEvents.length)} 项，共 {allEvents.length} 项
-        </div>
-        <div className={styles.topPagination}>
-          <Pagination
-            current={currentPage}
-            total={allEvents.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            showQuickJumper={false}
-            // size="small"
-            // showTotal={false}
-            className={styles.compactPagination}
-          />
+          显示 {startIndex}-{endIndex} 项，共 {total} 项
         </div>
       </div>
 
       {/* Events Display */}
-      {viewMode === "grid" ? (
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>加载中...</div>
+        </div>
+      ) : events.length === 0 ? (
+        <div className={styles.emptyContainer}>
+          <div className={styles.emptyIcon}>📅</div>
+          <div className={styles.emptyTitle}>暂无活动</div>
+          <div className={styles.emptyDescription}>
+            {searchKeyword || selectedTag ? "没有找到符合条件的活动" : "还没有创建任何活动"}
+          </div>
+          {!searchKeyword && !selectedTag && (
+            <Link href="/events/new" className={styles.createButton}>
+              <Plus className={styles.buttonIcon} />
+              创建第一个活动
+            </Link>
+          )}
+        </div>
+      ) : viewMode === "grid" ? (
         <div className={styles.eventsGrid}>
-          {currentEvents.map((event) => (
+          {events.map((event) => (
             <div key={event.id} className={styles.eventCard}>
               <div className={styles.cardHeader}>
                 <div className={styles.cardHeaderTop}>
                   <div className={styles.statusContainer}>
-                    <span
-                      className={`${styles.statusBadge} ${event.status === "upcoming" ? styles.upcoming : styles.ended}`}
-                    >
-                      {event.statusText}
-                    </span>
+                    <span className={`${styles.statusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</span>
                     {event.featured && <Star className={styles.featuredIcon} />}
                   </div>
                   <div className={styles.cardMenu}>
@@ -255,28 +323,61 @@ export default function EventsPage() {
                 </div>
 
                 <h3 className={styles.eventTitle}>{event.title}</h3>
-                <p className={styles.eventDescription}>{event.description}</p>
+                <p className={styles.eventDescription}>{event.desc}</p>
+
+                {/* 分类标签 */}
+                <div className={styles.categoryContainer}>
+                  <span
+                    className={`${styles.categoryBadge} ${event.categary === "online" ? styles.online : styles.offline}`}
+                  >
+                    {event.categary === "online" ? (
+                      <Video className={styles.categoryIcon} />
+                    ) : (
+                      <MapPin className={styles.categoryIcon} />
+                    )}
+                    {getCategoryText(event.categary)}
+                  </span>
+                </div>
               </div>
 
               <div className={styles.cardContent}>
                 <div className={styles.eventDetails}>
                   <div className={styles.eventDetail}>
-                    <Clock className={styles.detailIcon} />
-                    {event.date} {event.time}
+                    <Calendar className={styles.detailIcon} />
+                    {formatTime(event.start_time)}
                   </div>
                   <div className={styles.eventDetail}>
-                    {event.type === "online" ? (
-                      <Video className={styles.detailIcon} />
+                    {event.categary === "online" ? (
+                      <>
+                        <Globe className={styles.detailIcon} />
+                        {event.link || "线上活动"}
+                      </>
                     ) : (
-                      <MapPin className={styles.detailIcon} />
+                      <>
+                        <MapPin className={styles.detailIcon} />
+                        {event.location || "未指定地点"}
+                      </>
                     )}
-                    {event.location}
                   </div>
                   <div className={styles.eventDetail}>
                     <Users className={styles.detailIcon} />
-                    {event.participants} 人参与
+                    {event.participants || 0} 人参与
                   </div>
                 </div>
+
+                {/* 标签列表 */}
+                {event.tags && event.tags.length > 0 && (
+                  <div className={styles.tagsList}>
+                    <TagIcon className={styles.tagsIcon} />
+                    <div className={styles.tags}>
+                      {event.tags.map((tag: string, index: number) => (
+                        <Tag key={index} className={styles.tag}>
+                          {tag}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className={styles.cardActions}>
                   <button className={styles.detailButton}>
@@ -307,6 +408,25 @@ export default function EventsPage() {
         </div>
       ) : (
         <div className={styles.listViewContainer}>
+          {/* Top Pagination for List View */}
+          <div className={styles.listTopControls}>
+            <div className={styles.listInfo}>
+              <span className={styles.listInfoText}>共 {events.length} 个活动</span>
+            </div>
+            <div className={styles.topPagination}>
+              <Pagination
+                current={currentPage}
+                total={events.length}
+                pageSize={pageSize}
+                onChange={handlePageChange}
+                // showQuickJumper={false}
+                // size="small"
+                // showTotal={false}
+                className={styles.compactPagination}
+              />
+            </div>
+          </div>
+
           {/* Events List */}
           <div className={styles.eventsList}>
             <div className={styles.listHeader}>
@@ -325,9 +445,24 @@ export default function EventsPage() {
                       <h3 className={styles.listEventTitle}>{event.title}</h3>
                       {event.featured && <Star className={styles.listFeaturedIcon} />}
                     </div>
-                    <p className={styles.listEventDescription}>{event.description}</p>
+                    <p className={styles.listEventDescription}>{event.desc}</p>
                     <div className={styles.eventCategory}>
-                      <span className={styles.categoryTag}>{event.category}</span>
+                      <span
+                        className={`${styles.categoryTag} ${event.categary === "online" ? styles.onlineTag : styles.offlineTag}`}
+                      >
+                        {getCategoryText(event.categary)}
+                      </span>
+
+                      {/* 标签列表 */}
+                      {event.tags && event.tags.length > 0 && (
+                        <div className={styles.listTags}>
+                          {event.tags.map((tag: string, index: number) => (
+                            <Tag key={index} className={styles.listTag}>
+                              {tag}
+                            </Tag>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -335,33 +470,34 @@ export default function EventsPage() {
                   <div className={styles.timeInfo}>
                     <div className={styles.dateTime}>
                       <Clock className={styles.listIcon} />
-                      {event.date}
+                      {formatTime(event.start_time)}
                     </div>
-                    <div className={styles.time}>{event.time}</div>
+                    {event.end_time && <div className={styles.time}>至 {formatTime(event.end_time)}</div>}
                   </div>
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.locationInfo}>
-                    {event.type === "online" ? (
-                      <Video className={styles.listIcon} />
+                    {event.categary === "online" ? (
+                      <>
+                        <Globe className={styles.listIcon} />
+                        <span className={styles.locationText}>{event.link || "线上活动"}</span>
+                      </>
                     ) : (
-                      <MapPin className={styles.listIcon} />
+                      <>
+                        <MapPin className={styles.listIcon} />
+                        <span className={styles.locationText}>{event.location || "未指定地点"}</span>
+                      </>
                     )}
-                    <span className={styles.locationText}>{event.location}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.participantsInfo}>
                     <Users className={styles.listIcon} />
-                    {event.participants}
+                    {event.participants || 0}
                   </div>
                 </div>
                 <div className={styles.listCell}>
-                  <span
-                    className={`${styles.listStatusBadge} ${event.status === "upcoming" ? styles.upcoming : styles.ended}`}
-                  >
-                    {event.statusText}
-                  </span>
+                  <span className={`${styles.listStatusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</span>
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
@@ -388,7 +524,7 @@ export default function EventsPage() {
             <div className={styles.bottomPagination}>
               <Pagination
                 current={currentPage}
-                total={allEvents.length}
+                total={events.length}
                 pageSize={pageSize}
                 onChange={handlePageChange}
                 // showQuickJumper={true}
@@ -405,12 +541,15 @@ export default function EventsPage() {
         <div className={styles.paginationSection}>
           <Pagination
             current={currentPage}
-            total={allEvents.length}
+            total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
+            onShowSizeChange={handlePageChange}
             // showQuickJumper={true}
+            showSizeChanger={true}
             showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
             className={styles.fullPagination}
+            // loading={loading}
           />
         </div>
       )}
