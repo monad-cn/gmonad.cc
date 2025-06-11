@@ -1,13 +1,10 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import { Pagination, Input, Select, Button, Tag } from "antd"
+import { Pagination, Input, Select, Button, Tag, Card, Image } from "antd"
 import dayjs from "dayjs"
 import {
   Calendar,
   Users,
   MapPin,
-  Clock,
   Plus,
   Edit,
   MoreHorizontal,
@@ -17,13 +14,10 @@ import {
   Share2,
   Download,
   Settings,
-  Video,
   Globe,
-  Bookmark,
-  ExternalLink,
   LayoutGrid,
   List,
-  TagIcon,
+  Search,
 } from "lucide-react"
 import Link from "next/link"
 import styles from "./index.module.css"
@@ -49,13 +43,21 @@ export default function EventsPage() {
   const [selectedTag, setSelectedTag] = useState("")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
+  // 新增筛选状态
+  const [statusFilter, setStatusFilter] = useState("3")
+  const [locationKeyword, setLocationKeyword] = useState("")
+  const [eventModeFilter, setEventModeFilter] = useState("")
+
   // 加载事件列表
   const loadEvents = async (params?: {
     keyword?: string
     tag?: string
     order?: "asc" | "desc"
     page?: number
-    pageSize?: number
+    page_size?: number
+    status?: string | number
+    location?: string
+    event_mode?: string
   }) => {
     try {
       setLoading(true)
@@ -65,7 +67,10 @@ export default function EventsPage() {
         tag: params?.tag || selectedTag,
         order: params?.order || sortOrder,
         page: params?.page || currentPage,
-        pageSize: params?.pageSize || pageSize,
+        page_size: params?.page_size || pageSize,
+        status: params?.status || statusFilter,
+        location: params?.location || locationKeyword,
+        event_mode: params?.event_mode || eventModeFilter,
       }
 
       console.log("加载事件列表参数:", queryParams)
@@ -101,7 +106,6 @@ export default function EventsPage() {
     }
   }
 
-
   // 搜索事件
   const handleSearch = async (keyword: string) => {
     setSearchKeyword(keyword)
@@ -122,13 +126,34 @@ export default function EventsPage() {
     await loadEvents({ order })
   }
 
+  // 状态筛选
+  const handleStatusFilter = async (status: string) => {
+    setStatusFilter(status)
+    setCurrentPage(1)
+    await loadEvents({ status, page: 1 })
+  }
+
+  // 地址搜索
+  const handleLocationSearch = async (location: string) => {
+    setLocationKeyword(location)
+    setCurrentPage(1)
+    await loadEvents({ location, page: 1 })
+  }
+
+  // 活动类型筛选
+  const handleEventModeFilter = async (event_mode: string) => {
+    setEventModeFilter(event_mode)
+    setCurrentPage(1)
+    await loadEvents({ event_mode, page: 1 })
+  }
+
   // 分页处理
   const handlePageChange = async (page: number, size?: number) => {
     setCurrentPage(page)
     if (size && size !== pageSize) {
       setPageSize(size)
     }
-    await loadEvents({ page, pageSize: size || pageSize })
+    await loadEvents({ page, page_size: size || pageSize })
   }
 
   // 清除筛选
@@ -136,11 +161,17 @@ export default function EventsPage() {
     setSearchKeyword("")
     setSelectedTag("")
     setSortOrder("desc")
+    setStatusFilter("3")
+    setLocationKeyword("")
+    setEventModeFilter("")
     setCurrentPage(1)
     await loadEvents({
       keyword: "",
       tag: "",
       order: "desc",
+      status: "3",
+      location: "",
+      event_mode: "",
       page: 1,
     })
   }
@@ -156,30 +187,20 @@ export default function EventsPage() {
 
   const currentEvents = events // 服务端已经处理了分页
 
-  // 获取事件类型显示文本
-  const getCategoryText = (categary: string) => {
-    switch (categary) {
-      case "online":
-        return "线上活动"
-      case "offline":
-        return "线下活动"
-      default:
-        return categary
-    }
-  }
 
   // 获取事件状态显示文本
   const getStatusText = (event: any) => {
-    const now = dayjs()
-    const startTime = dayjs(event.start_time)
-    const endTime = event.end_time ? dayjs(event.end_time) : null
+    // const now = dayjs()
+    // const startTime = dayjs(event.start_time)
+    // const endTime = event.end_time ? dayjs(event.end_time) : null
 
-    if (endTime && now.isAfter(endTime)) {
-      return "已结束"
-    } else if (now.isAfter(startTime)) {
+    // if (endTime && now.isAfter(endTime)) {
+    if (event.status === 0) {
+      return "未开始"
+    } else if (event.status === 1) {
       return "进行中"
     } else {
-      return "即将开始"
+      return "已结束"
     }
   }
 
@@ -199,10 +220,14 @@ export default function EventsPage() {
   }
 
   useEffect(() => {
-    if (searchKeyword === '') {
-      handleSearch('');
+    if (searchKeyword === "") {
+      handleSearch("")
     }
-  }, [searchKeyword]);
+
+    if (locationKeyword === "") {
+      handleLocationSearch("")
+    }
+  }, [searchKeyword, locationKeyword])
 
   return (
     <div className={styles.container}>
@@ -231,10 +256,12 @@ export default function EventsPage() {
           <AntSearch
             placeholder="搜索活动标题、描述..."
             allowClear
+            size="large"
             enterButton="搜索"
             value={searchKeyword}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setSearchKeyword(e.target.value)}
             onSearch={handleSearch}
+            onClear={() => handleSearch("")}
             loading={loading}
           />
         </div>
@@ -242,24 +269,59 @@ export default function EventsPage() {
           <Select
             size="large"
             placeholder="选择标签"
-            // allowClear
+            allowClear
+            style={{ width: 120 }}
             value={selectedTag || undefined}
             onChange={handleTagFilter}
           >
+            <Option value="">所有</Option>
             <Option value="技术分享">技术分享</Option>
             <Option value="工作坊">工作坊</Option>
             <Option value="AMA问答">AMA问答</Option>
             <Option value="社区活动">社区活动</Option>
           </Select>
-          <Select value={sortOrder} style={{ width: 100 }} onChange={handleSortChange}>
+          <Select size="large" value={sortOrder} style={{ width: 100 }} onChange={handleSortChange}>
             <Option value="desc">最新</Option>
             <Option value="asc">最早</Option>
           </Select>
-          <Button onClick={handleClearFilters}>清除筛选</Button>
-          <button className={styles.exportButton}>
-            <Download className={styles.buttonIcon} />
-            导出
-          </button>
+          <Select
+            placeholder="活动状态"
+            allowClear
+            size="large"
+            style={{ width: 120 }}
+            value={statusFilter || undefined}
+            onChange={handleStatusFilter}
+          >
+            <Option value="3">所有</Option>
+            <Option value="0">未开始</Option>
+            <Option value="1">进行中</Option>
+            <Option value="2">已结束</Option>
+          </Select>
+
+          <Select
+            size="large"
+            placeholder="活动形式"
+            allowClear
+            style={{ width: 120 }}
+            value={eventModeFilter}
+            onChange={handleEventModeFilter}
+          >
+            <Option value="">所有</Option>
+            <Option value="线上活动">线上活动</Option>
+            <Option value="线下活动">线下活动</Option>
+          </Select>
+
+          <div className={styles.locationSearch}>
+            <Input
+              size="large"
+              placeholder="活动地点"
+              allowClear
+              value={locationKeyword}
+              onChange={(e) => setLocationKeyword(e.target.value)}
+              onPressEnter={() => handleLocationSearch(locationKeyword)}
+            />
+          </div>
+          <Button size="large" onClick={handleClearFilters}>清除筛选</Button>
         </div>
       </div>
 
@@ -296,9 +358,11 @@ export default function EventsPage() {
           <div className={styles.emptyIcon}>📅</div>
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
-            {searchKeyword || selectedTag ? "没有找到符合条件的活动" : "还没有创建任何活动"}
+            {searchKeyword || selectedTag || statusFilter || locationKeyword || eventModeFilter
+              ? "没有找到符合条件的活动"
+              : "还没有创建任何活动"}
           </div>
-          {!searchKeyword && !selectedTag && (
+          {!searchKeyword && !selectedTag && !statusFilter && !locationKeyword && !eventModeFilter && (
             <Link href="/events/new" className={styles.createButton}>
               <Plus className={styles.buttonIcon} />
               创建第一个活动
@@ -308,102 +372,70 @@ export default function EventsPage() {
       ) : viewMode === "grid" ? (
         <div className={styles.eventsGrid}>
           {events.map((event) => (
-            <div key={event.id} className={styles.eventCard}>
-              <div className={styles.cardHeader}>
-                <div className={styles.cardHeaderTop}>
-                  <div className={styles.statusContainer}>
-                    <span className={`${styles.statusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</span>
-                    {event.featured && <Star className={styles.featuredIcon} />}
-                  </div>
-                  <div className={styles.cardMenu}>
-                    <button className={styles.menuButton}>
-                      <MoreHorizontal className={styles.menuIcon} />
-                    </button>
-                  </div>
-                </div>
+            <Card
+              key={event.id}
+              className={styles.eventCard}
+              cover={
+                <div className={styles.coverImageContainer}>
+                  <Image
+                    alt={event.title}
+                    src={event.cover_img || "/placeholder.svg?height=240&width=400&text=活动封面"}
+                    className={styles.coverImage}
+                    preview={false}
+                  />
+                  <div className={styles.cardContent}>
+                    {/* 状态标签 */}
+                    <div className={styles.cardHeaderTop}>
+                      <div className={styles.statusContainer}>
+                        <Tag className={`${styles.statusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</Tag>
+                        {event.featured && <Star className={styles.featuredIcon} />}
+                      </div>
+                      <button className={styles.menuButton}>
+                        <MoreHorizontal className={styles.menuIcon} />
+                      </button>
+                    </div>
 
-                <h3 className={styles.eventTitle}>{event.title}</h3>
-                <p className={styles.eventDescription}>{event.desc}</p>
+                    {/* 标题和时间 */}
+                    <div className={styles.mainContent}>
+                      <h3 className={styles.eventTitle}>{event.title}</h3>
 
-                {/* 分类标签 */}
-                <div className={styles.categoryContainer}>
-                  <span
-                    className={`${styles.categoryBadge} ${event.categary === "online" ? styles.online : styles.offline}`}
-                  >
-                    {event.categary === "online" ? (
-                      <Video className={styles.categoryIcon} />
-                    ) : (
-                      <MapPin className={styles.categoryIcon} />
-                    )}
-                    {getCategoryText(event.categary)}
-                  </span>
-                </div>
-              </div>
+                      <div className={styles.eventDetail}>
+                        <Calendar className={styles.detailIcon} />
+                        <span>{formatTime(event.start_time)}</span>
+                      </div>
 
-              <div className={styles.cardContent}>
-                <div className={styles.eventDetails}>
-                  <div className={styles.eventDetail}>
-                    <Calendar className={styles.detailIcon} />
-                    {formatTime(event.start_time)}
-                  </div>
-                  <div className={styles.eventDetail}>
-                    {event.categary === "online" ? (
-                      <>
+                      {/* 活动类型 */}
+                      <div className={styles.eventDetail}>
                         <Globe className={styles.detailIcon} />
-                        {event.link || "线上活动"}
-                      </>
-                    ) : (
-                      <>
-                        <MapPin className={styles.detailIcon} />
-                        {event.location || "未指定地点"}
-                      </>
-                    )}
-                  </div>
-                  <div className={styles.eventDetail}>
-                    <Users className={styles.detailIcon} />
-                    {event.participants || 0} 人参与
-                  </div>
-                </div>
+                        <span>{event.event_mode}</span>
+                      </div>
 
-                {/* 标签列表 */}
-                {event.tags && event.tags.length > 0 && (
-                  <div className={styles.tagsList}>
-                    <TagIcon className={styles.tagsIcon} />
-                    <div className={styles.tags}>
-                      {event.tags.map((tag: string, index: number) => (
-                        <Tag key={index} className={styles.tag}>
-                          {tag}
-                        </Tag>
-                      ))}
+                      {/* 标签列表 */}
+                      {event.tags && event.tags.length > 0 && (
+                        <div className={styles.tagsList}>
+                          <div className={styles.tags}>
+                            {event.tags.map((tag: string, index: number) => (
+                              <Tag key={index} className={styles.tag}>
+                                {tag}
+                              </Tag>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                )}
-
-                <div className={styles.cardActions}>
-                  <button className={styles.detailButton}>
-                    <Eye className={styles.buttonIcon} />
-                    了解详情
-                  </button>
-                  <div className={styles.actionGroup}>
-                    <Link href={`/events/${event.id}/edit`} className={styles.actionButton} title="编辑活动">
-                      <Edit className={styles.actionIcon} />
-                    </Link>
-                    <button className={styles.actionButton} title="分享活动">
-                      <Share2 className={styles.actionIcon} />
-                    </button>
-                    <button className={styles.actionButton} title="收藏活动">
-                      <Bookmark className={styles.actionIcon} />
-                    </button>
-                    <button className={styles.actionButton} title="外部链接">
-                      <ExternalLink className={styles.actionIcon} />
-                    </button>
-                    <button className={`${styles.actionButton} ${styles.deleteButton}`} title="删除活动">
-                      <Trash2 className={styles.actionIcon} />
-                    </button>
-                  </div>
                 </div>
+              }
+            >
+              {/* 卡片底部操作按钮 */}
+              <div className={styles.cardActions}>
+                <Button type="primary" icon={<Eye size={16} />} className={styles.detailButton}>
+                  了解详情
+                </Button>
+                <Button type="text" icon={<Edit size={16} />} className={styles.actionButton} />
+                <Button type="text" icon={<Share2 size={16} />} className={styles.actionButton} />
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (
@@ -419,8 +451,8 @@ export default function EventsPage() {
                 total={events.length}
                 pageSize={pageSize}
                 onChange={handlePageChange}
-                // showQuickJumper={false}
-                // size="small"
+                showQuickJumper={false}
+                size="small"
                 // showTotal={false}
                 className={styles.compactPagination}
               />
@@ -447,11 +479,11 @@ export default function EventsPage() {
                     </div>
                     <p className={styles.listEventDescription}>{event.desc}</p>
                     <div className={styles.eventCategory}>
-                      <span
-                        className={`${styles.categoryTag} ${event.categary === "online" ? styles.onlineTag : styles.offlineTag}`}
+                      <Tag
+                        className={`${styles.categoryTag} ${event.event_mode === "线上活动" ? styles.onlineTag : styles.offlineTag}`}
                       >
-                        {getCategoryText(event.categary)}
-                      </span>
+                        {event.event_mode}
+                      </Tag>
 
                       {/* 标签列表 */}
                       {event.tags && event.tags.length > 0 && (
@@ -469,15 +501,15 @@ export default function EventsPage() {
                 <div className={styles.listCell}>
                   <div className={styles.timeInfo}>
                     <div className={styles.dateTime}>
-                      <Clock className={styles.listIcon} />
-                      {formatTime(event.start_time)}
+                      <Calendar className={styles.listIcon} />
+                      <span>{formatTime(event.start_time)}</span>
                     </div>
                     {event.end_time && <div className={styles.time}>至 {formatTime(event.end_time)}</div>}
                   </div>
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.locationInfo}>
-                    {event.categary === "online" ? (
+                    {event.event_mode === "线上活动" ? (
                       <>
                         <Globe className={styles.listIcon} />
                         <span className={styles.locationText}>{event.link || "线上活动"}</span>
@@ -493,26 +525,41 @@ export default function EventsPage() {
                 <div className={styles.listCell}>
                   <div className={styles.participantsInfo}>
                     <Users className={styles.listIcon} />
-                    {event.participants || 0}
+                    <span>{event.participants || 0}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
-                  <span className={`${styles.listStatusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</span>
+                  <Tag className={`${styles.listStatusBadge} ${getStatusClass(event)}`}>
+                    {getStatusText(event)}
+                  </Tag>
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
-                    <button className={styles.listActionButton} title="查看详情">
-                      <Eye className={styles.listActionIcon} />
-                    </button>
-                    <Link href={`/events/${event.id}/edit`} className={styles.listActionButton} title="编辑活动">
-                      <Edit className={styles.listActionIcon} />
-                    </Link>
-                    <button className={styles.listActionButton} title="分享活动">
-                      <Share2 className={styles.listActionIcon} />
-                    </button>
-                    <button className={`${styles.listActionButton} ${styles.deleteButton}`} title="删除活动">
-                      <Trash2 className={styles.listActionIcon} />
-                    </button>
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<Eye className={styles.listActionIcon} />}
+                      title="查看详情"
+                    />
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<Edit className={styles.listActionIcon} />}
+                      title="编辑活动"
+                    />
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<Share2 className={styles.listActionIcon} />}
+                      title="分享活动"
+                    />
+                    <Button
+                      type="text"
+                      size="small"
+                      danger
+                      icon={<Trash2 className={styles.listActionIcon} />}
+                      title="删除活动"
+                    />
                   </div>
                 </div>
               </div>
@@ -527,7 +574,7 @@ export default function EventsPage() {
                 total={events.length}
                 pageSize={pageSize}
                 onChange={handlePageChange}
-                // showQuickJumper={true}
+                showQuickJumper={true}
                 showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
                 className={styles.fullPagination}
               />
@@ -545,53 +592,60 @@ export default function EventsPage() {
             pageSize={pageSize}
             onChange={handlePageChange}
             onShowSizeChange={handlePageChange}
-            // showQuickJumper={true}
+            showQuickJumper={true}
             showSizeChanger={true}
             showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
             className={styles.fullPagination}
-            // loading={loading}
           />
         </div>
       )}
 
       {/* Stats Section */}
       <div className={styles.statsSection}>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>
-            <Calendar className={styles.statIconSvg} />
-          </div>
+        <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statNumber}>12</div>
-            <div className={styles.statLabel}>本月活动</div>
+            <div className={styles.statIcon}>
+              <Calendar className={styles.statIconSvg} />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statNumber}>12</div>
+              <div className={styles.statLabel}>本月活动</div>
+            </div>
           </div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>
-            <Users className={styles.statIconSvg} />
-          </div>
+        </Card>
+        <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statNumber}>1,234</div>
-            <div className={styles.statLabel}>总参与人数</div>
+            <div className={styles.statIcon}>
+              <Users className={styles.statIconSvg} />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statNumber}>1,234</div>
+              <div className={styles.statLabel}>总参与人数</div>
+            </div>
           </div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>
-            <Globe className={styles.statIconSvg} />
-          </div>
+        </Card>
+        <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statNumber}>8</div>
-            <div className={styles.statLabel}>线上活动</div>
+            <div className={styles.statIcon}>
+              <Globe className={styles.statIconSvg} />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statNumber}>8</div>
+              <div className={styles.statLabel}>线上活动</div>
+            </div>
           </div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>
-            <MapPin className={styles.statIconSvg} />
-          </div>
+        </Card>
+        <Card className={styles.statCard}>
           <div className={styles.statContent}>
-            <div className={styles.statNumber}>4</div>
-            <div className={styles.statLabel}>线下活动</div>
+            <div className={styles.statIcon}>
+              <MapPin className={styles.statIconSvg} />
+            </div>
+            <div className={styles.statInfo}>
+              <div className={styles.statNumber}>4</div>
+              <div className={styles.statLabel}>线下活动</div>
+            </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   )

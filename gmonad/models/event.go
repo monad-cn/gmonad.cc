@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -10,15 +11,21 @@ import (
 
 type Event struct {
 	gorm.Model
-	Title       string         `json:"title"`
-	Description string         `json:"description"`
-	Categary    string         `json:"categary"`
-	Location    string         `json:"location"`
-	Link        string         `json:"link"`
-	StartTime   time.Time      `json:"start_time"`
-	EndTime     time.Time      `json:"end_time"`
-	CoverImg    string         `json:"cover_img"`
-	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
+	Title                string         `json:"title"`
+	Description          string         `json:"description"`
+	EventMode            string         `json:"event_mode"`
+	EventType            string         `json:"event_type"`
+	Location             string         `json:"location"`
+	Link                 string         `json:"link"`
+	RequiresRegistration bool           `json:"requires_registration"`
+	RegistrationUrl      string         `json:"registration_url"`
+	StartTime            time.Time      `json:"start_time"`
+	EndTime              time.Time      `json:"end_time"`
+	CoverImg             string         `json:"cover_img"`
+	Tags                 pq.StringArray `gorm:"type:text[]" json:"tags"`
+	Attendance           uint           `json:"attendance"`
+	Status               uint           `gorm:"default:0" json:"status"`         // 0: 未开始，1: 进行中 2: 已结束 TODO: 定时器更新状态？
+	PublishStatus        uint           `gorm:"default:0" json:"publish_status"` // 0: 待审核 1: 已发布 2: 审核不通过
 }
 
 func (e *Event) Create() error {
@@ -46,12 +53,17 @@ func (e *Event) Delete() error {
 type EventFilter struct {
 	Keyword   string // 标题或描述关键词
 	Tag       string // 包含某个 tag
-	OrderDesc bool   // 是否按创建时间倒序
-	Page      int    // 当前页码，从 1 开始
-	PageSize  int    // 每页数量，建议默认 10
+	Location  string
+	EventMode string
+	OrderDesc bool // 是否按创建时间倒序
+	Page      int  // 当前页码，从 1 开始
+	PageSize  int  // 每页数量，建议默认 10
+	Status    int
 }
 
 func QueryEvents(filter EventFilter) ([]Event, int64, error) {
+	fmt.Println(filter)
+
 	var events []Event
 	var total int64
 
@@ -64,6 +76,18 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	if filter.Tag != "" {
 		query = query.Where("? = ANY (tags)", filter.Tag)
+	}
+
+	if filter.EventMode != "" {
+		query = query.Where("event_mode = ?", filter.EventMode)
+	}
+
+	if filter.Status != 3 {
+		query = query.Where("status = ?", filter.Status)
+	}
+
+	if filter.Location != "" {
+		query = query.Where("location LIKE  ?", "%"+filter.Location+"%")
 	}
 
 	// 统计总数（不加 limit 和 offset）

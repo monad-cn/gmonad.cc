@@ -27,26 +27,26 @@ import {
   Plus,
   X,
   RotateCcw,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import styles from './new.module.css';
-import { /**apiClient */ createEvent } from '../api/event';
+} from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import styles from "./new.module.css"
+import { createEvent } from "../api/event"
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
 export default function NewEventPage() {
-  const [form] = Form.useForm();
-  const router = useRouter();
-  const [eventType, setEventType] = useState<'online' | 'offline'>('online');
-  const [tags, setTags] = useState<string[]>(['技术分享']);
-  const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form] = Form.useForm()
+  const router = useRouter()
+  const [eventMode, setEventMode] = useState<"线上活动" | "线下活动">("线上活动")
+  const [tags, setTags] = useState<string[]>(["技术分享"])
+  const [inputVisible, setInputVisible] = useState(false)
+  const [inputValue, setInputValue] = useState("")
+  const [coverImage, setCoverImage] = useState<UploadFile | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // 格式化时间为字符串
   const formatDateTime = (date: any, time: any) => {
@@ -60,8 +60,6 @@ export default function NewEventPage() {
   // 富文本处理
   const handleQuillEditorChange = (value: string) => {
     form.setFieldValue('description', value);
-    // console.log('富文本内容:', value);
-    // console.log(form);
   };
 
   const handleSubmit = async (values: any) => {
@@ -74,8 +72,8 @@ export default function NewEventPage() {
         ...values,
         tags: tags, // 添加标签数据
         coverImage: coverImage, // 添加封面图片
-        eventType: eventType, // 确保活动类型被包含
-      };
+        eventMode: eventMode, // 确保活动类型被包含
+      }
 
       console.log('完整表单数据:', formData);
       console.log('标签数据:', tags);
@@ -83,11 +81,11 @@ export default function NewEventPage() {
       console.log(values);
 
       const createEventRequest = {
-        title: values.title || '',
-        desc: values.description || '',
-        categary: eventType, // online 或 offline
-        location: eventType === 'offline' ? values.location || '' : '',
-        link: eventType === 'online' ? values.location || '' : '',
+        title: values.title || "",
+        desc: values.description || "",
+        event_mode: eventMode, // online 或 offline
+        location: eventMode === "线下活动" ? values.location || "" : "",
+        link: eventMode === "线上活动" ? values.location || "" : "",
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
@@ -101,13 +99,8 @@ export default function NewEventPage() {
       console.log('创建事件结果:', result);
 
       if (result.success) {
-        message.success({
-          content: result.message || '活动创建成功！',
-          duration: 2,
-          onClose: () => {
-            router.push('/events');
-          },
-        });
+        message.success(result.message)
+        router.push("/events")
       } else {
         message.error(result.message || '创建活动失败');
       }
@@ -226,7 +219,7 @@ export default function NewEventPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/" className={styles.backButton}>
+        <Link href="/events" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回活动列表
         </Link>
@@ -242,7 +235,7 @@ export default function NewEventPage() {
         onFinish={handleSubmit}
         className={styles.form}
         initialValues={{
-          eventType: 'online',
+          eventMode: "线上活动",
           publishImmediately: true,
         }}
       >
@@ -274,23 +267,15 @@ export default function NewEventPage() {
                   onChange={handleQuillEditorChange}
                 />
               </Form.Item>
-
-              <Form.Item
-                label="活动类型"
-                name="eventType"
-                rules={[{ required: true, message: '请选择活动类型' }]}
-              >
-                <Radio.Group
-                  onChange={(e) => setEventType(e.target.value)}
-                  className={styles.radioGroup}
-                >
-                  <Radio value="online" className={styles.radioOption}>
+              <Form.Item label="活动形式" name="eventMode" rules={[{ required: true, message: "请选择活动形式" }]}>
+                <Radio.Group onChange={(e) => setEventMode(e.target.value)} className={styles.radioGroup}>
+                  <Radio value="线上活动" className={styles.radioOption}>
                     <div className={styles.radioContent}>
                       <Video className={styles.radioIcon} />
                       <span className={styles.radioText}>线上活动</span>
                     </div>
                   </Radio>
-                  <Radio value="offline" className={styles.radioOption}>
+                  <Radio value="线下活动" className={styles.radioOption}>
                     <div className={styles.radioContent}>
                       <MapPin className={styles.radioIcon} />
                       <span className={styles.radioText}>线下活动</span>
@@ -334,29 +319,18 @@ export default function NewEventPage() {
               </div>
 
               <Form.Item
-                label={eventType === 'online' ? '活动链接' : '活动地址'}
+                label={eventMode === "线上活动" ? "活动链接" : "活动地址"}
                 name="location"
-                rules={[
-                  {
-                    required: true,
-                    message: `请输入${
-                      eventType === 'online' ? '活动链接' : '活动地址'
-                    }`,
-                  },
-                ]}
+                rules={[{ required: true, message: `请输入${eventMode === "线上活动" ? "活动链接" : "活动地址"}` }]}
               >
                 <div className={styles.inputWithIcon}>
-                  {eventType === 'online' ? (
+                  {eventMode === "线上活动" ? (
                     <Globe className={styles.inputIcon} />
                   ) : (
                     <MapPin className={styles.inputIcon} />
                   )}
                   <Input
-                    placeholder={
-                      eventType === 'online'
-                        ? '请输入会议链接或直播地址'
-                        : '请输入详细地址'
-                    }
+                    placeholder={eventMode === "线上活动" ? "请输入会议链接" : "请输入详细地址"}
                     className={styles.inputWithIconField}
                   />
                 </div>

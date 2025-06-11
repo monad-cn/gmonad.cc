@@ -5,7 +5,7 @@ import "gmonad/models"
 type CreateEventRequest struct {
 	Title     string   `json:"title" binding:"required"`
 	Desc      string   `json:"desc" binding:"required"`
-	Categary  string   `json:"categary" binding:"required"`
+	EventMode string   `json:"event_mode" binding:"required"`
 	Location  string   `json:"location"`
 	Link      string   `json:"link"`
 	StartTime string   `json:"start_time" binding:"required"`

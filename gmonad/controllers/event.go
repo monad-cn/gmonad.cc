@@ -24,7 +24,7 @@ func CreateEvent(c *gin.Context) {
 	var event = models.Event{
 		Title:       req.Title,
 		Description: req.Desc,
-		Categary:    req.Categary,
+		EventMode:   req.EventMode,
 		Location:    req.Location,
 		Link:        req.Link,
 		StartTime:   startT,
@@ -39,26 +39,30 @@ func CreateEvent(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "创建成功",
-		"data":    event,
-	})
+	utils.SuccessResponse(c, http.StatusOK, "create success", event)
 }
 
 func QueryEvents(c *gin.Context) {
 	keyword := c.Query("keyword")
 	tag := c.Query("tag")
+	location := c.Query("location")
+	eventMode := c.Query("event_mode")
 	order := c.DefaultQuery("order", "desc")
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+
+	status, _ := strconv.Atoi(c.DefaultQuery("status", "0"))
 
 	filter := models.EventFilter{
 		Keyword:   keyword,
 		Tag:       tag,
+		Location:  location,
+		EventMode: eventMode,
 		OrderDesc: order == "desc",
 		Page:      page,
 		PageSize:  pageSize,
+		Status:    status,
 	}
 
 	events, total, err := models.QueryEvents(filter)
