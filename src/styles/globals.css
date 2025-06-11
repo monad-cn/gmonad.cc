@@ -42,3 +42,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.ql-container {
+  min-height: 150px;
+}
