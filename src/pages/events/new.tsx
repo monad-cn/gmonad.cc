@@ -31,7 +31,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
-import { apiClient, createEvent } from '../api/event';
+import { /**apiClient */ createEvent } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
 const { TextArea } = Input;
@@ -60,8 +60,8 @@ export default function NewEventPage() {
   // 富文本处理
   const handleQuillEditorChange = (value: string) => {
     form.setFieldValue('description', value);
-    console.log('富文本内容:', value);
-    console.log(form);
+    // console.log('富文本内容:', value);
+    // console.log(form);
   };
 
   const handleSubmit = async (values: any) => {
