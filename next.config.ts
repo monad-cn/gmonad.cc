@@ -20,7 +20,15 @@ const nextConfig: NextConfig = {
     'rc-input',
   ],
   images: {
-    domains: ['res.cloudinary.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
+  },
+  cloudinary: {
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'gmonadcc',
   },
 };
 

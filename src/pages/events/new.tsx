@@ -27,26 +27,31 @@ import {
   Plus,
   X,
   RotateCcw,
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import styles from "./new.module.css"
-import { createEvent } from "../api/event"
+} from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import styles from './new.module.css';
+import { createEvent } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
+
+import { uploadImgToCloud } from '@/utils/cloudinary';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
 export default function NewEventPage() {
-  const [form] = Form.useForm()
-  const router = useRouter()
-  const [eventMode, setEventMode] = useState<"线上活动" | "线下活动">("线上活动")
-  const [tags, setTags] = useState<string[]>(["技术分享"])
-  const [inputVisible, setInputVisible] = useState(false)
-  const [inputValue, setInputValue] = useState("")
-  const [coverImage, setCoverImage] = useState<UploadFile | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [form] = Form.useForm();
+  const router = useRouter();
+  const [eventMode, setEventMode] = useState<'线上活动' | '线下活动'>(
+    '线上活动'
+  );
+  const [tags, setTags] = useState<string[]>(['技术分享']);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cover_img, setCoverImg] = useState<string>('');
 
   // 格式化时间为字符串
   const formatDateTime = (date: any, time: any) => {
@@ -73,7 +78,7 @@ export default function NewEventPage() {
         tags: tags, // 添加标签数据
         coverImage: coverImage, // 添加封面图片
         eventMode: eventMode, // 确保活动类型被包含
-      }
+      };
 
       console.log('完整表单数据:', formData);
       console.log('标签数据:', tags);
@@ -81,15 +86,15 @@ export default function NewEventPage() {
       console.log(values);
 
       const createEventRequest = {
-        title: values.title || "",
-        desc: values.description || "",
+        title: values.title || '',
+        desc: values.description || '',
         event_mode: eventMode, // online 或 offline
-        location: eventMode === "线下活动" ? values.location || "" : "",
-        link: eventMode === "线上活动" ? values.location || "" : "",
+        location: eventMode === '线下活动' ? values.location || '' : '',
+        link: eventMode === '线上活动' ? values.location || '' : '',
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
-        cover_img: 'dfgd',
+        cover_img: cover_img,
         tags: tags,
       };
 
@@ -99,8 +104,8 @@ export default function NewEventPage() {
       console.log('创建事件结果:', result);
 
       if (result.success) {
-        message.success(result.message)
-        router.push("/events")
+        message.success(result.message);
+        router.push('/events');
       } else {
         message.error(result.message || '创建活动失败');
       }
@@ -198,7 +203,7 @@ export default function NewEventPage() {
     multiple: false,
     accept: 'image/*',
     showUploadList: false,
-    beforeUpload: (file) => {
+    beforeUpload: async (file) => {
       const isImage = file.type.startsWith('image/');
       if (!isImage) {
         message.error('只能上传图片文件!');
@@ -211,7 +216,16 @@ export default function NewEventPage() {
         return false;
       }
 
-      return false; // 阻止自动上传
+      const res = await uploadImgToCloud(file);
+
+      if (!res) {
+        message.error('图片上传失败，请重试');
+        return false;
+      } else {
+        // 如果上传成功，设置表单值
+        setCoverImg(res as string);
+        return true;
+      }
     },
     onChange: handleImageChange,
   };
@@ -235,7 +249,7 @@ export default function NewEventPage() {
         onFinish={handleSubmit}
         className={styles.form}
         initialValues={{
-          eventMode: "线上活动",
+          eventMode: '线上活动',
           publishImmediately: true,
         }}
       >
@@ -267,8 +281,15 @@ export default function NewEventPage() {
                   onChange={handleQuillEditorChange}
                 />
               </Form.Item>
-              <Form.Item label="活动形式" name="eventMode" rules={[{ required: true, message: "请选择活动形式" }]}>
-                <Radio.Group onChange={(e) => setEventMode(e.target.value)} className={styles.radioGroup}>
+              <Form.Item
+                label="活动形式"
+                name="eventMode"
+                rules={[{ required: true, message: '请选择活动形式' }]}
+              >
+                <Radio.Group
+                  onChange={(e) => setEventMode(e.target.value)}
+                  className={styles.radioGroup}
+                >
                   <Radio value="线上活动" className={styles.radioOption}>
                     <div className={styles.radioContent}>
                       <Video className={styles.radioIcon} />
@@ -319,18 +340,27 @@ export default function NewEventPage() {
               </div>
 
               <Form.Item
-                label={eventMode === "线上活动" ? "活动链接" : "活动地址"}
+                label={eventMode === '线上活动' ? '活动链接' : '活动地址'}
                 name="location"
-                rules={[{ required: true, message: `请输入${eventMode === "线上活动" ? "活动链接" : "活动地址"}` }]}
+                rules={[
+                  {
+                    required: true,
+                    message: `请输入${eventMode === '线上活动' ? '活动链接' : '活动地址'}`,
+                  },
+                ]}
               >
                 <div className={styles.inputWithIcon}>
-                  {eventMode === "线上活动" ? (
+                  {eventMode === '线上活动' ? (
                     <Globe className={styles.inputIcon} />
                   ) : (
                     <MapPin className={styles.inputIcon} />
                   )}
                   <Input
-                    placeholder={eventMode === "线上活动" ? "请输入会议链接" : "请输入详细地址"}
+                    placeholder={
+                      eventMode === '线上活动'
+                        ? '请输入会议链接'
+                        : '请输入详细地址'
+                    }
                     className={styles.inputWithIconField}
                   />
                 </div>
