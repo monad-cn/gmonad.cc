@@ -86,6 +86,7 @@ export default function NewEventPage() {
       console.log('标签数据:', tags);
       console.log('封面图片:', coverImage);
       console.log(values);
+      console.log('description:', formData.description);
 
       const createEventRequest = {
         title: values.title || '',
@@ -96,9 +97,11 @@ export default function NewEventPage() {
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
-        cover_img: cloudinaryImg.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url?.split('upload/')[1] || '',
         tags: tags,
       };
+
+      console.log(createEventRequest);
 
       // 调用创建事件接口
       const result = await createEvent(createEventRequest);
@@ -202,6 +205,9 @@ export default function NewEventPage() {
           message.error('图片上传失败，请重试');
           return;
         } else {
+          // set coverImage info
+          setCloudinaryImg(res);
+
           const reader = new FileReader();
           reader.onload = (e) => {
             setPreviewUrl(e.target?.result as string);
@@ -237,7 +243,7 @@ export default function NewEventPage() {
         message.error('图片上传失败，请重试');
         return false;
       } else {
-        // 如果上传成功，设置表单值
+        // set coverImage info
         setCloudinaryImg(res);
         return true;
       }
