@@ -1,9 +1,15 @@
 import { message } from 'antd';
-const CLOUDINARY = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
+const CLOUDINARY_UPLOAD = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
+const CLOUDINARY_DELETE = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/destroy`;
 
-async function uploadImgToCloud(file: File): Promise<string | boolean> {
+/**
+ * 上传图片到 Cloudinary
+ * @param file - 要上传的图片文件
+ * @returns
+ */
+async function uploadImgToCloud(file: File) {
   // 获取签名
-  const signResponse = await fetch('/api/cloudinary-sign');
+  const signResponse = await fetch('/api/cloudinary/cloudinary-sign');
   const { signature, timestamp } = await signResponse.json();
 
   const formData = new FormData();
@@ -17,16 +23,15 @@ async function uploadImgToCloud(file: File): Promise<string | boolean> {
   );
 
   try {
-    const response = await fetch(CLOUDINARY, {
+    const response = await fetch(CLOUDINARY_UPLOAD, {
       method: 'POST',
       body: formData,
     });
 
     const result = await response.json();
-    console.log('图片上传结果：', result);
 
     if (result.secure_url) {
-      return Promise.resolve(result.secure_url); // 返回图片的 URL
+      return Promise.resolve(result); // 返回包含图片信息的对象
     } else {
       message.error('图片上传失败，请重试');
       return Promise.reject(false);
@@ -38,4 +43,57 @@ async function uploadImgToCloud(file: File): Promise<string | boolean> {
   }
 }
 
-export { uploadImgToCloud };
+/**
+ * 删除coludinary上的图片
+ */
+async function deleteImgFromCloud(publicId: string): Promise<boolean> {
+  try {
+    // 获取签名
+    const signResponse = await fetch(
+      '/api/cloudinary/cloudinary-sign-destroy',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publicId }),
+      }
+    );
+    const {
+      signature,
+      timestamp,
+    }: {
+      signature: string;
+      timestamp: number;
+    } = await signResponse.json();
+
+    // 调用 Destroy API
+    const response = await fetch(CLOUDINARY_DELETE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        public_id: publicId,
+        api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+        signature,
+        timestamp,
+        invalidate: true, // 添加缓存失效标志
+      }),
+    });
+
+    const data: {
+      message?: string;
+      error?: string;
+    } = await response.json();
+
+    if (response.ok && data.message === 'ok') {
+      message.success('图片删除成功！');
+
+      return true;
+    } else {
+      throw new Error(data.error || '删除失败');
+    }
+  } catch (error) {
+    message.error(`图片删除失败：${(error as Error).message}`);
+    return false;
+  }
+}
+
+export { uploadImgToCloud, deleteImgFromCloud };

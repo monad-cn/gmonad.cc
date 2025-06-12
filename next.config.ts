@@ -27,9 +27,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  cloudinary: {
-    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'gmonadcc',
-  },
 };
 
 export default nextConfig;

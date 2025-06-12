@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Form,
   Input,
@@ -34,7 +34,7 @@ import styles from './new.module.css';
 import { createEvent } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
-import { uploadImgToCloud } from '@/utils/cloudinary';
+import { uploadImgToCloud, deleteImgFromCloud } from '@/utils/cloudinary';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -51,7 +51,7 @@ export default function NewEventPage() {
   const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [cover_img, setCoverImg] = useState<string>('');
+  const [cloudinaryImg, setCloudinaryImg] = useState<any>();
 
   // 格式化时间为字符串
   const formatDateTime = (date: any, time: any) => {
@@ -63,9 +63,11 @@ export default function NewEventPage() {
   };
 
   // 富文本处理
-  const handleQuillEditorChange = (value: string) => {
-    form.setFieldValue('description', value);
-  };
+  const handleQuillEditorChange = useCallback(() => {
+    (value: string) => {
+      form.setFieldValue('description', value);
+    };
+  }, []);
 
   const handleSubmit = async (values: any) => {
     try {
@@ -94,7 +96,7 @@ export default function NewEventPage() {
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
-        cover_img: cover_img,
+        cover_img: cloudinaryImg.secure_url || '',
         tags: tags,
       };
 
@@ -156,7 +158,14 @@ export default function NewEventPage() {
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = async () => {
+    // TODO : 删除uid问题导致401
+    // const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
+    // if (!res) {
+    //   message.error('图片删除失败，请重试');
+    //   return;
+    // }
+
     setCoverImage(null);
     setPreviewUrl('');
     form.setFieldValue('cover', undefined);
@@ -168,7 +177,7 @@ export default function NewEventPage() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         // 创建一个符合 UploadFile 接口的对象
@@ -188,11 +197,17 @@ export default function NewEventPage() {
         setCoverImage(uploadFile);
         console.log('更换图片:', uploadFile);
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setPreviewUrl(e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
+        const res = await uploadImgToCloud(file);
+        if (!res) {
+          message.error('图片上传失败，请重试');
+          return;
+        } else {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            setPreviewUrl(e.target?.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
       }
     };
     input.click();
@@ -223,7 +238,7 @@ export default function NewEventPage() {
         return false;
       } else {
         // 如果上传成功，设置表单值
-        setCoverImg(res as string);
+        setCloudinaryImg(res);
         return true;
       }
     },
