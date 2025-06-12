@@ -97,7 +97,7 @@ export default function NewEventPage() {
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
-        cover_img: cloudinaryImg?.secure_url?.split('upload/')[1] || '',
+        cover_img: cloudinaryImg?.secure_url,
         tags: tags,
       };
 
