@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Pagination, Input, Select, Button, Tag, Card, Image } from "antd"
+import { Pagination, Input, Select, Button, Tag, Card, Image, Popconfirm, message } from "antd"
 import dayjs from "dayjs"
 import {
   Calendar,
@@ -18,10 +18,13 @@ import {
   LayoutGrid,
   List,
   Search,
+  ExternalLink,
+  X,
 } from "lucide-react"
 import Link from "next/link"
 import styles from "./index.module.css"
-import { getEvents } from "../api/event"
+import { getEvents, deleteEvent } from "../api/event"
+import router from "next/router"
 
 const { Search: AntSearch } = Input
 const { Option } = Select
@@ -35,7 +38,7 @@ export function formatTime(isoTime: string): string {
 export default function EventsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid")
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(6)
   const [events, setEvents] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -82,7 +85,7 @@ export default function EventsPage() {
         if (result.data.events && Array.isArray(result.data.events)) {
           setEvents(result.data.events)
           setCurrentPage(result.data.page || 1)
-          setPageSize(result.data.page_size || 10)
+          setPageSize(result.data.page_size || 6)
           setTotal(result.data.total || result.data.events.length)
         } else if (Array.isArray(result.data)) {
           setEvents(result.data)
@@ -156,6 +159,9 @@ export default function EventsPage() {
     await loadEvents({ page, page_size: size || pageSize })
   }
 
+
+
+
   // 清除筛选
   const handleClearFilters = async () => {
     setSearchKeyword("")
@@ -180,6 +186,7 @@ export default function EventsPage() {
   useEffect(() => {
     loadEvents()
   }, [])
+
 
   // 计算当前显示的事件
   const startIndex = (currentPage - 1) * pageSize + 1
@@ -218,6 +225,59 @@ export default function EventsPage() {
       return styles.upcoming
     }
   }
+
+  const handleDeleteEvent = async (id: number) => {
+    // 调用创建事件接口
+    try {
+      const result = await deleteEvent(id);
+      if (result.success) {
+        message.success(result.message)
+        loadEvents()
+      } else {
+        message.error(result.message || '创建活动失败');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  }
+
+  // 渲染卡片封面
+  const renderCardCover = (event: any) => {
+    return (
+      <div className={styles.cardCover}>
+        <Image
+          src={event.cover_img || "/placeholder.svg?height=200&width=400&text=活动封面"}
+          alt={event.title}
+          preview={false}
+          className={styles.coverImage}
+        />
+        <div className={styles.coverOverlay}>
+          <Tag className={`${styles.statusTag}`} bordered={false}>
+            {getStatusClass(event.status)}
+          </Tag>
+          {event.featured && (
+            <div className={styles.featuredBadge}>
+              <Star size={14} fill="currentColor" />
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // 渲染卡片操作
+  const renderCardActions = () => [
+    <Button key="view" type="text" icon={<Eye size={16} />} className={styles.actionButton} title="查看详情" />,
+    <Button key="edit" type="text" icon={<Edit size={16} />} className={styles.actionButton} title="编辑" />,
+    <Button key="share" type="text" icon={<Share2 size={16} />} className={styles.actionButton} title="分享" />,
+    <Button
+      key="external"
+      type="text"
+      icon={<ExternalLink size={16} />}
+      className={styles.actionButton}
+      title="跳转"
+    />,
+  ]
 
   useEffect(() => {
     if (searchKeyword === "") {
@@ -372,92 +432,88 @@ export default function EventsPage() {
       ) : viewMode === "grid" ? (
         <div className={styles.eventsGrid}>
           {events.map((event) => (
-            <Card
-              key={event.id}
-              className={styles.eventCard}
-              cover={
-                <div className={styles.coverImageContainer}>
-                  <Image
-                    alt={event.title}
-                    src={event.cover_img || "/placeholder.svg?height=240&width=400&text=活动封面"}
-                    className={styles.coverImage}
-                    preview={false}
-                  />
-                  <div className={styles.cardContent}>
-                    {/* 状态标签 */}
-                    <div className={styles.cardHeaderTop}>
-                      <div className={styles.statusContainer}>
-                        <Tag className={`${styles.statusBadge} ${getStatusClass(event)}`}>{getStatusText(event)}</Tag>
-                        {event.featured && <Star className={styles.featuredIcon} />}
+            <Link href={`/events/${event.ID}`} key={event.ID} className={styles.cardLink}>
+              <Card
+                className={styles.eventCard}
+                cover={
+                  <div className={styles.cardCover}>
+                    <Image
+                      alt={event.title}
+                      src={event.cover_img || "/placeholder.svg?height=240&width=400&text=活动封面"}
+                      className={styles.coverImage}
+                      preview={false}
+                    />
+                    <div className={styles.coverOverlay}>
+                      <Tag className={`${styles.statusTag} ${getStatusClass(event)}`}>{getStatusText(event)}</Tag>
+                      <div className={styles.cardActions}>
+                        <button
+                          className={styles.actionIconButton}
+                          onClick={(e) => {
+                            e.preventDefault() /* 编辑逻辑 */
+                          }}
+                          title="编辑活动"
+                        >
+                          <Edit className={styles.actionIcon} />
+                        </button>
+                        <button
+                          className={styles.actionIconButton}
+                          onClick={(e) => {
+                            e.preventDefault() /* 分享逻辑 */
+                          }}
+                          title="分享活动"
+                        >
+                          <Share2 className={styles.actionIcon} />
+                        </button>
+                        <Link href={event.twitter || ''}>
+                          <button
+                            className={styles.actionIconButton}
+                            onClick={(e) => {
+                              e.preventDefault() 
+                            }}
+                            title="查看推文"
+                          >
+                            <X className={styles.actionIcon} />
+                          </button>
+                        </Link>
                       </div>
-                      <button className={styles.menuButton}>
-                        <MoreHorizontal className={styles.menuIcon} />
-                      </button>
-                    </div>
-
-                    {/* 标题和时间 */}
-                    <div className={styles.mainContent}>
-                      <h3 className={styles.eventTitle}>{event.title}</h3>
-
-                      <div className={styles.eventDetail}>
-                        <Calendar className={styles.detailIcon} />
-                        <span>{formatTime(event.start_time)}</span>
-                      </div>
-
-                      {/* 活动类型 */}
-                      <div className={styles.eventDetail}>
-                        <Globe className={styles.detailIcon} />
-                        <span>{event.event_mode}</span>
-                      </div>
-
-                      {/* 标签列表 */}
-                      {event.tags && event.tags.length > 0 && (
-                        <div className={styles.tagsList}>
-                          <div className={styles.tags}>
-                            {event.tags.map((tag: string, index: number) => (
-                              <Tag key={index} className={styles.tag}>
-                                {tag}
-                              </Tag>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
+                }
+                bordered={false}
+              >
+                <div className={styles.cardBody}>
+                  <h3 className={styles.eventTitle}>{event.title}</h3>
+
+                  <div className={styles.cardMeta}>
+                    <div className={styles.metaItem}>
+                      <Calendar className={styles.metaIcon} />
+                      <span>{formatTime(event.start_time)}</span>
+                    </div>
+                    <div className={styles.metaItem}>
+                      <Globe className={styles.metaIcon} />
+                      <span>{event.event_mode}</span>
+                    </div>
+                  </div>
+
+                  {event.tags && event.tags.length > 0 && (
+                    <div className={styles.cardTags}>
+                      {event.tags.slice(0, 3).map((tag: string, index: number) => (
+                        <Tag key={index} className={styles.eventTag}>
+                          {tag}
+                        </Tag>
+                      ))}
+                      {event.tags.length > 3 && <Tag className={styles.moreTag}>+{event.tags.length - 3}</Tag>}
+                    </div>
+                  )}
                 </div>
-              }
-            >
-              {/* 卡片底部操作按钮 */}
-              <div className={styles.cardActions}>
-                <Button type="primary" icon={<Eye size={16} />} className={styles.detailButton}>
-                  了解详情
-                </Button>
-                <Button type="text" icon={<Edit size={16} />} className={styles.actionButton} />
-                <Button type="text" icon={<Share2 size={16} />} className={styles.actionButton} />
-              </div>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
+
       ) : (
         <div className={styles.listViewContainer}>
           {/* Top Pagination for List View */}
-          <div className={styles.listTopControls}>
-            <div className={styles.listInfo}>
-              <span className={styles.listInfoText}>共 {events.length} 个活动</span>
-            </div>
-            <div className={styles.topPagination}>
-              <Pagination
-                current={currentPage}
-                total={events.length}
-                pageSize={pageSize}
-                onChange={handlePageChange}
-                showQuickJumper={false}
-                size="small"
-                // showTotal={false}
-                className={styles.compactPagination}
-              />
-            </div>
-          </div>
 
           {/* Events List */}
           <div className={styles.eventsList}>
@@ -553,53 +609,43 @@ export default function EventsPage() {
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
-                    <Button
-                      type="text"
-                      size="small"
-                      danger
-                      icon={<Trash2 className={styles.listActionIcon} />}
+                    <Popconfirm
                       title="删除活动"
-                    />
+                      description="你确定删除这个活动吗？"
+                      okText="是"
+                      cancelText="否"
+                      onConfirm={() => handleDeleteEvent(event.ID)}
+                    >
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        icon={<Trash2 className={styles.listActionIcon} />}
+                        title="删除活动"
+                      />
+                    </Popconfirm>
+
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Bottom Pagination for List View */}
-          <div className={styles.listBottomControls}>
-            <div className={styles.bottomPagination}>
-              <Pagination
-                current={currentPage}
-                total={events.length}
-                pageSize={pageSize}
-                onChange={handlePageChange}
-                showQuickJumper={true}
-                showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
-                className={styles.fullPagination}
-              />
-            </div>
-          </div>
         </div>
       )}
 
-      {/* Pagination for Grid View */}
-      {viewMode === "grid" && (
-        <div className={styles.paginationSection}>
+      <div className={styles.listBottomControls}>
+        <div className={styles.bottomPagination}>
           <Pagination
             current={currentPage}
-            total={total}
+            total={events.length}
             pageSize={pageSize}
             onChange={handlePageChange}
-            onShowSizeChange={handlePageChange}
             showQuickJumper={true}
-            showSizeChanger={true}
             showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
             className={styles.fullPagination}
           />
         </div>
-      )}
-
+      </div>
       {/* Stats Section */}
       <div className={styles.statsSection}>
         <Card className={styles.statCard}>
