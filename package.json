@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/third-parties": "^15.3.3",
     "antd": "^5.25.4",
     "cloudinary": "^2.6.1",
     "dayjs": "^1.11.13",
