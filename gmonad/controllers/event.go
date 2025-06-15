@@ -31,6 +31,7 @@ func CreateEvent(c *gin.Context) {
 		EndTime:     endT,
 		CoverImg:    req.CoverImg,
 		Tags:        req.Tags,
+		Twitter:     req.Twitter,
 	}
 
 	// 创建数据库记录
@@ -50,7 +51,7 @@ func QueryEvents(c *gin.Context) {
 	order := c.DefaultQuery("order", "desc")
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
 
 	status, _ := strconv.Atoi(c.DefaultQuery("status", "0"))
 
@@ -79,4 +80,69 @@ func QueryEvents(c *gin.Context) {
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "query success", response)
+}
+
+func DeleteEvent(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+	var event models.Event
+	event.ID = uint(id)
+
+	if err = event.GetByID(uint(id)); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid Event", nil)
+		return
+	}
+
+	if err := event.Delete(); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to delete event", nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "delete success", nil)
+}
+
+func UpdateEvent(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	var req UpdateEventRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid input data", nil)
+		return
+	}
+
+	var event models.Event
+	event.ID = uint(id)
+
+	if err = event.GetByID(uint(id)); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid Event", nil)
+		return
+	}
+
+	startT, _ := utils.ParseTime(req.StartTime)
+	endT, _ := utils.ParseTime(req.EndTime)
+
+	event.Title = req.Title
+	event.Description = req.Desc
+	event.EventMode = req.EventMode
+	event.Location = req.Location
+	event.Link = req.Link
+	event.StartTime = startT
+	event.EndTime = endT
+	event.CoverImg = req.CoverImg
+	event.Tags = req.Tags
+	event.Twitter = req.Twitter
+
+	if err := event.Update(); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "success", event)
 }

@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -26,6 +25,7 @@ type Event struct {
 	Attendance           uint           `json:"attendance"`
 	Status               uint           `gorm:"default:0" json:"status"`         // 0: 未开始，1: 进行中 2: 已结束 TODO: 定时器更新状态？
 	PublishStatus        uint           `gorm:"default:0" json:"publish_status"` // 0: 待审核 1: 已发布 2: 审核不通过
+	Twitter              string         `json:"twitter"`
 }
 
 func (e *Event) Create() error {
@@ -62,8 +62,6 @@ type EventFilter struct {
 }
 
 func QueryEvents(filter EventFilter) ([]Event, int64, error) {
-	fmt.Println(filter)
-
 	var events []Event
 	var total int64
 

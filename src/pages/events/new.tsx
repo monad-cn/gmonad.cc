@@ -63,11 +63,12 @@ export default function NewEventPage() {
   };
 
   // 富文本处理
-  const handleQuillEditorChange = useCallback(() => {
+  const handleQuillEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('description', value);
-    };
-  }, []);
+    },
+    [form]
+  );
 
   const handleSubmit = async (values: any) => {
     try {
@@ -84,7 +85,7 @@ export default function NewEventPage() {
 
       console.log('完整表单数据:', formData);
       console.log('标签数据:', tags);
-      console.log('封面图片:', coverImage);
+      console.log('封面图片:', cloudinaryImg?.secure_url);
       console.log(values);
       console.log('description:', formData.description);
 
@@ -99,6 +100,7 @@ export default function NewEventPage() {
         // cover_img: coverImage,
         cover_img: cloudinaryImg?.secure_url,
         tags: tags,
+        twitter: values.x,
       };
 
       console.log(createEventRequest);
@@ -386,6 +388,24 @@ export default function NewEventPage() {
                   />
                 </div>
               </Form.Item>
+              <Form.Item
+                label="推文链接"
+                name="x"
+                rules={[
+                  {
+                    required: true,
+                    message: `请输入推文链接`,
+                  },
+                ]}
+              >
+                <div className={styles.inputWithIcon}>
+                  <X className={styles.inputIcon} />
+                  <Input
+                    placeholder="请输入推文链接"
+                    className={styles.inputWithIconField}
+                  />
+                </div>
+              </Form.Item>
             </Card>
 
             {/* 参与设置 */}
@@ -435,7 +455,7 @@ export default function NewEventPage() {
                 活动封面
               </h2>
 
-              <Form.Item name="cover">
+              <Form.Item name="cover" rules={[{ required: true, message: '请上传活动封面' }]}>
                 <div className={styles.imageUpload}>
                   {previewUrl ? (
                     <div className={styles.imagePreviewContainer}>
@@ -471,10 +491,10 @@ export default function NewEventPage() {
                         <span className={styles.imageSize}>
                           {coverImage?.originFileObj
                             ? `${(
-                                coverImage.originFileObj.size /
-                                1024 /
-                                1024
-                              ).toFixed(2)} MB`
+                              coverImage.originFileObj.size /
+                              1024 /
+                              1024
+                            ).toFixed(2)} MB`
                             : ''}
                         </span>
                       </div>
@@ -537,27 +557,6 @@ export default function NewEventPage() {
             {/* 其他设置 */}
             <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>其他设置</h2>
-
-              <Form.Item
-                name="sendThankYouEmail"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>
-                  活动结束后发送感谢邮件
-                </Checkbox>
-              </Form.Item>
-
-              <Form.Item
-                name="allowInviteFriends"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>
-                  允许参与者邀请朋友
-                </Checkbox>
-              </Form.Item>
-
               <Form.Item
                 name="publishImmediately"
                 valuePropName="checked"

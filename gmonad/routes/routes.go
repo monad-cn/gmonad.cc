@@ -11,4 +11,6 @@ func SetupRouter(r *gin.Engine) {
 	r.Use(middlewares.Cors())
 	r.POST("/events", controllers.CreateEvent)
 	r.GET("/events", controllers.QueryEvents)
+	r.DELETE("/events/:id", controllers.DeleteEvent)
+	r.PUT("/events/:id", controllers.UpdateEvent)
 }
