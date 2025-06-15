@@ -91,7 +91,7 @@ export default function NewEventPage() {
 
       const createEventRequest = {
         title: values.title || '',
-        desc: values.description || '',
+        description: values.description || '',
         event_mode: eventMode, // online 或 offline
         location: eventMode === '线下活动' ? values.location || '' : '',
         link: eventMode === '线上活动' ? values.location || '' : '',
@@ -100,7 +100,7 @@ export default function NewEventPage() {
         // cover_img: coverImage,
         cover_img: cloudinaryImg?.secure_url || '',
         tags: tags,
-        twitter: values.x,
+        twitter: values.twitter,
       };
 
       console.log(createEventRequest);
@@ -390,7 +390,7 @@ export default function NewEventPage() {
               </Form.Item>
               <Form.Item
                 label="推文链接"
-                name="x"
+                name="twitter"
                 rules={[
                   {
                     required: true,
@@ -454,11 +454,7 @@ export default function NewEventPage() {
                 <ImageIcon className={styles.sectionIcon} />
                 活动封面
               </h2>
-
-              <Form.Item
-                name="cover"
-                rules={[{ required: true, message: '请上传活动封面' }]}
-              >
+              <Form.Item name="cover" rules={[{ required: true, message: '请上传活动封面' }]}>
                 <div className={styles.imageUpload}>
                   {previewUrl ? (
                     <div className={styles.imagePreviewContainer}>
