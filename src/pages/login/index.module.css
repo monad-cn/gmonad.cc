@@ -53,3 +53,10 @@
   opacity: 0.9;
   transform: translateY(-1px);
 }
+
+.googleLoginButton:hover {
+  border-color: #7a5cf1 !important;
+  color: #7a5cf1 !important;
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

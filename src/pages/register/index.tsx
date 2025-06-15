@@ -1,7 +1,8 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Divider } from 'antd';
 import styles from './index.module.css';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react'; // ✅ 引入 signIn 方法
 
 type FieldType = {
   username?: string;
@@ -12,9 +13,10 @@ type FieldType = {
 
 const onFinish = (values: FieldType) => {
   console.log('注册表单提交: ', values);
+  // 可以调用你自己的注册 API
 };
 
-const Register: React.FC = () => {
+const RegisterPage: React.FC = () => {
   return (
     <div className={styles.registerPage}>
       <div className={styles.container}>
@@ -68,19 +70,31 @@ const Register: React.FC = () => {
               type="primary"
               htmlType="submit"
               className={styles.registerButton}
+              block
             >
               注册
             </Button>
           </Form.Item>
         </Form>
 
+        <Divider plain>或</Divider>
+
+        {/* ✅ Google 注册按钮 */}
+        <Button
+          className={styles.googleRegisterButton}
+          type="default"
+          block
+          onClick={() => signIn('google', { callbackUrl: '/' })}
+        >
+          使用 Google 注册
+        </Button>
+
         <div className={styles.link}>
-          已有账号？
-          <Link href="/login">前往登录</Link>
+          已有账号？<Link href="/login">前往登录</Link>
         </div>
       </div>
     </div>
   );
 };
 
-export default Register;
+export default RegisterPage;

@@ -1,10 +1,12 @@
-import { ReactNode } from 'react'
-import Header from './Header'
-import Footer from './Footer'
-import styles from './Layout.module.css'
+import { ReactNode } from 'react';
+import Header from './Header';
+import Footer from './Footer';
+import styles from './Layout.module.css';
+
+import { SessionProvider } from 'next-auth/react';
 
 interface LayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
@@ -12,10 +14,9 @@ export default function Layout({ children }: LayoutProps) {
     <div className={styles.layout}>
       <Header />
       <main className={styles.main}>
-        {children}
+        <SessionProvider>{children}</SessionProvider>;
       </main>
       <Footer />
     </div>
-  )
+  );
 }
-
