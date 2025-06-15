@@ -4,6 +4,13 @@ import '../styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
+import { ConfigProvider, theme } from 'antd';
+
+const customTheme = {
+  token: {
+    colorPrimary: '#7c3aed', // 修改 primary 颜色为你想要的
+  },
+};
 
 export default function App({
   Component,
@@ -17,23 +24,27 @@ export default function App({
   if (noLayoutPages.includes(router.pathname)) {
     return (
       <SessionProvider session={session}>
-        <Component {...pageProps} />
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
+        <ConfigProvider theme={customTheme}>
+          <Component {...pageProps} />
+          {process.env.NEXT_PUBLIC_GA_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          )}
+        </ConfigProvider>
       </SessionProvider>
     );
   }
 
   return (
     <SessionProvider session={session}>
-      <Layout>
-        <Component {...pageProps} />
+      <ConfigProvider theme={customTheme}>
+        <Layout>
+          <Component {...pageProps} />
 
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
-      </Layout>
+          {process.env.NEXT_PUBLIC_GA_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          )}
+        </Layout>
+      </ConfigProvider>
     </SessionProvider>
   );
 }

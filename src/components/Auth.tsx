@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, Dropdown, Menu, Button } from 'antd';
 import { useRouter } from 'next/router';
 import { getSession, signOut } from 'next-auth/react';
@@ -16,19 +16,21 @@ const Auth: React.FC = () => {
   const router = useRouter();
 
   // 检查登录 session
-  useEffect(() => {
-    const fetchSession = async () => {
-      const session = await getSession();
-      if (session && session.user) {
-        setUserSession({
-          name: session.user.name || '',
-          email: session.user.email || '',
-          image: session.user.image || undefined,
-        });
-      }
-    };
-    fetchSession();
+  const fetchSession = useCallback(async () => {
+    const session = await getSession();
+    if (session && session.user) {
+      console.log('Session:', session); // 打印 session 数据
+      setUserSession({
+        name: session.user.name || '',
+        email: session.user.email || '',
+        image: session.user.image || '',
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
 
   // 退出登录
   const handleLogout = async () => {
