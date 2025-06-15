@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import 'react-quill-new/dist/quill.snow.css';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { base64toFile } from './upload';
-import { uploadImgToCloud } from '@/utils/cloudinary';
+import 'react-quill-new/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), {
   ssr: false,
@@ -57,63 +55,6 @@ function QuillEditor(props: QuillEditorProps) {
     setValue(newValue);
     props.onChange(newValue);
   }
-
-  const handleEditorChange = async (
-    ctx: any,
-    delta: any,
-    source: any,
-    editor: any
-  ) => {
-    // 获取当前富文本内容
-    const quillContent = editor.getContents();
-    if (!delta?.ops?.length) return;
-
-    // 收集需要上传的图片
-    const imagesToUpload: { index: number; base64: string }[] = [];
-    quillContent.ops.forEach((item: any, index: number) => {
-      if (item.insert?.image?.startsWith('data:image/')) {
-        imagesToUpload.push({ index, base64: item.insert.image });
-      }
-    });
-
-    // 如果没有需要上传的图片，直接更新内容
-    if (!imagesToUpload.length) {
-      setValue(ctx);
-      props.onChange(ctx);
-      return;
-    }
-
-    // 批量上传图片
-    const uploadPromises = imagesToUpload.map(async ({ index, base64 }) => {
-      const file = base64toFile(base64);
-      try {
-        const result = await uploadImgToCloud(file);
-        return { index, filePath: result.secure_url, success: true };
-      } catch (error) {
-        console.error('Image upload failed:', error);
-        return { index, filePath: base64, success: false }; // 保留原 base64 作为回退
-      }
-    });
-
-    // 等待所有图片上传完成
-    const uploadResults = await Promise.allSettled(uploadPromises);
-
-    // 更新 quillContent 中的图片地址
-    const updatedOps = [...quillContent.ops];
-    uploadResults.forEach((result, i) => {
-      if (result.status === 'fulfilled' && result.value.success) {
-        updatedOps[imagesToUpload[i].index].insert.image =
-          result.value.filePath;
-      }
-    });
-
-    // 获取 HTML 字符串
-    const htmlContent = editor.getHTML();
-
-    // 一次性更新内容和表单
-    setValue(htmlContent);
-    props.onChange(htmlContent);
-  };
 
   return (
     <ReactQuill
