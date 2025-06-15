@@ -43,6 +43,25 @@ func CreateEvent(c *gin.Context) {
 	utils.SuccessResponse(c, http.StatusOK, "create success", event)
 }
 
+func GetEvent(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	var event models.Event
+	event.ID = uint(id)
+
+	if err = event.GetByID(uint(id)); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid Event", nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "success", event)
+}
+
 func QueryEvents(c *gin.Context) {
 	keyword := c.Query("keyword")
 	tag := c.Query("tag")
