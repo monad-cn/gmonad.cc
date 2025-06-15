@@ -34,7 +34,7 @@ import styles from './new.module.css';
 import { createEvent } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
-import { uploadImgToCloud, deleteImgFromCloud } from '@/utils/cloudinary';
+import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -455,7 +455,10 @@ export default function NewEventPage() {
                 活动封面
               </h2>
 
-              <Form.Item name="cover" rules={[{ required: true, message: '请上传活动封面' }]}>
+              <Form.Item
+                name="cover"
+                rules={[{ required: true, message: '请上传活动封面' }]}
+              >
                 <div className={styles.imageUpload}>
                   {previewUrl ? (
                     <div className={styles.imagePreviewContainer}>
@@ -491,10 +494,10 @@ export default function NewEventPage() {
                         <span className={styles.imageSize}>
                           {coverImage?.originFileObj
                             ? `${(
-                              coverImage.originFileObj.size /
-                              1024 /
-                              1024
-                            ).toFixed(2)} MB`
+                                coverImage.originFileObj.size /
+                                1024 /
+                                1024
+                              ).toFixed(2)} MB`
                             : ''}
                         </span>
                       </div>

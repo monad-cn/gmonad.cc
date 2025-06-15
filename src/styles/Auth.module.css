@@ -1,0 +1,12 @@
+.auth {
+  display: flex;
+  align-items: center;
+}
+
+.userInfo {
+  cursor: pointer;
+}
+
+.navButton {
+  margin-left: auto;
+}

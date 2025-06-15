@@ -1,10 +1,12 @@
-import { ChevronDown } from "lucide-react"
-import { useState, useEffect } from "react"
-import styles from "../styles/Header.module.css"
+import { ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+import styles from '../styles/Header.module.css';
+
+import Auth from './Auth'; // 引入 Auth 组件
 
 export default function Header() {
-  const [showNewsBanner, setShowNewsBanner] = useState(true)
-
+  const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
   //   const handleScroll = () => {
   //     const scrollY = window.scrollY
@@ -42,7 +44,7 @@ export default function Header() {
               <span>资源</span>
               <ChevronDown className={styles.navIcon} />
             </div>
-            <button className={styles.navButton}>加入测试网</button>
+            <Auth /> {/* 使用 Auth 组件 */}
           </nav>
         </div>
       </div>
@@ -70,6 +72,5 @@ export default function Header() {
         </div>
       )} */}
     </header>
-  )
+  );
 }
-

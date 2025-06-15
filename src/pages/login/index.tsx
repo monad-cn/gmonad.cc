@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
       <div className={styles.container}>
         <h2 className={styles.title}>欢迎登录</h2>
 
-        <Form layout="vertical" onFinish={onFinish}>
+        {/* <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
             name="username"
             rules={[{ required: true, message: '请输入用户名或邮箱' }]}
@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
           </Form.Item>
         </Form>
 
-        <Divider plain>或</Divider>
+        <Divider plain>或</Divider> */}
 
         {/*  Google 登录按钮 */}
         <Button
@@ -59,9 +59,9 @@ const LoginPage: React.FC = () => {
           使用 Google 登录
         </Button>
 
-        <div className={styles.link}>
+        {/* <div className={styles.link}>
           还没有账号？<Link href="/register">立即注册</Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

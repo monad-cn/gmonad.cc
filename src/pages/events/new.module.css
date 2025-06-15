@@ -102,7 +102,7 @@
   margin-bottom: 0;
 }
 
-.form .ant-form-item-label>label {
+.form .ant-form-item-label > label {
   font-size: 0.875rem;
   font-weight: 500;
   color: #374151;
@@ -190,7 +190,7 @@
   display: none !important;
 }
 
-.radioOption .ant-radio+span {
+.radioOption .ant-radio + span {
   padding: 0 !important;
   width: 100% !important;
   display: block !important;
@@ -441,7 +441,7 @@
   align-items: center !important;
   justify-content: center !important;
   height: 200px !important;
-  border: 2px dashed #d1d5db !important;
+  /* border: 2px dashed #d1d5db !important; */
   border-radius: 0.5rem !important;
   background-color: #f9fafb !important;
   cursor: pointer !important;
