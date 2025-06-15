@@ -98,7 +98,11 @@ export default function NewEventPage() {
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
         // cover_img: coverImage,
+<<<<<<< Updated upstream
         cover_img: cloudinaryImg?.secure_url,
+=======
+        cover_img: cloudinaryImg?.secure_url || '',
+>>>>>>> Stashed changes
         tags: tags,
         twitter: values.x,
       };
@@ -455,10 +459,14 @@ export default function NewEventPage() {
                 活动封面
               </h2>
 
+<<<<<<< Updated upstream
               <Form.Item
                 name="cover"
                 rules={[{ required: true, message: '请上传活动封面' }]}
               >
+=======
+              <Form.Item name="cover" rules={[{ required: true, message: '请上传活动封面' }]}>
+>>>>>>> Stashed changes
                 <div className={styles.imageUpload}>
                   {previewUrl ? (
                     <div className={styles.imagePreviewContainer}>

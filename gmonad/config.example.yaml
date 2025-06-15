@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+log:
+  level: "debug"
+  file: "logs/app.log"
+
+jwt: 
+secret: 
+
+# PostgreSQL 配置
+database:
+  host:         
+  port:         
+  user:         
+  password:     
+  dbname:       
+  sslmode:      
+
