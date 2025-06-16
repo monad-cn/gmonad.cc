@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import styles from '../styles/Header.module.css';
 
 import Auth from './Auth'; // 引入 Auth 组件
+import Link from 'next/link';
 
 export default function Header() {
   const [showNewsBanner, setShowNewsBanner] = useState(true);
@@ -24,13 +25,15 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.headerContent}>
-          <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <span className={styles.logoText}>M</span>
-              <div className={styles.logoGlow}></div>
+          <Link href="/" passHref>
+            <div className={styles.logo} style={{ cursor: 'pointer' }}>
+              <div className={styles.logoIcon}>
+                <span className={styles.logoText}>M</span>
+                <div className={styles.logoGlow}></div>
+              </div>
+              <span className={styles.logoTitle}>Monad中文社区</span>
             </div>
-            <span className={styles.logoTitle}>Monad中文社区</span>
-          </div>
+          </Link>
           <nav className={styles.nav}>
             <div className={styles.navItem}>
               <span>生态系统</span>
@@ -71,6 +74,6 @@ export default function Header() {
           </div>
         </div>
       )} */}
-    </header>
+    </header >
   );
 }

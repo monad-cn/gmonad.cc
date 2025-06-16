@@ -14,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className={styles.layout}>
       <Header />
       <main className={styles.main}>
-        <SessionProvider>{children}</SessionProvider>;
+        <SessionProvider>{children}</SessionProvider>
       </main>
       <Footer />
     </div>

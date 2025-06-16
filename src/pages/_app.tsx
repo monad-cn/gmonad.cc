@@ -8,7 +8,7 @@ import { ConfigProvider, theme } from 'antd';
 
 const customTheme = {
   token: {
-    colorPrimary: '#7c3aed', // 修改 primary 颜色为你想要的
+    colorPrimary: '#7c3aed', 
   },
 };
 

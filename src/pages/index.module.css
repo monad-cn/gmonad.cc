@@ -812,16 +812,32 @@
   color: #7c3aed;
 }
 
+.milestoneCard:hover .milestoneDescription {
+  color: #374151;
+}
+
 .milestoneDescription {
   color: #6b7280;
   line-height: 1.6;
   font-size: 0.95rem;
+  max-width: 410px;  /* 限制最大宽度 */
+  margin: 0 auto;    /* 居中 */
   transition: color 0.3s ease;
 }
 
-.milestoneCard:hover .milestoneDescription {
-  color: #374151;
+/* 根据左右布局分别设置描述文字对齐 */
+.milestoneLeft .milestoneDescription {
+  text-align: right;
+  margin-left: auto;
+  margin-right: 0;
 }
+
+.milestoneRight .milestoneDescription {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
 
 .milestoneIcon {
   position: absolute;
