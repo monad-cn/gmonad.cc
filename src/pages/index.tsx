@@ -3,7 +3,6 @@ import {
   Calendar,
   MapPin,
   Zap,
-  Rocket,
   Star,
   Code,
   Shield,
@@ -12,10 +11,20 @@ import {
   BookOpen,
   Globe,
   GitBranch,
+  Rocket,
+  DollarSign,
+  Handshake,
+  Lock,
+  Network,
+  Activity,
+  Server,
+  ServerCog,
+  ShieldCheck,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './index.module.css';
+import { SiDiscord, SiTelegram } from 'react-icons/si';
 
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -116,28 +125,54 @@ export default function Home() {
 
   const milestones = [
     {
-      date: '2024年10月',
-      title: '社区正式成立',
-      description: 'Monad中文社区正式启动，建立官方交流渠道',
-      icon: '🚀',
+      date: '2022年2月',
+      title: 'Monad Labs 正式成立',
+      description:
+        '由 Keone Hon、James Hunsaker 和 Eunice Giarta 联合创办，开启高性能 EVM 链研究。',
+      src: '',
+      icon: <Rocket className={styles.icon} />,
     },
     {
-      date: '2024年11月',
-      title: '首次技术分享',
-      description: '举办第一次技术分享会，吸引200+开发者参与',
-      icon: '⚡',
+      date: '2023年2月',
+      title: '完成 1,900 万美元种子轮融资',
+      description: 'Dragonfly 等投资加持，为初期团队建设与闭测提供资力。',
+      src: 'https://monadxyz.substack.com/p/monad-raises-19m-to-build-the-fundamentally-optimized-evm-212aa066b84f',
+      icon: <DollarSign className={styles.icon} />,
     },
     {
-      date: '2024年12月',
-      title: '开发者工具发布',
-      description: '发布中文版开发文档和工具包',
-      icon: '🛠️',
+      date: '2024年4月9日',
+      title: '获得 Paradigm 领投 2.25 亿美元 A 轮融资',
+      description: '成为当年区块链领域亮眼融资，推进生态与协议落地。',
+      src: 'https://www.theblockbeats.info/en/flash/245409',
+      icon: <Handshake className={styles.icon} />,
+    },
+    // {
+    //   date: "2024年Q4",
+    //   title: "启动封闭测试网",
+    //   description: "面向早期开发者，试运行并行执行与 MonadBFT 核心功能。",
+    //   icon: <Lock className={styles.icon} />,
+    // },
+    {
+      date: '2025年2月9日',
+      title: '公共测试网上线',
+      description: '向所有开发者开放，支持 10,000 TPS、1 秒单槽确认。',
+      src: 'https://tokeninsight.com/zh/news/monad-to-roll-out-a-public-testnet-on-feb.-19',
+      icon: <Network className={styles.icon} />,
     },
     {
-      date: '2025年Q1',
-      title: '测试网启动',
-      description: '计划启动Monad测试网络，开放社区测试',
-      icon: '🌐',
+      date: '2025年2月下旬',
+      title: '测试网交易破 1 亿笔',
+      description: '开放后短期内钱包数量激增，交易量激发生态动能。',
+      src: 'https://www.gate.com/zh/blog/6259/Monad-Testnet-Breaks-100-Million-Transactions--The-Rise-of-a-High-Performance-Monad-Crypto-Blockchaind',
+      icon: <Activity className={styles.icon} />,
+    },
+    {
+      date: '2025年5月5日',
+      title: '启动测试网‑2 验证者阶段',
+      description:
+        'Monad 推出验证者专属 Testnet‑2，将于年底前为主网上线做准备。',
+      src: 'https://www.binance.com/zh-CN/square/post/24006186094818',
+      icon: <ShieldCheck className={styles.icon} />,
     },
   ];
 
@@ -247,25 +282,21 @@ export default function Home() {
           >
             <div className={styles.heroBadge}>🚀 下一代区块链技术</div>
             <h1 className={styles.heroTitle}>
-              <span className={styles.heroTitlePrimary}>欢迎来到</span>
-              <br />
               <span className={styles.heroTitleSecondary}>Monad中文社区</span>
             </h1>
             <p className={styles.heroSubtitle}>
-              探索高性能区块链的无限可能，与顶尖开发者一起构建去中心化的未来。
-              <br />
               <span className={styles.heroHighlight}>
-                加入我们，成为区块链革命的先锋。
+                加入我们，和 Nads 一起了解、参与、构建 Monad
               </span>
             </p>
             <div className={styles.heroButtons}>
-              <button className={styles.heroPrimaryButton}>
-                <Zap className={styles.buttonIcon} />
-                开始构建
-              </button>
+              <Link href="/events" className={styles.heroPrimaryButton}>
+                <Users className={styles.buttonIcon} />
+                加入社区
+              </Link>
               <button className={styles.heroSecondaryButton}>
                 <Globe className={styles.buttonIcon} />
-                工作原理
+                体验测试网
               </button>
             </div>
           </div>
@@ -374,42 +405,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className={styles.features}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>技术特色</h2>
-            <p className={styles.sectionDescription}>
-              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
-            </p>
-          </div>
-          <div className={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <div key={index} className={styles.featureCard}>
-                <div className={styles.featureCardGlow}></div>
-                <div className={styles.featureCardContent}>
-                  <div className={styles.featureIconWrapper}>
-                    {feature.icon}
-                  </div>
-                  <h3 className={styles.featureTitle}>{feature.title}</h3>
-                  <p className={styles.featureDescription}>
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Milestones Section */}
       <section className={styles.milestones}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>项目里程碑</h2>
-            <p className={styles.sectionDescription}>
-              见证Monad中文社区的成长历程，每一个里程碑都标志着我们向前迈进的重要一步
-            </p>
+            <h2 className={styles.sectionTitle}>里程碑</h2>
           </div>
           <div className={styles.timeline}>
             <div className={styles.timelineLine}></div>
@@ -438,6 +438,34 @@ export default function Home() {
                     {milestone.icon}
                   </div>
                   <div className={styles.milestoneIconGlow}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className={styles.features}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>技术特色</h2>
+            <p className={styles.sectionDescription}>
+              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
+            </p>
+          </div>
+          <div className={styles.featuresGrid}>
+            {features.map((feature, index) => (
+              <div key={index} className={styles.featureCard}>
+                <div className={styles.featureCardGlow}></div>
+                <div className={styles.featureCardContent}>
+                  <div className={styles.featureIconWrapper}>
+                    {feature.icon}
+                  </div>
+                  <h3 className={styles.featureTitle}>{feature.title}</h3>
+                  <p className={styles.featureDescription}>
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -527,19 +555,24 @@ export default function Home() {
         </div>
         <div className={styles.container}>
           <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>准备好加入Monad中文社区了吗？</h2>
-            <p className={styles.ctaSubtitle}>
-              与志同道合的开发者一起探索区块链技术的前沿，共同构建去中心化的未来
-            </p>
+            <h2 className={styles.ctaTitle}>准备好加入 Monad 中文社区了吗？</h2>
             <div className={styles.ctaButtons}>
-              <button className={styles.ctaPrimaryButton}>
-                <Users className={styles.buttonIcon} />
-                加入Discord社区
-              </button>
-              <button className={styles.ctaSecondaryButton}>
+              <Link
+                href="https://discord.gg/monad"
+                target="_blank"
+                className={styles.ctaPrimaryButton}
+              >
+                <SiDiscord className={styles.buttonIcon} />
+                加入 Discord
+              </Link>
+              <Link
+                href="https://www.monad.xyz/"
+                target="_blank"
+                className={styles.ctaSecondaryButton}
+              >
                 <Globe className={styles.buttonIcon} />
                 访问官方网站
-              </button>
+              </Link>
             </div>
           </div>
         </div>
