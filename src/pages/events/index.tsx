@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Pagination, Input, Select, Button, Tag, Card, Image, Popconfirm, message } from "antd"
+import { Pagination, Input, Select, Button, Tag, Card, Image, Popconfirm, message, Modal } from "antd"
 import dayjs from "dayjs"
 import {
   Calendar,
@@ -7,20 +7,15 @@ import {
   MapPin,
   Plus,
   Edit,
-  MoreHorizontal,
   Eye,
   Trash2,
   Star,
   Share2,
-  Download,
-  Settings,
   Globe,
   LayoutGrid,
   List,
-  Search,
-  ExternalLink,
-  X,
 } from "lucide-react"
+import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si'
 import Link from "next/link"
 import styles from "./index.module.css"
 import { getEvents, deleteEvent } from "../api/event"
@@ -45,6 +40,7 @@ export default function EventsPage() {
   const [searchKeyword, setSearchKeyword] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [wechatModalVisible, setWechatModalVisible] = useState(false)
 
   // 新增筛选状态
   const [statusFilter, setStatusFilter] = useState("3")
@@ -241,44 +237,6 @@ export default function EventsPage() {
     }
   }
 
-  // 渲染卡片封面
-  const renderCardCover = (event: any) => {
-    return (
-      <div className={styles.cardCover}>
-        <Image
-          src={event.cover_img || "/placeholder.svg?height=200&width=400&text=活动封面"}
-          alt={event.title}
-          preview={false}
-          className={styles.coverImage}
-        />
-        <div className={styles.coverOverlay}>
-          <Tag className={`${styles.statusTag}`} bordered={false}>
-            {getStatusClass(event.status)}
-          </Tag>
-          {event.featured && (
-            <div className={styles.featuredBadge}>
-              <Star size={14} fill="currentColor" />
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  // 渲染卡片操作
-  const renderCardActions = () => [
-    <Button key="view" type="text" icon={<Eye size={16} />} className={styles.actionButton} title="查看详情" />,
-    <Button key="edit" type="text" icon={<Edit size={16} />} className={styles.actionButton} title="编辑" />,
-    <Button key="share" type="text" icon={<Share2 size={16} />} className={styles.actionButton} title="分享" />,
-    <Button
-      key="external"
-      type="text"
-      icon={<ExternalLink size={16} />}
-      className={styles.actionButton}
-      title="跳转"
-    />,
-  ]
-
   useEffect(() => {
     if (searchKeyword === "") {
       handleSearch("")
@@ -292,20 +250,50 @@ export default function EventsPage() {
   return (
     <div className={styles.container}>
       {/* Title Section */}
-      <div className={styles.titleSection}>
-        <div className={styles.titleHeader}>
-          <div className={styles.titleContent}>
-            <h1 className={styles.mainTitle}>社区活动</h1>
-            <p className={styles.subtitle}>定期举办各种技术分享会、工作坊和交流活动，为社区成员提供学习和成长的机会</p>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <div className={styles.titleSection}>
+            <h1 className={styles.title}>社区活动</h1>
+            <p className={styles.subtitle}>发现精彩活动，连接志同道合的人</p>
           </div>
-          <div className={styles.actionButtons}>
+          <div className={styles.headerRightActions}>
+            <div className={styles.socialLinks}>
+              <a
+                href="https://x.com/monad_zw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialButton}
+              >
+                <SiX size={18} className={styles.socialIcon} />
+                <span className={styles.socialButtonText}>关注 X</span>
+              </a>
+              <a
+                href="https://t.me/Chinads"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialButton}
+              >
+                <SiTelegram size={18} className={styles.socialIcon} />
+                <span className={styles.socialButtonText}>加入 Telegram</span>
+              </a>
+              <a
+                href="https://discord.gg/monad"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialButton}
+              >
+                <SiDiscord size={18} className={styles.socialIcon} /> {/* Lucide 没有 Discord 图标，用 Users 替代 */}
+                <span className={styles.socialButtonText}>加入 Discord</span>
+              </a>
+              <button className={styles.socialButton} onClick={() => setWechatModalVisible(true)}>
+                <SiWechat size={18} className={styles.socialIcon} />
+                <span className={styles.socialButtonText}>微信群</span>
+              </button>
+            </div>
             <Link href="/events/new" className={styles.createButton}>
-              <Plus className={styles.buttonIcon} />
-              新建活动
+              <Plus size={20} />
+              创建活动
             </Link>
-            <button className={styles.settingsButton}>
-              <Settings className={styles.buttonIcon} />
-            </button>
           </div>
         </div>
       </div>
@@ -316,7 +304,7 @@ export default function EventsPage() {
           <AntSearch
             placeholder="搜索活动标题、描述..."
             allowClear
-            size="large"
+            size="small"
             enterButton="搜索"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -327,7 +315,7 @@ export default function EventsPage() {
         </div>
         <div className={styles.filterButtons}>
           <Select
-            size="large"
+            size="small"
             placeholder="选择标签"
             allowClear
             style={{ width: 120 }}
@@ -340,14 +328,14 @@ export default function EventsPage() {
             <Option value="AMA问答">AMA问答</Option>
             <Option value="社区活动">社区活动</Option>
           </Select>
-          <Select size="large" value={sortOrder} style={{ width: 100 }} onChange={handleSortChange}>
+          <Select size="small" value={sortOrder} style={{ width: 100 }} onChange={handleSortChange}>
             <Option value="desc">最新</Option>
             <Option value="asc">最早</Option>
           </Select>
           <Select
             placeholder="活动状态"
             allowClear
-            size="large"
+            size="small"
             style={{ width: 120 }}
             value={statusFilter || undefined}
             onChange={handleStatusFilter}
@@ -359,7 +347,7 @@ export default function EventsPage() {
           </Select>
 
           <Select
-            size="large"
+            size="small"
             placeholder="活动形式"
             allowClear
             style={{ width: 120 }}
@@ -373,7 +361,7 @@ export default function EventsPage() {
 
           <div className={styles.locationSearch}>
             <Input
-              size="large"
+              size="small"
               placeholder="活动地点"
               allowClear
               value={locationKeyword}
@@ -381,7 +369,7 @@ export default function EventsPage() {
               onPressEnter={() => handleLocationSearch(locationKeyword)}
             />
           </div>
-          <Button size="large" onClick={handleClearFilters}>清除筛选</Button>
+          <Button size="small" onClick={handleClearFilters}>清除筛选</Button>
         </div>
       </div>
 
@@ -464,22 +452,23 @@ export default function EventsPage() {
                         >
                           <Share2 className={styles.actionIcon} />
                         </button>
-                        <Link href={event.twitter || ''}>
-                          <button
-                            className={styles.actionIconButton}
-                            onClick={(e) => {
-                              e.preventDefault() 
-                            }}
-                            title="查看推文"
-                          >
-                            <X className={styles.actionIcon} />
-                          </button>
-                        </Link>
+                        <button
+                          className={styles.actionIconButton}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (event.twitter) {
+                              window.open(event.twitter, '_blank'); // 打开外部链接
+                            }
+                          }}
+                          title="查看推文"
+                        >
+                          <SiX className={styles.actionIcon} />
+                        </button>
                       </div>
                     </div>
                   </div>
                 }
-                bordered={false}
+              // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -693,6 +682,36 @@ export default function EventsPage() {
           </div>
         </Card>
       </div>
+      <Modal
+        open={wechatModalVisible}
+        onCancel={() => setWechatModalVisible(false)}
+        footer={null}
+        centered
+        className={styles.wechatModal}
+      >
+        <div className={styles.wechatModalContent}>
+          <div className={styles.qrCodeSection}>
+            <Image
+              src="/wechat.png?height=200&width=200" 
+              alt="小助手二维码"
+              width={200}
+              height={200}
+              preview={false}
+            />
+            <p>扫码加入微信群</p>
+          </div>
+          <div className={styles.qrCodeSection}>
+            <Image
+              src="/monad_cn_gzh.png?height=200&width=200" 
+              alt="公众号二维码"
+              width={200}
+              height={200}
+              preview={false}
+            />
+            <p>扫码关注公众号</p>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
