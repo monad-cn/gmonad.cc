@@ -8,7 +8,7 @@ if (process.env.NEXT_USE_PROXY === 'true') {
   bootstrap();
   (
     global as typeof globalThis & { GLOBAL_AGENT: any }
-  ).GLOBAL_AGENT.HTTP_PROXY = 'http://127.0.0.1:7899';
+  ).GLOBAL_AGENT.HTTP_PROXY = 'http://127.0.0.1:7890';
 }
 
 const nextConfig: NextConfig = {

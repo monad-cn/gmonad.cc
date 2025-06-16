@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Input, Button, Divider } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Divider, message } from 'antd';
 import styles from './index.module.css';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react'; // ✅ 引入 NextAuth 的登录方法
@@ -15,6 +15,27 @@ const onFinish = (values: FieldType) => {
 };
 
 const LoginPage: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      await signIn('google', {
+        callbackUrl: '/',
+        prompt: 'select_account',
+        hd: '*',
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        message.error(error.message);
+      } else {
+        message.error('登录失败');
+      }
+    } finally {
+      setTimeout(() => setLoading(false), 2000);
+    }
+  };
+
   return (
     <div className={styles.loginPage}>
       <div className={styles.container}>
@@ -54,13 +75,8 @@ const LoginPage: React.FC = () => {
           className={styles.googleLoginButton}
           type="default"
           block
-          onClick={() =>
-            signIn('google', {
-              callbackUrl: '/',
-              prompt: 'select_account',
-              hd: '*',
-            })
-          } // 启动 Google OAuth 流程
+          loading={loading}
+          onClick={handleGoogleLogin} // 启动 Google OAuth 流程
         >
           使用 Google 登录
         </Button>

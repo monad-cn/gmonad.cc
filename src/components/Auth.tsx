@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, Dropdown, Menu, Button } from 'antd';
 import { useRouter } from 'next/router';
@@ -17,28 +15,25 @@ const Auth: React.FC = () => {
   const [userSession, setUserSession] = useState<UserSession | null>(null); // 存储用户登录信息
   const router = useRouter();
 
-  // 检查登录 session
-  const fetchSession = useCallback(async () => {
-    const session = await getSession();
-    if (session && session.user) {
-      console.log('Session:', session); // 打印 session 数据
-      setUserSession({
-        name: session.user.name || '',
-        email: session.user.email || '',
-        image: session.user.image || '',
-      });
-    }
-  }, []);
-
   useEffect(() => {
+    const fetchSession = async () => {
+      const session = await getSession();
+      if (session && session.user) {
+        setUserSession({
+          name: session.user.name || '',
+          email: session.user.email || '',
+          image: session.user.image || '',
+        });
+      }
+    };
+
     fetchSession();
-  }, [fetchSession]);
+  }, [router]);
 
   // 退出登录
   const handleLogout = async () => {
-    await signOut(); // 清空 Google OAuth 信息
+    await signOut({ redirect: true, callbackUrl: '/' }); // 清空 Google OAuth 信息并重定向到首页
     setUserSession(null); // 清空本地用户信息
-    router.push('/login'); // 跳转到登录页面
   };
 
   // 下拉菜单内容
@@ -59,7 +54,11 @@ const Auth: React.FC = () => {
       {userSession ? (
         <Dropdown overlay={menu} trigger={['hover']}>
           <div className={styles.userInfo}>
-            <Avatar size="large" src={userSession.image} />
+            <Avatar
+              size="large"
+              key={userSession?.image} // 每次 image 变就强制重新渲染 Avatar
+              src={userSession?.image || undefined}
+            />
           </div>
         </Dropdown>
       ) : (
