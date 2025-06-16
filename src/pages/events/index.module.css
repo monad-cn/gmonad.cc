@@ -4,7 +4,6 @@
   padding: 3rem 1rem;
 }
 
-/* Header */
 .header {
   max-width: 1200px;
   margin: 0 auto 3rem;
@@ -18,7 +17,7 @@
 }
 
 .titleSection {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 2rem;
 }
@@ -1346,5 +1345,144 @@
   .viewModeIcon {
     width: 0.875rem;
     height: 0.875rem;
+  }
+}
+
+
+/* New styles for header right actions and social links */
+.headerRightActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  /* Gap between social links group and create button */
+}
+
+.socialLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* Gap between individual social buttons */
+}
+
+.socialButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Gap between icon and text */
+  padding: 0.6rem 1rem;
+  /* Adjusted padding for text */
+  background-color: white;
+  border: 1.5px solid #e0e0e0;
+  /* Slightly more prominent border */
+  border-radius: 0.375rem;
+  /* Rectangular buttons */
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: 500;
+  /* Make text slightly bolder */
+  font-size: 0.875rem;
+  /* Standard button text size */
+}
+
+.socialButton:hover {
+  background-color: #f7f7f7;
+  /* Lighter hover */
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+}
+
+.socialIcon {
+}
+
+.socialButtonText {
+  line-height: 1;
+}
+
+.wechatModal .ant-modal-body {
+  padding: 2rem;
+}
+
+.wechatModalContent {
+  display: flex;
+  flex-direction: row; 
+  align-items: flex-start; 
+  justify-content: space-around; 
+  text-align: center;
+  gap: 1.5rem; 
+}
+
+.qrCodeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1; 
+}
+
+.wechatModalContent img {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  max-width: 100%; 
+  height: auto;
+}
+
+.wechatModalContent p {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-top: 0.5rem;
+}
+
+/* Responsive adjustments for header actions */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+
+  .headerRightActions {
+    width: 100%;
+    flex-direction: column-reverse;
+    gap: 1rem;
+  }
+
+  .socialLinks {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .titleSection {
+    text-align: center;
+  }
+
+  .subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .createButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .socialButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .socialButton svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .socialLinks {
+    gap: 0.5rem;
   }
 }
