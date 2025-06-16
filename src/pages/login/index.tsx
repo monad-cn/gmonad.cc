@@ -54,7 +54,13 @@ const LoginPage: React.FC = () => {
           className={styles.googleLoginButton}
           type="default"
           block
-          onClick={() => signIn('google', { callbackUrl: '/' })} // 启动 Google OAuth 流程
+          onClick={() =>
+            signIn('google', {
+              callbackUrl: '/',
+              prompt: 'select_account',
+              hd: '*',
+            })
+          } // 启动 Google OAuth 流程
         >
           使用 Google 登录
         </Button>

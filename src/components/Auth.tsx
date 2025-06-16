@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, Dropdown, Menu, Button } from 'antd';
 import { useRouter } from 'next/router';

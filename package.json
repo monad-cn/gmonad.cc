@@ -22,11 +22,13 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/global-agent": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
+    "global-agent": "^3.0.0",
     "prettier": "^3.5.3",
     "typescript": "^5"
   }
