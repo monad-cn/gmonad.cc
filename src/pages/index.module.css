@@ -1043,57 +1043,45 @@
   flex-shrink: 0;
   text-align: center;
   transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+}
+
+.memberItem a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .memberItem:hover {
   transform: translateY(-5px);
-}
-
-.memberAvatar {
-  position: relative;
-  margin: 0 auto 0.75rem;
-  width: 5rem;
-  height: 5rem;
-}
-
-.memberImage {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 3px solid #e0e7ff;
-  transition: all 0.3s ease;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.memberItem:hover .memberImage {
-  border-color: #a78bfa;
-  transform: scale(1.1);
-  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.25);
-}
-
-.memberAvatarGlow {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
-  filter: blur(10px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.memberItem:hover .memberAvatarGlow {
-  opacity: 1;
+  border-color: rgba(124, 58, 237, 0.3);
 }
 
 .memberName {
   color: #1f2937;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.memberTwitter {
+  color: #6b7280;
   font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.3s ease;
 }
 
 .memberItem:hover .memberName {
   color: #7c3aed;
+}
+
+.memberItem:hover .memberTwitter {
+  color: #8b5cf6;
 }
 
 /* CTA Section */

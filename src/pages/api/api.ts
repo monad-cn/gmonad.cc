@@ -38,8 +38,8 @@ export const apiRequest = async <T>(
   } catch (error) {
     console.error("API 请求错误:", error);
     return {
-      status: 500,
-      message: error.message || "服务器错误",
+      code: 500,
+      message: error || "服务器错误",
     };
   }
 };
