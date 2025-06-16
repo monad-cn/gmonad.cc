@@ -11,7 +11,7 @@ import {
   Button,
   Card,
   Tag,
-  message,
+  App,
 } from 'antd';
 import type { UploadProps, UploadFile } from 'antd';
 import {
@@ -40,6 +40,7 @@ const { TextArea } = Input;
 const { Dragger } = Upload;
 
 export default function NewEventPage() {
+  const { message } = App.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const [eventMode, setEventMode] = useState<'线上活动' | '线下活动'>(
@@ -140,41 +141,42 @@ export default function NewEventPage() {
     console.log('删除标签后:', newTags);
   };
 
-  const handleImageChange = (info: any) => {
+  const handleImageChange = async (info: any) => {
     const { file, fileList } = info;
 
-    // 只保留最新上传的一个文件
-    if (fileList.length > 0) {
+    // 只处理上传完成的文件
+    if (file.status === 'done') {
       const latestFile = fileList[fileList.length - 1];
       setCoverImage(latestFile);
-      console.log('上传图片:', latestFile);
 
-      // 创建预览URL
       if (latestFile.originFileObj) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setPreviewUrl(e.target?.result as string);
-        };
-        reader.readAsDataURL(latestFile.originFileObj);
+        try {
+          const res = await uploadImgToCloud(latestFile.originFileObj);
+          if (res && res.secure_url) {
+            setCloudinaryImg(res);
+            setPreviewUrl(res.secure_url);
+          } else {
+            message.error('图片上传失败，请重试');
+          }
+        } catch (error) {
+          message.error('图片上传失败，请检查网络连接');
+        }
       }
-    } else {
-      setCoverImage(null);
-      setPreviewUrl('');
+    } else if (file.status === 'error') {
+      message.error('图片上传失败，请检查网络连接');
     }
   };
 
   const handleRemoveImage = async () => {
-    // TODO : 删除uid问题导致401
-    // const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
-    // if (!res) {
-    //   message.error('图片删除失败，请重试');
-    //   return;
-    // }
+    const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
+    if (!res) {
+      message.error('图片删除失败，请重试');
+      return;
+    }
 
     setCoverImage(null);
     setPreviewUrl('');
     form.setFieldValue('cover', undefined);
-    console.log('删除图片');
   };
 
   const handleReplaceImage = () => {
@@ -200,21 +202,13 @@ export default function NewEventPage() {
         };
 
         setCoverImage(uploadFile);
-        console.log('更换图片:', uploadFile);
 
         const res = await uploadImgToCloud(file);
-        if (!res) {
-          message.error('图片上传失败，请重试');
-          return;
-        } else {
-          // set coverImage info
+        if (res && res.secure_url) {
           setCloudinaryImg(res);
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setPreviewUrl(e.target?.result as string);
-          };
-          reader.readAsDataURL(file);
+          setPreviewUrl(res.secure_url);
+        } else {
+          message.error('图片上传失败，请重试');
         }
       }
     };
@@ -227,6 +221,7 @@ export default function NewEventPage() {
     accept: 'image/*',
     showUploadList: false,
     beforeUpload: async (file) => {
+      console.log('beforeUpload');
       const isImage = file.type.startsWith('image/');
       if (!isImage) {
         message.error('只能上传图片文件!');
@@ -237,17 +232,6 @@ export default function NewEventPage() {
       if (!isLt5M) {
         message.error('图片大小不能超过 5MB!');
         return false;
-      }
-
-      const res = await uploadImgToCloud(file);
-
-      if (!res) {
-        message.error('图片上传失败，请重试');
-        return false;
-      } else {
-        // set coverImage info
-        setCloudinaryImg(res);
-        return true;
       }
     },
     onChange: handleImageChange,
@@ -454,7 +438,10 @@ export default function NewEventPage() {
                 <ImageIcon className={styles.sectionIcon} />
                 活动封面
               </h2>
-              <Form.Item name="cover" rules={[{ required: true, message: '请上传活动封面' }]}>
+              <Form.Item
+                name="cover"
+                rules={[{ required: true, message: '请上传活动封面' }]}
+              >
                 <div className={styles.imageUpload}>
                   {previewUrl ? (
                     <div className={styles.imagePreviewContainer}>

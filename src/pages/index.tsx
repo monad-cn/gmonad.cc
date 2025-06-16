@@ -1,25 +1,52 @@
-import { Users, Calendar, MapPin, Zap, Rocket, Star, Code, Shield, Cpu, Database, BookOpen, Globe, GitBranch } from 'lucide-react'
-import { useEffect, useState } from "react"
-import Link from 'next/link'
-import styles from "./index.module.css"
+import {
+  Users,
+  Calendar,
+  MapPin,
+  Zap,
+  Rocket,
+  Star,
+  Code,
+  Shield,
+  Cpu,
+  Database,
+  BookOpen,
+  Globe,
+  GitBranch,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import styles from './index.module.css';
+
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 export default function Home() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isVisible, setIsVisible] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
   const [stats, setStats] = useState({
     members: 1000,
     activities: 50,
     projects: 20,
     commits: 1250,
-  })
+  });
 
   useEffect(() => {
-    setIsVisible(true)
+    setIsVisible(true);
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove);
 
     // 模拟实时数据更新
     const interval = setInterval(() => {
@@ -28,162 +55,162 @@ export default function Home() {
         activities: prev.activities,
         projects: prev.projects,
         commits: prev.commits + Math.floor(Math.random() * 5),
-      }))
-    }, 5000)
+      }));
+    }, 5000);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      clearInterval(interval)
-    }
-  }, [])
+      window.removeEventListener('mousemove', handleMouseMove);
+      clearInterval(interval);
+    };
+  }, []);
 
   const features = [
     {
       icon: <Zap className={styles.featureIcon} />,
-      title: "极致性能",
-      description: "并行执行引擎，TPS达到10,000+，为DeFi应用提供无与伦比的速度",
+      title: '极致性能',
+      description: '并行执行引擎，TPS达到10,000+，为DeFi应用提供无与伦比的速度',
     },
     {
       icon: <Shield className={styles.featureIcon} />,
-      title: "EVM兼容",
-      description: "完全兼容以太坊虚拟机，现有DApp可无缝迁移",
+      title: 'EVM兼容',
+      description: '完全兼容以太坊虚拟机，现有DApp可无缝迁移',
     },
     {
       icon: <Cpu className={styles.featureIcon} />,
-      title: "智能优化",
-      description: "自适应共识算法，动态调节性能，确保网络稳定运行",
+      title: '智能优化',
+      description: '自适应共识算法，动态调节性能，确保网络稳定运行',
     },
     {
       icon: <Database className={styles.featureIcon} />,
-      title: "可扩展性",
-      description: "模块化架构设计，支持水平扩展，满足大规模应用需求",
+      title: '可扩展性',
+      description: '模块化架构设计，支持水平扩展，满足大规模应用需求',
     },
-  ]
+  ];
 
   const activities = [
     {
-      title: "Monad 技术分享会",
-      date: "2024年12月15日",
-      location: "线上直播",
-      description: "深入探讨Monad区块链的技术架构和创新特性",
-      status: "即将开始",
+      title: 'Monad 技术分享会',
+      date: '2024年12月15日',
+      location: '线上直播',
+      description: '深入探讨Monad区块链的技术架构和创新特性',
+      status: '即将开始',
       participants: 156,
     },
     {
-      title: "开发者工作坊",
-      date: "2024年11月28日",
-      location: "北京·中关村",
-      description: "Monad智能合约开发实战训练营",
-      status: "已结束",
+      title: '开发者工作坊',
+      date: '2024年11月28日',
+      location: '北京·中关村',
+      description: 'Monad智能合约开发实战训练营',
+      status: '已结束',
       participants: 89,
     },
     {
-      title: "社区AMA问答",
-      date: "2024年11月10日",
-      location: "Discord语音频道",
-      description: "与Monad核心团队直接对话，解答技术疑问",
-      status: "已结束",
+      title: '社区AMA问答',
+      date: '2024年11月10日',
+      location: 'Discord语音频道',
+      description: '与Monad核心团队直接对话，解答技术疑问',
+      status: '已结束',
       participants: 234,
     },
-  ]
+  ];
 
   const milestones = [
     {
-      date: "2024年10月",
-      title: "社区正式成立",
-      description: "Monad中文社区正式启动，建立官方交流渠道",
-      icon: "🚀",
+      date: '2024年10月',
+      title: '社区正式成立',
+      description: 'Monad中文社区正式启动，建立官方交流渠道',
+      icon: '🚀',
     },
     {
-      date: "2024年11月",
-      title: "首次技术分享",
-      description: "举办第一次技术分享会，吸引200+开发者参与",
-      icon: "⚡",
+      date: '2024年11月',
+      title: '首次技术分享',
+      description: '举办第一次技术分享会，吸引200+开发者参与',
+      icon: '⚡',
     },
     {
-      date: "2024年12月",
-      title: "开发者工具发布",
-      description: "发布中文版开发文档和工具包",
-      icon: "🛠️",
+      date: '2024年12月',
+      title: '开发者工具发布',
+      description: '发布中文版开发文档和工具包',
+      icon: '🛠️',
     },
     {
-      date: "2025年Q1",
-      title: "测试网启动",
-      description: "计划启动Monad测试网络，开放社区测试",
-      icon: "🌐",
+      date: '2025年Q1',
+      title: '测试网启动',
+      description: '计划启动Monad测试网络，开放社区测试',
+      icon: '🌐',
     },
-  ]
+  ];
 
   const resources = [
     {
-      title: "开发文档",
-      description: "完整的API文档和开发指南",
+      title: '开发文档',
+      description: '完整的API文档和开发指南',
       icon: <BookOpen className={styles.resourceIcon} />,
-      link: "#",
+      link: '#',
     },
     {
-      title: "代码示例",
-      description: "丰富的智能合约示例代码",
+      title: '代码示例',
+      description: '丰富的智能合约示例代码',
       icon: <Code className={styles.resourceIcon} />,
-      link: "#",
+      link: '#',
     },
     {
-      title: "开发工具",
-      description: "专业的开发工具和SDK",
+      title: '开发工具',
+      description: '专业的开发工具和SDK',
       icon: <Cpu className={styles.resourceIcon} />,
-      link: "#",
+      link: '#',
     },
     {
-      title: "测试网络",
-      description: "免费的测试网络环境",
+      title: '测试网络',
+      description: '免费的测试网络环境',
       icon: <Globe className={styles.resourceIcon} />,
-      link: "#",
+      link: '#',
     },
-  ]
+  ];
 
   const members = [
-    { name: "Lewis", twitter: "https://x.com/Lewis8888888" },
-    { name: "Spark", twitter: "https://x.com/0x_xifeng" },
-    { name: "Russell", twitter: "https://x.com/brocoliwang" },
-    { name: "Mier", twitter: "https://x.com/luoli94448559" },
-    { name: "Dream", twitter: "https://x.com/Dreamer117Zz" },
-    { name: "Van1sa", twitter: "https://x.com/Van1saXXM" },
-    { name: "Huan", twitter: "https://x.com/XHOYH" },
-    { name: "CHEN", twitter: "https://x.com/jaychen981111" },
-    { name: "4Y", twitter: "https://x.com/4y_ffff" },
-    { name: "SSWeb3", twitter: "https://x.com/SSWeb3_" },
-    { name: "Cash", twitter: "https://x.com/cashwscott" },
-    { name: "Pizza", twitter: "https://x.com/peppertat1" },
-    { name: "Sky", twitter: "https://x.com/0xsky66" },
-    { name: "Hao", twitter: "https://x.com/hao2web3" },
-    { name: "Chine", twitter: "https://x.com/0xChine" },
-    { name: "Potato King", twitter: "https://x.com/0xpotatoking" },
-    { name: "Picano", twitter: "https://x.com/Pican0_o" },
-    { name: "Mumu", twitter: "https://x.com/Mony_Chen265" },
-    { name: "Polly", twitter: "https://x.com/Polly_r7" },
-    { name: "pinecats", twitter: "https://x.com/pinecats3_1" },
-    { name: "Susu", twitter: "https://x.com/Susu9527" },
-    { name: "波波", twitter: "https://x.com/shihaibo4" },
-    { name: "Zai Lai", twitter: "https://x.com/ZaiLai_" },
-    { name: "肥肥", twitter: "https://x.com/lumaonvqishi" },
-    { name: "Sophia", twitter: "https://x.com/SophiaXie410811" },
-    { name: "Eryi", twitter: "https://x.com/qzmak53747555" },
-    { name: "Gengar", twitter: "https://x.com/Genggar0x" },
-    { name: "Hyu", twitter: "https://x.com/hyuuu_hyu" },
-    { name: "CactusDoggy", twitter: "https://x.com/cactus_doggy" },
-    { name: "Oldsix", twitter: "https://x.com/Old_6_" },
-    { name: "迪仔", twitter: "https://x.com/0xdizai" },
-    { name: "Sonic", twitter: "https://x.com/SonicFiringZ" },
-    { name: "Freedom", twitter: "https://x.com/zhangru83864846" },
-    { name: "Coin Pulse", twitter: "https://x.com/wangni88" },
-    { name: "Kristina", twitter: "https://x.com/_Kristina8888" },
-    { name: "Hanna", twitter: "https://x.com/HhhhHannah" },
-    { name: "Taotao", twitter: "https://x.com/TTZENG2" },
-    { name: "Soar", twitter: "https://x.com/lpr55499568" },
-    { name: "Iny", twitter: "https://x.com/Iny1127Iny" },
-  ]
+    { name: 'Lewis', twitter: 'https://x.com/Lewis8888888' },
+    { name: 'Spark', twitter: 'https://x.com/0x_xifeng' },
+    { name: 'Russell', twitter: 'https://x.com/brocoliwang' },
+    { name: 'Mier', twitter: 'https://x.com/luoli94448559' },
+    { name: 'Dream', twitter: 'https://x.com/Dreamer117Zz' },
+    { name: 'Van1sa', twitter: 'https://x.com/Van1saXXM' },
+    { name: 'Huan', twitter: 'https://x.com/XHOYH' },
+    { name: 'CHEN', twitter: 'https://x.com/jaychen981111' },
+    { name: '4Y', twitter: 'https://x.com/4y_ffff' },
+    { name: 'SSWeb3', twitter: 'https://x.com/SSWeb3_' },
+    { name: 'Cash', twitter: 'https://x.com/cashwscott' },
+    { name: 'Pizza', twitter: 'https://x.com/peppertat1' },
+    { name: 'Sky', twitter: 'https://x.com/0xsky66' },
+    { name: 'Hao', twitter: 'https://x.com/hao2web3' },
+    { name: 'Chine', twitter: 'https://x.com/0xChine' },
+    { name: 'Potato King', twitter: 'https://x.com/0xpotatoking' },
+    { name: 'Picano', twitter: 'https://x.com/Pican0_o' },
+    { name: 'Mumu', twitter: 'https://x.com/Mony_Chen265' },
+    { name: 'Polly', twitter: 'https://x.com/Polly_r7' },
+    { name: 'pinecats', twitter: 'https://x.com/pinecats3_1' },
+    { name: 'Susu', twitter: 'https://x.com/Susu9527' },
+    { name: '波波', twitter: 'https://x.com/shihaibo4' },
+    { name: 'Zai Lai', twitter: 'https://x.com/ZaiLai_' },
+    { name: '肥肥', twitter: 'https://x.com/lumaonvqishi' },
+    { name: 'Sophia', twitter: 'https://x.com/SophiaXie410811' },
+    { name: 'Eryi', twitter: 'https://x.com/qzmak53747555' },
+    { name: 'Gengar', twitter: 'https://x.com/Genggar0x' },
+    { name: 'Hyu', twitter: 'https://x.com/hyuuu_hyu' },
+    { name: 'CactusDoggy', twitter: 'https://x.com/cactus_doggy' },
+    { name: 'Oldsix', twitter: 'https://x.com/Old_6_' },
+    { name: '迪仔', twitter: 'https://x.com/0xdizai' },
+    { name: 'Sonic', twitter: 'https://x.com/SonicFiringZ' },
+    { name: 'Freedom', twitter: 'https://x.com/zhangru83864846' },
+    { name: 'Coin Pulse', twitter: 'https://x.com/wangni88' },
+    { name: 'Kristina', twitter: 'https://x.com/_Kristina8888' },
+    { name: 'Hanna', twitter: 'https://x.com/HhhhHannah' },
+    { name: 'Taotao', twitter: 'https://x.com/TTZENG2' },
+    { name: 'Soar', twitter: 'https://x.com/lpr55499568' },
+    { name: 'Iny', twitter: 'https://x.com/Iny1127Iny' },
+  ];
 
-  const duplicatedMembers = [...members, ...members]
+  const duplicatedMembers = [...members, ...members];
 
   return (
     <div className={styles.homepage}>
@@ -215,7 +242,9 @@ export default function Home() {
         </div>
 
         <div className={styles.container}>
-          <div className={`${styles.heroContent} ${isVisible ? styles.heroVisible : ""}`}>
+          <div
+            className={`${styles.heroContent} ${isVisible ? styles.heroVisible : ''}`}
+          >
             <div className={styles.heroBadge}>🚀 下一代区块链技术</div>
             <h1 className={styles.heroTitle}>
               <span className={styles.heroTitlePrimary}>欢迎来到</span>
@@ -225,7 +254,9 @@ export default function Home() {
             <p className={styles.heroSubtitle}>
               探索高性能区块链的无限可能，与顶尖开发者一起构建去中心化的未来。
               <br />
-              <span className={styles.heroHighlight}>加入我们，成为区块链革命的先锋。</span>
+              <span className={styles.heroHighlight}>
+                加入我们，成为区块链革命的先锋。
+              </span>
             </p>
             <div className={styles.heroButtons}>
               <button className={styles.heroPrimaryButton}>
@@ -246,17 +277,35 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.statsGrid}>
             {[
-              { label: "社区成员", value: stats.members, icon: <Users className={styles.statIcon} /> },
-              { label: "技术分享", value: stats.activities, icon: <Star className={styles.statIcon} /> },
-              { label: "开源项目", value: stats.projects, icon: <Rocket className={styles.statIcon} /> },
-              { label: "代码提交", value: stats.commits, icon: <GitBranch className={styles.statIcon} /> },
+              {
+                label: '社区成员',
+                value: stats.members,
+                icon: <Users className={styles.statIcon} />,
+              },
+              {
+                label: '技术分享',
+                value: stats.activities,
+                icon: <Star className={styles.statIcon} />,
+              },
+              {
+                label: '开源项目',
+                value: stats.projects,
+                icon: <Rocket className={styles.statIcon} />,
+              },
+              {
+                label: '代码提交',
+                value: stats.commits,
+                icon: <GitBranch className={styles.statIcon} />,
+              },
             ].map((stat, index) => (
               <div key={index} className={styles.statItem}>
                 <div className={styles.statIconWrapper}>
                   <div className={styles.statIconGlow}></div>
                   <div className={styles.statIconContainer}>{stat.icon}</div>
                 </div>
-                <div className={styles.statValue}>{stat.value.toLocaleString()}+</div>
+                <div className={styles.statValue}>
+                  {stat.value.toLocaleString()}+
+                </div>
                 <div className={styles.statLabel}>{stat.label}</div>
               </div>
             ))}
@@ -280,8 +329,11 @@ export default function Home() {
                 <div className={styles.activityCardHeader}>
                   <div className={styles.activityMeta}>
                     <span
-                      className={`${styles.activityBadge} ${activity.status === "即将开始" ? styles.activityBadgeActive : styles.activityBadgeInactive
-                        }`}
+                      className={`${styles.activityBadge} ${
+                        activity.status === '即将开始'
+                          ? styles.activityBadgeActive
+                          : styles.activityBadgeInactive
+                      }`}
                     >
                       {activity.status}
                     </span>
@@ -291,7 +343,9 @@ export default function Home() {
                     </div>
                   </div>
                   <h3 className={styles.activityTitle}>{activity.title}</h3>
-                  <p className={styles.activityDescription}>{activity.description}</p>
+                  <p className={styles.activityDescription}>
+                    {activity.description}
+                  </p>
                 </div>
                 <div className={styles.activityCardContent}>
                   <div className={styles.activityInfo}>
@@ -334,16 +388,19 @@ export default function Home() {
               <div key={index} className={styles.featureCard}>
                 <div className={styles.featureCardGlow}></div>
                 <div className={styles.featureCardContent}>
-                  <div className={styles.featureIconWrapper}>{feature.icon}</div>
+                  <div className={styles.featureIconWrapper}>
+                    {feature.icon}
+                  </div>
                   <h3 className={styles.featureTitle}>{feature.title}</h3>
-                  <p className={styles.featureDescription}>{feature.description}</p>
+                  <p className={styles.featureDescription}>
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-
 
       {/* Milestones Section */}
       <section className={styles.milestones}>
@@ -371,11 +428,15 @@ export default function Home() {
                       </div>
                     </div>
                     <h3 className={styles.milestoneTitle}>{milestone.title}</h3>
-                    <p className={styles.milestoneDescription}>{milestone.description}</p>
+                    <p className={styles.milestoneDescription}>
+                      {milestone.description}
+                    </p>
                   </div>
                 </div>
                 <div className={styles.milestoneIcon}>
-                  <div className={styles.milestoneIconContent}>{milestone.icon}</div>
+                  <div className={styles.milestoneIconContent}>
+                    {milestone.icon}
+                  </div>
                   <div className={styles.milestoneIconGlow}></div>
                 </div>
               </div>
@@ -389,16 +450,22 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>开发者资源</h2>
-            <p className={styles.sectionDescription}>为开发者提供完整的工具链和资源，让你快速上手Monad开发</p>
+            <p className={styles.sectionDescription}>
+              为开发者提供完整的工具链和资源，让你快速上手Monad开发
+            </p>
           </div>
           <div className={styles.resourcesGrid}>
             {resources.map((resource, index) => (
               <div key={index} className={styles.resourceCard}>
                 <div className={styles.resourceCardGlow}></div>
                 <div className={styles.resourceCardHeader}>
-                  <div className={styles.resourceIconWrapper}>{resource.icon}</div>
+                  <div className={styles.resourceIconWrapper}>
+                    {resource.icon}
+                  </div>
                   <h3 className={styles.resourceTitle}>{resource.title}</h3>
-                  <p className={styles.resourceDescription}>{resource.description}</p>
+                  <p className={styles.resourceDescription}>
+                    {resource.description}
+                  </p>
                 </div>
                 <div className={styles.resourceCardFooter}>
                   <button className={styles.resourceButton}>立即使用</button>
@@ -414,7 +481,9 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>社区成员</h2>
-            <p className={styles.sectionDescription}>我们的团队由经验丰富的区块链专家和社区建设者组成</p>
+            <p className={styles.sectionDescription}>
+              我们的团队由经验丰富的区块链专家和社区建设者组成
+            </p>
           </div>
 
           <div className={styles.membersContainer}>
@@ -423,9 +492,15 @@ export default function Home() {
             <div className={styles.membersScroll}>
               {duplicatedMembers.map((member, index) => (
                 <div key={index} className={styles.memberItem}>
-                  <a href={member.twitter} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={member.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <h3 className={styles.memberName}>{member.name}</h3>
-                    <div className={styles.memberTwitter}>@{member.twitter.split('/').pop()}</div>
+                    <div className={styles.memberTwitter}>
+                      @{member.twitter.split('/').pop()}
+                    </div>
                   </a>
                 </div>
               ))}
@@ -453,7 +528,9 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.ctaContent}>
             <h2 className={styles.ctaTitle}>准备好加入Monad中文社区了吗？</h2>
-            <p className={styles.ctaSubtitle}>与志同道合的开发者一起探索区块链技术的前沿，共同构建去中心化的未来</p>
+            <p className={styles.ctaSubtitle}>
+              与志同道合的开发者一起探索区块链技术的前沿，共同构建去中心化的未来
+            </p>
             <div className={styles.ctaButtons}>
               <button className={styles.ctaPrimaryButton}>
                 <Users className={styles.buttonIcon} />
@@ -468,6 +545,5 @@ export default function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }
-

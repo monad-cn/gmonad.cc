@@ -4,7 +4,7 @@ import '../styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 
 const customTheme = {
   token: {
@@ -25,10 +25,12 @@ export default function App({
     return (
       <SessionProvider session={session}>
         <ConfigProvider theme={customTheme}>
-          <Component {...pageProps} />
-          {process.env.NEXT_PUBLIC_GA_ID && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-          )}
+          <AntdApp>
+            <Component {...pageProps} />
+            {process.env.NEXT_PUBLIC_GA_ID && (
+              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+            )}
+          </AntdApp>
         </ConfigProvider>
       </SessionProvider>
     );
@@ -37,13 +39,15 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <ConfigProvider theme={customTheme}>
-        <Layout>
-          <Component {...pageProps} />
+        <AntdApp>
+          <Layout>
+            <Component {...pageProps} />
 
-          {process.env.NEXT_PUBLIC_GA_ID && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-          )}
-        </Layout>
+            {process.env.NEXT_PUBLIC_GA_ID && (
+              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+            )}
+          </Layout>
+        </AntdApp>
       </ConfigProvider>
     </SessionProvider>
   );

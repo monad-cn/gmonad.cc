@@ -1,4 +1,3 @@
-import { message } from 'antd';
 const CLOUDINARY_UPLOAD = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 const CLOUDINARY_DELETE = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/destroy`;
 
@@ -33,12 +32,10 @@ async function uploadImgToCloud(file: File) {
     if (result.secure_url) {
       return Promise.resolve(result); // 返回包含图片信息的对象
     } else {
-      message.error('图片上传失败，请重试');
       return Promise.reject(false);
     }
   } catch (error) {
     console.error('图片上传错误：', error);
-    message.error('图片上传失败，请检查网络连接');
     return Promise.reject(false);
   }
 }
@@ -70,28 +67,28 @@ async function deleteImgFromCloud(publicId: string): Promise<boolean> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        invalidate: true, // 添加缓存失效标志
         public_id: publicId,
+        timestamp,
         api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
         signature,
-        timestamp,
-        invalidate: true, // 添加缓存失效标志
       }),
     });
 
     const data: {
-      message?: string;
+      result?: string;
       error?: string;
     } = await response.json();
+    console.log(data);
 
-    if (response.ok && data.message === 'ok') {
-      message.success('图片删除成功！');
-
+    if (response.ok && data.result === 'ok') {
       return true;
     } else {
       throw new Error(data.error || '删除失败');
     }
   } catch (error) {
-    message.error(`图片删除失败：${(error as Error).message}`);
+    console.log('图片上传错误：', error);
+
     return false;
   }
 }

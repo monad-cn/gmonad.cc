@@ -1,32 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import cloudinary from './cloudinaryConfig';
-
-interface SignRequestBody {
-  publicId: string;
-}
-
-interface SignResponse {
-  signature: string;
-  timestamp: number;
-}
+import crypto from 'crypto';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<SignResponse | { error: string }>
+  res: NextApiResponse
 ) {
-  const { publicId } = req.body as SignRequestBody;
-
-  if (!publicId) {
-    return res.status(400).json({ error: 'Public ID is required' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const timestamp = Math.round(new Date().getTime() / 1000);
-  const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET || '';
+  const { publicId } = req.body;
+  const timestamp = Math.floor(Date.now() / 1000);
+  const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
-  const signature = cloudinary.utils.api_sign_request(
-    { public_id: publicId, timestamp },
-    apiSecret
-  );
+  if (!publicId || !apiSecret) {
+    return res.status(400).json({ error: 'Missing publicId or API secret' });
+  }
 
-  return res.status(200).json({ signature, timestamp });
+  // ⚠️ 字段顺序必须严格遵守 Cloudinary 的签名规则
+  const stringToSign = `invalidate=true&public_id=${publicId}&timestamp=${timestamp}`;
+  const signature = crypto
+    .createHash('sha1')
+    .update(stringToSign + apiSecret)
+    .digest('hex');
+
+  return res.status(200).json({
+    signature,
+    timestamp,
+  });
 }
