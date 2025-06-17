@@ -2,37 +2,37 @@ import React from 'react';
 import { Avatar, Dropdown, Button } from 'antd';
 
 import type { MenuProps } from 'antd';
-import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
+// import { useRouter } from 'next/router';
+// import { signOut } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 import styles from '../styles/Auth.module.css';
 
 const Auth: React.FC = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  // const { data: session, status } = useSession();
+  // const router = useRouter();
 
   // 退出登录
-  const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: '/' }); // 清空 Google OAuth 信息并重定向到首页
-  };
+  // const handleLogout = async () => {
+  //   await signOut({ redirect: true, callbackUrl: '/' }); // 清空 Google OAuth 信息并重定向到首页
+  // };
 
-  const onClick: MenuProps['onClick'] = ({ key }) => {
-    if (key === 'logout') {
-      handleLogout();
-    }
-  };
+  // const onClick: MenuProps['onClick'] = ({ key }) => {
+  //   if (key === 'logout') {
+  //     handleLogout();
+  //   }
+  // };
 
-  const items: MenuProps['items'] = [
-    {
-      key: 'name',
-      label: <span>{session?.user?.name}</span>,
-      disabled: true,
-    },
-    {
-      key: 'logout',
-      label: '退出登录',
-    },
-  ];
+  // const items: MenuProps['items'] = [
+  //   {
+  //     key: 'name',
+  //     label: <span>{session?.user?.name}</span>,
+  //     disabled: true,
+  //   },
+  //   {
+  //     key: 'logout',
+  //     label: '退出登录',
+  //   },
+  // ];
 
   return (
     <div className={styles.auth}>
