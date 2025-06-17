@@ -123,7 +123,7 @@ export default function EventSection() {
                                 <div className={styles.activityInfo}>
                                     <div className={styles.activityInfoItem}>
                                         <Calendar className={styles.activityIcon} />
-                                        {formatTime(event.date)}
+                                        {formatTime(event.start_time)}
                                     </div>
                                     <div className={styles.activityInfoItem}>
                                         {event.event_mode === '线上活动' ? (
@@ -136,11 +136,11 @@ export default function EventSection() {
                                 </div>
                                 {/* 标签展示区 */}
                                 <div className={styles.tagsContainer}>
-                                    {(Array.isArray(event.tags) ? event.tags : event.tags?.split(','))?.map((tag: string, idx: Key | null | undefined) => (
+                                    {(Array.isArray(event.tags) ? event.tags : event.tags?.slice(0, 4).map((tag: string, idx: Key | null | undefined) => (
                                         <span key={idx} className={styles.tag}>
                                             {tag.trim()}
                                         </span>
-                                    ))}
+                                    )))}
                                 </div>
                                 <Link href={`/events/${event.ID}`} passHref>
                                     <button className={styles.activityButton}>了解详情</button>
