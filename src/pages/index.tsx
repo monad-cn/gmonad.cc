@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { SiDiscord, SiTelegram } from 'react-icons/si';
+import EventSection from './events/section'
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -332,66 +333,8 @@ export default function Home() {
       </section>
 
       {/* Activities Section */}
-      <section className={styles.activities}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>社区活动</h2>
-            <p className={styles.sectionDescription}>
-              定期举办各种技术分享会、工作坊和交流活动，为社区成员提供学习和成长的机会
-            </p>
-          </div>
-          <div className={styles.activitiesGrid}>
-            {activities.map((activity, index) => (
-              <div key={index} className={styles.activityCard}>
-                <div className={styles.activityCardGlow}></div>
-                <div className={styles.activityCardHeader}>
-                  <div className={styles.activityMeta}>
-                    <span
-                      className={`${styles.activityBadge} ${
-                        activity.status === '即将开始'
-                          ? styles.activityBadgeActive
-                          : styles.activityBadgeInactive
-                      }`}
-                    >
-                      {activity.status}
-                    </span>
-                    <div className={styles.activityParticipants}>
-                      <Users className={styles.activityIcon} />
-                      {activity.participants}
-                    </div>
-                  </div>
-                  <h3 className={styles.activityTitle}>{activity.title}</h3>
-                  <p className={styles.activityDescription}>
-                    {activity.description}
-                  </p>
-                </div>
-                <div className={styles.activityCardContent}>
-                  <div className={styles.activityInfo}>
-                    <div className={styles.activityInfoItem}>
-                      <Calendar className={styles.activityIcon} />
-                      {activity.date}
-                    </div>
-                    <div className={styles.activityInfoItem}>
-                      <MapPin className={styles.activityIcon} />
-                      {activity.location}
-                    </div>
-                  </div>
-                  <button className={styles.activityButton}>了解详情</button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className={styles.sectionFooter}>
-            <Link href="/events">
-              <button className={styles.moreButton}>
-                <Calendar className={styles.buttonIcon} />
-                查看更多活动
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
+      <EventSection />
+      
       {/* Milestones Section */}
       <section className={styles.milestones}>
         <div className={styles.container}>
