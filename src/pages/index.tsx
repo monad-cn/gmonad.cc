@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { SiDiscord, SiTelegram } from 'react-icons/si';
+import { Avatar } from 'antd';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -191,45 +192,130 @@ export default function Home() {
   ];
 
   const members = [
-    { name: 'Lewis', twitter: 'https://x.com/Lewis8888888' },
-    { name: 'Spark', twitter: 'https://x.com/0x_xifeng' },
-    { name: 'Russell', twitter: 'https://x.com/brocoliwang' },
-    { name: 'Mier', twitter: 'https://x.com/luoli94448559' },
-    { name: 'Dream', twitter: 'https://x.com/Dreamer117Zz' },
-    { name: 'Van1sa', twitter: 'https://x.com/Van1saXXM' },
-    { name: 'Huan', twitter: 'https://x.com/XHOYH' },
-    { name: 'CHEN', twitter: 'https://x.com/jaychen981111' },
-    { name: '4Y', twitter: 'https://x.com/4y_ffff' },
-    { name: 'SSWeb3', twitter: 'https://x.com/SSWeb3_' },
-    { name: 'Cash', twitter: 'https://x.com/cashwscott' },
-    { name: 'Pizza', twitter: 'https://x.com/peppertat1' },
-    { name: 'Sky', twitter: 'https://x.com/0xsky66' },
-    { name: 'Hao', twitter: 'https://x.com/hao2web3' },
-    { name: 'Chine', twitter: 'https://x.com/0xChine' },
-    { name: 'Potato King', twitter: 'https://x.com/0xpotatoking' },
-    { name: 'Picano', twitter: 'https://x.com/Pican0_o' },
-    { name: 'Mumu', twitter: 'https://x.com/Mony_Chen265' },
-    { name: 'Polly', twitter: 'https://x.com/Polly_r7' },
-    { name: 'pinecats', twitter: 'https://x.com/pinecats3_1' },
-    { name: 'Susu', twitter: 'https://x.com/Susu9527' },
-    { name: '波波', twitter: 'https://x.com/shihaibo4' },
-    { name: 'Zai Lai', twitter: 'https://x.com/ZaiLai_' },
-    { name: '肥肥', twitter: 'https://x.com/lumaonvqishi' },
-    { name: 'Sophia', twitter: 'https://x.com/SophiaXie410811' },
-    { name: 'Eryi', twitter: 'https://x.com/qzmak53747555' },
-    { name: 'Gengar', twitter: 'https://x.com/Genggar0x' },
-    { name: 'Hyu', twitter: 'https://x.com/hyuuu_hyu' },
-    { name: 'CactusDoggy', twitter: 'https://x.com/cactus_doggy' },
-    { name: 'Oldsix', twitter: 'https://x.com/Old_6_' },
-    { name: '迪仔', twitter: 'https://x.com/0xdizai' },
-    { name: 'Sonic', twitter: 'https://x.com/SonicFiringZ' },
-    { name: 'Freedom', twitter: 'https://x.com/zhangru83864846' },
-    { name: 'Coin Pulse', twitter: 'https://x.com/wangni88' },
-    { name: 'Kristina', twitter: 'https://x.com/_Kristina8888' },
-    { name: 'Hanna', twitter: 'https://x.com/HhhhHannah' },
-    { name: 'Taotao', twitter: 'https://x.com/TTZENG2' },
-    { name: 'Soar', twitter: 'https://x.com/lpr55499568' },
-    { name: 'Iny', twitter: 'https://x.com/Iny1127Iny' },
+    {
+      name: 'Lewis',
+      twitter: 'https://x.com/Lewis8888888',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1933344082480541700/U_914ZHi_200x200.jpg',
+    },
+    {
+      name: 'Spark',
+      twitter: 'https://x.com/0x_xifeng',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1886598436495220737/xnKAw0ZG_200x200.png',
+    },
+    {
+      name: 'Russell',
+      twitter: 'https://x.com/brocoliwang',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1874760336886444032/8Ld7gyDk_200x200.jpg',
+    },
+    {
+      name: 'Mier',
+      twitter: 'https://x.com/luoli94448559',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1781648881312497664/afCSi5QG_200x200.jpg',
+    },
+    {
+      name: 'Dream',
+      twitter: 'https://x.com/Dreamer117Zz',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1790823950248984579/kEaEJyCQ_200x200.jpg',
+    },
+    {
+      name: 'Van1sa',
+      twitter: 'https://x.com/Van1saXXM',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1916421885015060480/wH7SDf8c_200x200.jpg',
+    },
+    {
+      name: 'Huan',
+      twitter: 'https://x.com/XHOYH',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1934513660208226304/p2w013Lv_200x200.jpg',
+    },
+    {
+      name: 'CHEN',
+      twitter: 'https://x.com/jaychen981111',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1840624690634838016/KCS9e3yu_200x200.jpg',
+    },
+    {
+      name: '4Y',
+      twitter: 'https://x.com/4y_ffff',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1839746972905025537/LANwIRg1_200x200.jpg',
+    },
+    {
+      name: 'SSWeb3',
+      twitter: 'https://x.com/SSWeb3_',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1007512200066396160/lQ8ERMpU_200x200.jpg',
+    },
+    {
+      name: 'Cash',
+      twitter: 'https://x.com/cashwscott',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1911663424573972480/z69s-lIM_200x200.jpg',
+    },
+    {
+      name: 'Pizza',
+      twitter: 'https://x.com/peppertat1',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1614283227132489731/7daqm_Ag_200x200.jpg',
+    },
+    {
+      name: 'Sky',
+      twitter: 'https://x.com/0xsky66',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1871423937407860736/oDJ7stk4_200x200.jpg',
+    },
+    {
+      name: 'Hao',
+      twitter: 'https://x.com/hao2web3',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1852386555161444352/Nb5PcCgO_200x200.jpg',
+    },
+    {
+      name: 'Chine',
+      twitter: 'https://x.com/0xChine',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1927912366618071042/fIR6815r_200x200.jpg',
+    },
+    {
+      name: 'Potato King',
+      twitter: 'https://x.com/0xpotatoking',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1922572873052659712/mBVEFUsC_200x200.jpg',
+    },
+    {
+      name: 'Picano',
+      twitter: 'https://x.com/Pican0_o',
+      avatar:
+        'https://pbs.twimg.com/profile_images/1896180107271876608/ZmzRfbaR_200x200.jpg',
+    },
+    // { name: 'Mumu', twitter: 'https://x.com/Mony_Chen265' },
+    // { name: 'Polly', twitter: 'https://x.com/Polly_r7' },
+    // { name: 'pinecats', twitter: 'https://x.com/pinecats3_1' },
+    // { name: 'Susu', twitter: 'https://x.com/Susu9527' },
+    // { name: '波波', twitter: 'https://x.com/shihaibo4' },
+    // { name: 'Zai Lai', twitter: 'https://x.com/ZaiLai_' },
+    // { name: '肥肥', twitter: 'https://x.com/lumaonvqishi' },
+    // { name: 'Sophia', twitter: 'https://x.com/SophiaXie410811' },
+    // { name: 'Eryi', twitter: 'https://x.com/qzmak53747555' },
+    // { name: 'Gengar', twitter: 'https://x.com/Genggar0x' },
+    // { name: 'Hyu', twitter: 'https://x.com/hyuuu_hyu' },
+    // { name: 'CactusDoggy', twitter: 'https://x.com/cactus_doggy' },
+    // { name: 'Oldsix', twitter: 'https://x.com/Old_6_' },
+    // { name: '迪仔', twitter: 'https://x.com/0xdizai' },
+    // { name: 'Sonic', twitter: 'https://x.com/SonicFiringZ' },
+    // { name: 'Freedom', twitter: 'https://x.com/zhangru83864846' },
+    // { name: 'Coin Pulse', twitter: 'https://x.com/wangni88' },
+    // { name: 'Kristina', twitter: 'https://x.com/_Kristina8888' },
+    // { name: 'Hanna', twitter: 'https://x.com/HhhhHannah' },
+    // { name: 'Taotao', twitter: 'https://x.com/TTZENG2' },
+    // { name: 'Soar', twitter: 'https://x.com/lpr55499568' },
+    // { name: 'Iny', twitter: 'https://x.com/Iny1127Iny' },
   ];
 
   const duplicatedMembers = [...members, ...members];
@@ -512,10 +598,11 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <h3 className={styles.memberName}>{member.name}</h3>
-                    <div className={styles.memberTwitter}>
-                      @{member.twitter.split('/').pop()}
+                    <div className={styles.avatar}>
+                      <Avatar size={60} src={`${member.avatar}`} />
                     </div>
+                    {/* <h3 className={styles.memberName}>{member.name}</h3> */}
+                    <div className={styles.memberTwitter}>{member.name}</div>
                   </a>
                 </div>
               ))}

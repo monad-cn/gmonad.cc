@@ -128,7 +128,9 @@
   padding: 0.75rem 0;
   z-index: 90; /* 确保在header下面但在其他内容上面 */
   overflow: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease; /* 添加平滑过渡 */
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease; /* 添加平滑过渡 */
 }
 
 .floatingNewsBanner.hidden {
@@ -257,7 +259,11 @@
 
 .heroBadge {
   display: inline-block;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   border: 1px solid rgba(168, 85, 247, 0.3);
   color: #7c3aed;
   padding: 0.5rem 1rem;
@@ -392,7 +398,11 @@
 .statIconGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -484,7 +494,11 @@
 .featureCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -570,7 +584,11 @@
 .activityCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -820,8 +838,8 @@
   color: #6b7280;
   line-height: 1.6;
   font-size: 0.95rem;
-  max-width: 410px;  /* 限制最大宽度 */
-  margin: 0 auto;    /* 居中 */
+  max-width: 410px; /* 限制最大宽度 */
+  margin: 0 auto; /* 居中 */
   transition: color 0.3s ease;
 }
 
@@ -837,7 +855,6 @@
   margin-left: 0;
   margin-right: auto;
 }
-
 
 .milestoneIcon {
   position: absolute;
@@ -940,7 +957,11 @@
 .resourceCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -1055,29 +1076,42 @@
   animation-play-state: paused;
 }
 
-.memberItem {
-  flex-shrink: 0;
-  text-align: center;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(229, 231, 235, 0.8);
-  backdrop-filter: blur(10px);
-  min-width: 200px;
-}
-
 .memberItem a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.memberItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border-color: rgba(124, 58, 237, 0.3);
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb; /* 更细更浅的灰色边框 */
+  background: #fff;
+  box-shadow: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.avatar:hover {
+  border-color: #d1d5db; /* 柔和灰色边框 */
+  box-shadow:
+    0 4px 16px rgba(100, 116, 139, 0.15),
+    0 2px 8px rgba(31, 41, 55, 0.08); /* 柔和灰色阴影 */
+  transform: translateY(-4px);
+}
+
+.avatar :global(.ant-avatar) {
+  width: 60px !important;
+  height: 60px !important;
+  line-height: 60px !important;
 }
 
 .memberName {
@@ -1088,8 +1122,12 @@
 }
 
 .memberTwitter {
+  margin-top: 4px;
   color: #6b7280;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .memberItem:hover .memberName {
@@ -1416,4 +1454,3 @@
     font-size: 1.25rem;
   }
 }
-
