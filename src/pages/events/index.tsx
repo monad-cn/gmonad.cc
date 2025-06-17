@@ -626,11 +626,11 @@ export default function EventsPage() {
         <div className={styles.bottomPagination}>
           <Pagination
             current={currentPage}
-            total={events.length}
+            total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
             showQuickJumper={true}
-            showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 项，共 ${total} 项`}
+            showTotal={(total, range) => `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`}
             className={styles.fullPagination}
           />
         </div>
