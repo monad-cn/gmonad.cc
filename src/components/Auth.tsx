@@ -36,7 +36,11 @@ const Auth: React.FC = () => {
 
   return (
     <div className={styles.auth}>
-      {session?.user ? (
+        <Button type="primary" className={styles.navButton}>
+          登录
+        </Button>
+      
+      {/* {session?.user ? (
         <Dropdown menu={{ items, onClick }} trigger={['hover']}>
           <div className={styles.userInfo}>
             <Avatar
@@ -55,7 +59,7 @@ const Auth: React.FC = () => {
         >
           登录
         </Button>
-      )}
+      )} */}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { Github, Twitter, Globe } from "lucide-react"
 import styles from "../styles/Footer.module.css"
+import Link from "next/link"
 
 export default function Footer() {
   return (
@@ -83,6 +84,8 @@ export default function Footer() {
         </div>
         <div className={styles.footerBottom}>
           <p className={styles.footerCopyright}>&copy; 2024 Monad中文社区. 保留所有权利.</p>
+          <Link href="/privacy">隐私政策</Link> ·{' '}
+          <Link href="/terms">服务条款</Link>
         </div>
       </div>
     </footer>
