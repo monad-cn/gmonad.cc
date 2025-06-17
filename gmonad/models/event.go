@@ -93,9 +93,9 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	// 排序
 	if filter.OrderDesc {
-		query = query.Order("created_at desc")
+		query = query.Order("start_time desc")
 	} else {
-		query = query.Order("created_at asc")
+		query = query.Order("start_time asc")
 	}
 
 	// 分页
