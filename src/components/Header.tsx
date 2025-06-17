@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 
 import styles from '../styles/Header.module.css';
 
-import Auth from './Auth'; // 引入 Auth 组件
 import Link from 'next/link';
 
 export default function Header() {
@@ -47,7 +46,7 @@ export default function Header() {
               <span>资源</span>
               <ChevronDown className={styles.navIcon} />
             </div>
-            <Auth /> {/* 使用 Auth 组件 */}
+            <button className={styles.navButton}>加入测试网</button>
           </nav>
         </div>
       </div>
@@ -74,6 +73,6 @@ export default function Header() {
           </div>
         </div>
       )} */}
-    </header >
+    </header>
   );
 }

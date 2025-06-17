@@ -26,19 +26,6 @@ import Link from 'next/link';
 import styles from './index.module.css';
 import { SiDiscord, SiTelegram } from 'react-icons/si';
 
-import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
-
-  return {
-    props: {
-      session,
-    },
-  };
-}
-
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
