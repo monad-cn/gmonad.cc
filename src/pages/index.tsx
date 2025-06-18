@@ -197,104 +197,100 @@ export default function Home() {
       name: 'Lewis',
       twitter: 'https://x.com/Lewis8888888',
       avatar:
-        'https://pbs.twimg.com/profile_images/1933344082480541700/U_914ZHi_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1933344082480541700/U_914ZHi_normal.jpg',
     },
-    {
-      name: 'Spark',
-      twitter: 'https://x.com/0x_xifeng',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1886598436495220737/xnKAw0ZG_200x200.png',
-    },
+
     {
       name: 'Russell',
       twitter: 'https://x.com/brocoliwang',
       avatar:
-        'https://pbs.twimg.com/profile_images/1874760336886444032/8Ld7gyDk_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1874760336886444032/8Ld7gyDk_normal.jpg',
     },
     {
       name: 'Mier',
       twitter: 'https://x.com/luoli94448559',
       avatar:
-        'https://pbs.twimg.com/profile_images/1781648881312497664/afCSi5QG_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1781648881312497664/afCSi5QG_normal.jpg',
     },
     {
       name: 'Dream',
       twitter: 'https://x.com/Dreamer117Zz',
       avatar:
-        'https://pbs.twimg.com/profile_images/1790823950248984579/kEaEJyCQ_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1790823950248984579/kEaEJyCQ_normal.jpg',
     },
     {
       name: 'Van1sa',
       twitter: 'https://x.com/Van1saXXM',
       avatar:
-        'https://pbs.twimg.com/profile_images/1916421885015060480/wH7SDf8c_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1916421885015060480/wH7SDf8c_normal.jpg',
     },
     {
       name: 'Huan',
       twitter: 'https://x.com/XHOYH',
       avatar:
-        'https://pbs.twimg.com/profile_images/1934513660208226304/p2w013Lv_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1934513660208226304/p2w013Lv_normal.jpg',
     },
     {
       name: 'CHEN',
       twitter: 'https://x.com/jaychen981111',
       avatar:
-        'https://pbs.twimg.com/profile_images/1840624690634838016/KCS9e3yu_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1840624690634838016/KCS9e3yu_normal.jpg',
     },
     {
       name: '4Y',
       twitter: 'https://x.com/4y_ffff',
       avatar:
-        'https://pbs.twimg.com/profile_images/1839746972905025537/LANwIRg1_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1839746972905025537/LANwIRg1_normal.jpg',
     },
     {
       name: 'SSWeb3',
       twitter: 'https://x.com/SSWeb3_',
       avatar:
-        'https://pbs.twimg.com/profile_images/1007512200066396160/lQ8ERMpU_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1007512200066396160/lQ8ERMpU_normal.jpg',
     },
     {
       name: 'Cash',
       twitter: 'https://x.com/cashwscott',
       avatar:
-        'https://pbs.twimg.com/profile_images/1911663424573972480/z69s-lIM_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1911663424573972480/z69s-lIM_normal.jpg',
     },
     {
       name: 'Pizza',
       twitter: 'https://x.com/peppertat1',
       avatar:
-        'https://pbs.twimg.com/profile_images/1614283227132489731/7daqm_Ag_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1614283227132489731/7daqm_Ag_normal.jpg',
     },
     {
       name: 'Sky',
       twitter: 'https://x.com/0xsky66',
       avatar:
-        'https://pbs.twimg.com/profile_images/1871423937407860736/oDJ7stk4_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1871423937407860736/oDJ7stk4_normal.jpg',
     },
     {
       name: 'Hao',
       twitter: 'https://x.com/hao2web3',
       avatar:
-        'https://pbs.twimg.com/profile_images/1852386555161444352/Nb5PcCgO_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1852386555161444352/Nb5PcCgO_normal.jpg',
     },
     {
       name: 'Chine',
       twitter: 'https://x.com/0xChine',
       avatar:
-        'https://pbs.twimg.com/profile_images/1927912366618071042/fIR6815r_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1927912366618071042/fIR6815r_normal.jpg',
     },
     {
       name: 'Potato King',
       twitter: 'https://x.com/0xpotatoking',
       avatar:
-        'https://pbs.twimg.com/profile_images/1922572873052659712/mBVEFUsC_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1922572873052659712/mBVEFUsC_normal.jpg',
     },
     {
       name: 'Picano',
       twitter: 'https://x.com/Pican0_o',
       avatar:
-        'https://pbs.twimg.com/profile_images/1896180107271876608/ZmzRfbaR_200x200.jpg',
+        'https://pbs.twimg.com/profile_images/1896180107271876608/ZmzRfbaR_normal.jpg',
     },
+    // { name: 'Spark', twitter: 'https://x.com/0x_xifeng', },
     // { name: 'Mumu', twitter: 'https://x.com/Mony_Chen265' },
     // { name: 'Polly', twitter: 'https://x.com/Polly_r7' },
     // { name: 'pinecats', twitter: 'https://x.com/pinecats3_1' },
@@ -542,8 +538,13 @@ export default function Home() {
                     rel="noopener noreferrer"
                   >
                     <div className={styles.avatar}>
-                      <Avatar size={60} src={`${member.avatar}`} />
+                      <Avatar
+                        size={60}
+                        src={`/avatar/${member.name}_normal.jpg`}
+                        alt={member.name}
+                      />
                     </div>
+
                     {/* <h3 className={styles.memberName}>{member.name}</h3> */}
                     <div className={styles.memberTwitter}>{member.name}</div>
                   </a>
