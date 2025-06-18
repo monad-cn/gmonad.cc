@@ -1,6 +1,8 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Monad中文社区';
+
   return (
     <Html lang="en">
       <Head>
@@ -25,6 +27,8 @@ export default function Document() {
 加入我们，成为区块链革命的先锋。"
         />
         <meta name="twitter:image" content="https://gmonad.cc/og-image.png" />
+        {/* title */}
+        <title>{appName}</title>
       </Head>
       <body>
         <Main />
