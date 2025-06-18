@@ -4,6 +4,7 @@ import styles from './section.module.css';
 import { Key, useEffect, useState } from 'react';
 import { getEvents } from '../api/event';
 import dayjs from 'dayjs';
+import {Tag} from 'antd';
 
 
 const activities = [
@@ -135,13 +136,16 @@ export default function EventSection() {
                                     </div>
                                 </div>
                                 {/* 标签展示区 */}
-                                <div className={styles.tagsContainer}>
-                                    {(Array.isArray(event.tags) ? event.tags : event.tags?.slice(0, 4).map((tag: string, idx: Key | null | undefined) => (
-                                        <span key={idx} className={styles.tag}>
-                                            {tag.trim()}
-                                        </span>
-                                    )))}
-                                </div>
+                                {event.tags && event.tags.length > 0 && (
+                                    <div className={styles.tagsContainer}>
+                                        {event.tags.slice(0, 3).map((tag: string, index: number) => (
+                                            <Tag key={index} className={styles.tag}>
+                                                {tag}
+                                            </Tag>
+                                        ))}
+                                        {/* {event.tags.length > 3 && <Tag className={styles.moreTag}>+{event.tags.length - 3}</Tag>} */}
+                                    </div>
+                                )}
                                 <Link href={`/events/${event.ID}`} passHref>
                                     <button className={styles.activityButton}>了解详情</button>
                                 </Link>
