@@ -7,35 +7,35 @@ const Community: NextPage = () => {
         {
             id: 1,
             title: '俄罗斯方块',
-            description: '在Monad上玩俄罗斯方块多人对战游戏',
+            description: '在 Monad 上玩俄罗斯方块多人对战游戏',
             url: 'https://tetrisx.vercel.app/',
             category: '链游'
         },
         {
             id: 2,
             title: '像素贪吃蛇',
-            description: 'Monad上的像素贪吃蛇游戏',
+            description: 'Monad 上的像素贪吃蛇游戏',
             url: 'https://pixel-snake-dx.vercel.app/',
             category: '链游'
         },
         {
             id: 3,
             title: '像素宠物',
-            description: '在Monad上生成您专属的像素宠物',
+            description: '在 Monad 上生成您专属的像素宠物',
             url: 'https://pix-pet.netlify.app/',
             category: '链游'
         },
         {
             id: 4,
-            title: 'Monad Gas追踪器',
-            description: '追踪和分析您在Monad上的Gas消耗',
+            title: 'Monad Gas 追踪器',
+            description: '追踪和分析您在 Monad 上的 Gas 消耗',
             url: 'https://gas-dog.netlify.app/',
             category: '开发工具'
         },
         {
             id: 5,
             title: 'Monad 农场',
-            description: '创新的Monad区块链虚拟农场游戏',
+            description: '创新的 Monad 区块链虚拟农场游戏',
             url: 'https://meta-farm.vercel.app/',
             category: '链游'
         },
