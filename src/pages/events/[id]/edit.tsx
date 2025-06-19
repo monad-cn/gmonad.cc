@@ -83,7 +83,6 @@ export default function EditEventPage() {
 
     const handleSubmit = async (values: any) => {
         try {
-            console.log(values);
             setIsSubmitting(true);
 
             // 构建完整的表单数据
@@ -93,12 +92,6 @@ export default function EditEventPage() {
                 coverImage: coverImage, // 添加封面图片
                 eventMode: eventMode, // 确保活动类型被包含
             };
-
-            console.log('完整表单数据:', formData);
-            console.log('标签数据:', tags);
-            console.log('封面图片:', cloudinaryImg?.secure_url);
-            console.log(values);
-            console.log('description:', formData.description);
 
             const updateEventRequest = {
                 title: values.title || '',
@@ -114,10 +107,7 @@ export default function EditEventPage() {
                 twitter: values.twitter,
             };
 
-            // 调用创建事件接口
             const result = await updateEvent(event.ID, updateEventRequest);
-
-            console.log('创建事件结果:', result);
 
             if (result.success) {
                 message.success(result.message);

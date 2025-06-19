@@ -165,3 +165,40 @@ func UpdateEvent(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, http.StatusOK, "success", event)
 }
+
+func UpdateEventPublishStatus(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	var req UpdateEventPublishStatusRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid input data", nil)
+		return
+	}
+
+	var event models.Event
+	event.ID = uint(id)
+
+	if err = event.GetByID(uint(id)); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid Event", nil)
+		return
+	}
+
+	if event.PublishStatus != 1 && event.PublishStatus != 2 {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid status", nil)
+		return
+	}
+
+	// TODO: 2 -> 1 ?
+	event.PublishStatus = req.PublishStatus
+
+	if err := event.Update(); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "success", event)
+}

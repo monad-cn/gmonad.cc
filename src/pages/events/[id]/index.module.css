@@ -43,15 +43,22 @@
 
 .headerActions {
   display: flex;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionIcon {
+  margin-top: 3px;
 }
 
 .actionButton {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   border-radius: 6px;
+  font-size: 16px;
   font-weight: 500;
+  vertical-align: middle; 
 }
 
 .actionButton.favorited {

@@ -833,6 +833,20 @@
   padding: 0 0.5rem;
 }
 
+.listLink {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #8b5cf6;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.listLink:hover {
+  color: #8b5cf6;
+  font-weight: bold;
+}
+
 .listInfo {
   display: flex;
   align-items: center;
@@ -1395,8 +1409,7 @@
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
-.socialIcon {
-}
+.socialIcon {}
 
 .socialButtonText {
   line-height: 1;
@@ -1408,11 +1421,11 @@
 
 .wechatModalContent {
   display: flex;
-  flex-direction: row; 
-  align-items: flex-start; 
-  justify-content: space-around; 
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
   text-align: center;
-  gap: 1.5rem; 
+  gap: 1.5rem;
 }
 
 .qrCodeSection {
@@ -1420,13 +1433,13 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  flex: 1; 
+  flex: 1;
 }
 
 .wechatModalContent img {
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  max-width: 100%; 
+  max-width: 100%;
   height: auto;
 }
 

@@ -21,10 +21,7 @@ const LoginPage: React.FC = () => {
   };
 
   const onFinish = async (values: FieldType) => {
-    console.log('登录表单提交: ', values);
-
     try {
-      // 你自己的表单登录逻辑
       const { email, password } = values;
       setLoading(true);
 

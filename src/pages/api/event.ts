@@ -155,6 +155,28 @@ export const updateEvent = async (eventId: string, params: UpdateEventParams): P
   }
 };
 
+export const updateEventPublishStatus = async (eventId: string, publishStatus: number): Promise<EventResult> => {
+  try {
+    const body = {
+      publish_status: publishStatus,
+    };
+
+    const response = await apiRequest<EventResult>(`/events/${eventId}/status`, 'PUT', body);
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '活动状态更新成功',
+        data: response.data as unknown as Event
+      };
+    }
+
+    return { success: false, message: response.message ?? '活动状态更新失败' };
+  } catch (error: any) {
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
 
 export const getEvents = async (params: GetEventsParams = {}): Promise<EventListResult> => {
   try {
