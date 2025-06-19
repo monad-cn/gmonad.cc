@@ -9,4 +9,9 @@ var db = config.DB
 func init() {
 	db.AutoMigrate(&Event{})
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Role{})
+	db.AutoMigrate(&Permission{})
+	db.AutoMigrate(&PermissionGroup{})
+
+	InitRolesAndPermissions()
 }

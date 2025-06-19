@@ -9,12 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type LoginRequest struct {
-	Email    string `json:"email" binding:"required"`
-	Username string `json:"username"`
-	Password string `json:"password" binding:"required"`
-}
-
 func Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -31,8 +25,20 @@ func Login(c *gin.Context) {
 
 	if !utils.CheckPasswordHash(req.Password, user.Password) {
 		utils.ErrorResponse(c, http.StatusBadRequest, "password err", nil)
-		fmt.Println("pe")
 		return
 	}
-	utils.SuccessResponse(c, http.StatusOK, "login success", user)
+
+	// get permissions
+	perms, err := user.GetUserWithPermissions()
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "get permissions error", nil)
+		return
+	}
+
+	var resp LoginResponse
+	resp.User = user
+	resp.Permissions = perms
+
+	fmt.Println(resp)
+	utils.SuccessResponse(c, http.StatusOK, "login success", resp)
 }

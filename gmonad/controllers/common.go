@@ -34,3 +34,14 @@ type UpdateEventRequest struct {
 	Tags      []string `json:"tags"`
 	Twitter   string   `json:"twitter" binding:"required"`
 }
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Username string `json:"username"`
+	Password string `json:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	models.User
+	Permissions []string `json:"permissions"`
+}

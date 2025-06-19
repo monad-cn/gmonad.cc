@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -9,9 +11,19 @@ type User struct {
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
 	Github   string `json:"github"`
+	RoleID   uint   `json:"-"`
+	Role     Role   `gorm:"foreignKey:RoleID" json:"-"`
 }
 
 func CreateUser(u *User) error {
+	var role Role
+	if err := db.Where("name = ?", "blog_writer").First(&role).Error; err != nil {
+		return err
+	}
+
+	// 设置默认角色 ID
+	u.RoleID = role.ID
+
 	if err := db.Create(u).Error; err != nil {
 		return err
 	}
@@ -30,4 +42,34 @@ func GetUserByEmail(u *User) error {
 		return err
 	}
 	return nil
+}
+
+func (u *User) GetUserWithPermissions() ([]string, error) {
+	var user User
+	err := db.Preload("Role").
+		Preload("Role.Permissions").
+		Preload("Role.PermissionGroups.Permissions").
+		First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	permSet := map[string]struct{}{}
+
+	// 角色直接权限
+	for _, p := range user.Role.Permissions {
+		permSet[p.Name] = struct{}{}
+	}
+	// 权限组权限
+	for _, pg := range user.Role.PermissionGroups {
+		for _, p := range pg.Permissions {
+			permSet[p.Name] = struct{}{}
+		}
+	}
+
+	perms := make([]string, 0, len(permSet))
+	for name := range permSet {
+		perms = append(perms, name)
+	}
+	return perms, nil
 }
