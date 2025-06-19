@@ -101,7 +101,7 @@ export const createEvent = async (params: CreateEventParams): Promise<EventResul
       ...(typeof params.allow_waitlist === 'boolean' && { allow_waitlist: params.allow_waitlist }),
     };
 
-    const response = await apiRequest<EventResult>('/events', 'POST', body);
+    const response = await apiRequest<EventResult>('/v1/events', 'POST', body);
 
     if (response.code === 200 && response.data) {
       return {
@@ -138,7 +138,7 @@ export const updateEvent = async (eventId: string, params: UpdateEventParams): P
       ...(typeof params.allow_waitlist === 'boolean' && { allow_waitlist: params.allow_waitlist }),
     };
 
-    const response = await apiRequest<EventResult>(`/events/${eventId}`, 'PUT', body);
+    const response = await apiRequest<EventResult>(`/v1/events/${eventId}`, 'PUT', body);
 
     if (response.code === 200 && response.data) {
       return {
@@ -161,7 +161,7 @@ export const updateEventPublishStatus = async (eventId: string, publishStatus: n
       publish_status: publishStatus,
     };
 
-    const response = await apiRequest<EventResult>(`/events/${eventId}/status`, 'PUT', body);
+    const response = await apiRequest<EventResult>(`/v1/events/${eventId}/status`, 'PUT', body);
 
     if (response.code === 200 && response.data) {
       return {
@@ -192,7 +192,7 @@ export const getEvents = async (params: GetEventsParams = {}): Promise<EventList
     query.append('page', (params.page ?? 1).toString());
     query.append('page_size', (params.page_size ?? 10).toString());
 
-    const response = await apiRequest<EventListResult>(`/events?${query.toString()}`, 'GET');
+    const response = await apiRequest<EventListResult>(`/v1/events?${query.toString()}`, 'GET');
 
     if (response.code === 200 && response.data) {
       return {
@@ -216,7 +216,7 @@ export const getEventById = async (eventId: string): Promise<EventResult> => {
       return { success: false, message: '活动ID不能为空' };
     }
 
-    const response = await apiRequest<EventResult>(`/events/${eventId}`, 'GET');
+    const response = await apiRequest<EventResult>(`/v1/events/${eventId}`, 'GET');
 
     if (response.code === 200 && response.data) {
       return {
@@ -236,7 +236,7 @@ export const getEventById = async (eventId: string): Promise<EventResult> => {
 // 删除事件
 export const deleteEvent = async (eventId: number): Promise<EventResult> => {
   try {
-    const response = await apiRequest<EventResult>(`/events/${eventId}`, 'DELETE');
+    const response = await apiRequest<EventResult>(`/v1/events/${eventId}`, 'DELETE');
 
     if (response.code === 200) {
       return { success: true, message: response.message ?? '删除成功' };
