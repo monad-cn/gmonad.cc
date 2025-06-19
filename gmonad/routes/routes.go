@@ -9,9 +9,17 @@ import (
 
 func SetupRouter(r *gin.Engine) {
 	r.Use(middlewares.Cors())
+<<<<<<< Updated upstream
 	r.POST("/v1/events", controllers.CreateEvent)
 	r.GET("/v1/events", controllers.QueryEvents)
 	r.GET("/v1/events/:id", controllers.GetEvent)
 	r.DELETE("/v1/events/:id", controllers.DeleteEvent)
 	r.PUT("/v1/events/:id", controllers.UpdateEvent)
+=======
+	r.POST("/events", controllers.CreateEvent)
+	r.GET("/events", controllers.QueryEvents)
+	r.GET("/events/:id", controllers.GetEvent)
+	r.DELETE("/events/:id", controllers.DeleteEvent)
+	r.PUT("/events/:id", controllers.UpdateEvent)
+>>>>>>> Stashed changes
 }
