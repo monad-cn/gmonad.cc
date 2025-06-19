@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Image } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
 
@@ -24,10 +25,8 @@ export default function Header() {
         <div className={styles.headerContent}>
           <Link href="/" passHref>
             <div className={styles.logo} style={{ cursor: 'pointer' }}>
-              <div className={styles.logoIcon}>
-                <span className={styles.logoText}>M</span>
-                <div className={styles.logoGlow}></div>
-              </div>
+              <Image preview={false} width={38} src="/logo.gif" />
+
               <span className={styles.logoTitle}>Monad中文社区</span>
             </div>
           </Link>

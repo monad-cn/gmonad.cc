@@ -6,6 +6,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import { ConfigProvider, App as AntdApp } from 'antd';
 import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
+import Head from 'next/head';
 
 const customTheme = {
   token: {
@@ -18,6 +19,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const router = useRouter();
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Monad中文社区';
   // 定义不需要布局的页面
   const noLayoutPages = ['/login'];
 
@@ -27,6 +29,9 @@ export default function App({
       <SessionProvider session={session}>
         <ConfigProvider theme={customTheme}>
           <AntdApp>
+            <Head>
+              <title>{appName}</title>
+            </Head>
             <Component {...pageProps} />
             {process.env.NEXT_PUBLIC_GA_ID && (
               <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
@@ -42,6 +47,9 @@ export default function App({
       <ConfigProvider theme={customTheme}>
         <AntdApp>
           <Layout>
+            <Head>
+              <title>{appName}</title>
+            </Head>
             <Component {...pageProps} />
             {process.env.NEXT_PUBLIC_GA_ID && (
               <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
