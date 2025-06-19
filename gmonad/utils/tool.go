@@ -7,6 +7,14 @@ import (
 	"time"
 )
 
+func ToSet(arr []string) map[string]struct{} {
+	set := make(map[string]struct{})
+	for _, s := range arr {
+		set[s] = struct{}{}
+	}
+	return set
+}
+
 func IsWithinLast24Hours(t time.Time) bool {
 	// 获取当前时间
 	now := time.Now()

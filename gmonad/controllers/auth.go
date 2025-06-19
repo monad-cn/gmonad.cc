@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"gmonad/models"
 	"gmonad/utils"
 	"net/http"
@@ -39,6 +38,12 @@ func Login(c *gin.Context) {
 	resp.User = user
 	resp.Permissions = perms
 
-	fmt.Println(resp)
+	token, err := utils.GenerateToken(user.ID, user.Email, user.Avatar, perms)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "generate token error", nil)
+		return
+	}
+	resp.Token = token
+
 	utils.SuccessResponse(c, http.StatusOK, "login success", resp)
 }

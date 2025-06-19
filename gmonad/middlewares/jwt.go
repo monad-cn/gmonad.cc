@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JWTAuthMiddleware() gin.HandlerFunc {
+func JWT(permission string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -33,8 +33,16 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("oauth_token", claims.OauthToken)
+		// TODO: check in controller handle?
+		permSet := utils.ToSet(claims.Permissions)
+		if _, ok := permSet[permission]; !ok {
+			utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized action", nil)
+			c.Abort()
+			return
+		}
 
+		c.Set("uid", claims.Uid)
+		c.Set("permissions", claims.Permissions)
 		c.Next()
 	}
 }

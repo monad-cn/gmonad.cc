@@ -48,4 +48,5 @@ type LoginRequest struct {
 type LoginResponse struct {
 	models.User
 	Permissions []string `json:"permissions"`
+	Token       string   `json:"token"`
 }

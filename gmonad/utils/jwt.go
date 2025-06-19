@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -12,15 +13,21 @@ var jwtSecret = viper.GetString("jwt.secret")
 
 // 结构体定义 JWT 负载
 type Claims struct {
-	OauthToken string `json:"oauth_token"`
+	Uid         uint     `json:"uid"`
+	Email       string   `json:"email"`
+	Avatar      string   `json:"avatar"`
+	Permissions []string `json:"permissions"`
 	jwt.RegisteredClaims
 }
 
 // 生成 JWT 令牌
-func GenerateToken(accessToken string) (string, error) {
+func GenerateToken(uid uint, email, avatar string, permissions []string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour * 7)
 	claims := Claims{
-		OauthToken: accessToken,
+		Uid:         uid,
+		Email:       email,
+		Avatar:      avatar,
+		Permissions: permissions,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -36,13 +43,15 @@ func ParseToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(jwtSecret), nil
 	})
-	if err != nil {
+
+	if err != nil || !token.Valid {
 		return nil, err
 	}
 
-	// 获取 Claims
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
-		return claims, nil
+	claims, ok := token.Claims.(*Claims)
+	if !ok {
+		return nil, errors.New("invalid claims")
 	}
-	return nil, err
+
+	return claims, nil
 }
