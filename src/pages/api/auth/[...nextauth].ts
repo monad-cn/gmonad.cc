@@ -12,7 +12,7 @@ export default NextAuth({
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        
+
         const { email, password } = credentials;
         const loginParams = {
           email: email,
@@ -41,5 +41,25 @@ export default NextAuth({
   },
   pages: {
     signIn: '/login',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      // 登录时把 user 字段合并到 token
+      if (user) {
+        token.id = user.id ?? undefined;
+        token.username = user.username ?? undefined;
+        token.avatar = user.avatar ?? undefined; // 你自定义的字段
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // 每次 session 获取时，把 token 字段合并到 session.user
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.username = token.username as string;
+        session.user.avatar = token.avatar as string;
+      }
+      return session;
+    },
   },
 });

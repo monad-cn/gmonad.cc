@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Image } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
+// 注释掉 Auth 组件的引入，避免找不到模块报错
+import Auth from './Auth'; // 引入 Auth 组件
 
 export default function Header() {
   const [showNewsBanner, setShowNewsBanner] = useState(true);
@@ -43,7 +45,7 @@ export default function Header() {
               <span>资源</span>
               <ChevronDown className={styles.navIcon} />
             </div>
-            <button className={styles.navButton}>加入测试网</button>
+            <Auth /> {/* 使用 Auth 组件 */}
           </nav>
         </div>
       </div>

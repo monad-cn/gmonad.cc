@@ -4,6 +4,7 @@ import { Form, Input, Button, Divider, App } from 'antd';
 import { signIn } from 'next-auth/react';
 import styles from './index.module.css';
 import { useRouter } from 'next/router';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 type FieldType = {
   email?: string;
@@ -13,7 +14,11 @@ type FieldType = {
 const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { set, get } = useLocalStorage('user');
   const { message } = App.useApp();
+  const initialValues = {
+    email: get()?.email,
+  };
 
   const onFinish = async (values: FieldType) => {
     console.log('登录表单提交: ', values);
@@ -22,7 +27,7 @@ const LoginPage: React.FC = () => {
       // 你自己的表单登录逻辑
       const { email, password } = values;
       setLoading(true);
-      
+
       const res = await signIn('credentials', {
         redirect: false,
         email,
@@ -30,6 +35,9 @@ const LoginPage: React.FC = () => {
       });
 
       if (res?.ok) {
+        set({
+          email: email,
+        });
         router.push('/'); // 登录成功跳转
       } else {
         message.warning('登录失败...');
@@ -46,7 +54,11 @@ const LoginPage: React.FC = () => {
       <div className={styles.container}>
         <h2 className={styles.title}>欢迎登录</h2>
 
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form
+          initialValues={initialValues}
+          layout="vertical"
+          onFinish={onFinish}
+        >
           <Form.Item
             name="email"
             rules={[{ required: true, message: '请输入邮箱' }]}
@@ -67,8 +79,9 @@ const LoginPage: React.FC = () => {
               htmlType="submit"
               className={styles.loginButton}
               block
+              loading={loading}
             >
-              {loading ? '登录中...' : '登录'}
+              登录
             </Button>
           </Form.Item>
         </Form>
