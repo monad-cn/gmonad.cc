@@ -39,7 +39,7 @@ const { Option } = Select;
 type ViewMode = 'grid' | 'list';
 
 export function formatTime(isoTime: string): string {
-  return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
+  return dayjs(isoTime).format('YYYY-MM-DD');
 }
 
 export default function EventsPage() {
@@ -53,7 +53,9 @@ export default function EventsPage() {
   const [selectedTag, setSelectedTag] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  const permissions = session?.user?.permissions || []
 
   // 新增筛选状态
   const [statusFilter, setStatusFilter] = useState('3');
@@ -85,7 +87,6 @@ export default function EventsPage() {
         event_mode: params?.event_mode || eventModeFilter,
       };
 
-      console.log('加载事件列表参数:', queryParams);
 
       const result = await getEvents(queryParams);
 
@@ -255,6 +256,16 @@ export default function EventsPage() {
     }
   }, [searchKeyword, locationKeyword]);
 
+  if (loading) {
+    return (
+      <div className={styles.loading}>
+        <div className={styles.loadingSpinner}></div>
+        <p>加载中...</p>
+      </div>
+    )
+  }
+
+
   return (
     <div className={styles.container}>
       {/* Title Section */}
@@ -302,7 +313,7 @@ export default function EventsPage() {
                 <span className={styles.socialButtonText}>微信群</span>
               </button>
             </div>
-            {session?.user?.name === 'admin' ? (
+            {status === "authenticated" && permissions.includes("event:write") ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -428,10 +439,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-            selectedTag ||
-            statusFilter ||
-            locationKeyword ||
-            eventModeFilter
+              selectedTag ||
+              statusFilter ||
+              locationKeyword ||
+              eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -474,25 +485,23 @@ export default function EventsPage() {
                         {getStatusText(event)}
                       </Tag>
                       <div className={styles.cardActions}>
-                        <button
-                          className={styles.actionIconButton}
-                          onClick={(e) => {
-                            e.preventDefault(); /* 编辑逻辑 */
-                          }}
-                          title="编辑活动"
-                        >
-                          <Edit className={styles.actionIcon} />
-                        </button>
-                        <button
+                        {status === "authenticated" && permissions.includes("event:write") ? (
+                          <Button
+                            className={styles.actionIconButton}
+                            onClick={() => router.push(`/events/${event.ID}/edit`)}
+                            icon={<Edit className={styles.actionIcon} />}
+                            title="编辑活动"
+                          />
+                        ) : null}
+                        <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
                             e.preventDefault(); /* 分享逻辑 */
                           }}
+                          icon={<Share2 className={styles.actionIcon} />}
                           title="分享活动"
-                        >
-                          <Share2 className={styles.actionIcon} />
-                        </button>
-                        <button
+                        />
+                        <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
                             e.preventDefault();
@@ -500,15 +509,14 @@ export default function EventsPage() {
                               window.open(event.twitter, '_blank'); // 打开外部链接
                             }
                           }}
+                          icon={<SiX className={styles.actionIcon} />}
                           title="查看推文"
-                        >
-                          <SiX className={styles.actionIcon} />
-                        </button>
+                        />
                       </div>
                     </div>
                   </div>
                 }
-                // variant={false}
+              // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -519,8 +527,21 @@ export default function EventsPage() {
                       <span>{formatTime(event.start_time)}</span>
                     </div>
                     <div className={styles.metaItem}>
-                      <Globe className={styles.metaIcon} />
-                      <span>{event.event_mode}</span>
+                      {event.event_mode === '线上活动' ? (
+                        <>
+                          <Globe className={styles.metaIcon} />
+                          <span className={styles.locationText}>
+                            线上活动
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <MapPin className={styles.metaIcon} />
+                          <span className={styles.locationText}>
+                            {event.location || '未指定地点'}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -560,34 +581,23 @@ export default function EventsPage() {
               <div className={styles.listHeaderCell}>操作</div>
             </div>
             {currentEvents.map((event) => (
-              <div key={event.id} className={styles.listRow}>
+              <div key={event.ID} className={styles.listRow}>
                 <div className={styles.listCell}>
                   <div className={styles.eventInfo}>
                     <div className={styles.eventTitleRow}>
-                      <h3 className={styles.listEventTitle}>{event.title}</h3>
+                      <Link
+                        href={`/events/${event.ID}`}
+                        key={event.ID}
+                        className={styles.listLink}
+                      >
+                        {event.title}
+                      </Link>
                       {event.featured && (
                         <Star className={styles.listFeaturedIcon} />
                       )}
                     </div>
                     <p className={styles.listEventDescription}>{event.desc}</p>
-                    <div className={styles.eventCategory}>
-                      <Tag
-                        className={`${styles.categoryTag} ${event.event_mode === '线上活动' ? styles.onlineTag : styles.offlineTag}`}
-                      >
-                        {event.event_mode}
-                      </Tag>
 
-                      {/* 标签列表 */}
-                      {event.tags && event.tags.length > 0 && (
-                        <div className={styles.listTags}>
-                          {event.tags.map((tag: string, index: number) => (
-                            <Tag key={index} className={styles.listTag}>
-                              {tag}
-                            </Tag>
-                          ))}
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -596,11 +606,11 @@ export default function EventsPage() {
                       <Calendar className={styles.listIcon} />
                       <span>{formatTime(event.start_time)}</span>
                     </div>
-                    {event.end_time && (
+                    {/* {event.end_time && (
                       <div className={styles.time}>
                         至 {formatTime(event.end_time)}
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -609,7 +619,7 @@ export default function EventsPage() {
                       <>
                         <Globe className={styles.listIcon} />
                         <span className={styles.locationText}>
-                          {event.link || '线上活动'}
+                          线上活动
                         </span>
                       </>
                     ) : (
@@ -637,39 +647,44 @@ export default function EventsPage() {
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
-                    <Button
+                    {/* <Button
                       type="text"
                       size="small"
                       icon={<Eye className={styles.listActionIcon} />}
                       title="查看详情"
-                    />
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={<Edit className={styles.listActionIcon} />}
-                      title="编辑活动"
-                    />
+                    /> */}
+                    {status === "authenticated" && permissions.includes("event:write") ? (
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={<Edit className={styles.listActionIcon} />}
+                        title="编辑活动"
+                        onClick={() => router.push(`/events/${event.ID}/edit`)}
+                      />
+                    ) : null}
                     <Button
                       type="text"
                       size="small"
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
-                    <Popconfirm
-                      title="删除活动"
-                      description="你确定删除这个活动吗？"
-                      okText="是"
-                      cancelText="否"
-                      onConfirm={() => handleDeleteEvent(event.ID)}
-                    >
-                      <Button
-                        type="text"
-                        size="small"
-                        danger
-                        icon={<Trash2 className={styles.listActionIcon} />}
+                    {status === "authenticated" && permissions.includes("event:delete") ? (
+                      <Popconfirm
                         title="删除活动"
-                      />
-                    </Popconfirm>
+                        description="你确定删除这个活动吗？"
+                        okText="是"
+                        cancelText="否"
+                        onConfirm={() => handleDeleteEvent(event.ID)}
+                      >
+                        <Button
+                          type="text"
+                          size="small"
+                          danger
+                          icon={<Trash2 className={styles.listActionIcon} />}
+                          title="删除活动"
+                        />
+                      </Popconfirm>
+                    ) : null}
                   </div>
                 </div>
               </div>

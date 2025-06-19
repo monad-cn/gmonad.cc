@@ -12,6 +12,7 @@ export interface LoginUser {
   username: string;
   email: string;
   avatar: string,
+  permissions: string[],
 }
 
 // 登录结果

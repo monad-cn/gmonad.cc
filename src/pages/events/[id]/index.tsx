@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import { Button, Tag, Avatar, Modal, message, Image } from "antd"
@@ -23,6 +21,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import styles from "./index.module.css"
+import { useSession } from 'next-auth/react'
 import { getEventById } from "@/pages/api/event"
 
 export default function EventDetailPage() {
@@ -35,6 +34,9 @@ export default function EventDetailPage() {
     const [isRegistered, setIsRegistered] = useState(false)
     const [isFavorited, setIsFavorited] = useState(false)
     const [shareModalVisible, setShareModalVisible] = useState(false)
+    const { data: session, status } = useSession();
+
+    const permissions = session?.user?.permissions || []
 
     useEffect(() => {
         if (!router.isReady || !rId) return // 确保参数准备好且存在
@@ -140,7 +142,7 @@ export default function EventDetailPage() {
         }
     }
 
-    const status = getEventStatus()
+    const eventStatus = getEventStatus()
     const startDateTime = formatDateTime(event.start_time)
     const endDateTime = formatDateTime(event.end_time)
 
@@ -154,23 +156,20 @@ export default function EventDetailPage() {
                         返回活动列表
                     </Link>
                     <div className={styles.headerActions}>
-                        <Button
-                            icon={<Edit size={16} />}
-                            className={styles.actionButton}
-                            onClick={() => router.push(`/events/${event.ID}/edit`)}
-                        >
-                            编辑
-                        </Button>
-                        <Button icon={<Share2 size={16} />} className={styles.actionButton} onClick={() => handleShare()}>
-                            分享
-                        </Button>
-                        <Button
-                            icon={<Heart size={16} />}
-                            className={`${styles.actionButton} ${isFavorited ? styles.favorited : ""}`}
-                            onClick={handleFavorite}
-                        >
-                            {isFavorited ? "已收藏" : "收藏"}
-                        </Button>
+                        {status === "authenticated" && permissions.includes("event:write") ? (
+                            <Button
+                                icon={<Edit size={16} />}
+                                className={styles.actionButton}
+                                onClick={() => router.push(`/events/${event.ID}/edit`)}
+                            >
+                                编辑
+                            </Button>
+                        ) : null}
+                        {event.publish_status === 0 && status === "authenticated" && permissions.includes("event:review") ? (
+                            <Button icon={<Share2 size={16} />} className={styles.actionButton} onClick={() => handleShare()}>
+                                审核通过
+                            </Button>
+                        ) : null}
                     </div>
                 </div>
             </div>
@@ -179,8 +178,8 @@ export default function EventDetailPage() {
             <div className={styles.hero}>
                 <div className={styles.heroContent}>
                     <div className={styles.heroLeft}>
-                        <div className={styles.statusBadge} style={{ backgroundColor: status.color }}>
-                            {status.text}
+                        <div className={styles.statusBadge} style={{ backgroundColor: eventStatus.color }}>
+                            {eventStatus.text}
                         </div>
                         {event.featured && (
                             <div className={styles.featuredBadge}>
@@ -333,18 +332,18 @@ export default function EventDetailPage() {
                                     size="large"
                                     className={`${styles.registerButton} ${isRegistered ? styles.registered : ""}`}
                                     onClick={handleRegister}
-                                    disabled={status.type === "ended"}
+                                    disabled={eventStatus.type === "ended"}
                                 >
-                                    {status.type === "ended" ? "活动已结束" : isRegistered ? "取消报名" : "立即报名"}
+                                    {eventStatus.type === "ended" ? "活动已结束" : isRegistered ? "取消报名" : "立即报名"}
                                 </Button>
                                 {event.categary === "online" && event.link && (
                                     <Button
                                         icon={<ExternalLink size={16} />}
                                         className={styles.joinButton}
                                         onClick={() => window.open(event.link, "_blank")}
-                                        disabled={status.type !== "ongoing"}
+                                        disabled={eventStatus.type !== "ongoing"}
                                     >
-                                        {status.type === "ongoing" ? "加入会议" : "会议链接"}
+                                        {eventStatus.type === "ongoing" ? "加入会议" : "会议链接"}
                                     </Button>
                                 )}
                             </div>
