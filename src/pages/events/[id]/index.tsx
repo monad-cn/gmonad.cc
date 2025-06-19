@@ -43,8 +43,8 @@ export default function EventDetailPage() {
         try {
             const result = await updateEventPublishStatus(event.ID, 2);
             if (result.success) {
-                message.success(result.message);
                 router.reload();
+                message.success(result.message);
             } else {
                 message.error(result.message || '审核出错');
             }

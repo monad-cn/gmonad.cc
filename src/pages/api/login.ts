@@ -13,6 +13,7 @@ export interface LoginUser {
   email: string;
   avatar: string,
   permissions: string[],
+  token: string,
 }
 
 // 登录结果

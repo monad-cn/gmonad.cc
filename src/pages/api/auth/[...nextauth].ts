@@ -1,26 +1,30 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginUser } from '../login';
+import { encode } from 'next-auth/jwt';
 
 declare module 'next-auth' {
   interface Session {
     user?: {
+      uid?: string | null;
       name?: string | null;
       email?: string | null;
       image?: string | null;
       username?: string;
       avatar?: string;
       permissions?: string[];
+      token?: string;
     };
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    username?: string;
+    uid?: string;
     email?: string;
     avatar?: string;
     permissions?: string[];
+    token?: string;
   }
 }
 
@@ -47,6 +51,7 @@ export default NextAuth({
             username: res.data.username,
             avatar: res.data.avatar,
             permissions: res.data.permissions,
+            token: res.data.token, 
           };
         }
 
@@ -67,20 +72,23 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.uid = (user as any).id;
         token.username = (user as any).username;
         token.email = (user as any).email;
         token.avatar = (user as any).avatar;
         token.permissions = (user as any).permissions;
+        token.token = (user as any).token; 
       }
       return token;
     },
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.username = token.username;
-        session.user.email = token.email;
-        session.user.avatar = token.avatar;
+        session.user.uid = token.uid as string;
+        session.user.email = token.email as string;
+        session.user.avatar = token.avatar as string;
         session.user.permissions = token.permissions as string[];
+        session.user.token = token.token as string;
       }
       return session;
     },
