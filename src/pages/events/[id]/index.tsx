@@ -18,11 +18,12 @@ import {
     Twitter,
     Copy,
     Download,
+    CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
 import styles from "./index.module.css"
 import { useSession } from 'next-auth/react'
-import { getEventById } from "@/pages/api/event"
+import { getEventById, updateEventPublishStatus } from "@/pages/api/event"
 
 export default function EventDetailPage() {
     const router = useRouter()
@@ -38,8 +39,22 @@ export default function EventDetailPage() {
 
     const permissions = session?.user?.permissions || []
 
+    const handleUpdatePublishStatus = async () => {
+        try {
+            const result = await updateEventPublishStatus(event.ID, 2);
+            if (result.success) {
+                message.success(result.message);
+                router.reload();
+            } else {
+                message.error(result.message || '审核出错');
+            }
+        } catch (error) {
+            message.error('审核出错，请重试');
+        }
+    };
+
     useEffect(() => {
-        if (!router.isReady || !rId) return // 确保参数准备好且存在
+        if (!router.isReady || !rId) return
 
         const fetchData = async () => {
             setLoading(true)
@@ -158,15 +173,15 @@ export default function EventDetailPage() {
                     <div className={styles.headerActions}>
                         {status === "authenticated" && permissions.includes("event:write") ? (
                             <Button
-                                icon={<Edit size={16} />}
+                                icon={<Edit size={16} className={styles.actionIcon} />}
                                 className={styles.actionButton}
                                 onClick={() => router.push(`/events/${event.ID}/edit`)}
                             >
                                 编辑
                             </Button>
                         ) : null}
-                        {event.publish_status === 0 && status === "authenticated" && permissions.includes("event:review") ? (
-                            <Button icon={<Share2 size={16} />} className={styles.actionButton} onClick={() => handleShare()}>
+                        {event.publish_status === 1 && status === "authenticated" && permissions.includes("event:review") ? (
+                            <Button icon={<CheckCircle size={16} className={styles.actionIcon} />} className={styles.actionButton} onClick={() => handleUpdatePublishStatus()}>
                                 审核通过
                             </Button>
                         ) : null}
