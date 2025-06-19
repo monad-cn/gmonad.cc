@@ -6,7 +6,7 @@ import styles from './index.module.css';
 import { useRouter } from 'next/router';
 
 type FieldType = {
-  username?: string;
+  email?: string;
   password?: string;
 };
 
@@ -20,14 +20,14 @@ const LoginPage: React.FC = () => {
 
     try {
       // 你自己的表单登录逻辑
-      const { username, password } = values;
+      const { email, password } = values;
       setLoading(true);
+      
       const res = await signIn('credentials', {
         redirect: false,
-        username,
+        email,
         password,
       });
-      console.log(res);
 
       if (res?.ok) {
         router.push('/'); // 登录成功跳转
@@ -48,10 +48,10 @@ const LoginPage: React.FC = () => {
 
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: '请输入用户名或邮箱' }]}
+            name="email"
+            rules={[{ required: true, message: '请输入邮箱' }]}
           >
-            <Input placeholder="用户名或邮箱" />
+            <Input placeholder="邮箱" />
           </Form.Item>
 
           <Form.Item
