@@ -41,6 +41,11 @@ export default function Header() {
               <span>开发者</span>
               <ChevronDown className={styles.navIcon} />
             </div>
+            <Link href="/community" passHref>
+              <div className={styles.navItem}>
+                <span>社区项目</span>
+              </div>
+            </Link>
             <div className={styles.navItem}>
               <span>资源</span>
               <ChevronDown className={styles.navIcon} />
