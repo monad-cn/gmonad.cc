@@ -6,53 +6,53 @@ const Community: NextPage = () => {
     const projects = [
         {
             id: 1,
-            title: 'TetrisX',
-            description: 'Play Tetris PvP on the Monad',
+            title: '俄罗斯方块',
+            description: '在Monad上玩俄罗斯方块多人对战游戏',
             url: 'https://tetrisx.vercel.app/',
-            category: 'GameFi'
+            category: '链游'
         },
         {
             id: 2,
-            title: 'Pixel Snake',
-            description: 'Pixel Snake on the Monad',
+            title: '像素贪吃蛇',
+            description: 'Monad上的像素贪吃蛇游戏',
             url: 'https://pixel-snake-dx.vercel.app/',
-            category: 'GameFi'
+            category: '链游'
         },
         {
             id: 3,
-            title: 'Pixel Pet',
-            description: 'Generate Pixel Pet on the Monad',
+            title: '像素宠物',
+            description: '在Monad上生成您专属的像素宠物',
             url: 'https://pix-pet.netlify.app/',
-            category: 'GameFi'
+            category: '链游'
         },
         {
             id: 4,
-            title: 'Monad Gas Tracker',
-            description: 'Track and analyze your gas consumption on Monad',
+            title: 'Monad Gas追踪器',
+            description: '追踪和分析您在Monad上的Gas消耗',
             url: 'https://gas-dog.netlify.app/',
-            category: 'Development'
+            category: '开发工具'
         },
         {
             id: 5,
-            title: 'Meta Farm',
-            description: 'An innovative Monad blockchain virtual farm game',
+            title: 'Monad 农场',
+            description: '创新的Monad区块链虚拟农场游戏',
             url: 'https://meta-farm.vercel.app/',
-            category: 'GameFi'
+            category: '链游'
         },
-        // Add more projects as needed
+        // 可以根据需要添加更多项目
     ];
 
     return (
         <div className={styles.container}>
             <Head>
-                <title>Community Projects | Monad</title>
-                <meta name="description" content="Explore community projects in the Monad ecosystem" />
+                <title>社区项目 | Monad</title>
+                <meta name="description" content="探索Monad生态系统中的社区项目" />
             </Head>
 
             <main className={styles.main}>
-                <h1 className={styles.title}>Community Projects</h1>
+                <h1 className={styles.title}>社区项目</h1>
                 <p className={styles.description}>
-                    Discover amazing projects built by the Monad community
+                    探索Monad社区打造的精彩项目
                 </p>
 
                 <div className={styles.grid}>
