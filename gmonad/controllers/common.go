@@ -35,6 +35,10 @@ type UpdateEventRequest struct {
 	Twitter   string   `json:"twitter" binding:"required"`
 }
 
+type UpdateEventPublishStatusRequest struct {
+	PublishStatus uint `json:"publish_status"`
+}
+
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Username string `json:"username"`
