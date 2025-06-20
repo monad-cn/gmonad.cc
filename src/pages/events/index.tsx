@@ -55,6 +55,7 @@ export default function EventsPage() {
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
 
+  const [readyToLoad, setReadyToLoad] = useState(false);
   const { data: session, status } = useSession();
 
   const permissions = session?.user?.permissions || []
@@ -253,13 +254,18 @@ export default function EventsPage() {
 
     if (status === 'authenticated') {
       setPublishStatus(0);
+      setReadyToLoad(true);
+    } else if (status === 'unauthenticated') {
+      setReadyToLoad(true);
     }
   }, [searchKeyword, locationKeyword, status]);
 
-  // 组件挂载时加载数据
+  
   useEffect(() => {
-    loadEvents();
-  }, [statusFilter, publishStatus, eventModeFilter]);
+    if (readyToLoad) {
+      loadEvents();
+    }
+  }, [statusFilter, publishStatus, eventModeFilter, readyToLoad]);
 
   if (loading) {
     return (
