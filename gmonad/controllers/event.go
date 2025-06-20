@@ -74,15 +74,18 @@ func QueryEvents(c *gin.Context) {
 
 	status, _ := strconv.Atoi(c.DefaultQuery("status", "0"))
 
+	publishStatus, _ := strconv.Atoi(c.DefaultQuery("publish_status", "0"))
+
 	filter := models.EventFilter{
-		Keyword:   keyword,
-		Tag:       tag,
-		Location:  location,
-		EventMode: eventMode,
-		OrderDesc: order == "desc",
-		Page:      page,
-		PageSize:  pageSize,
-		Status:    status,
+		Keyword:       keyword,
+		Tag:           tag,
+		Location:      location,
+		EventMode:     eventMode,
+		OrderDesc:     order == "desc",
+		Page:          page,
+		PageSize:      pageSize,
+		Status:        status,
+		PublishStatus: publishStatus,
 	}
 
 	events, total, err := models.QueryEvents(filter)
