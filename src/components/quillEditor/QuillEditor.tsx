@@ -1,39 +1,15 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
+import { App as AntdApp } from 'antd';
 
-const ReactQuill = dynamic(() => import('react-quill-new'), {
-  ssr: false,
-});
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-interface QuillEditorProps {
-  bounds?: string | HTMLElement;
-  children?: React.ReactElement<any>;
-  className?: string;
-  defaultValue?: string;
-  formats?: string[];
-  id?: string;
-  modules?: any;
-  onChange: (val: string) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
-  onFocus?(selection: Range): void;
-  onBlur?(previousSelection: Range): void;
-  onKeyDown?: React.EventHandler<any>;
-  onKeyPress?: React.EventHandler<any>;
-  onKeyUp?: React.EventHandler<any>;
-  placeholder?: string;
-  preserveWhitespace?: boolean;
-  readOnly?: boolean;
-  style?: React.CSSProperties;
-  tabIndex?: number;
-  theme?: string;
-  value?: string;
-}
-
-function QuillEditor(props: QuillEditorProps) {
+function QuillEditor(props: any) {
   const [value, setValue] = useState(props.value || '');
+  const { message } = AntdApp.useApp();
 
+  // 重点：handler 用 function，不要用箭头函数
   const modulesDefault = {
     toolbar: {
       container: [
@@ -48,6 +24,48 @@ function QuillEditor(props: QuillEditorProps) {
         ['link', 'image'],
         ['clean'],
       ],
+      // TODO 图片上传, 插入图片后输入文字导致图片重载，页面闪动。 复制粘贴图片上传cloudinary 还没处理
+      // handlers: {
+      //   image: async function imageHandler(this: any) {
+      //     console.log('this', this);
+      //     const input = document.createElement('input');
+      //     input.setAttribute('type', 'file');
+      //     input.setAttribute('accept', 'image/*');
+      //     input.click();
+
+      //     input.onchange = async () => {
+      //       const file = input.files?.[0];
+      //       if (file) {
+      //         const { uploadImgToCloud } = await import('@/lib/cloudinary');
+
+      //         let hideLoading: any;
+      //         try {
+      //           hideLoading = message.loading('图片上传中...', 0);
+      //           const result = await uploadImgToCloud(file);
+      //           if (result && result.secure_url) {
+      //             const range = this.quill.getSelection();
+      //             this.quill.insertEmbed(
+      //               range.index,
+      //               'image',
+      //               result.secure_url
+      //             );
+      //             this.quill.setSelection(range.index + 1);
+      //             hideLoading();
+
+      //             message.success('图片上传成功');
+      //           } else {
+      //             hideLoading();
+      //             message.error('图片上传失败，请重试');
+      //           }
+      //         } catch (error) {
+      //           if (hideLoading) hideLoading();
+
+      //           message.error('图片上传失败，请检查网络连接');
+      //         }
+      //       }
+      //     };
+      //   },
+      // },
     },
   };
 
@@ -58,17 +76,10 @@ function QuillEditor(props: QuillEditorProps) {
 
   return (
     <ReactQuill
-      bounds={props.bounds}
-      children={props.children}
-      defaultValue={props.defaultValue}
-      id={props.id}
-      formats={props.formats}
-      className={props.className}
-      modules={props.modules || modulesDefault}
-      theme={props.theme || 'snow'}
+      {...props}
       value={value}
-      placeholder={props.placeholder || '请详细描述活动内容、目标和亮点'}
       onChange={handleChange}
+      modules={props.modules || modulesDefault}
     />
   );
 }

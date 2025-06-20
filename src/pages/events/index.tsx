@@ -55,7 +55,7 @@ export default function EventsPage() {
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const { data: session, status } = useSession();
 
-  const permissions = session?.user?.permissions || []
+  const permissions = session?.user?.permissions || [];
 
   // 新增筛选状态
   const [statusFilter, setStatusFilter] = useState('3');
@@ -86,7 +86,6 @@ export default function EventsPage() {
         location: params?.location || locationKeyword,
         event_mode: params?.event_mode || eventModeFilter,
       };
-
 
       const result = await getEvents(queryParams);
 
@@ -246,25 +245,14 @@ export default function EventsPage() {
     }
   };
 
-  useEffect(() => {
-    if (searchKeyword === '') {
-      handleSearch('');
-    }
-
-    if (locationKeyword === '') {
-      handleLocationSearch('');
-    }
-  }, [searchKeyword, locationKeyword]);
-
   if (loading) {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingSpinner}></div>
         <p>加载中...</p>
       </div>
-    )
+    );
   }
-
 
   return (
     <div className={styles.container}>
@@ -313,7 +301,8 @@ export default function EventsPage() {
                 <span className={styles.socialButtonText}>微信群</span>
               </button>
             </div>
-            {status === "authenticated" && permissions.includes("event:write") ? (
+            {status === 'authenticated' &&
+            permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -439,10 +428,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-              selectedTag ||
-              statusFilter ||
-              locationKeyword ||
-              eventModeFilter
+            selectedTag ||
+            statusFilter ||
+            locationKeyword ||
+            eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -485,10 +474,13 @@ export default function EventsPage() {
                         {getStatusText(event)}
                       </Tag>
                       <div className={styles.cardActions}>
-                        {status === "authenticated" && permissions.includes("event:write") ? (
+                        {status === 'authenticated' &&
+                        permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
-                            onClick={() => router.push(`/events/${event.ID}/edit`)}
+                            onClick={() =>
+                              router.push(`/events/${event.ID}/edit`)
+                            }
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
                           />
@@ -516,7 +508,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-              // variant={false}
+                // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -530,9 +522,7 @@ export default function EventsPage() {
                       {event.event_mode === '线上活动' ? (
                         <>
                           <Globe className={styles.metaIcon} />
-                          <span className={styles.locationText}>
-                            线上活动
-                          </span>
+                          <span className={styles.locationText}>线上活动</span>
                         </>
                       ) : (
                         <>
@@ -597,7 +587,6 @@ export default function EventsPage() {
                       )}
                     </div>
                     <p className={styles.listEventDescription}>{event.desc}</p>
-
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -618,9 +607,7 @@ export default function EventsPage() {
                     {event.event_mode === '线上活动' ? (
                       <>
                         <Globe className={styles.listIcon} />
-                        <span className={styles.locationText}>
-                          线上活动
-                        </span>
+                        <span className={styles.locationText}>线上活动</span>
                       </>
                     ) : (
                       <>
@@ -653,7 +640,8 @@ export default function EventsPage() {
                       icon={<Eye className={styles.listActionIcon} />}
                       title="查看详情"
                     /> */}
-                    {status === "authenticated" && permissions.includes("event:write") ? (
+                    {status === 'authenticated' &&
+                    permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -668,7 +656,8 @@ export default function EventsPage() {
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
-                    {status === "authenticated" && permissions.includes("event:delete") ? (
+                    {status === 'authenticated' &&
+                    permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"
