@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Community.module.css';
+import { Github } from 'lucide-react';
 
 const Community: NextPage = () => {
     const projects = [
@@ -9,6 +10,7 @@ const Community: NextPage = () => {
             title: '俄罗斯方块',
             description: '在 Monad 上玩俄罗斯方块多人对战游戏',
             url: 'https://tetrisx.vercel.app/',
+            git: 'https://github.com/lispking/tetris',
             category: '链游'
         },
         {
@@ -16,6 +18,7 @@ const Community: NextPage = () => {
             title: '像素贪吃蛇',
             description: 'Monad 上的像素贪吃蛇游戏',
             url: 'https://pixel-snake-dx.vercel.app/',
+            git: 'https://github.com/lispking/pixel-snake',
             category: '链游'
         },
         {
@@ -23,6 +26,7 @@ const Community: NextPage = () => {
             title: '像素宠物',
             description: '在 Monad 上生成您专属的像素宠物',
             url: 'https://pix-pet.netlify.app/',
+            git: 'https://github.com/lispking/pix-pet',
             category: '链游'
         },
         {
@@ -30,6 +34,7 @@ const Community: NextPage = () => {
             title: 'Monad Gas 追踪器',
             description: '追踪和分析您在 Monad 上的 Gas 消耗',
             url: 'https://gas-dog.netlify.app/',
+            git: 'https://github.com/lispking/gas-dog',
             category: '开发工具'
         },
         {
@@ -37,6 +42,7 @@ const Community: NextPage = () => {
             title: 'Monad 农场',
             description: '创新的 Monad 区块链虚拟农场游戏',
             url: 'https://meta-farm.vercel.app/',
+            git: 'https://github.com/lispking/meta-farm',
             category: '链游'
         },
         // 可以根据需要添加更多项目
@@ -57,17 +63,21 @@ const Community: NextPage = () => {
 
                 <div className={styles.grid}>
                     {projects.map((project) => (
-                        <a
-                            key={project.id}
-                            href={project.url}
-                            className={styles.card}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <h2>{project.title} &rarr;</h2>
-                            <p>{project.description}</p>
-                            <span className={styles.category}>{project.category}</span>
-                        </a>
+                        <div className={styles.card}>
+                            <a
+                                key={project.id}
+                                href={project.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <h2>{project.title} &rarr;</h2>
+                                <p>{project.description}</p>
+                                <span className={styles.category}>{project.category}</span>
+                            </a>
+                            <a href={project.git} target="_blank" rel="noopener noreferrer">
+                                <Github className={styles.githubIcon} />
+                            </a>
+                        </div>
                     ))}
                 </div>
             </main>
