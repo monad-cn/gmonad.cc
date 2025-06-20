@@ -243,27 +243,21 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
-    if (searchKeyword === '') {
-      handleSearch('');
-    }
-
-    if (locationKeyword === '') {
-      handleLocationSearch('');
-    }
-
     if (status === 'authenticated') {
       setPublishStatus(0);
       setReadyToLoad(true);
     } else if (status === 'unauthenticated') {
       setReadyToLoad(true);
+    } else {
+      setReadyToLoad(true);
     }
-  }, [searchKeyword, locationKeyword, status]);
 
-  useEffect(() => {
     if (readyToLoad) {
+      // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
       loadEvents();
     }
-  }, [statusFilter, publishStatus, eventModeFilter, readyToLoad]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   if (loading) {
     return (
