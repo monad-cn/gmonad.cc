@@ -51,14 +51,15 @@ func (e *Event) Delete() error {
 }
 
 type EventFilter struct {
-	Keyword   string // 标题或描述关键词
-	Tag       string // 包含某个 tag
-	Location  string
-	EventMode string
-	OrderDesc bool // 是否按创建时间倒序
-	Page      int  // 当前页码，从 1 开始
-	PageSize  int  // 每页数量，建议默认 10
-	Status    int
+	Keyword       string // 标题或描述关键词
+	Tag           string // 包含某个 tag
+	Location      string
+	EventMode     string
+	OrderDesc     bool // 是否按创建时间倒序
+	Page          int  // 当前页码，从 1 开始
+	PageSize      int  // 每页数量，建议默认 10
+	Status        int
+	PublishStatus int
 }
 
 func QueryEvents(filter EventFilter) ([]Event, int64, error) {
@@ -82,6 +83,10 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	if filter.Status != 3 {
 		query = query.Where("status = ?", filter.Status)
+	}
+
+	if filter.PublishStatus != 0 {
+		query = query.Where("publish_status = ?", filter.PublishStatus)
 	}
 
 	if filter.Location != "" {
