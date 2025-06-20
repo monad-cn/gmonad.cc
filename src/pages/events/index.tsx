@@ -53,6 +53,8 @@ export default function EventsPage() {
   const [selectedTag, setSelectedTag] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
+  const [publishStatus, setPublishStatus] = useState(2);
+
   const { data: session, status } = useSession();
 
   const permissions = session?.user?.permissions || []
@@ -72,6 +74,7 @@ export default function EventsPage() {
     status?: string | number;
     location?: string;
     event_mode?: string;
+    publish_status?: number;
   }) => {
     try {
       setLoading(true);
@@ -85,8 +88,8 @@ export default function EventsPage() {
         status: params?.status || statusFilter,
         location: params?.location || locationKeyword,
         event_mode: params?.event_mode || eventModeFilter,
+        publish_status: params?.publish_status || publishStatus
       };
-
 
       const result = await getEvents(queryParams);
 
@@ -186,13 +189,9 @@ export default function EventsPage() {
       location: '',
       event_mode: '',
       page: 1,
+      publish_status: 2,
     });
   };
-
-  // 组件挂载时加载数据
-  useEffect(() => {
-    loadEvents();
-  }, []);
 
   // 计算当前显示的事件
   const startIndex = (currentPage - 1) * pageSize + 1;
@@ -218,16 +217,12 @@ export default function EventsPage() {
 
   // 获取事件状态类名
   const getStatusClass = (event: any) => {
-    const now = dayjs();
-    const startTime = dayjs(event.start_time);
-    const endTime = event.end_time ? dayjs(event.end_time) : null;
-
-    if (endTime && now.isAfter(endTime)) {
-      return styles.ended;
-    } else if (now.isAfter(startTime)) {
+    if (event.status === 0) {
+      return styles.upcoming;
+    } else if (event.status === 1) {
       return styles.ongoing;
     } else {
-      return styles.upcoming;
+      return styles.ended;
     }
   };
 
@@ -254,7 +249,17 @@ export default function EventsPage() {
     if (locationKeyword === '') {
       handleLocationSearch('');
     }
-  }, [searchKeyword, locationKeyword]);
+
+
+    if (status === 'authenticated') {
+      setPublishStatus(0);
+    }
+  }, [searchKeyword, locationKeyword, status]);
+
+  // 组件挂载时加载数据
+  useEffect(() => {
+    loadEvents();
+  }, [statusFilter, publishStatus, eventModeFilter]);
 
   if (loading) {
     return (
@@ -484,6 +489,13 @@ export default function EventsPage() {
                       >
                         {getStatusText(event)}
                       </Tag>
+                      {event.publish_status === 1 &&
+                        <Tag
+                          className={styles.noPublishStatus}
+                        >
+                          未发布
+                        </Tag>
+                      }
                       <div className={styles.cardActions}>
                         {status === "authenticated" && permissions.includes("event:write") ? (
                           <Button

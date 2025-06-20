@@ -44,6 +44,7 @@ export default function EventSection() {
         status?: string | number
         location?: string
         event_mode?: string
+        publish_status?: number;
     }) => {
         try {
             const queryParams = {
@@ -55,6 +56,7 @@ export default function EventSection() {
                 status: 3,
                 location: '',
                 event_mode: '',
+                publish_status: 2,
             }
 
             const result = await getEvents(queryParams)

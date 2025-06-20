@@ -44,6 +44,7 @@ export interface GetEventsParams {
   status?: string | number;
   location?: string;
   event_mode?: string;
+  publish_status?: number;
 }
 
 export interface Event {
@@ -187,6 +188,7 @@ export const getEvents = async (params: GetEventsParams = {}): Promise<EventList
     if (params.location?.trim()) query.append('location', params.location.trim());
     if (params.event_mode?.trim()) query.append('event_mode', params.event_mode.trim());
     if (params.status != null) query.append('status', params.status.toString());
+    if (params.publish_status != null) query.append('publish_status', params.publish_status.toString());
 
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());

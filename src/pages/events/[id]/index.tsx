@@ -114,7 +114,10 @@ export default function EventDetailPage() {
         )
     }
 
-    if (!event) {
+    if (
+        !event ||
+        (event.publish_status === 1 && !permissions.includes("event:write"))
+    ) {
         return (
             <div className={styles.error}>
                 <h2>活动不存在</h2>
@@ -127,14 +130,11 @@ export default function EventDetailPage() {
     }
 
 
-    const getEventStatus = () => {
-        const now = new Date()
-        const startTime = new Date(event.start_time)
-        const endTime = new Date(event.end_time)
 
-        if (now < startTime) {
+    const getEventStatus = () => {
+        if (event.status === 0) {
             return { text: "即将开始", type: "upcoming", color: "#10b981" }
-        } else if (now >= startTime && now <= endTime) {
+        } else if (event.status === 1) {
             return { text: "进行中", type: "ongoing", color: "#3b82f6" }
         } else {
             return { text: "已结束", type: "ended", color: "#6b7280" }
@@ -193,15 +193,19 @@ export default function EventDetailPage() {
             <div className={styles.hero}>
                 <div className={styles.heroContent}>
                     <div className={styles.heroLeft}>
-                        <div className={styles.statusBadge} style={{ backgroundColor: eventStatus.color }}>
-                            {eventStatus.text}
-                        </div>
-                        {event.featured && (
-                            <div className={styles.featuredBadge}>
-                                <Star size={16} fill="currentColor" />
-                                精选活动
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div className={styles.statusBadge} style={{ backgroundColor: eventStatus.color }}>
+                                {eventStatus.text}
                             </div>
-                        )}
+                            {event.publish_status === 1 &&
+                                <div
+                                    className={styles.statusBadge}
+                                    style={{ backgroundColor: '#af78e7' }}
+                                >
+                                    待审核
+                                </div>
+                            }
+                        </div>
                         <h1 className={styles.title}>{event.title}</h1>
                         <div className={styles.metaInfo}>
                             <div className={styles.metaItem}>
@@ -452,6 +456,6 @@ export default function EventDetailPage() {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </div >
     )
 }

@@ -561,6 +561,18 @@
   color: white !important;
 }
 
+.noPublishStatus {
+  margin-right: 100px !important;
+  padding: 0.375rem 0.875rem !important;
+  border-radius: 20px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(237, 52, 10, 0.9) !important;
+}
+
 .featuredBadge {
   display: flex;
   align-items: center;
