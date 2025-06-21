@@ -110,7 +110,7 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
-	perms, err := user.GetUserWithPermissions()
+	perms, err := models.GetUserWithPermissions(user.ID)
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "get permissions error", nil)
 		return
