@@ -114,7 +114,7 @@ export default function EventSection() {
                                                 ? '进行中'
                                                 : '已结束'}
                                     </span>
-                                    {event.participants &&
+                                    {event.participants !== 0 &&
                                         <div className={styles.activityParticipants}>
                                             <Users className={styles.activityIcon} />
                                             {event.participants}
@@ -136,7 +136,7 @@ export default function EventSection() {
                                         ) : (
                                             <MapPin className={styles.activityIcon} />
                                         )}
-                                        {event.event_mode}
+                                        {event.event_mode === "线上活动" ? "线上活动" : event.location }
                                     </div>
                                 </div>
                                 {/* 标签展示区 */}

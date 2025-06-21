@@ -535,7 +535,7 @@ export default function EventsPage() {
                         </>
                       )}
                     </div>
-                    {event.participants &&
+                    {event.participants !== 0 &&
                       <div className={styles.metaItem}>
                         <Users className={styles.metaIcon} />
                         <span>{event.participants || ''}</span>
