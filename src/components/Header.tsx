@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { Image } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
-// 注释掉 Auth 组件的引入，避免找不到模块报错
-import Auth from './Auth'; // 引入 Auth 组件
+import { Dropdown, Menu } from 'antd';
+import Auth from './Auth';
 
 export default function Header() {
   const [showNewsBanner, setShowNewsBanner] = useState(true);
@@ -29,28 +29,60 @@ export default function Header() {
             <div className={styles.logo} style={{ cursor: 'pointer' }}>
               <Image preview={false} width={38} src="/logo.gif" />
 
-              <span className={styles.logoTitle}>Monad中文社区</span>
+              <span className={styles.logoTitle}>Monad 中文社区</span>
             </div>
           </Link>
           <nav className={styles.nav}>
-            <div className={styles.navItem}>
-              <span>生态系统</span>
-              <ChevronDown className={styles.navIcon} />
-            </div>
-            <div className={styles.navItem}>
-              <span>开发者</span>
-              <ChevronDown className={styles.navIcon} />
-            </div>
-            <Link href="/community" passHref>
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'projects', label: <Link href="/community">社区项目</Link> },
+                  { key: 'tools', label: <Link href="/">开发工具</Link> },
+                  { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com" target='_blank'>区块浏览器</Link> },
+                ],
+              }}
+              placement="bottom"
+              trigger={['hover']}
+            >
               <div className={styles.navItem}>
-                <span>社区项目</span>
+                <span>生态系统</span>
+                <ChevronDown className={styles.navIcon} />
               </div>
-            </Link>
-            <div className={styles.navItem}>
-              <span>资源</span>
-              <ChevronDown className={styles.navIcon} />
-            </div>
-            <Auth /> {/* 使用 Auth 组件 */}
+            </Dropdown>
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'docs', label: <Link href="/">开发文档</Link> },
+                  { key: 'examples', label: <Link href="/">示例代码</Link> },
+                  { key: 'sdk', label: <Link href="/">SDK 工具</Link> },
+                ],
+              }}
+              placement="bottom"
+              trigger={['hover']}
+            >
+              <div className={styles.navItem}>
+                <span>开发者</span>
+                <ChevronDown className={styles.navIcon} />
+              </div>
+            </Dropdown>
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'blog', label: <Link href="/blogs">博客</Link> },
+                  { key: 'events', label: <Link href="/events">活动</Link> },
+                  { key: 'faq', label: <Link href="/">常见问题</Link> },
+                ],
+              }}
+              placement="bottom"
+              trigger={['hover']}
+            >
+              <div className={styles.navItem}>
+                <span>资源</span>
+                <ChevronDown className={styles.navIcon} />
+              </div>
+            </Dropdown>
+
+            <Auth />
           </nav>
         </div>
       </div>
@@ -61,18 +93,6 @@ export default function Header() {
             <div className={styles.newsSlide}>
               <span className={styles.newsBadge}>🔥 热门</span>
               <span className={styles.newsText}>Monad测试网即将上线！</span>
-            </div>
-            <div className={styles.newsSlide}>
-              <span className={styles.newsBadge}>📢 公告</span>
-              <span className={styles.newsText}>社区开发者大会报名开始</span>
-            </div>
-            <div className={styles.newsSlide}>
-              <span className={styles.newsBadge}>⚡ 更新</span>
-              <span className={styles.newsText}>新版本SDK已发布，性能提升50%</span>
-            </div>
-            <div className={styles.newsSlide}>
-              <span className={styles.newsBadge}>🎉 活动</span>
-              <span className={styles.newsText}>技术分享会本周五举行</span>
             </div>
           </div>
         </div>
