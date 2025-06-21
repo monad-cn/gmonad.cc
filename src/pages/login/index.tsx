@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Form, Input, Button, Divider, App } from 'antd';
+import { Form, Input, Button, Divider, App as AntdApp } from 'antd';
 import { signIn } from 'next-auth/react';
 import styles from './index.module.css';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { set, get } = useLocalStorage('user');
-  const { message } = App.useApp();
+  const { message } = AntdApp.useApp();
   const initialValues = {
     email: get()?.email,
   };

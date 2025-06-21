@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { Form, Input, Button, Select, message, Card } from 'antd';
+import { Form, Input, Button, Select, Card, App as AntdApp } from 'antd';
 import { Blog } from '../../../types/blog';
 import styles from '../index.module.css';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
@@ -35,6 +35,7 @@ const layoutOptions = ['默认', '科技', '生活', '随笔'];
 const tagOptions = ['区块链', '技术', '未来', '生活', '随笔'];
 
 const EditBlog: React.FC = () => {
+  const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const { id } = router.query;

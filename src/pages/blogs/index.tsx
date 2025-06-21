@@ -7,10 +7,10 @@ import {
   Card,
   Image,
   Popconfirm,
-  message,
   Modal,
   Row,
   Col,
+  App as AntdApp,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -56,6 +56,7 @@ export default function EventsPage() {
   const [readyToLoad, setReadyToLoad] = useState(false); // 是否加载
   const { data: session, status } = useSession(); // 用户会话
   const permissions = session?.user?.permissions || []; // 权限
+  const { message } = AntdApp.useApp();
 
   // 新增筛选状态
   const [statusFilter, setStatusFilter] = useState('3'); // 状态

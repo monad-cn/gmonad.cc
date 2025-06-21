@@ -8,8 +8,8 @@ import {
   Card,
   Image,
   Popconfirm,
-  message,
   Modal,
+  App as AntdApp,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -43,6 +43,7 @@ export function formatTime(isoTime: string): string {
 }
 
 export default function EventsPage() {
+  const { message } = AntdApp.useApp();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
@@ -249,7 +250,7 @@ export default function EventsPage() {
     } else if (status === 'unauthenticated') {
       setReadyToLoad(true);
     }
-  })
+  });
 
   useEffect(() => {
     if (readyToLoad) {
@@ -580,7 +581,9 @@ export default function EventsPage() {
           {/* Events List */}
           <div className={styles.eventsList}>
             <div className={styles.listHeader}>
-              <div className={`${styles.listHeaderCell} ${styles.nameColumn}`}>活动名称</div>
+              <div className={`${styles.listHeaderCell} ${styles.nameColumn}`}>
+                活动名称
+              </div>
               <div className={styles.listHeaderCell}>时间</div>
               <div className={styles.listHeaderCell}>地点</div>
               <div className={styles.listHeaderCell}>参与人数</div>
@@ -590,7 +593,9 @@ export default function EventsPage() {
             {currentEvents.map((event) => (
               <div key={event.ID} className={styles.listRow}>
                 <div className={styles.listCell}>
-                  <div className={`${styles.eventTitleRow} ${styles.nameColumn}`}>
+                  <div
+                    className={`${styles.eventTitleRow} ${styles.nameColumn}`}
+                  >
                     <Link
                       href={`/events/${event.ID}`}
                       key={event.ID}
@@ -603,7 +608,6 @@ export default function EventsPage() {
                     )}
                   </div>
                   <p className={styles.listEventDescription}>{event.desc}</p>
-
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.timeInfo}>

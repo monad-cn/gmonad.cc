@@ -11,7 +11,7 @@ import {
   Button,
   Card,
   Tag,
-  App,
+  App as AntdApp,
 } from 'antd';
 import type { UploadProps, UploadFile } from 'antd';
 import {
@@ -40,7 +40,7 @@ const { TextArea } = Input;
 const { Dragger } = Upload;
 
 export default function NewEventPage() {
-  const { message } = App.useApp();
+  const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const [eventMode, setEventMode] = useState<'线上活动' | '线下活动'>(
