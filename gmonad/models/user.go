@@ -7,13 +7,21 @@ import (
 type User struct {
 	gorm.Model
 	Email    string  `gorm:"unique;not null" json:"email"`
-	Password string  `gorm:"not null" json:"-"`
 	Username string  `json:"username"`
 	Avatar   string  `json:"avatar"`
 	Github   string  `json:"github"`
+	Uid      uint    `json:"-"` // OAUTH
 	RoleID   uint    `json:"-"`
 	Role     Role    `gorm:"foreignKey:RoleID" json:"-"`
 	Events   []Event `json:"events"`
+}
+
+func GetUserByUid(uid uint) (*User, error) {
+	var u User
+	if err := db.Where("uid = ?", uid).First(&u).Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
 }
 
 func CreateUser(u *User) error {

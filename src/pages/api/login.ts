@@ -2,14 +2,14 @@ import { apiRequest } from "./api";
 
 // 登录参数
 export interface LoginParams {
-  email: string;
-  password: string;
+  code: string;
 }
 
 // 登录响应数据
 export interface LoginUser {
   ID: number;
   username: string;
+  github: string;
   email: string;
   avatar: string,
   permissions: string[],
@@ -27,8 +27,7 @@ export interface LoginResult {
 export const loginUser = async (params: LoginParams): Promise<LoginResult> => {
   try {
     const body = {
-      email: params.email.trim(),
-      password: params.password.trim(),
+      code: params.code.trim(),
     };
 
     const response = await apiRequest<LoginResult>('/login', 'POST', body);

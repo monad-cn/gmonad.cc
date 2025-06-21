@@ -16,17 +16,21 @@ type Claims struct {
 	Uid         uint     `json:"uid"`
 	Email       string   `json:"email"`
 	Avatar      string   `json:"avatar"`
+	Username    string   `json:"username"`
+	Github      string   `json:"github"`
 	Permissions []string `json:"permissions"`
 	jwt.RegisteredClaims
 }
 
 // 生成 JWT 令牌
-func GenerateToken(uid uint, email, avatar string, permissions []string) (string, error) {
+func GenerateToken(uid uint, email, avatar, username, github string, permissions []string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour * 7)
 	claims := Claims{
 		Uid:         uid,
 		Email:       email,
 		Avatar:      avatar,
+		Username:    username,
+		Github:      github,
 		Permissions: permissions,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),

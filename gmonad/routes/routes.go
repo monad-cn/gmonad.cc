@@ -15,5 +15,5 @@ func SetupRouter(r *gin.Engine) {
 	r.DELETE("/v1/events/:id", middlewares.JWT("event:delete"), controllers.DeleteEvent)
 	r.PUT("/v1/events/:id", middlewares.JWT("event:write"), controllers.UpdateEvent)
 	r.PUT("/v1/events/:id/status", middlewares.JWT("event:review"), controllers.UpdateEventPublishStatus)
-	r.POST("/v1/login", controllers.Login)
+	r.POST("/v1/login", controllers.HandleLogin)
 }

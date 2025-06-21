@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     'rc-input',
   ],
   images: {
+    domains: ['file-cdn.openbuild.xyz'],
     remotePatterns: [
       {
         protocol: 'https',
