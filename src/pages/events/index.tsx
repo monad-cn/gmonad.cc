@@ -248,10 +248,10 @@ export default function EventsPage() {
       setReadyToLoad(true);
     } else if (status === 'unauthenticated') {
       setReadyToLoad(true);
-    } else {
-      setReadyToLoad(true);
     }
+  })
 
+  useEffect(() => {
     if (readyToLoad) {
       // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
       loadEvents();
@@ -342,7 +342,7 @@ export default function EventsPage() {
           />
         </div>
         <div className={styles.filterButtons}>
-          <Select
+          {/* <Select
             size="small"
             placeholder="选择标签"
             allowClear
@@ -355,7 +355,7 @@ export default function EventsPage() {
             <Option value="工作坊">工作坊</Option>
             <Option value="AMA问答">AMA问答</Option>
             <Option value="社区活动">社区活动</Option>
-          </Select>
+          </Select> */}
           <Select
             size="small"
             value={sortOrder}
@@ -580,7 +580,7 @@ export default function EventsPage() {
           {/* Events List */}
           <div className={styles.eventsList}>
             <div className={styles.listHeader}>
-              <div className={styles.listHeaderCell}>活动信息</div>
+              <div className={`${styles.listHeaderCell} ${styles.nameColumn}`}>活动名称</div>
               <div className={styles.listHeaderCell}>时间</div>
               <div className={styles.listHeaderCell}>地点</div>
               <div className={styles.listHeaderCell}>参与人数</div>
@@ -590,21 +590,20 @@ export default function EventsPage() {
             {currentEvents.map((event) => (
               <div key={event.ID} className={styles.listRow}>
                 <div className={styles.listCell}>
-                  <div className={styles.eventInfo}>
-                    <div className={styles.eventTitleRow}>
-                      <Link
-                        href={`/events/${event.ID}`}
-                        key={event.ID}
-                        className={styles.listLink}
-                      >
-                        {event.title}
-                      </Link>
-                      {event.featured && (
-                        <Star className={styles.listFeaturedIcon} />
-                      )}
-                    </div>
-                    <p className={styles.listEventDescription}>{event.desc}</p>
+                  <div className={`${styles.eventTitleRow} ${styles.nameColumn}`}>
+                    <Link
+                      href={`/events/${event.ID}`}
+                      key={event.ID}
+                      className={styles.listLink}
+                    >
+                      {event.title}
+                    </Link>
+                    {event.featured && (
+                      <Star className={styles.listFeaturedIcon} />
+                    )}
                   </div>
+                  <p className={styles.listEventDescription}>{event.desc}</p>
+
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.timeInfo}>

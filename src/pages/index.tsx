@@ -66,7 +66,7 @@ export default function Home() {
     {
       icon: <Zap className={styles.featureIcon} />,
       title: '极致性能',
-      description: '并行执行引擎，TPS达到10,000+，为DeFi应用提供无与伦比的速度',
+      description: '并行执行引擎，TPS达到10,000+',
     },
     {
       icon: <Shield className={styles.featureIcon} />,
@@ -85,32 +85,6 @@ export default function Home() {
     },
   ];
 
-  const activities = [
-    {
-      title: 'Monad 技术分享会',
-      date: '2024年12月15日',
-      location: '线上直播',
-      description: '深入探讨Monad区块链的技术架构和创新特性',
-      status: '即将开始',
-      participants: 156,
-    },
-    {
-      title: '开发者工作坊',
-      date: '2024年11月28日',
-      location: '北京·中关村',
-      description: 'Monad智能合约开发实战训练营',
-      status: '已结束',
-      participants: 89,
-    },
-    {
-      title: '社区AMA问答',
-      date: '2024年11月10日',
-      location: 'Discord语音频道',
-      description: '与Monad核心团队直接对话，解答技术疑问',
-      status: '已结束',
-      participants: 234,
-    },
-  ];
 
   const milestones = [
     {
@@ -194,128 +168,28 @@ export default function Home() {
 
   const members = [
     {
-      name: 'Lewis',
-      twitter: 'https://x.com/Lewis8888888',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1933344082480541700/U_914ZHi_normal.jpg',
-    },
-
-    {
-      name: 'Russell',
-      twitter: 'https://x.com/brocoliwang',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1874760336886444032/8Ld7gyDk_normal.jpg',
+      name: 'Seven',
+      twitter: 'https://x.com/_Seven7777777',
+      avatar: "seven.jpg",
     },
     {
-      name: 'Mier',
-      twitter: 'https://x.com/luoli94448559',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1781648881312497664/afCSi5QG_normal.jpg',
+      name: '大大黄',
+      twitter: 'https://x.com/Alger779503577',
+      avatar: "ddh.jpg",
     },
     {
-      name: 'Dream',
-      twitter: 'https://x.com/Dreamer117Zz',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1790823950248984579/kEaEJyCQ_normal.jpg',
+      name: '小符',
+      twitter: 'https://x.com/Phoouze',
+      avatar: "phoouze.jpg",
     },
     {
-      name: 'Van1sa',
-      twitter: 'https://x.com/Van1saXXM',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1916421885015060480/wH7SDf8c_normal.jpg',
-    },
-    {
-      name: 'Huan',
-      twitter: 'https://x.com/XHOYH',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1934513660208226304/p2w013Lv_normal.jpg',
-    },
-    {
-      name: 'CHEN',
-      twitter: 'https://x.com/jaychen981111',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1840624690634838016/KCS9e3yu_normal.jpg',
-    },
-    {
-      name: '4Y',
-      twitter: 'https://x.com/4y_ffff',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1839746972905025537/LANwIRg1_normal.jpg',
-    },
-    {
-      name: 'SSWeb3',
-      twitter: 'https://x.com/SSWeb3_',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1007512200066396160/lQ8ERMpU_normal.jpg',
-    },
-    {
-      name: 'Cash',
-      twitter: 'https://x.com/cashwscott',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1911663424573972480/z69s-lIM_normal.jpg',
-    },
-    {
-      name: 'Pizza',
-      twitter: 'https://x.com/peppertat1',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1614283227132489731/7daqm_Ag_normal.jpg',
-    },
-    {
-      name: 'Sky',
-      twitter: 'https://x.com/0xsky66',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1871423937407860736/oDJ7stk4_normal.jpg',
-    },
-    {
-      name: 'Hao',
-      twitter: 'https://x.com/hao2web3',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1852386555161444352/Nb5PcCgO_normal.jpg',
-    },
-    {
-      name: 'Chine',
-      twitter: 'https://x.com/0xChine',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1927912366618071042/fIR6815r_normal.jpg',
-    },
-    {
-      name: 'Potato King',
-      twitter: 'https://x.com/0xpotatoking',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1922572873052659712/mBVEFUsC_normal.jpg',
-    },
-    {
-      name: 'Picano',
-      twitter: 'https://x.com/Pican0_o',
-      avatar:
-        'https://pbs.twimg.com/profile_images/1896180107271876608/ZmzRfbaR_normal.jpg',
-    },
-    // { name: 'Spark', twitter: 'https://x.com/0x_xifeng', },
-    // { name: 'Mumu', twitter: 'https://x.com/Mony_Chen265' },
-    // { name: 'Polly', twitter: 'https://x.com/Polly_r7' },
-    // { name: 'pinecats', twitter: 'https://x.com/pinecats3_1' },
-    // { name: 'Susu', twitter: 'https://x.com/Susu9527' },
-    // { name: '波波', twitter: 'https://x.com/shihaibo4' },
-    // { name: 'Zai Lai', twitter: 'https://x.com/ZaiLai_' },
-    // { name: '肥肥', twitter: 'https://x.com/lumaonvqishi' },
-    // { name: 'Sophia', twitter: 'https://x.com/SophiaXie410811' },
-    // { name: 'Eryi', twitter: 'https://x.com/qzmak53747555' },
-    // { name: 'Gengar', twitter: 'https://x.com/Genggar0x' },
-    // { name: 'Hyu', twitter: 'https://x.com/hyuuu_hyu' },
-    // { name: 'CactusDoggy', twitter: 'https://x.com/cactus_doggy' },
-    // { name: 'Oldsix', twitter: 'https://x.com/Old_6_' },
-    // { name: '迪仔', twitter: 'https://x.com/0xdizai' },
-    // { name: 'Sonic', twitter: 'https://x.com/SonicFiringZ' },
-    // { name: 'Freedom', twitter: 'https://x.com/zhangru83864846' },
-    // { name: 'Coin Pulse', twitter: 'https://x.com/wangni88' },
-    // { name: 'Kristina', twitter: 'https://x.com/_Kristina8888' },
-    // { name: 'Hanna', twitter: 'https://x.com/HhhhHannah' },
-    // { name: 'Taotao', twitter: 'https://x.com/TTZENG2' },
-    // { name: 'Soar', twitter: 'https://x.com/lpr55499568' },
-    // { name: 'Iny', twitter: 'https://x.com/Iny1127Iny' },
+      name: 'hannah',
+      twitter: 'https://x.com/HhhhHannah',
+      avatar: "hannah.jpg",
+    }
   ];
 
-  const duplicatedMembers = [...members, ...members];
+  const duplicatedMembers = [...members];
 
   return (
     <div className={styles.homepage}>
@@ -379,7 +253,7 @@ export default function Home() {
           <div className={styles.statsGrid}>
             {[
               {
-                label: '社区成员',
+                label: '社区贡献者',
                 value: stats.members,
                 icon: <Users className={styles.statIcon} />,
               },
@@ -520,16 +394,22 @@ export default function Home() {
       <section className={styles.members}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>社区成员</h2>
+            <h2 className={styles.sectionTitle}>社区贡献者</h2>
             <p className={styles.sectionDescription}>
-              我们的团队由经验丰富的区块链专家和社区建设者组成
+              感谢每一位贡献者，并期待更多热爱 Monad 的朋友加入我们，一起共建 Monad。
             </p>
           </div>
 
           <div className={styles.membersContainer}>
             <div className={styles.membersGradientLeft}></div>
             <div className={styles.membersGradientRight}></div>
-            <div className={styles.membersScroll}>
+            <div
+              className={
+                duplicatedMembers.length <= 6
+                  ? styles.membersScrollStatic
+                  : styles.membersScrollAuto
+              }
+            >
               {duplicatedMembers.map((member, index) => (
                 <div key={index} className={styles.memberItem}>
                   <a
@@ -540,7 +420,7 @@ export default function Home() {
                     <div className={styles.avatar}>
                       <Avatar
                         size={60}
-                        src={`/avatar/${member.name}_normal.jpg`}
+                        src={`/avatar/${member.avatar}`}
                         alt={member.name}
                       />
                     </div>

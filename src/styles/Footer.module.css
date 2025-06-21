@@ -127,6 +127,14 @@
   margin: 0;
 }
 
+.toOpenBuild {
+  color: #7c3aed;
+}
+
+.toOpenBuild:hover {
+  color: #7c3aed;
+}
+
 /* Responsive Design */
 @media screen and (min-width: 768px) {
   .footerContent {
