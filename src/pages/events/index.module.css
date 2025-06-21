@@ -587,10 +587,6 @@
 }
 
 /* Card Body */
-.cardBody {
-  padding: 1.5rem !important;
-}
-
 .cardHeader {
   display: flex;
   justify-content: space-between;
