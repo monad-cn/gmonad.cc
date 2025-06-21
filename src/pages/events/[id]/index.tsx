@@ -15,7 +15,6 @@ import {
     Star,
     User,
     Mail,
-    Twitter,
     Copy,
     Download,
     CheckCircle,
@@ -24,6 +23,7 @@ import Link from "next/link"
 import styles from "./index.module.css"
 import { useSession } from 'next-auth/react'
 import { getEventById, updateEventPublishStatus } from "@/pages/api/event"
+import { SiX } from "react-icons/si"
 
 export default function EventDetailPage() {
     const router = useRouter()
@@ -218,23 +218,22 @@ export default function EventDetailPage() {
                                 </div>
                             </div>
                             <div className={styles.metaItem}>
-                                {event.categary === "online" ? (
+                                {event.event_mode === "线上活动" ? (
                                     <Globe className={styles.metaIcon} />
                                 ) : (
                                     <MapPin className={styles.metaIcon} />
                                 )}
                                 <div>
-                                    <div className={styles.metaText}>{event.categary === "online" ? "线上活动" : "线下活动"}</div>
-                                    <div className={styles.metaSubtext}>{event.categary === "online" ? "在线参与" : event.location}</div>
+                                    <div className={styles.metaText}>{event.event_mode === "线上活动" ? "线上活动" : event.location}</div>
                                 </div>
                             </div>
                             <div className={styles.metaItem}>
                                 <Users className={styles.metaIcon} />
                                 <div>
                                     <div className={styles.metaText}>
-                                        {event.participants}/{event.max_participants} 人
+                                        {event.participants} 人
                                     </div>
-                                    <div className={styles.metaSubtext}>已报名参与</div>
+                                    {/* <div className={styles.metaSubtext}>已报名参与</div> */}
                                 </div>
                             </div>
                         </div>
@@ -412,11 +411,11 @@ export default function EventDetailPage() {
                                     复制链接
                                 </Button>
                                 <Button
-                                    icon={<Twitter size={16} />}
+                                    icon={<SiX size={16} />}
                                     className={styles.shareButton}
                                     onClick={() => handleShare("twitter")}
                                 >
-                                    Twitter
+                                    分享到 X
                                 </Button>
                             </div>
                         </div>
@@ -443,7 +442,7 @@ export default function EventDetailPage() {
                             复制链接
                         </Button>
                         <Button
-                            icon={<Twitter size={16} />}
+                            icon={<SiX size={16} />}
                             onClick={() => handleShare("twitter")}
                             className={styles.shareOptionButton}
                         >

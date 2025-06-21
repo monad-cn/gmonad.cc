@@ -126,13 +126,13 @@ export default function EventsPage() {
   // 搜索事件
   const handleSearch = async (keyword: string) => {
     setSearchKeyword(keyword);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   // 按标签筛选
   const handleTagFilter = async (tag: string) => {
     setSelectedTag(tag);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   // 排序切换
@@ -477,9 +477,10 @@ export default function EventsPage() {
                           permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
-                            onClick={() =>
+                            onClick={(e) => {
+                              e.preventDefault()
                               router.push(`/events/${event.ID}/edit`)
-                            }
+                            }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
                           />
@@ -487,7 +488,9 @@ export default function EventsPage() {
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
-                            e.preventDefault(); /* 分享逻辑 */
+                            e.preventDefault();
+                            navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
+                            message.success("链接已复制到剪贴板")
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享活动"
@@ -532,8 +535,13 @@ export default function EventsPage() {
                         </>
                       )}
                     </div>
+                    {event.participants &&
+                      <div className={styles.metaItem}>
+                        <Users className={styles.metaIcon} />
+                        <span>{event.participants || ''}</span>
+                      </div>
+                    }
                   </div>
-
                   {event.tags && event.tags.length > 0 && (
                     <div className={styles.cardTags}>
                       {event.tags

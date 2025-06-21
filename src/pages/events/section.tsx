@@ -4,7 +4,7 @@ import styles from './section.module.css';
 import { Key, useEffect, useState } from 'react';
 import { getEvents } from '../api/event';
 import dayjs from 'dayjs';
-import {Tag} from 'antd';
+import { Tag } from 'antd';
 
 
 const activities = [
@@ -114,10 +114,12 @@ export default function EventSection() {
                                                 ? '进行中'
                                                 : '已结束'}
                                     </span>
-                                    <div className={styles.activityParticipants}>
-                                        <Users className={styles.activityIcon} />
-                                        158
-                                    </div>
+                                    {event.participants &&
+                                        <div className={styles.activityParticipants}>
+                                            <Users className={styles.activityIcon} />
+                                            {event.participants}
+                                        </div>
+                                    }
                                 </div>
                                 <h3 className={styles.activityTitle}>{event.title}</h3>
                                 {/* <p className={styles.activityDescription}>{event.description}</p> */}
