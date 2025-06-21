@@ -110,6 +110,7 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
+	// TODO: gocache?
 	perms, err := models.GetUserWithPermissions(user.ID)
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "get permissions error", nil)

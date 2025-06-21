@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"gmonad/models"
 	"gmonad/utils"
 
 	"github.com/gin-gonic/gin"
@@ -33,10 +34,23 @@ func JWT(permission string) gin.HandlerFunc {
 			return
 		}
 
+		perms, err := models.GetUserWithPermissions(claims.Uid)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized action", nil)
+			c.Abort()
+			return
+		}
+
+		if isEqual := utils.StringSlicesEqual(perms, claims.Permissions); !isEqual {
+			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized action", nil)
+			c.Abort()
+			return
+		}
+
 		// TODO: check in controller handle?
 		permSet := utils.ToSet(claims.Permissions)
 		if _, ok := permSet[permission]; !ok {
-			utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized action", nil)
+			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized action", nil)
 			c.Abort()
 			return
 		}

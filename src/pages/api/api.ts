@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react';
+import { getSession, signOut } from 'next-auth/react';
 
 export interface ApiResponse<T> {
   code: number;
@@ -31,7 +31,20 @@ export const apiRequest = async <T>(
   };
 
   try {
-    const response = await fetch(`${apiUrl}${endpoint}`, options); // 动态构建请求地址
+    const response = await fetch(`${apiUrl}${endpoint}`, options);
+    // 捕获 401 和 403
+    if (response.status === 401 || response.status === 403) {
+      await signOut({ redirect: true, callbackUrl: '/' });
+
+      return {
+        code: response.status,
+        message:
+          response.status === 401
+            ? '登录信息已过期，请重新登录'
+            : '无权限访问，请重新登录',
+      };
+    }
+
     const data = await response.json();
 
     return {
