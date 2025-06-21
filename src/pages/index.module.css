@@ -18,11 +18,13 @@
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(24px);
   border-bottom: 1px solid rgba(229, 231, 235, 0.8);
-  position: fixed; /* 改为fixed确保始终可见 */
+  position: fixed;
+  /* 改为fixed确保始终可见 */
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100; /* 提高z-index确保在最顶层 */
+  z-index: 100;
+  /* 提高z-index确保在最顶层 */
 }
 
 .headerContent {
@@ -120,17 +122,21 @@
 /* Floating News Banner */
 .floatingNewsBanner {
   position: fixed;
-  top: 80px; /* 调整到 header 下面 */
+  top: 80px;
+  /* 调整到 header 下面 */
   left: 0;
   right: 0;
-  background: transparent; /* 完全透明背景 */
+  background: transparent;
+  /* 完全透明背景 */
   color: #1f2937;
   padding: 0.75rem 0;
-  z-index: 90; /* 确保在header下面但在其他内容上面 */
+  z-index: 90;
+  /* 确保在header下面但在其他内容上面 */
   overflow: hidden;
   transition:
     opacity 0.3s ease,
-    transform 0.3s ease; /* 添加平滑过渡 */
+    transform 0.3s ease;
+  /* 添加平滑过渡 */
 }
 
 .floatingNewsBanner.hidden {
@@ -141,7 +147,8 @@
 
 .newsSlider {
   display: flex;
-  animation: slideNews 60s linear infinite; /* 从40s增加到60s，更慢 */
+  animation: slideNews 60s linear infinite;
+  /* 从40s增加到60s，更慢 */
   white-space: nowrap;
 }
 
@@ -163,33 +170,41 @@
   font-size: 0.75rem;
   font-weight: 600;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3); /* 给标签添加轻微阴影以增强可读性 */
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  /* 给标签添加轻微阴影以增强可读性 */
 }
 
 .newsText {
   font-size: 0.875rem;
   flex-shrink: 0;
   color: #1f2937;
-  font-weight: 600; /* 增加字重以提高可读性 */
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8); /* 添加白色文字阴影以增强可读性 */
+  font-weight: 600;
+  /* 增加字重以提高可读性 */
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  /* 添加白色文字阴影以增强可读性 */
 }
 
 @keyframes slideNews {
   0% {
     transform: translateX(0);
   }
+
   20% {
     transform: translateX(-100vw);
   }
+
   40% {
     transform: translateX(-200vw);
   }
+
   60% {
     transform: translateX(-300vw);
   }
+
   80% {
     transform: translateX(-400vw);
   }
+
   100% {
     transform: translateX(-500vw);
   }
@@ -203,7 +218,8 @@
 .hero {
   position: relative;
   padding: 8rem 1rem;
-  padding-top: 12rem; /* 增加顶部间距以适应固定的header和新闻栏 */
+  padding-top: 12rem;
+  /* 增加顶部间距以适应固定的header和新闻栏 */
   overflow: hidden;
 }
 
@@ -259,11 +275,9 @@
 
 .heroBadge {
   display: inline-block;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(59, 130, 246, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2));
   border: 1px solid rgba(168, 85, 247, 0.3);
   color: #7c3aed;
   padding: 0.5rem 1rem;
@@ -398,11 +412,9 @@
 .statIconGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(59, 130, 246, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2));
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -494,11 +506,9 @@
 .featureCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(59, 130, 246, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2));
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -584,11 +594,9 @@
 .activityCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(59, 130, 246, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2));
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -838,8 +846,10 @@
   color: #6b7280;
   line-height: 1.6;
   font-size: 0.95rem;
-  max-width: 410px; /* 限制最大宽度 */
-  margin: 0 auto; /* 居中 */
+  max-width: 410px;
+  /* 限制最大宽度 */
+  margin: 0 auto;
+  /* 居中 */
   transition: color 0.3s ease;
 }
 
@@ -957,11 +967,9 @@
 .resourceCardGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(59, 130, 246, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2));
   opacity: 0;
   transition: opacity 0.5s ease;
   border-radius: 1rem;
@@ -1066,13 +1074,24 @@
   z-index: 10;
 }
 
-.membersScroll {
+
+.membersScrollStatic {
   display: flex;
-  gap: 1.5rem;
-  animation: scroll 30s linear infinite;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  overflow-x: hidden;
 }
 
-.membersScroll:hover {
+.membersScrollAuto {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.membersScrollStatic:hover,
+.membersScrollAuto:hover {
   animation-play-state: paused;
 }
 
@@ -1092,7 +1111,8 @@
   overflow: hidden;
   border-radius: 50%;
   cursor: pointer;
-  border: 1.5px solid #e5e7eb; /* 更细更浅的灰色边框 */
+  border: 1.5px solid #e5e7eb;
+  /* 更细更浅的灰色边框 */
   background: #fff;
   box-shadow: none;
   transition:
@@ -1101,11 +1121,12 @@
 }
 
 .avatar:hover {
-  border-color: #d1d5db; /* 柔和灰色边框 */
+  border-color: #d1d5db;
   box-shadow:
     0 4px 16px rgba(100, 116, 139, 0.15),
-    0 2px 8px rgba(31, 41, 55, 0.08); /* 柔和灰色阴影 */
-  transform: translateY(-4px);
+    0 2px 8px rgba(31, 41, 55, 0.08);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
 }
 
 .avatar :global(.ant-avatar) {
@@ -1122,9 +1143,9 @@
 }
 
 .memberTwitter {
-  margin-top: 4px;
+  margin-top: 10px;
   color: #6b7280;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -1354,10 +1375,12 @@
 
 /* Animations */
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 0.2;
   }
+
   50% {
     opacity: 0.8;
   }
@@ -1367,6 +1390,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }

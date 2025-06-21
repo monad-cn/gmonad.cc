@@ -326,81 +326,84 @@ export default function EventDetailPage() {
 
                     {/* Right Column */}
                     <div className={styles.rightColumn}>
+
                         {/* Registration Card */}
-                        <div className={styles.registrationCard}>
-                            <div className={styles.cardHeader}>
-                                <h3 className={styles.cardTitle}>参与活动</h3>
-                                <div className={styles.price}>免费</div>
-                            </div>
-                            <div className={styles.cardContent}>
-                                <div className={styles.participantCount}>
-                                    <Users size={20} />
-                                    <span>
-                                        {event.participants} 人已报名
-                                        {event.max_participants && ` / ${event.max_participants} 人`}
-                                    </span>
+                        {event.status === 3 &&
+                            <div className={styles.registrationCard}>
+                                <div className={styles.cardHeader}>
+                                    <h3 className={styles.cardTitle}>参与活动</h3>
+                                    <div className={styles.price}>免费</div>
                                 </div>
-                                {event.registration_deadline && (
-                                    <div className={styles.deadline}>
-                                        <Clock size={16} />
-                                        报名截止：{formatDateTime(event.registration_deadline).date}
+                                <div className={styles.cardContent}>
+                                    <div className={styles.participantCount}>
+                                        <Users size={20} />
+                                        <span>
+                                            {event.participants} 人已报名
+                                            {event.max_participants && ` / ${event.max_participants} 人`}
+                                        </span>
                                     </div>
-                                )}
-                                <Button
-                                    type="primary"
-                                    size="large"
-                                    className={`${styles.registerButton} ${isRegistered ? styles.registered : ""}`}
-                                    onClick={handleRegister}
-                                    disabled={eventStatus.type === "ended"}
-                                >
-                                    {eventStatus.type === "ended" ? "活动已结束" : isRegistered ? "取消报名" : "立即报名"}
-                                </Button>
-                                {event.categary === "online" && event.link && (
+                                    {event.registration_deadline && (
+                                        <div className={styles.deadline}>
+                                            <Clock size={16} />
+                                            报名截止：{formatDateTime(event.registration_deadline).date}
+                                        </div>
+                                    )}
                                     <Button
-                                        icon={<ExternalLink size={16} />}
-                                        className={styles.joinButton}
-                                        onClick={() => window.open(event.link, "_blank")}
-                                        disabled={eventStatus.type !== "ongoing"}
+                                        type="primary"
+                                        size="large"
+                                        className={`${styles.registerButton} ${isRegistered ? styles.registered : ""}`}
+                                        onClick={handleRegister}
+                                        disabled={eventStatus.type === "ended"}
                                     >
-                                        {eventStatus.type === "ongoing" ? "加入会议" : "会议链接"}
+                                        {eventStatus.type === "ended" ? "活动已结束" : isRegistered ? "取消报名" : "立即报名"}
                                     </Button>
-                                )}
+                                    {event.categary === "online" && event.link && (
+                                        <Button
+                                            icon={<ExternalLink size={16} />}
+                                            className={styles.joinButton}
+                                            onClick={() => window.open(event.link, "_blank")}
+                                            disabled={eventStatus.type !== "ongoing"}
+                                        >
+                                            {eventStatus.type === "ongoing" ? "加入会议" : "会议链接"}
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-
+                        }
                         {/* Organizer Card */}
-                        <div className={styles.organizerCard}>
-                            <h3 className={styles.cardTitle}>主办方</h3>
-                            <div className={styles.organizerInfo}>
-                                <Avatar size={64} src={event.organizer?.avatar} className={styles.organizerAvatar} />
-                                <div className={styles.organizerDetails}>
-                                    <h4 className={styles.organizerName}>{event.organizer?.name}</h4>
-                                    <p className={styles.organizerTitle}>
-                                        {event.organizer?.title} @ {event.organizer?.company}
-                                    </p>
-                                    <p className={styles.organizerBio}>{event.organizer?.bio}</p>
-                                    <div className={styles.organizerContact}>
-                                        {event.organizer?.email && (
-                                            <a href={`mailto:${event.organizer?.email}`} className={styles.contactLink} title="发送邮件">
-                                                <Mail size={16} />
-                                            </a>
-                                        )}
-                                        {event.organizer?.twitter && (
-                                            <a
-                                                href={`https://twitter.com/${event.organizer?.twitter.replace("@", "")}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={styles.contactLink}
-                                                title="Twitter"
-                                            >
-                                                <Twitter size={16} />
-                                            </a>
-                                        )}
+                        {event.status === 3 &&
+                            <div className={styles.organizerCard}>
+                                <h3 className={styles.cardTitle}>主办方</h3>
+                                <div className={styles.organizerInfo}>
+                                    <Avatar size={64} src={event.organizer?.avatar} className={styles.organizerAvatar} />
+                                    <div className={styles.organizerDetails}>
+                                        <h4 className={styles.organizerName}>{event.organizer?.name}</h4>
+                                        <p className={styles.organizerTitle}>
+                                            {event.organizer?.title} @ {event.organizer?.company}
+                                        </p>
+                                        <p className={styles.organizerBio}>{event.organizer?.bio}</p>
+                                        <div className={styles.organizerContact}>
+                                            {event.organizer?.email && (
+                                                <a href={`mailto:${event.organizer?.email}`} className={styles.contactLink} title="发送邮件">
+                                                    <Mail size={16} />
+                                                </a>
+                                            )}
+                                            {event.organizer?.twitter && (
+                                                <a
+                                                    href={`https://twitter.com/${event.organizer?.twitter.replace("@", "")}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={styles.contactLink}
+                                                    title="Twitter"
+                                                >
+                                                    <Twitter size={16} />
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
+                        }
                         {/* Share Card */}
                         <div className={styles.shareCard}>
                             <h3 className={styles.cardTitle}>分享活动</h3>

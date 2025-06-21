@@ -850,6 +850,7 @@
   padding: 0.75rem 1rem;
   color: #8b5cf6;
   text-decoration: none;
+  align-items: center;
   border-left: 3px solid transparent;
   transition: all 0.2s ease;
 }
@@ -947,11 +948,18 @@
   align-items: center;
 }
 
+.nameColumn {
+  width: 400px; 
+  min-width: 300px; 
+  max-width: 500px; 
+  flex-grow: 1;
+}
+
 .listRow {
   display: grid;
   grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr;
   gap: 1rem;
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
   border-bottom: 1px solid #f3f4f6;
   transition: background-color 0.2s;
 }
@@ -970,15 +978,15 @@
   min-height: 3rem;
 }
 
-.eventInfo {
+/* .eventInfo {
   width: 100%;
-}
+  align-items: center;
+} */
 
 .eventTitleRow {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 .listEventTitle {

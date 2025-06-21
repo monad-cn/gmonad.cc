@@ -1,4 +1,4 @@
-import { Github, Twitter, Globe } from "lucide-react"
+import { SiGithub, SiX, SiTelegram } from 'react-icons/si';
 import styles from "../styles/Footer.module.css"
 import Link from "next/link"
 
@@ -15,7 +15,7 @@ export default function Footer() {
               </div>
               <span className={styles.footerLogoTitle}>Monad中文社区</span>
             </div>
-            <p className={styles.footerDescription}>致力于为中文开发者提供最优质的Monad技术支持和交流平台</p>
+            <p className={styles.footerDescription}>Monad 中文社区是连接生态参与者的桥梁，在这里，与 Nads 一起交流、分享、 建设 Monad。</p>
           </div>
           <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>生态系统</h3>
@@ -70,22 +70,24 @@ export default function Footer() {
           <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>联系我们</h3>
             <div className={styles.footerSocial}>
-              <button className={styles.socialButton}>
-                <Github className={styles.socialIcon} />
-              </button>
-              <button className={styles.socialButton}>
-                <Twitter className={styles.socialIcon} />
-              </button>
-              <button className={styles.socialButton}>
-                <Globe className={styles.socialIcon} />
-              </button>
+              <Link className={styles.socialButton} href="https://github.com/monad-cn/gmonad.cc" target="_blank">
+                <SiGithub className={styles.socialIcon} />
+              </Link>
+              <Link className={styles.socialButton} href="https://x.com/monad_zw" target="_blank">
+                <SiX className={styles.socialIcon} />
+              </Link>
+              <Link className={styles.socialButton} href="https://t.me/Chinads" target="_blank">
+                <SiTelegram className={styles.socialIcon} />
+              </Link>
             </div>
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <p className={styles.footerCopyright}>&copy; 2024 Monad中文社区. 保留所有权利.</p>
-          <Link href="/privacy">隐私政策</Link> ·{' '}
-          <Link href="/terms">服务条款</Link>
+          <p className={styles.footerCopyright}>
+            &copy; 2025 Monad 中文社区。 由 <Link href="https://openbuild.xyz/" className={styles.toOpenBuild}>OpenBuild</Link> 支持
+          </p>
+          {/* <Link href="/privacy">隐私政策</Link> ·{' '} */}
+          {/* <Link href="/terms">服务条款</Link> */}
         </div>
       </div>
     </footer>
