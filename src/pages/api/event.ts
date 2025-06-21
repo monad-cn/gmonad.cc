@@ -60,6 +60,7 @@ export interface Event {
   cover_img: string;
   tags: string[];
   twitter: string;
+  participants: number;
 }
 
 // 分页返回数据结构

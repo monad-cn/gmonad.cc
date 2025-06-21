@@ -22,7 +22,7 @@ type Event struct {
 	EndTime              time.Time      `json:"end_time"`
 	CoverImg             string         `json:"cover_img"`
 	Tags                 pq.StringArray `gorm:"type:text[]" json:"tags"`
-	Attendance           uint           `json:"attendance"`
+	Participants         uint           `json:"participants"`
 	Status               uint           `gorm:"default:0" json:"status"`         // 0: 未开始，1: 进行中 2: 已结束 TODO: 定时器更新状态？
 	PublishStatus        uint           `gorm:"default:1" json:"publish_status"` // 0: 所有  1: 待审核 2: 已发布
 	Twitter              string         `json:"twitter"`

@@ -127,42 +127,37 @@ export default function EventsPage() {
   // 搜索事件
   const handleSearch = async (keyword: string) => {
     setSearchKeyword(keyword);
-    setCurrentPage(1); // 重置到第一页
-    await loadEvents({ keyword, page: 1 });
+    setCurrentPage(1);
   };
 
   // 按标签筛选
   const handleTagFilter = async (tag: string) => {
     setSelectedTag(tag);
-    setCurrentPage(1); // 重置到第一页
-    await loadEvents({ tag, page: 1 });
+    setCurrentPage(1);
   };
 
   // 排序切换
   const handleSortChange = async (order: 'asc' | 'desc') => {
     setSortOrder(order);
-    await loadEvents({ order });
+    setCurrentPage(1);
   };
 
   // 状态筛选
   const handleStatusFilter = async (status: string) => {
     setStatusFilter(status);
     setCurrentPage(1);
-    await loadEvents({ status, page: 1 });
   };
 
   // 地址搜索
   const handleLocationSearch = async (location: string) => {
     setLocationKeyword(location);
     setCurrentPage(1);
-    await loadEvents({ location, page: 1 });
   };
 
   // 活动类型筛选
   const handleEventModeFilter = async (event_mode: string) => {
     setEventModeFilter(event_mode);
     setCurrentPage(1);
-    await loadEvents({ event_mode, page: 1 });
   };
 
   // 分页处理
@@ -183,16 +178,6 @@ export default function EventsPage() {
     setLocationKeyword('');
     setEventModeFilter('');
     setCurrentPage(1);
-    await loadEvents({
-      keyword: '',
-      tag: '',
-      order: 'desc',
-      status: '3',
-      location: '',
-      event_mode: '',
-      page: 1,
-      publish_status: 2,
-    });
   };
 
   // 计算当前显示的事件
@@ -246,19 +231,16 @@ export default function EventsPage() {
   useEffect(() => {
     if (status === 'authenticated') {
       setPublishStatus(0);
-      setReadyToLoad(true);
     } else if (status === 'unauthenticated') {
-      setReadyToLoad(true);
+      setPublishStatus(2);
     }
   });
 
   useEffect(() => {
-    if (readyToLoad) {
-      // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
-      loadEvents();
-    }
+    // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
+    loadEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [searchKeyword, selectedTag, sortOrder, currentPage, pageSize, statusFilter, locationKeyword, eventModeFilter, publishStatus]);
 
   if (loading) {
     return (
@@ -317,7 +299,7 @@ export default function EventsPage() {
               </button>
             </div>
             {status === 'authenticated' &&
-            permissions.includes('event:write') ? (
+              permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -443,10 +425,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-            selectedTag ||
-            statusFilter ||
-            locationKeyword ||
-            eventModeFilter
+              selectedTag ||
+              statusFilter ||
+              locationKeyword ||
+              eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -493,12 +475,13 @@ export default function EventsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                        permissions.includes('event:write') ? (
+                          permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
-                            onClick={() =>
+                            onClick={(e) => {
+                              e.preventDefault()
                               router.push(`/events/${event.ID}/edit`)
-                            }
+                            }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
                           />
@@ -506,7 +489,9 @@ export default function EventsPage() {
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
-                            e.preventDefault(); /* 分享逻辑 */
+                            e.preventDefault();
+                            navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
+                            message.success("链接已复制到剪贴板")
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享活动"
@@ -526,7 +511,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-                // variant={false}
+              // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -551,8 +536,13 @@ export default function EventsPage() {
                         </>
                       )}
                     </div>
+                    {event.participants !== 0 &&
+                      <div className={styles.metaItem}>
+                        <Users className={styles.metaIcon} />
+                        <span>{event.participants || ''}</span>
+                      </div>
+                    }
                   </div>
-
                   {event.tags && event.tags.length > 0 && (
                     <div className={styles.cardTags}>
                       {event.tags
@@ -661,7 +651,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                    permissions.includes('event:write') ? (
+                      permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -677,7 +667,7 @@ export default function EventsPage() {
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                    permissions.includes('event:delete') ? (
+                      permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"
