@@ -58,7 +58,7 @@ func (u *User) GetUserWithPermissions() ([]string, error) {
 	err := db.Preload("Role").
 		Preload("Role.Permissions").
 		Preload("Role.PermissionGroups.Permissions").
-		First(&user, user.ID).Error
+		First(&user, u.ID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -66,12 +66,12 @@ func (u *User) GetUserWithPermissions() ([]string, error) {
 	permSet := map[string]struct{}{}
 
 	// 角色直接权限
-	for _, p := range user.Role.Permissions {
+	for _, p := range u.Role.Permissions {
 		permSet[p.Name] = struct{}{}
 	}
 
 	// 权限组权限
-	for _, pg := range user.Role.PermissionGroups {
+	for _, pg := range u.Role.PermissionGroups {
 		for _, p := range pg.Permissions {
 			permSet[p.Name] = struct{}{}
 		}
