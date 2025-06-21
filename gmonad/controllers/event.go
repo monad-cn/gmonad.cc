@@ -34,6 +34,19 @@ func CreateEvent(c *gin.Context) {
 		Twitter:     req.Twitter,
 	}
 
+	uid, ok := c.Get("uid")
+	if !ok {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "unauthorized", nil)
+		return
+	}
+
+	userId, ok := uid.(int)
+	if !ok {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "unauthorized", nil)
+		return
+	}
+
+	event.UserId = uint(userId)
 	// 创建数据库记录
 	if err := event.Create(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
