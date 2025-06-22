@@ -45,6 +45,14 @@ const Community: NextPage = () => {
             git: 'https://github.com/lispking/meta-farm',
             category: '链游'
         },
+        {
+            id: 5,
+            title: 'Nads Pixel World 像素格子',
+            description: 'Nads\' Home 创作属于您的像素作品',
+            url: 'https://nads-pixel-world.vercel.app/',
+            git: 'https://github.com/jjeejj/nads-pixel-world',
+            category: '链游'
+        },
         // 可以根据需要添加更多项目
     ];
 
