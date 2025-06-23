@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Dropdown, Button, message } from 'antd';
 import type { MenuProps } from 'antd';
 import { useRouter } from 'next/router';
@@ -10,11 +10,13 @@ const Auth: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const { code } = router.query;
+  const [loading, setLoading] = useState(false); // 添加 loading 状态
 
   // 页面初次加载时检测 query 中的 code 并尝试登录
   useEffect(() => {
     const tryLogin = async () => {
       if (!session && code) {
+        setLoading(true); // 显示加载状态
         try {
           const res = await signIn('credentials', {
             redirect: false,
@@ -29,6 +31,8 @@ const Auth: React.FC = () => {
           }
         } catch (error) {
           message.error('网络错误...');
+        } finally {
+          setLoading(false); // 登录完成，关闭加载状态
         }
       }
     };
@@ -37,9 +41,10 @@ const Auth: React.FC = () => {
   }, [code, session, router]);
 
   const handleSignIn = () => {
+    setLoading(true); // 点击按钮时设置为加载状态
     const currentUrl = window.location.origin + router.pathname;
     const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH}&redirect_uri=${currentUrl}`;
-    router.push(oauthUrl);
+    router.push(oauthUrl); // 跳转 OAuth 授权页
   };
 
   const handleLogout = async () => {
@@ -81,6 +86,7 @@ const Auth: React.FC = () => {
           type="primary"
           className={styles.navButton}
           onClick={handleSignIn}
+          loading={loading} // 显示加载中状态
         >
           登录
         </Button>
