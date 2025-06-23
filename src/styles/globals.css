@@ -44,3 +44,12 @@ a {
 .ql-container {
   min-height: 150px;
 }
+
+.ql-editor {
+  min-height: 150px;
+  cursor: text;
+}
+
+.ql-editor p {
+  min-height: 1em;
+}
