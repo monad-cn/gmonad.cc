@@ -186,6 +186,13 @@ export default function EventsPage() {
             <h1 className={styles.title}>社区博客</h1>
             <p className={styles.subtitle}>写下所思所感，遇见共鸣之人</p>
           </div>
+          {status === 'authenticated' &&
+            permissions.includes('blog:write') ? (
+            <Link href="/blogs/new" className={styles.createButton}>
+              <Plus size={20} />
+              创建博客
+            </Link>
+          ) : null}
         </div>
       </div>
 
@@ -240,10 +247,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无博客</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-            selectedTag ||
-            statusFilter ||
-            locationKeyword ||
-            blogModeFilter
+              selectedTag ||
+              statusFilter ||
+              locationKeyword ||
+              blogModeFilter
               ? '没有找到符合条件的博客'
               : '还没有创建任何博客'}
           </div>
@@ -285,7 +292,7 @@ export default function EventsPage() {
                       )} */}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                        permissions.includes('blog:write') ? (
+                          permissions.includes('blog:write') ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={() =>
@@ -336,7 +343,7 @@ export default function EventsPage() {
                       >
                         <div className={styles.metaItem}>
                           <BookOpenText className={styles.metaIcon} />
-                          <span>{ blog.author}</span>
+                          <span>{blog.author}</span>
                         </div>
                       </Col>
                     </Row>
@@ -443,7 +450,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                    permissions.includes('blog:write') ? (
+                      permissions.includes('blog:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -459,7 +466,7 @@ export default function EventsPage() {
                       title="分享博客"
                     />
                     {status === 'authenticated' &&
-                    permissions.includes('blog:delete') ? (
+                      permissions.includes('blog:delete') ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
