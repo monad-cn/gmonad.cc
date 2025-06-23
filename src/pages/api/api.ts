@@ -34,7 +34,7 @@ export const apiRequest = async <T>(
     const response = await fetch(`${apiUrl}${endpoint}`, options);
     // 捕获 401 和 403
     if (response.status === 401 || response.status === 403) {
-      await signOut({ redirect: true, callbackUrl: '/' });
+      // await signOut({ redirect: true, callbackUrl: '/' });
 
       return {
         code: response.status,

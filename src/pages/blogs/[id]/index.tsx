@@ -1,93 +1,256 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Card, Tag, Button, Typography, Space, Result } from 'antd';
-import { Blog } from '../../../types/blog';
-import styles from '../index.module.css';
+import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  Globe,
+  Share2,
+  Heart,
+  ExternalLink,
+  Edit,
+  Star,
+  User,
+  Mail,
+  Copy,
+  Download,
+  CheckCircle,
+} from 'lucide-react';
+import Link from 'next/link';
+import styles from './index.module.css';
+import { useSession } from 'next-auth/react';
+import { updateEventPublishStatus } from '@/pages/api/event';
+import { SiX } from 'react-icons/si';
+import { getBlogById } from '@/pages/api/blog';
 
-// mock数据，实际可替换为API
-const blogs: Blog[] = [
-  {
-    id: 1,
-    name: 'Monad是什么？',
-    content: 'Monad 是下一代区块链技术...',
-    author: 'Alice',
-    translation: 'What is Monad?',
-    layout: '默认',
-    tags: ['区块链', '技术'],
-    date: '2024-06-01',
-  },
-  {
-    id: 2,
-    name: '区块链的未来',
-    content: '区块链将如何改变世界...',
-    author: 'Bob',
-    translation: 'phoouze',
-    layout: '科技',
-    tags: ['区块链', '未来'],
-    date: '2024-06-02',
-  },
-];
-
-const BlogDetail: React.FC = () => {
+export default function BlogDetailPage() {
+  const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query;
-  const blog = blogs.find((b) => b.id === Number(id));
+  const { id } = router.query; // 路由参数应该叫 id，不是 ids
+  const rId = Array.isArray(id) ? id[0] : id;
 
-  if (!blog) {
+  const [blog, setBlog] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
+  const { data: session, status } = useSession();
+
+  const permissions = session?.user?.permissions || [];
+
+  // const handleUpdatePublishStatus = async () => {
+  //   try {
+  //     const result = await updateEventPublishStatus(blog.ID, 2);
+  //     if (result.success) {
+  //       router.reload();
+  //       message.success(result.message);
+  //     } else {
+  //       message.error(result.message || '审核出错');
+  //     }
+  //   } catch (error) {
+  //     message.error('审核出错，请重试');
+  //   }
+  // };
+
+  useEffect(() => {
+    if (!router.isReady || !rId) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getBlogById(rId);
+        console.log('获取活动详情:', response);
+        setBlog(response?.data);
+      } catch (error) {
+        message.error('加载失败');
+        setBlog(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router.isReady, id]);
+
+
+
+  const handleShare = (platform?: string) => {
+    if (platform === 'copy') {
+      navigator.clipboard.writeText(window.location.href);
+      message.success('链接已复制到剪贴板');
+    } else if (platform === 'twitter') {
+      const text = `${blog.title} - ${window.location.href}`;
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
+      );
+    } else {
+      setShareModalVisible(true);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className={styles.container}>
-        <Result
-          status="404"
-          title="未找到该博客"
-          subTitle="你访问的博客不存在或已被删除。"
-          extra={
-            <Button type="primary" onClick={() => router.push('/blogs')}>
-              返回博客列表
-            </Button>
-          }
-        />
+      <div className={styles.loading}>
+        <div className={styles.loadingSpinner}></div>
+        <p>加载中...</p>
       </div>
     );
   }
 
+  if (
+    !blog ||
+    (blog.publish_status === 1 && !permissions.includes('blog:write'))
+  ) {
+    return (
+      <div className={styles.error}>
+        <h2>博客不存在</h2>
+        <p>抱歉，找不到您要查看的活动</p>
+        <Link href="/events" className={styles.backButton}>
+          返回活动列表
+        </Link>
+      </div>
+    );
+  }
+
+
+  const formatDateTime = (dateTime: string) => {
+    const date = new Date(dateTime);
+    return {
+      date: date.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+      }),
+      time: date.toLocaleTimeString('zh-CN', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+  };
+
   return (
     <div className={styles.container}>
-      <Card title={<span className={styles.cardTitle}>{blog.name}</span>}>
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <div>
-            <span className={styles.author}>作者：{blog.author}</span>
-            <Tag color="purple" style={{ marginLeft: 8 }}>
-              排版：{blog.layout}
-            </Tag>
-            <span className={styles.date} style={{ marginLeft: 8 }}>
-              日期：{blog.date}
-            </span>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <Link href="/blogs" className={styles.backLink}>
+            <ArrowLeft className={styles.backIcon} />
+            返回博客列表
+          </Link>
+          <div className={styles.headerActions}>
+            {status === 'authenticated' &&
+              permissions.includes('blog:write') ? (
+              <Button
+                icon={<Edit size={16} className={styles.actionIcon} />}
+                className={styles.actionButton}
+                onClick={() => router.push(`/blogs/${blog.ID}/edit`)}
+              >
+                编辑
+              </Button>
+            ) : null}
+            {/* {event.publish_status === 1 &&
+            status === 'authenticated' &&
+            permissions.includes('event:review') ? (
+              <Button
+                icon={<CheckCircle size={16} className={styles.actionIcon} />}
+                className={styles.actionButton}
+                onClick={() => handleUpdatePublishStatus()}
+              >
+                审核通过
+              </Button>
+            ) : null} */}
           </div>
-          <div className={styles.tags}>
-            {blog.tags.map((tag) => (
-              <Tag color="magenta" key={tag}>
-                {tag}
-              </Tag>
-            ))}
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <div className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroLeft}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+
+              {blog.publish_status === 1 && (
+                <div
+                  className={styles.statusBadge}
+                  style={{ backgroundColor: '#af78e7' }}
+                >
+                  待审核
+                </div>
+              )}
+            </div>
+            <h1 className={styles.title}>{blog.title}</h1>
+            <div className={styles.metaInfo}>
+              <div className={styles.metaItem}>
+                <Calendar className={styles.metaIcon} />
+                {/* <div>
+                  <div className={styles.metaText}>{formatDateTime(blog.CreatedAt)}</div>
+                </div> */}
+              </div>
+            </div>
+            <div className={styles.tags}>
+              {blog.tags.map((tag: string, index: number) => (
+                <Tag key={index} className={styles.tag}>
+                  {tag}
+                </Tag>
+              ))}
+            </div>
           </div>
-          {blog.translation && (
-            <div className={styles.translation}>翻译：{blog.translation}</div>
-          )}
-          <Typography.Paragraph className={styles.content}>
-            {blog.content}
-          </Typography.Paragraph>
-          <div style={{ textAlign: 'right' }}>
+          <div className={styles.heroRight}>
+            <div className={styles.coverContainer}>
+              <Image
+                src={blog.cover_img || '/placeholder.svg'}
+                alt={blog.title}
+                width={400}
+                height={300}
+                className={styles.coverImage}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className={styles.main}>
+        <div className={styles.content}>
+          {/* Left Column */}
+          <div className={styles.leftColumn}>
+            {/* Description */}
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>{blog.title}</h2>
+              <div
+                className={styles.richText}
+                dangerouslySetInnerHTML={{ __html: blog.content }}
+              />
+            </section>
+          </div>
+        </div>
+
+
+
+        {/* <div className={styles.shareCard}>
+          <h3 className={styles.cardTitle}>分享活动</h3>
+          <div className={styles.shareButtons}>
             <Button
-              type="primary"
-              onClick={() => router.push(`/blogs/${blog.id}/edit`)}
+              icon={<Copy size={16} />}
+              className={styles.shareButton}
+              onClick={() => handleShare('copy')}
             >
-              编辑
+              复制链接
             </Button>
-          </div>
-        </Space>
-      </Card>
+            <Button
+              icon={<SiX size={16} />}
+              className={styles.shareButton}
+              onClick={() => handleShare('twitter')}
+            >
+              分享到 X
+            </Button>
+          </div> */}
+        {/* </div> */}
+      </div>
     </div>
   );
-};
-
-export default BlogDetail;
+}
