@@ -53,6 +53,7 @@ func InitRolesAndPermissions() error {
 		{Name: "博客管理员", Description: "博客管理权限组"},
 		{Name: "活动创建者", Description: "活动创建权限组"},
 		{Name: "活动管理员", Description: "活动管理权限组"},
+		{Name: "内容管理员", Description: "内容管理权限组"},
 		{Name: "超级管理员", Description: "拥有所有权限"},
 	}
 	if err := db.Create(&permissionGroups).Error; err != nil {
@@ -99,8 +100,14 @@ func InitRolesAndPermissions() error {
 		return err
 	}
 
-	// 超级管理员：拥有所有权限
+	// 内容管理员：拥有所有内容管理权限
 	err = db.Model(&permissionGroups[4]).Association("Permissions").Append(&permissions)
+	if err != nil {
+		return err
+
+	}
+	// 超级管理员：拥有所有权限
+	err = db.Model(&permissionGroups[5]).Association("Permissions").Append(&permissions)
 	if err != nil {
 		return err
 	}
@@ -111,6 +118,7 @@ func InitRolesAndPermissions() error {
 		{Name: "blog_admin", Description: "博客管理员角色"},
 		{Name: "event_creator", Description: "活动创建角色"},
 		{Name: "event_admin", Description: "活动管理员角色"},
+		{Name: "content_admin", Description: "内容管理员角色"},
 		{Name: "super_admin", Description: "超级管理员角色"},
 	}
 
@@ -139,7 +147,11 @@ func InitRolesAndPermissions() error {
 		return err
 	}
 
-	err = db.Model(&roles[4]).Association("PermissionGroups").Append(&permissionGroups[4]) // 超级管理员
+	err = db.Model(&roles[4]).Association("PermissionGroups").Append(&permissionGroups[4]) // 内容管理员
+	if err != nil {
+		return err
+	}
+	err = db.Model(&roles[5]).Association("PermissionGroups").Append(&permissionGroups[5]) // 超级管理员
 	if err != nil {
 		return err
 	}
