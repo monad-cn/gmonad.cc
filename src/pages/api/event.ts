@@ -193,7 +193,7 @@ export const getEvents = async (params: GetEventsParams = {}): Promise<EventList
 
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());
-    query.append('page_size', (params.page_size ?? 10).toString());
+    query.append('page_size', (params.page_size ?? 6).toString());
 
     const response = await apiRequest<EventListResult>(`/events?${query.toString()}`, 'GET');
 

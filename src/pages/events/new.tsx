@@ -84,12 +84,6 @@ export default function NewEventPage() {
         eventMode: eventMode, // 确保活动类型被包含
       };
 
-      console.log('完整表单数据:', formData);
-      console.log('标签数据:', tags);
-      console.log('封面图片:', cloudinaryImg?.secure_url);
-      console.log(values);
-      console.log('description:', formData.description);
-
       const createEventRequest = {
         title: values.title || '',
         description: values.description || '',
@@ -103,8 +97,6 @@ export default function NewEventPage() {
         tags: tags,
         twitter: values.twitter,
       };
-
-      console.log(createEventRequest);
 
       // 调用创建事件接口
       const result = await createEvent(createEventRequest);

@@ -27,14 +27,17 @@ import styles from './new.module.css';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
 import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
+import { createBlog } from '../api/blog';
+import router from 'next/router';
 
 const { Dragger } = Upload;
+const { TextArea } = Input;
 
 export default function NewEventPage() {
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
 
-  const [tags, setTags] = useState<string[]>(['技术分享']);
+  const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
@@ -54,20 +57,37 @@ export default function NewEventPage() {
   // 富文本处理
   const handleQuillEditorChange = useCallback(
     (value: string) => {
-      form.setFieldValue('description', value);
+      form.setFieldValue('content', value);
     },
     [form]
   );
-
-  const handleSubmit = async (values: any) => {
+ const handleSubmit = async (values: any) => {
     try {
       console.log(values);
       setIsSubmitting(true);
 
-      console.log('submit');
+      const createBlogRequest = {
+        title: values.title || '',
+        description: values.description || '',
+        content: values.content || '',
+        source_link: values.source || '',
+        category: "blog",
+        cover_img: cloudinaryImg?.secure_url || '',
+        tags: tags,
+        author: values.author || '',
+        translator: values.translator || '',
+      };
+
+      const result = await createBlog(createBlogRequest);
+      if (result.success) {
+        message.success(result.message);
+        router.push('/blogs');
+      } else {
+        message.error(result.message || '创建博客失败');
+      }
     } catch (error) {
       console.error('创建博客失败:', error);
-      message.error('创建博客失败，请重试');
+      message.error('创建博客出错，请重试');
     } finally {
       setIsSubmitting(false);
     }
@@ -222,17 +242,42 @@ export default function NewEventPage() {
                 name="title"
                 rules={[{ required: true, message: '请输入博客标题' }]}
               >
-                <Input placeholder="请输入博客标题" className={styles.input} />
+                <Input placeholder="请输入博客标题" className={styles.input} maxLength={30} showCount />
               </Form.Item>
-
               <Form.Item
                 label="博客描述"
                 name="description"
                 rules={[{ required: true, message: '请输入博客描述' }]}
               >
+                <TextArea
+                  rows={2}
+                  maxLength={60}
+                  showCount
+                  placeholder="请输入博客描述"
+                />
+              </Form.Item>
+              <Form.Item
+                label="博客内容"
+                name="content"
+                rules={[{ required: true, message: '请输入博客内容' }]}
+              >
                 <QuillEditor
-                  value={form.getFieldValue('description')}
+                  value={form.getFieldValue('content')}
                   onChange={handleQuillEditorChange}
+                />
+              </Form.Item>
+              <Form.Item
+                label="原文链接"
+                name="source"
+                rules={[
+                  {
+                    type: 'url',
+                    message: '请输入有效的链接地址',
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="请输入原文链接" className={styles.input}
                 />
               </Form.Item>
             </Card>
@@ -241,39 +286,22 @@ export default function NewEventPage() {
             <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>
                 <Users className={styles.sectionIcon} />
-                参与人员
+                作者与协作者
               </h2>
 
               <div className={styles.formRow}>
-                <Form.Item label="作者">
-                  <Input placeholder="请输入作者" />
-                </Form.Item>
-                <Form.Item label="翻译" name="">
-                  <Input placeholder="请输入翻译人员" />
+                <Form.Item
+                  label="作者"
+                  name="author"
+                  rules={[{ required: true, message: '请输入作者姓名' }]}
+                >
+                  <Input placeholder="请输入作者" maxLength={10} showCount />
                 </Form.Item>
               </div>
-              <div className={styles.formRow}>
-                <Form.Item label="排版" name="">
-                  <Input placeholder="请输入排版人员" />
-                </Form.Item>
 
-                <Form.Item
-                  label="推文链接"
-                  name="twitter"
-                  rules={[
-                    {
-                      required: true,
-                      message: `请输入推文链接`,
-                    },
-                  ]}
-                >
-                  <div className={styles.inputWithIcon}>
-                    <X className={styles.inputIcon} />
-                    <Input
-                      placeholder="请输入推文链接"
-                      className={styles.inputWithIconField}
-                    />
-                  </div>
+              <div className={styles.formRow}>
+                <Form.Item label="翻译" name="translator">
+                  <Input placeholder="请输入翻译人员（可选）" maxLength={10} showCount />
                 </Form.Item>
               </div>
             </Card>
@@ -326,10 +354,10 @@ export default function NewEventPage() {
                         <span className={styles.imageSize}>
                           {coverImage?.originFileObj
                             ? `${(
-                                coverImage.originFileObj.size /
-                                1024 /
-                                1024
-                              ).toFixed(2)} MB`
+                              coverImage.originFileObj.size /
+                              1024 /
+                              1024
+                            ).toFixed(2)} MB`
                             : ''}
                         </span>
                       </div>

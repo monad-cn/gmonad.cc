@@ -2,6 +2,7 @@ package controllers
 
 import "gmonad/models"
 
+// event
 type CreateEventRequest struct {
 	Title     string   `json:"title" binding:"required"`
 	Desc      string   `json:"desc" binding:"required"`
@@ -38,6 +39,8 @@ type UpdateEventRequest struct {
 type UpdateEventPublishStatusRequest struct {
 	PublishStatus uint `json:"publish_status"`
 }
+
+// login
 
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
@@ -95,4 +98,44 @@ type GetUserResponse struct {
 	Data    UserData `json:"data"`
 	Time    int64    `json:"time"`
 	Message string   `json:"message"`
+}
+
+// article
+type CreateArticleRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	Category   string   `json:"category" binding:"required"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+	Author     string   `json:"author" binding:"required"`
+	Translator string   `json:"translator"`
+}
+
+type QueryArticlesResponse struct {
+	Blogs    []models.Article `json:"blogs"`
+	Guides   []models.Article `json:"guides"`
+	Page     int              `json:"page"`
+	PageSize int              `json:"page_size"`
+	Total    int64            `json:"total"`
+}
+
+type QueryBlogsResponse struct {
+	Blogs    []models.Article `json:"blogs"`
+	Page     int              `json:"page"`
+	PageSize int              `json:"page_size"`
+	Total    int64            `json:"total"`
+}
+
+type UpdateArticleRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	Category   string   `json:"category" binding:"required"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+	Author     string   `json:"author" binding:"required"`
+	Translator string   `json:"translator"`
 }

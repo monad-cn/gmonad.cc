@@ -32,13 +32,14 @@ import styles from './index.module.css';
 import { getEvents, deleteEvent } from '../api/event';
 import router from 'next/router';
 import { useSession } from 'next-auth/react';
+import { getBlogs } from '../api/blog';
 
 const { Search: AntSearch } = Input;
 
 type ViewMode = 'grid' | 'list';
 
 export function formatTime(isoTime: string): string {
-  return dayjs(isoTime).format('YYYY-MM-DD');
+  return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
 }
 
 export default function EventsPage() {
@@ -70,10 +71,6 @@ export default function EventsPage() {
     order?: 'asc' | 'desc';
     page?: number;
     page_size?: number;
-    status?: string | number;
-    location?: string;
-    blog_mode?: string;
-    publish_status?: number;
   }) => {
     try {
       setLoading(true);
@@ -84,34 +81,31 @@ export default function EventsPage() {
         order: params?.order || sortOrder,
         page: params?.page || currentPage,
         page_size: params?.page_size || pageSize,
-        status: params?.status || statusFilter,
-        location: params?.location || locationKeyword,
-        blog_mode: params?.blog_mode || blogModeFilter,
-        publish_status: params?.publish_status || publishStatus,
       };
 
-      const result = await getEvents(queryParams);
+      const result = await getBlogs(queryParams);
 
-      // if (result.success && result.data) {
-      //   // 处理后端返回的数据结构
-      //   if (result.data.blogs && Array.isArray(result.data.blogs)) {
-      //     setBlogs(result.data.blogs);
-      //     setCurrentPage(result.data.page || 1);
-      //     setPageSize(result.data.page_size || 6);
-      //     setTotal(result.data.total || result.data.blogs.length);
-      //   } else if (Array.isArray(result.data)) {
-      //     setBlogs(result.data);
-      //     setTotal(result.data.length);
-      //   } else {
-      //     console.warn('API 返回的数据格式不符合预期:', result.data);
-      //     setBlogs([]);
-      //     setTotal(0);
-      //   }
-      // } else {
-      //   console.error('获取博客列表失败:', result.message);
-      //   setBlogs([]);
-      //   setTotal(0);
-      // }
+      if (result.success && result.data) {
+        // 处理后端返回的数据结构
+        if (result.data.blogs && Array.isArray(result.data.blogs)) {
+          console.log(result.data.blogs)
+          setBlogs(result.data.blogs);
+          setCurrentPage(result.data.page || 1);
+          setPageSize(result.data.page_size || 6);
+          setTotal(result.data.total || result.data.blogs.length);
+        } else if (Array.isArray(result.data)) {
+          setBlogs(result.data);
+          setTotal(result.data.length);
+        } else {
+          console.warn('API 返回的数据格式不符合预期:', result.data);
+          setBlogs([]);
+          setTotal(0);
+        }
+      } else {
+        console.error('获取博客列表失败:', result.message);
+        setBlogs([]);
+        setTotal(0);
+      }
     } catch (error) {
       console.error('加载博客列表异常:', error);
       setBlogs([]);
@@ -191,56 +185,6 @@ export default function EventsPage() {
           <div className={styles.titleSection}>
             <h1 className={styles.title}>社区博客</h1>
             <p className={styles.subtitle}>写下所思所感，遇见共鸣之人</p>
-          </div>
-          <div className={styles.headerRightActions}>
-            <div className={styles.socialLinks}>
-              <a
-                href="https://x.com/monad_zw"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialButton}
-              >
-                <SiX size={18} className={styles.socialIcon} />
-                <span className={styles.socialButtonText}>关注 X</span>
-              </a>
-              <a
-                href="https://t.me/Chinads"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialButton}
-              >
-                <SiTelegram size={18} className={styles.socialIcon} />
-                <span className={styles.socialButtonText}>加入 Telegram</span>
-              </a>
-              <a
-                href="https://discord.gg/monad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialButton}
-              >
-                <SiDiscord size={18} className={styles.socialIcon} />{' '}
-                {/* Lucide 没有 Discord 图标，用 Users 替代 */}
-                <span className={styles.socialButtonText}>加入 Discord</span>
-              </a>
-              <button
-                className={styles.socialButton}
-                onClick={() => setWechatModalVisible(true)}
-              >
-                <SiWechat size={18} className={styles.socialIcon} />
-                <span className={styles.socialButtonText}>微信群</span>
-              </button>
-            </div>
-            {/* {status === 'authenticated' &&
-            permissions.includes('blog:write') ? (
-              <Link href="/blogs/new" className={styles.createButton}>
-                <Plus size={20} />
-                创建博客
-              </Link>
-            ) : null} */}
-            <Link href="/blogs/new" className={styles.createButton}>
-              <Plus size={20} />
-              创建博客
-            </Link>
           </div>
         </div>
       </div>
@@ -336,9 +280,9 @@ export default function EventsPage() {
                       preview={false}
                     />
                     <div className={styles.coverOverlay}>
-                      {blog.publish_status === 1 && (
+                      {/* {blog.publish_status === 1 && (
                         <Tag className={styles.noPublishStatus}>未发布</Tag>
-                      )}
+                      )} */}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
                         permissions.includes('blog:write') ? (
@@ -359,7 +303,7 @@ export default function EventsPage() {
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享博客"
                         />
-                        <Button
+                        {/* <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
                             e.preventDefault();
@@ -369,7 +313,7 @@ export default function EventsPage() {
                           }}
                           icon={<SiX className={styles.actionIcon} />}
                           title="查看推文"
-                        />
+                        /> */}
                       </div>
                     </div>
                   </div>
@@ -383,36 +327,27 @@ export default function EventsPage() {
                       <Col span={12}>
                         <div className={styles.metaItem}>
                           <Calendar className={styles.metaIcon} />
-                          <span>时间：{formatTime(blog.start_time)}</span>
+                          <span>{formatTime(blog.CreatedAt || '')}</span>
                         </div>
                       </Col>
                       <Col
                         span={12}
-                        style={{ display: 'flex', justifyContent: 'flex-end' }}
+                        style={{ display: 'flex' }}
                       >
                         <div className={styles.metaItem}>
                           <BookOpenText className={styles.metaIcon} />
-                          <span>作者：小符</span>
+                          <span>{ blog.author}</span>
                         </div>
                       </Col>
                     </Row>
-                    <Row>
+                    {/* <Row>
                       <Col span={12}>
                         <div className={styles.metaItem}>
                           <Languages className={styles.metaIcon} />
-                          <span>翻译：Seven</span>
+                          <span>{ blog.translator}</span>
                         </div>
                       </Col>
-                      <Col
-                        span={12}
-                        style={{ display: 'flex', justifyContent: 'flex-end' }}
-                      >
-                        <div className={styles.metaItem}>
-                          <TypeOutline className={styles.metaIcon} />
-                          <span>排版：QiuQiu</span>
-                        </div>
-                      </Col>
-                    </Row>
+                    </Row> */}
                   </div>
                   {blog.tags && blog.tags.length > 0 && (
                     <div className={styles.cardTags}>

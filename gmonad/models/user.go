@@ -6,14 +6,15 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string  `gorm:"unique;not null" json:"email"`
-	Username string  `json:"username"`
-	Avatar   string  `json:"avatar"`
-	Github   string  `json:"github"`
-	Uid      uint    `json:"-"` // OAUTH
-	RoleID   uint    `json:"-"`
-	Role     Role    `gorm:"foreignKey:RoleID" json:"-"`
-	Events   []Event `json:"events"`
+	Email    string    `gorm:"unique;not null" json:"email"`
+	Username string    `json:"username"`
+	Avatar   string    `json:"avatar"`
+	Github   string    `json:"github"`
+	Uid      uint      `json:"-"` // OAUTH
+	RoleID   uint      `json:"-"`
+	Role     Role      `gorm:"foreignKey:RoleID" json:"-"`
+	Events   []Event   `gorm:"foreignKey:UserId" json:"events"`
+	Articles []Article `gorm:"foreignKey:PublisherId"  json:"articles"`
 }
 
 func GetUserByUid(uid uint) (*User, error) {
