@@ -8,6 +8,7 @@ var db = config.DB
 
 func init() {
 	db.AutoMigrate(&Event{})
+	db.AutoMigrate(&Article{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Role{})
 	db.AutoMigrate(&Permission{})

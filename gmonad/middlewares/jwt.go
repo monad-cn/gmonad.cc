@@ -42,7 +42,7 @@ func JWT(permission string) gin.HandlerFunc {
 		}
 
 		if isEqual := utils.StringSlicesEqual(perms, claims.Permissions); !isEqual {
-			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized action", nil)
+			utils.ErrorResponse(c, http.StatusForbidden, " permission change", nil)
 			c.Abort()
 			return
 		}
@@ -50,7 +50,7 @@ func JWT(permission string) gin.HandlerFunc {
 		// TODO: check in controller handle?
 		permSet := utils.ToSet(claims.Permissions)
 		if _, ok := permSet[permission]; !ok {
-			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized action", nil)
+			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized permission", nil)
 			c.Abort()
 			return
 		}
