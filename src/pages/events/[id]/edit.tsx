@@ -13,7 +13,7 @@ import {
   Tag,
   App as AntdApp,
 } from 'antd';
-import type { UploadProps, UploadFile } from 'antd';
+import type { UploadProps, UploadFile, InputProps } from 'antd';
 import {
   ArrowLeft,
   Calendar,
@@ -40,6 +40,38 @@ import dayjs from 'dayjs';
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
+type EventMode = '线上活动' | '线下活动'
+
+const LocationInput = ({ eventMode, ...props }: { eventMode: EventMode, props: InputProps }) => {
+  return <div className={styles.inputWithIcon}>
+    {eventMode === '线上活动' ? (
+      <Globe className={styles.inputIcon} />
+    ) : (
+      <MapPin className={styles.inputIcon} />
+    )}
+    <Input
+      {...props}
+      placeholder={
+        eventMode === '线上活动'
+          ? '请输入会议链接'
+          : '请输入详细地址'
+      }
+      className={styles.inputWithIconField}
+    />
+  </div>
+}
+
+const XInput = (props: InputProps) => {
+  return <div className={styles.inputWithIcon}>
+    <X className={styles.inputIcon} />
+    <Input
+      {...props}
+      placeholder="请输入推文链接"
+      className={styles.inputWithIconField}
+    />
+  </div>
+}
+
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
 }
@@ -50,7 +82,7 @@ export default function EditEventPage() {
   const router = useRouter();
   const { id } = router.query; // 路由参数应该叫 id，不是 ids
   const rId = Array.isArray(id) ? id[0] : id;
-  const [eventMode, setEventMode] = useState<'线上活动' | '线下活动'>(
+  const [eventMode, setEventMode] = useState<EventMode>(
     '线上活动'
   );
   const [tags, setTags] = useState<string[]>(['技术分享']);
@@ -415,21 +447,7 @@ export default function EditEventPage() {
                   },
                 ]}
               >
-                <div className={styles.inputWithIcon}>
-                  {eventMode === '线上活动' ? (
-                    <Globe className={styles.inputIcon} />
-                  ) : (
-                    <MapPin className={styles.inputIcon} />
-                  )}
-                  <Input
-                    placeholder={
-                      eventMode === '线上活动'
-                        ? '请输入会议链接'
-                        : '请输入详细地址'
-                    }
-                    className={styles.inputWithIconField}
-                  />
-                </div>
+                <LocationInput eventMode={eventMode} {...form.getFieldValue('location')} />
               </Form.Item>
               <Form.Item
                 label="推文链接"
@@ -441,13 +459,7 @@ export default function EditEventPage() {
                   },
                 ]}
               >
-                <div className={styles.inputWithIcon}>
-                  <X className={styles.inputIcon} />
-                  <Input
-                    placeholder="请输入推文链接"
-                    className={styles.inputWithIconField}
-                  />
-                </div>
+                <XInput />
               </Form.Item>
             </Card>
 
