@@ -8,12 +8,11 @@ export default function Document() {
         <meta property="og:title" content="GMonad" />
         <meta
           property="og:description"
-          content="探索高性能区块链的无限可能，与顶尖开发者一起构建去中心化的未来。
-加入我们，成为区块链革命的先锋。"
+          content="加入我们，和 Nads 一起了解、参与、构建 Monad。"
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gmonad.cc" />
-        <meta property="og:image" content="https://gmonad.cc/og-image.png" />
+        <meta property="og:image" content="https://gmonad.cc/cover.png" />
         <meta property="og:site_name" content="GMonad" />
 
         {/* Twitter Card Meta Tags */}
@@ -21,10 +20,10 @@ export default function Document() {
         <meta name="twitter:title" content="GMonad" />
         <meta
           name="twitter:description"
-          content="探索高性能区块链的无限可能，与顶尖开发者一起构建去中心化的未来。
-加入我们，成为区块链革命的先锋。"
+          content="加入我们，和 Nads 一起了解、参与、构建 Monad。"
         />
-        <meta name="twitter:image" content="https://gmonad.cc/og-image.png" />
+        <meta name="twitter:image" content="https://gmonad.cc/cover.png" />
+         <link rel="icon" href="/logo.png" />
       </Head>
       <body>
         <Main />

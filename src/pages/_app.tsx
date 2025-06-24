@@ -19,7 +19,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const router = useRouter();
-  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Monad中文社区';
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Monad 中文社区';
   // 定义不需要布局的页面
   const noLayoutPages = ['/login'];
 

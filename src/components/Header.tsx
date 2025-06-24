@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { Image } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
@@ -7,7 +6,7 @@ import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
 
 export default function Header() {
-  const [showNewsBanner, setShowNewsBanner] = useState(true);
+  // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
   //   const handleScroll = () => {
   //     const scrollY = window.scrollY
@@ -26,9 +25,8 @@ export default function Header() {
       <div className={styles.container}>
         <div className={styles.headerContent}>
           <Link href="/" passHref>
-            <div className={styles.logo} style={{ cursor: 'pointer' }}>
-              <Image preview={false} width={38} src="/logo.gif" />
-
+            <div className={styles.logoInfo} style={{ cursor: 'pointer' }}>
+              <Image preview={false} width={30} src="/logo.png" className={styles.logo} />
               <span className={styles.logoTitle}>Monad 中文社区</span>
             </div>
           </Link>
