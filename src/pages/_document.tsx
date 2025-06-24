@@ -23,6 +23,7 @@ export default function Document() {
           content="加入我们，和 Nads 一起了解、参与、构建 Monad。"
         />
         <meta name="twitter:image" content="https://gmonad.cc/cover.png" />
+         <link rel="icon" href="/logo.png" />
       </Head>
       <body>
         <Main />
