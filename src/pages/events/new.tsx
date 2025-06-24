@@ -53,6 +53,7 @@ export default function NewEventPage() {
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   // 格式化时间为字符串
   const formatDateTime = (date: any, time: any) => {
@@ -143,6 +144,7 @@ export default function NewEventPage() {
 
       if (latestFile.originFileObj) {
         try {
+          setIsImageLoading(true);
           const res = await uploadImgToCloud(latestFile.originFileObj);
           if (res && res.secure_url) {
             setCloudinaryImg(res);
@@ -152,23 +154,33 @@ export default function NewEventPage() {
           }
         } catch (error) {
           message.error('图片上传失败，请检查网络连接');
+        } finally {
+          setIsImageLoading(false);
         }
       }
     } else if (file.status === 'error') {
       message.error('图片上传失败，请检查网络连接');
+      setIsImageLoading(false);
     }
   };
 
   const handleRemoveImage = async () => {
-    const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
-    if (!res) {
-      message.error('图片删除失败，请重试');
-      return;
-    }
+    try {
+      setIsImageLoading(true);
+      const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
+      if (!res) {
+        message.error('图片删除失败，请重试');
+        return;
+      }
 
-    setCoverImage(null);
-    setPreviewUrl('');
-    form.setFieldValue('cover', undefined);
+      setCoverImage(null);
+      setPreviewUrl('');
+      form.setFieldValue('cover', undefined);
+    } catch (error) {
+      message.error('图片删除失败，请重试');
+    } finally {
+      setIsImageLoading(false);
+    }
   };
 
   const handleReplaceImage = () => {
@@ -179,28 +191,35 @@ export default function NewEventPage() {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // 创建一个符合 UploadFile 接口的对象
-        const uploadFile: UploadFile = {
-          uid: Date.now().toString(),
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          lastModified: file.lastModified,
-          lastModifiedDate: new Date(file.lastModified),
-          status: 'done',
-          percent: 100,
-          // 使用类型断言来处理 originFileObj
-          originFileObj: file as any,
-        };
+        try {
+          setIsImageLoading(true);
+          // 创建一个符合 UploadFile 接口的对象
+          const uploadFile: UploadFile = {
+            uid: Date.now().toString(),
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            lastModifiedDate: new Date(file.lastModified),
+            status: 'done',
+            percent: 100,
+            // 使用类型断言来处理 originFileObj
+            originFileObj: file as any,
+          };
 
-        setCoverImage(uploadFile);
+          setCoverImage(uploadFile);
 
-        const res = await uploadImgToCloud(file);
-        if (res && res.secure_url) {
-          setCloudinaryImg(res);
-          setPreviewUrl(res.secure_url);
-        } else {
+          const res = await uploadImgToCloud(file);
+          if (res && res.secure_url) {
+            setCloudinaryImg(res);
+            setPreviewUrl(res.secure_url);
+          } else {
+            message.error('图片上传失败，请重试');
+          }
+        } catch (error) {
           message.error('图片上传失败，请重试');
+        } finally {
+          setIsImageLoading(false);
         }
       }
     };
@@ -442,6 +461,12 @@ export default function NewEventPage() {
                         alt="活动封面预览"
                         className={styles.previewImage}
                       />
+                      {isImageLoading && (
+                        <div className={styles.imageLoadingOverlay}>
+                          <div className={styles.loadingSpinner}></div>
+                          <span className={styles.loadingText}>处理中...</span>
+                        </div>
+                      )}
                       <div className={styles.imageOverlay}>
                         <div className={styles.imageActions}>
                           <button
@@ -449,6 +474,7 @@ export default function NewEventPage() {
                             onClick={handleReplaceImage}
                             className={styles.imageActionButton}
                             title="更换图片"
+                            disabled={isImageLoading}
                           >
                             <RotateCcw className={styles.imageActionIcon} />
                           </button>
@@ -457,6 +483,7 @@ export default function NewEventPage() {
                             onClick={handleRemoveImage}
                             className={`${styles.imageActionButton} ${styles.removeButton}`}
                             title="删除图片"
+                            disabled={isImageLoading}
                           >
                             <X className={styles.imageActionIcon} />
                           </button>
@@ -479,11 +506,22 @@ export default function NewEventPage() {
                     </div>
                   ) : (
                     <Dragger {...uploadProps} className={styles.imagePreview}>
-                      <ImageIcon className={styles.imageIcon} />
-                      <p className={styles.imageText}>点击或拖拽上传活动封面</p>
-                      <p className={styles.imageHint}>
-                        建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
-                      </p>
+                      {isImageLoading ? (
+                        <div className={styles.uploadLoading}>
+                          <div className={styles.loadingSpinner}></div>
+                          <p className={styles.loadingText}>上传中...</p>
+                        </div>
+                      ) : (
+                        <>
+                          <ImageIcon className={styles.imageIcon} />
+                          <p className={styles.imageText}>
+                            点击或拖拽上传活动封面
+                          </p>
+                          <p className={styles.imageHint}>
+                            建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
+                          </p>
+                        </>
+                      )}
                     </Dragger>
                   )}
                 </div>

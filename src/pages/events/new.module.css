@@ -391,13 +391,23 @@
 }
 
 .imageActionButton:hover {
-  background-color: #f3f4f6;
-  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.imageActionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.imageActionButton:disabled:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  transform: none;
 }
 
 .imageActionButton.removeButton:hover {
-  background-color: #fef2f2;
-  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.9);
 }
 
 .imageActionIcon {
@@ -408,6 +418,54 @@
 
 .imageActionButton.removeButton:hover .imageActionIcon {
   color: #ef4444;
+}
+
+.imageLoadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 0.5rem;
+}
+
+.loadingSpinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+.loadingText {
+  color: #8b5cf6;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.uploadLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .imageInfo {
