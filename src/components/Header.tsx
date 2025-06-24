@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { Image } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
@@ -7,7 +6,7 @@ import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
 
 export default function Header() {
-  const [showNewsBanner, setShowNewsBanner] = useState(true);
+  // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
   //   const handleScroll = () => {
   //     const scrollY = window.scrollY

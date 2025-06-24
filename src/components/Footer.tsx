@@ -12,7 +12,7 @@ export default function Footer() {
           <div className={styles.footerSection}>
             <div className={styles.footerLogo}>
                 <Image preview={false} width={24} src="/logo.png" className={styles.logo} />
-              <span className={styles.footerLogoTitle}>Monad中文社区</span>
+              <span className={styles.footerLogoTitle}>Monad 中文社区</span>
             </div>
             <p className={styles.footerDescription}>Monad 中文社区是连接生态参与者的桥梁，在这里，与 Nads 一起交流、分享、 建设 Monad。</p>
           </div>
