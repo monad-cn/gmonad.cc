@@ -25,11 +25,10 @@ import Link from 'next/link';
 import styles from './edit.module.css';
 
 import QuillEditor from '@/components/quillEditor/QuillEditor';
+import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
 import { getBlogById, updateBlog } from '@/pages/api/blog';
 
-const { Dragger } = Upload;
 const { TextArea } = Input;
 
 export default function EditBlogPage() {
@@ -39,7 +38,6 @@ export default function EditBlogPage() {
   const { id } = router.query;
   const rId = Array.isArray(id) ? id[0] : id;
   const [loading, setLoading] = useState(true);
-
 
   const [blog, setBlog] = useState<any>();
   const [tags, setTags] = useState<string[]>([]);
@@ -76,13 +74,13 @@ export default function EditBlogPage() {
         tags: tags, // 添加标签数据
         coverImage: coverImage, // 添加封面图片
       };
-      
+
       const updateBlogRequest = {
         title: values.title || '',
         description: values.description || '',
         content: values.content || '',
         source_link: values.source || '',
-        category: "blog",
+        category: 'blog',
         cover_img: cloudinaryImg?.secure_url || '',
         tags: tags,
         author: values.author || '',
@@ -120,119 +118,13 @@ export default function EditBlogPage() {
     console.log('删除标签后:', newTags);
   };
 
-  const handleImageChange = (info: any) => {
-    const { file, fileList } = info;
-
-    // 只保留最新上传的一个文件
-    if (fileList.length > 0) {
-      const latestFile = fileList[fileList.length - 1];
-      setCoverImage(latestFile);
-      console.log('上传图片:', latestFile);
-
-      // 创建预览URL
-      if (latestFile.originFileObj) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setPreviewUrl(e.target?.result as string);
-        };
-        reader.readAsDataURL(latestFile.originFileObj);
-      }
-    } else {
-      setCoverImage(null);
-      setPreviewUrl('');
-    }
-  };
-
-  const handleRemoveImage = async () => {
-    setCoverImage(null);
-    setPreviewUrl('');
-    form.setFieldValue('cover', undefined);
-    console.log('删除图片');
-  };
-
-  const handleReplaceImage = () => {
-    // 触发文件选择
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        // 创建一个符合 UploadFile 接口的对象
-        const uploadFile: UploadFile = {
-          uid: Date.now().toString(),
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          lastModified: file.lastModified,
-          lastModifiedDate: new Date(file.lastModified),
-          status: 'done',
-          percent: 100,
-          // 使用类型断言来处理 originFileObj
-          originFileObj: file as any,
-        };
-
-        setCoverImage(uploadFile);
-        console.log('更换图片:', uploadFile);
-
-        const res = await uploadImgToCloud(file);
-        if (!res) {
-          message.error('图片上传失败，请重试');
-          return;
-        } else {
-          // set coverImage info
-          setCloudinaryImg(res);
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setPreviewUrl(e.target?.result as string);
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-    };
-    input.click();
-  };
-
-  const uploadProps: UploadProps = {
-    name: 'file',
-    multiple: false,
-    accept: 'image/*',
-    showUploadList: false,
-    beforeUpload: async (file) => {
-      const isImage = file.type.startsWith('image/');
-      if (!isImage) {
-        message.error('只能上传图片文件!');
-        return false;
-      }
-
-      const isLt5M = file.size / 1024 / 1024 < 5;
-      if (!isLt5M) {
-        message.error('图片大小不能超过 5MB!');
-        return false;
-      }
-
-      const res = await uploadImgToCloud(file);
-
-      if (!res) {
-        message.error('图片上传失败，请重试');
-        return false;
-      } else {
-        // set coverImage info
-        setCloudinaryImg(res);
-        return true;
-      }
-    },
-    onChange: handleImageChange,
-  };
-
-
   useEffect(() => {
     if (!router.isReady || !rId) return;
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await getBlogById(rId);
+
         if (response.success) {
           setBlog(response?.data);
           form.setFieldsValue({
@@ -240,7 +132,7 @@ export default function EditBlogPage() {
             description: response.data?.description,
             content: response.data?.content,
             source: response.data?.source_link,
-            category: "blog",
+            category: 'blog',
             cover: response.data?.cover_img,
             author: response.data?.author,
             translator: response.data?.translator || '',
@@ -304,7 +196,12 @@ export default function EditBlogPage() {
                 name="title"
                 rules={[{ required: true, message: '请输入博客标题' }]}
               >
-                <Input placeholder="请输入博客标题" className={styles.input} maxLength={30} showCount />
+                <Input
+                  placeholder="请输入博客标题"
+                  className={styles.input}
+                  maxLength={30}
+                  showCount
+                />
               </Form.Item>
               <Form.Item
                 label="博客描述"
@@ -338,9 +235,7 @@ export default function EditBlogPage() {
                   },
                 ]}
               >
-                <Input
-                  placeholder="请输入原文链接" className={styles.input}
-                />
+                <Input placeholder="请输入原文链接" className={styles.input} />
               </Form.Item>
             </Card>
 
@@ -363,7 +258,11 @@ export default function EditBlogPage() {
 
               <div className={styles.formRow}>
                 <Form.Item label="翻译" name="translator">
-                  <Input placeholder="请输入翻译人员（可选）" maxLength={10} showCount />
+                  <Input
+                    placeholder="请输入翻译人员（可选）"
+                    maxLength={10}
+                    showCount
+                  />
                 </Form.Item>
               </div>
             </Card>
@@ -381,59 +280,13 @@ export default function EditBlogPage() {
                 name="cover"
                 rules={[{ required: true, message: '请上传博客封面' }]}
               >
-                <div className={styles.imageUpload}>
-                  {previewUrl ? (
-                    <div className={styles.imagePreviewContainer}>
-                      <img
-                        src={previewUrl || '/placeholder.svg'}
-                        alt="博客封面预览"
-                        className={styles.previewImage}
-                      />
-                      <div className={styles.imageOverlay}>
-                        <div className={styles.imageActions}>
-                          <button
-                            type="button"
-                            onClick={handleReplaceImage}
-                            className={styles.imageActionButton}
-                            title="更换图片"
-                          >
-                            <RotateCcw className={styles.imageActionIcon} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleRemoveImage}
-                            className={`${styles.imageActionButton} ${styles.removeButton}`}
-                            title="删除图片"
-                          >
-                            <X className={styles.imageActionIcon} />
-                          </button>
-                        </div>
-                      </div>
-                      <div className={styles.imageInfo}>
-                        <span className={styles.imageName}>
-                          {coverImage?.name}
-                        </span>
-                        <span className={styles.imageSize}>
-                          {coverImage?.originFileObj
-                            ? `${(
-                              coverImage.originFileObj.size /
-                              1024 /
-                              1024
-                            ).toFixed(2)} MB`
-                            : ''}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <Dragger {...uploadProps} className={styles.imagePreview}>
-                      <ImageIcon className={styles.imageIcon} />
-                      <p className={styles.imageText}>点击或拖拽上传博客封面</p>
-                      <p className={styles.imageHint}>
-                        建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
-                      </p>
-                    </Dragger>
-                  )}
-                </div>
+                <UploadCardImg
+                  previewUrl={previewUrl}
+                  setPreviewUrl={setPreviewUrl}
+                  cloudinaryImg={cloudinaryImg}
+                  setCloudinaryImg={setCloudinaryImg}
+                  form={form}
+                />
               </Form.Item>
             </Card>
 

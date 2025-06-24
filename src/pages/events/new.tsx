@@ -7,13 +7,12 @@ import {
   TimePicker,
   InputNumber,
   Checkbox,
-  Upload,
   Button,
   Card,
   Tag,
   App as AntdApp,
 } from 'antd';
-import type { UploadProps, UploadFile } from 'antd';
+
 import {
   ArrowLeft,
   Calendar,
@@ -22,22 +21,17 @@ import {
   Video,
   Globe,
   FileText,
-  ImageIcon,
   Save,
   Plus,
+  ImageIcon,
   X,
-  RotateCcw,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 import { createEvent } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
-
-import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
-
-const { TextArea } = Input;
-const { Dragger } = Upload;
+import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 export default function NewEventPage() {
   const { message } = AntdApp.useApp();
@@ -49,11 +43,11 @@ export default function NewEventPage() {
   const [tags, setTags] = useState<string[]>(['技术分享']);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 封面图片
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
-  const [isImageLoading, setIsImageLoading] = useState(false);
 
   // 格式化时间为字符串
   const formatDateTime = (date: any, time: any) => {
@@ -74,16 +68,7 @@ export default function NewEventPage() {
 
   const handleSubmit = async (values: any) => {
     try {
-      console.log(values);
       setIsSubmitting(true);
-
-      // 构建完整的表单数据
-      const formData = {
-        ...values,
-        tags: tags, // 添加标签数据
-        coverImage: coverImage, // 添加封面图片
-        eventMode: eventMode, // 确保活动类型被包含
-      };
 
       const createEventRequest = {
         title: values.title || '',
@@ -101,8 +86,6 @@ export default function NewEventPage() {
 
       // 调用创建事件接口
       const result = await createEvent(createEventRequest);
-
-      console.log('创建事件结果:', result);
 
       if (result.success) {
         message.success(result.message);
@@ -132,120 +115,6 @@ export default function NewEventPage() {
     const newTags = tags.filter((tag) => tag !== tagToRemove);
     setTags(newTags);
     console.log('删除标签后:', newTags);
-  };
-
-  const handleImageChange = async (info: any) => {
-    const { file, fileList } = info;
-
-    // 只处理上传完成的文件
-    if (file.status === 'done') {
-      const latestFile = fileList[fileList.length - 1];
-      setCoverImage(latestFile);
-
-      if (latestFile.originFileObj) {
-        try {
-          setIsImageLoading(true);
-          const res = await uploadImgToCloud(latestFile.originFileObj);
-          if (res && res.secure_url) {
-            setCloudinaryImg(res);
-            setPreviewUrl(res.secure_url);
-          } else {
-            message.error('图片上传失败，请重试');
-          }
-        } catch (error) {
-          message.error('图片上传失败，请检查网络连接');
-        } finally {
-          setIsImageLoading(false);
-        }
-      }
-    } else if (file.status === 'error') {
-      message.error('图片上传失败，请检查网络连接');
-      setIsImageLoading(false);
-    }
-  };
-
-  const handleRemoveImage = async () => {
-    try {
-      setIsImageLoading(true);
-      const res = await deleteImgFromCloud(cloudinaryImg?.public_id || '');
-      if (!res) {
-        message.error('图片删除失败，请重试');
-        return;
-      }
-
-      setCoverImage(null);
-      setPreviewUrl('');
-      form.setFieldValue('cover', undefined);
-    } catch (error) {
-      message.error('图片删除失败，请重试');
-    } finally {
-      setIsImageLoading(false);
-    }
-  };
-
-  const handleReplaceImage = () => {
-    // 触发文件选择
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        try {
-          setIsImageLoading(true);
-          // 创建一个符合 UploadFile 接口的对象
-          const uploadFile: UploadFile = {
-            uid: Date.now().toString(),
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            lastModified: file.lastModified,
-            lastModifiedDate: new Date(file.lastModified),
-            status: 'done',
-            percent: 100,
-            // 使用类型断言来处理 originFileObj
-            originFileObj: file as any,
-          };
-
-          setCoverImage(uploadFile);
-
-          const res = await uploadImgToCloud(file);
-          if (res && res.secure_url) {
-            setCloudinaryImg(res);
-            setPreviewUrl(res.secure_url);
-          } else {
-            message.error('图片上传失败，请重试');
-          }
-        } catch (error) {
-          message.error('图片上传失败，请重试');
-        } finally {
-          setIsImageLoading(false);
-        }
-      }
-    };
-    input.click();
-  };
-
-  const uploadProps: UploadProps = {
-    name: 'file',
-    multiple: false,
-    accept: 'image/*',
-    showUploadList: false,
-    beforeUpload: async (file) => {
-      console.log('beforeUpload');
-      const isImage = file.type.startsWith('image/');
-      if (!isImage) {
-        message.error('只能上传图片文件!');
-        return false;
-      }
-
-      const isLt5M = file.size / 1024 / 1024 < 5;
-      if (!isLt5M) {
-        message.error('图片大小不能超过 5MB!');
-        return false;
-      }
-    },
-    onChange: handleImageChange,
   };
 
   return (
@@ -453,78 +322,13 @@ export default function NewEventPage() {
                 name="cover"
                 rules={[{ required: true, message: '请上传活动封面' }]}
               >
-                <div className={styles.imageUpload}>
-                  {previewUrl ? (
-                    <div className={styles.imagePreviewContainer}>
-                      <img
-                        src={previewUrl || '/placeholder.svg'}
-                        alt="活动封面预览"
-                        className={styles.previewImage}
-                      />
-                      {isImageLoading && (
-                        <div className={styles.imageLoadingOverlay}>
-                          <div className={styles.loadingSpinner}></div>
-                          <span className={styles.loadingText}>处理中...</span>
-                        </div>
-                      )}
-                      <div className={styles.imageOverlay}>
-                        <div className={styles.imageActions}>
-                          <button
-                            type="button"
-                            onClick={handleReplaceImage}
-                            className={styles.imageActionButton}
-                            title="更换图片"
-                            disabled={isImageLoading}
-                          >
-                            <RotateCcw className={styles.imageActionIcon} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleRemoveImage}
-                            className={`${styles.imageActionButton} ${styles.removeButton}`}
-                            title="删除图片"
-                            disabled={isImageLoading}
-                          >
-                            <X className={styles.imageActionIcon} />
-                          </button>
-                        </div>
-                      </div>
-                      <div className={styles.imageInfo}>
-                        <span className={styles.imageName}>
-                          {coverImage?.name}
-                        </span>
-                        <span className={styles.imageSize}>
-                          {coverImage?.originFileObj
-                            ? `${(
-                                coverImage.originFileObj.size /
-                                1024 /
-                                1024
-                              ).toFixed(2)} MB`
-                            : ''}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <Dragger {...uploadProps} className={styles.imagePreview}>
-                      {isImageLoading ? (
-                        <div className={styles.uploadLoading}>
-                          <div className={styles.loadingSpinner}></div>
-                          <p className={styles.loadingText}>上传中...</p>
-                        </div>
-                      ) : (
-                        <>
-                          <ImageIcon className={styles.imageIcon} />
-                          <p className={styles.imageText}>
-                            点击或拖拽上传活动封面
-                          </p>
-                          <p className={styles.imageHint}>
-                            建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
-                          </p>
-                        </>
-                      )}
-                    </Dragger>
-                  )}
-                </div>
+                <UploadCardImg
+                  previewUrl={previewUrl}
+                  setPreviewUrl={setPreviewUrl}
+                  cloudinaryImg={cloudinaryImg}
+                  setCloudinaryImg={setCloudinaryImg}
+                  form={form}
+                />
               </Form.Item>
             </Card>
 

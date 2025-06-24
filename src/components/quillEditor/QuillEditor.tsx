@@ -4,6 +4,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+type ReactQuillProps = React.ComponentProps<typeof ReactQuill>;
 
 const FULLSCREEN_ICONS = {
   ENTER: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -21,10 +22,8 @@ const FULLSCREEN_ICONS = {
   </svg>`,
 };
 
-function QuillEditor(props: any) {
-  const [value, setValue] = useState(props.value || '');
+function QuillEditor(props: ReactQuillProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     let fullscreenBtn: HTMLButtonElement | null = null;
@@ -237,20 +236,13 @@ function QuillEditor(props: any) {
     },
   };
 
-  function handleChange(newValue: string) {
-    setValue(newValue);
-    props.onChange(newValue);
-  }
-
   return (
     <div
       className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
     >
       <ReactQuill
+        placeholder="请输入..."
         {...props}
-        ref={editorRef}
-        value={value}
-        onChange={handleChange}
         modules={props.modules || modulesDefault}
         className={isFullscreen ? styles.fullscreenEditor : ''}
       />

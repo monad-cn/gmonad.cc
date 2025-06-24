@@ -83,12 +83,58 @@ export default function BlogsPage() {
         page_size: params?.page_size || pageSize,
       };
 
-      const result = await getBlogs(queryParams);
+      // const result = await getBlogs(queryParams);
+      const result = {
+        success: true,
+        message: 'success',
+        data: {
+          blogs: [
+            {
+              ID: 1,
+              CreatedAt: '2025-06-24T02:04:51.570294+08:00',
+              UpdatedAt: '2025-06-24T02:04:51.570294+08:00',
+              DeletedAt: null,
+              title: 'Monad vs Rollups',
+              description:
+                'Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,0',
+              content:
+                '<p><span style="background-color: rgb(255, 255, 255); color: rgb(31, 35, 40);">Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,000 笔交易（TPS）的吞吐量，并在 1 秒内生成新的区块，提供单时隙最终性。</span></p>',
+              source_link: 'https://www.monad.xyz/post/monad-vs-rollups',
+              cover_img:
+                'https://res.cloudinary.com/gmonad/image/upload/v1750701711/monad_img/nu1t0aen0gxi2ak8msor.jpg',
+              tags: ['Rolluos', 'Monad', '并行执行'],
+              category: 'blog',
+              author: '小符',
+              translator: '',
+              publisher_id: 2,
+              publisher: {
+                ID: 2,
+                CreatedAt: '2025-06-21T20:40:55.271972+08:00',
+                UpdatedAt: '2025-06-24T19:44:20.010582+08:00',
+                DeletedAt: null,
+                email: 'smallfu666@gmail.com',
+                username: 'Phoouze',
+                avatar:
+                  'https://file-cdn.openbuild.xyz/users/36689/avatar/7012805-958944400.jpg',
+                github: 'phoouze',
+                events: null,
+                articles: null,
+              },
+              publish_time: null,
+              publish_status: 1,
+            },
+          ],
+          guides: null,
+          page: 1,
+          page_size: 6,
+          total: 1,
+        },
+      };
 
       if (result.success && result.data) {
         // 处理后端返回的数据结构
         if (result.data.blogs && Array.isArray(result.data.blogs)) {
-          console.log(result.data.blogs)
+          console.log(result.data.blogs);
           setBlogs(result.data.blogs);
           setCurrentPage(result.data.page || 1);
           setPageSize(result.data.page_size || 6);
@@ -156,7 +202,6 @@ export default function BlogsPage() {
     loadBlogs();
   }, [status, searchKeyword]);
 
-
   return (
     <div className={styles.container}>
       {/* Title Section */}
@@ -166,8 +211,7 @@ export default function BlogsPage() {
             <h1 className={styles.title}>社区博客</h1>
             <p className={styles.subtitle}>写下所思所感，遇见共鸣之人</p>
           </div>
-          {status === 'authenticated' &&
-            permissions.includes('blog:write') ? (
+          {status === 'authenticated' && permissions.includes('blog:write') ? (
             <Link href="/blogs/new" className={styles.createButton}>
               <Plus size={20} />
               创建博客
@@ -226,21 +270,16 @@ export default function BlogsPage() {
           <div className={styles.emptyIcon}>📖</div>
           <div className={styles.emptyTitle}>暂无博客</div>
           <div className={styles.emptyDescription}>
-            {searchKeyword ||
-              selectedTag ||
-              locationKeyword ||
-              blogModeFilter
+            {searchKeyword || selectedTag || locationKeyword || blogModeFilter
               ? '没有找到符合条件的博客'
               : '还没有创建任何博客'}
           </div>
-          {!searchKeyword &&
-            !selectedTag &&
-            !blogModeFilter && (
-              <Link href="/blogs/new" className={styles.createButton}>
-                <Plus className={styles.buttonIcon} />
-                创建第一个博客
-              </Link>
-            )}
+          {!searchKeyword && !selectedTag && !blogModeFilter && (
+            <Link href="/blogs/new" className={styles.createButton}>
+              <Plus className={styles.buttonIcon} />
+              创建第一个博客
+            </Link>
+          )}
         </div>
       ) : viewMode === 'grid' ? (
         <div className={styles.blogsGrid}>
@@ -250,50 +289,63 @@ export default function BlogsPage() {
               key={blog.ID}
               className={styles.cardLink}
             >
-
-              <Card className={styles.blogCard} cover={
-                <div className={styles.cardCover}>
-                  <Image
-                    alt={blog.title}
-                    src={
-                      blog.cover_img ||
-                      '/placeholder.svg?height=240&width=400&text=活动封面'
-                    }
-                    className={styles.coverImage}
-                    preview={false}
-                  />
-                  <div className={styles.coverOverlay}>
-                    {blog.publish_status === 1 && (
-                      <Tag className={styles.noPublishStatus}>待审核</Tag>
-                    )}
-                    <div className={styles.cardActions}>
-                      {status === 'authenticated' &&
-                        blog.publisher_id.toString() === session.user?.uid ? (
+              <Card
+                className={styles.blogCard}
+                cover={
+                  <div className={styles.cardCover}>
+                    <Image
+                      alt={blog.title}
+                      src={
+                        blog.cover_img ||
+                        '/placeholder.svg?height=240&width=400&text=活动封面'
+                      }
+                      className={styles.coverImage}
+                      preview={false}
+                    />
+                    <div className={styles.coverOverlay}>
+                      {blog.publish_status === 1 && (
+                        <Tag className={styles.noPublishStatus}>待审核</Tag>
+                      )}
+                      <div className={styles.cardActions}>
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
-                            e.preventDefault()
-                            router.push(`/blogs/${blog.ID}/edit`)
+                            e.preventDefault();
+                            router.push(`/blogs/${blog.ID}/edit`);
                           }}
                           icon={<Edit className={styles.actionIcon} />}
                           title="编辑活动"
                         />
-                      ) : null}
-                      <Button
-                        className={styles.actionIconButton}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigator.clipboard.writeText(`${window.location.href}/${blog.ID}`)
-                          message.success("链接已复制到剪贴板")
-                        }}
-                        icon={<Share2 className={styles.actionIcon} />}
-                        title="分享博客"
-                      />
+
+                        {/* {status === 'authenticated' &&
+                        blog.publisher_id.toString() === session.user?.uid ? (
+                          <Button
+                            className={styles.actionIconButton}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              router.push(`/blogs/${blog.ID}/edit`);
+                            }}
+                            icon={<Edit className={styles.actionIcon} />}
+                            title="编辑活动"
+                          />
+                        ) : null}
+                        <Button
+                          className={styles.actionIconButton}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigator.clipboard.writeText(
+                              `${window.location.href}/${blog.ID}`
+                            );
+                            message.success('链接已复制到剪贴板');
+                          }}
+                          icon={<Share2 className={styles.actionIcon} />}
+                          title="分享博客"
+                        /> */}
+                      </div>
                     </div>
                   </div>
-                </div>
-              }>
-
+                }
+              >
                 <div className={styles.cardBodyNew}>
                   <h3 className={styles.blogTitleNew}>{blog.title}</h3>
                   <p className={styles.blogDescriptionNew}>
@@ -315,12 +367,17 @@ export default function BlogsPage() {
                           {blog.publisher?.username || ''}
                         </span>
                         <span className={styles.publishTime}>
-                          {dayjs(blog.publish_time || blog.CreatedAt).format('YYYY年M月D日')} · {blog.read_time || '6 分钟'}阅读
+                          {dayjs(blog.publish_time || blog.CreatedAt).format(
+                            'YYYY年M月D日'
+                          )}{' '}
+                          · {blog.read_time || '6 分钟'}阅读
                         </span>
                       </div>
                       <div className={styles.viewCount}>
                         <Eye size={24} />
-                        <span className={styles.viewCountText}>{blog.view_count || 0}</span>
+                        <span className={styles.viewCountText}>
+                          {blog.view_count || 0}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -379,7 +436,9 @@ export default function BlogsPage() {
                 <div className={styles.listCell}>
                   <div className={styles.listViewCount}>
                     <Eye size={24} />
-                    <span className={styles.listViewCountText}>{blog.view_count || '0'}</span>
+                    <span className={styles.listViewCountText}>
+                      {blog.view_count || '0'}
+                    </span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -402,7 +461,7 @@ export default function BlogsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                      permissions.includes('blog:write') ? (
+                    permissions.includes('blog:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -416,14 +475,16 @@ export default function BlogsPage() {
                       size="small"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(`${window.location.href}/${blog.ID}`)
-                        message.success("链接已复制到剪贴板")
+                        navigator.clipboard.writeText(
+                          `${window.location.href}/${blog.ID}`
+                        );
+                        message.success('链接已复制到剪贴板');
                       }}
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                      permissions.includes('blog:delete') ? (
+                    permissions.includes('blog:delete') ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
