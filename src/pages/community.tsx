@@ -47,7 +47,7 @@ const Community: NextPage = () => {
         },
         {
             id: 5,
-            title: 'Nads Pixel World 像素格子',
+            title: 'NadsPixelWorld 像素格子',
             description: 'Nads\' Home 创作属于您的像素作品',
             url: 'https://nads-pixel-world.vercel.app/',
             git: 'https://github.com/jjeejj/nads-pixel-world',
