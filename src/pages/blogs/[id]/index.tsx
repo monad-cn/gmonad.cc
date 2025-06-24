@@ -4,20 +4,8 @@ import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
 import {
   ArrowLeft,
   Calendar,
-  Clock,
-  MapPin,
-  Users,
-  Globe,
-  Share2,
-  Heart,
-  ExternalLink,
   Edit,
-  Star,
-  User,
-  Mail,
-  Copy,
-  Download,
-  CheckCircle,
+  Eye,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
@@ -25,6 +13,12 @@ import { useSession } from 'next-auth/react';
 import { updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
 import { getBlogById } from '@/pages/api/blog';
+import dayjs from 'dayjs';
+
+
+export function formatTime(isoTime: string): string {
+  return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
+}
 
 export default function BlogDetailPage() {
   const { message } = AntdApp.useApp();
@@ -171,7 +165,7 @@ export default function BlogDetailPage() {
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.heroLeft}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {/* <div style={{ display: 'flex', gap: '0.5rem' }}>
 
               {blog.publish_status === 1 && (
                 <div
@@ -181,24 +175,28 @@ export default function BlogDetailPage() {
                   待审核
                 </div>
               )}
-            </div>
+            </div> */}
             <h1 className={styles.title}>{blog.title}</h1>
+            <h3 className={styles.description}>{blog.description}</h3>
             <div className={styles.metaInfo}>
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
-                {/* <div>
-                  <div className={styles.metaText}>{formatDateTime(blog.CreatedAt)}</div>
-                </div> */}
+                <div className={styles.metaText}>{formatTime(blog.CreatedAt)}</div>
+              </div>
+              <div className={styles.metaItem}>
+                <Eye className={styles.metaIcon} />
+                <div className={styles.metaText}>{blog.view_count || '0'}</div>
+              </div>
+              <div className={styles.tags}>
+                {blog.tags.map((tag: string, index: number) => (
+                  <Tag key={index} className={styles.tag}>
+                    {tag}
+                  </Tag>
+                ))}
               </div>
             </div>
-            <div className={styles.tags}>
-              {blog.tags.map((tag: string, index: number) => (
-                <Tag key={index} className={styles.tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </div>
           </div>
+
           <div className={styles.heroRight}>
             <div className={styles.coverContainer}>
               <Image

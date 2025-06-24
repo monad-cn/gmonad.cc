@@ -120,7 +120,7 @@
 
 /* Search Section */
 .searchSection {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -178,7 +178,7 @@
 
 /* View Controls */
 .viewControls {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -281,7 +281,7 @@
 
 /* Loading State */
 .loadingContainer {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -329,7 +329,7 @@
 
 /* Empty State */
 .emptyContainer {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -388,20 +388,155 @@
 }
 
 /* 为单个卡片设置最大宽度，避免过宽 */
-.grid > * {
+.grid>* {
   max-width: 600px;
   margin: 0 auto;
 }
 
 /* 当有多个卡片时，移除最大宽度限制 */
-.grid:has(> :nth-child(2)) > * {
+.grid:has(> :nth-child(2))>* {
   max-width: none;
   margin: 0;
 }
 
 /* Grid View */
+
+.blogCard {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s;
+}
+
+.blogCard:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cardTopTag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+}
+
+.categoryTag {
+  background: linear-gradient(to right, #c084fc, #a855f7);
+  color: white;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 12px;
+}
+
+.cardCoverWrapper {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f5;
+}
+
+.coverImageNew {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.cardBodyNew {
+  padding-top: 1rem;
+}
+
+.blogTitleNew {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  color: #111;
+}
+
+.blogDescriptionNew {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 3.5em;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+}
+
+.authorText {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+
+.authorName {
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.viewCount {
+  display: flex;
+  align-items: center;
+  margin-left: 80px;
+  margin-top: 20px;
+  gap: 6px;
+  color: #888;
+  font-size: 14px;
+
+  svg {
+    color: #888;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.listViewCount {
+  display: flex;
+  color: #888;
+  font-size: 14px;
+  align-items: center;
+  margin-top: 10px;
+  gap: 6px;
+
+  svg {
+    color: #888;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.viewCountText {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.listViewCountText {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.publishTime {
+  font-size: 12px;
+  color: #888;
+}
+
+
 .blogsGrid {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -469,46 +604,6 @@
   color: #8b5cf6;
 }
 
-.blogCard {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  border: 1px solid #f1f5f9 !important;
-  background: white !important;
-  height: 100%;
-}
-
-.blogCard:hover {
-  transform: translateY(-8px) !important;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  border-color: #e2e8f0 !important;
-}
-
-.blogCard .ant-card-body {
-  padding: 0 !important;
-}
-
-.blogCard .ant-card-actions {
-  background: #fafbfc !important;
-  border-top: 1px solid #f1f5f9 !important;
-  padding: 1rem 1.5rem !important;
-  margin: 0 !important;
-}
-
-.blogCard .ant-card-actions > li {
-  margin: 0 !important;
-  padding: 0 0.25rem !important;
-}
-
-.blogCard .ant-card-actions > li:not(:last-child) {
-  border-right: none !important;
-}
-
 /* Card Cover */
 .cardCover {
   position: relative;
@@ -524,17 +619,13 @@
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.blogCard:hover .coverImage {
-  transform: scale(1.08) !important;
-}
-
 .coverOverlay {
   position: absolute;
   top: 1rem;
   left: 1rem;
   right: 1rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: flex-start;
   z-index: 2;
 }
@@ -566,8 +657,8 @@
 }
 
 .noPublishStatus {
-  margin-right: 100px !important;
   padding: 0.375rem 0.875rem !important;
+  justify-content: start;
   border-radius: 20px !important;
   font-size: 0.75rem !important;
   font-weight: 600 !important;
@@ -576,6 +667,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
   background: rgba(237, 52, 10, 0.9) !important;
 }
+
 
 .featuredBadge {
   display: flex;
@@ -795,7 +887,7 @@
 
 /* List View Container */
 .listViewContainer {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 2rem;
 }
@@ -839,7 +931,7 @@
 }
 
 .listBottomControls {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 2rem;
   display: flex;
@@ -1048,7 +1140,7 @@
   line-height: 1.4;
 }
 
-.participantsInfo {
+.publisherInfo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1101,7 +1193,7 @@
 
 /* Pagination Section for Grid View */
 .paginationSection {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 3rem;
   display: flex;
@@ -1110,7 +1202,7 @@
 
 /* Stats Section */
 .statsSection {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1173,6 +1265,7 @@
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
+
   .listHeader,
   .listRow {
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1311,10 +1404,6 @@
     align-self: flex-end;
   }
 
-  .blogCard .ant-card-actions {
-    padding: 0.75rem 1rem !important;
-  }
-
   .primaryAction {
     height: 36px !important;
     font-size: 0.875rem !important;
@@ -1382,8 +1471,7 @@
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
-.socialIcon {
-}
+.socialIcon {}
 
 .socialButtonText {
   line-height: 1;

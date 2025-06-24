@@ -20,7 +20,7 @@ type Article struct {
 	Author        string         `json:"author"`
 	Translator    string         `json:"translator"`
 	PublisherId   uint           `json:"publisher_id"`
-	Publisher     User           `gorm:"foreignKey:PublisherId"`
+	Publisher     User           `gorm:"foreignKey:PublisherId" json:"publisher"`
 	PublishTime   *time.Time     `json:"publish_time"`
 	PublishStatus uint           `gorm:"default:1" json:"publish_status"` // 0:全部 1:待审核 2:已发布
 }
@@ -62,7 +62,7 @@ func QueryArticles(filter ArticleFilter) ([]Article, int64, error) {
 	var articles []Article
 	var total int64
 
-	query := db.Model(&Article{})
+	query := db.Preload("Publisher").Model(&Article{})
 
 	if filter.Keyword != "" {
 		likePattern := "%" + filter.Keyword + "%"

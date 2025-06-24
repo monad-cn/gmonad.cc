@@ -5,9 +5,9 @@ import {
   Button,
   Tag,
   Card,
-  Image,
   Popconfirm,
   Modal,
+  Image,
   Row,
   Col,
   App as AntdApp,
@@ -25,6 +25,7 @@ import {
   BookOpenText,
   Languages,
   TypeOutline,
+  Eye,
 } from 'lucide-react';
 import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
@@ -42,7 +43,7 @@ export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
 }
 
-export default function EventsPage() {
+export default function BlogsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid'); // 视图模式
   const [currentPage, setCurrentPage] = useState(1); // 当前页码
   const [pageSize, setPageSize] = useState(6); // 每页条数
@@ -60,7 +61,6 @@ export default function EventsPage() {
   const { message } = AntdApp.useApp();
 
   // 新增筛选状态
-  const [statusFilter, setStatusFilter] = useState('3'); // 状态
   const [locationKeyword, setLocationKeyword] = useState(''); // 地点
   const [blogModeFilter, setEventModeFilter] = useState(''); // 博客类型
 
@@ -153,29 +153,9 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      setPublishStatus(0);
-      setReadyToLoad(true);
-    } else if (status === 'unauthenticated') {
-      setReadyToLoad(true);
-    } else {
-      setReadyToLoad(true);
-    }
-    if (readyToLoad) {
-      // 如果需要根据登录状态传递 publish_status，可在 loadBlogs 内部处理
-      loadBlogs();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadBlogs();
   }, [status]);
 
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.container}>
@@ -202,7 +182,7 @@ export default function EventsPage() {
           <AntSearch
             placeholder="搜索博客标题、描述..."
             allowClear
-            size="small"
+            size="large"
             enterButton="搜索"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -248,7 +228,6 @@ export default function EventsPage() {
           <div className={styles.emptyDescription}>
             {searchKeyword ||
               selectedTag ||
-              statusFilter ||
               locationKeyword ||
               blogModeFilter
               ? '没有找到符合条件的博客'
@@ -256,8 +235,6 @@ export default function EventsPage() {
           </div>
           {!searchKeyword &&
             !selectedTag &&
-            !statusFilter &&
-            !locationKeyword &&
             !blogModeFilter && (
               <Link href="/blogs/new" className={styles.createButton}>
                 <Plus className={styles.buttonIcon} />
@@ -273,105 +250,80 @@ export default function EventsPage() {
               key={blog.ID}
               className={styles.cardLink}
             >
-              <Card
-                className={styles.blogCard}
-                cover={
-                  <div className={styles.cardCover}>
-                    <Image
-                      alt={blog.title}
-                      src={
-                        blog.cover_img ||
-                        '/placeholder.svg?height=240&width=400&text=博客封面'
-                      }
-                      className={styles.coverImage}
-                      preview={false}
-                    />
-                    <div className={styles.coverOverlay}>
-                      {/* {blog.publish_status === 1 && (
-                        <Tag className={styles.noPublishStatus}>未发布</Tag>
-                      )} */}
-                      <div className={styles.cardActions}>
-                        {status === 'authenticated' &&
-                          permissions.includes('blog:write') ? (
-                          <Button
-                            className={styles.actionIconButton}
-                            onClick={() =>
-                              router.push(`/blogs/${blog.ID}/edit`)
-                            }
-                            icon={<Edit className={styles.actionIcon} />}
-                            title="编辑博客"
-                          />
-                        ) : null}
+
+              <Card className={styles.blogCard} cover={
+                <div className={styles.cardCover}>
+                  <Image
+                    alt={blog.title}
+                    src={
+                      blog.cover_img ||
+                      '/placeholder.svg?height=240&width=400&text=活动封面'
+                    }
+                    className={styles.coverImage}
+                    preview={false}
+                  />
+                  <div className={styles.coverOverlay}>
+                    {blog.publish_status === 1 && (
+                      <Tag className={styles.noPublishStatus}>待审核</Tag>
+                    )}
+                    <div className={styles.cardActions}>
+                      {status === 'authenticated' &&
+                        blog.publisher_id.toString() === session.user?.uid ? (
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
-                            e.preventDefault(); /* 分享逻辑 */
+                            e.preventDefault()
+                            router.push(`/blogs/${blog.ID}/edit`)
                           }}
-                          icon={<Share2 className={styles.actionIcon} />}
-                          title="分享博客"
+                          icon={<Edit className={styles.actionIcon} />}
+                          title="编辑活动"
                         />
-                        {/* <Button
-                          className={styles.actionIconButton}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (blog.twitter) {
-                              window.open(blog.twitter, '_blank'); // 打开外部链接
-                            }
-                          }}
-                          icon={<SiX className={styles.actionIcon} />}
-                          title="查看推文"
-                        /> */}
+                      ) : null}
+                      <Button
+                        className={styles.actionIconButton}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigator.clipboard.writeText(`${window.location.href}/${blog.ID}`)
+                          message.success("链接已复制到剪贴板")
+                        }}
+                        icon={<Share2 className={styles.actionIcon} />}
+                        title="分享博客"
+                      />
+                    </div>
+                  </div>
+                </div>
+              }>
+
+                <div className={styles.cardBodyNew}>
+                  <h3 className={styles.blogTitleNew}>{blog.title}</h3>
+                  <p className={styles.blogDescriptionNew}>
+                    {blog.description}
+                  </p>
+
+                  <div className={styles.cardFooter}>
+                    <div className={styles.authorInfo}>
+                      <Image
+                        src={blog.publisher.avatar}
+                        alt={blog.publisher.username}
+                        width={32}
+                        height={32}
+                        preview={false}
+                        className={styles.avatar}
+                      />
+                      <div className={styles.authorText}>
+                        <span className={styles.authorName}>
+                          {blog.publisher?.username || ''}
+                        </span>
+                        <span className={styles.publishTime}>
+                          {dayjs(blog.publish_time || blog.CreatedAt).format('YYYY年M月D日')} · {blog.read_time || '6 分钟'}阅读
+                        </span>
+                      </div>
+                      <div className={styles.viewCount}>
+                        <Eye size={24} />
+                        <span className={styles.viewCountText}>{blog.view_count || 0}</span>
                       </div>
                     </div>
                   </div>
-                }
-              >
-                <div className={styles.cardBody}>
-                  <h3 className={styles.blogTitle}>{blog.title}</h3>
-
-                  <div className={styles.cardMeta}>
-                    <Row justify="space-between">
-                      <Col span={12}>
-                        <div className={styles.metaItem}>
-                          <Calendar className={styles.metaIcon} />
-                          <span>{formatTime(blog.CreatedAt || '')}</span>
-                        </div>
-                      </Col>
-                      <Col
-                        span={12}
-                        style={{ display: 'flex' }}
-                      >
-                        <div className={styles.metaItem}>
-                          <BookOpenText className={styles.metaIcon} />
-                          <span>{blog.author}</span>
-                        </div>
-                      </Col>
-                    </Row>
-                    {/* <Row>
-                      <Col span={12}>
-                        <div className={styles.metaItem}>
-                          <Languages className={styles.metaIcon} />
-                          <span>{ blog.translator}</span>
-                        </div>
-                      </Col>
-                    </Row> */}
-                  </div>
-                  {blog.tags && blog.tags.length > 0 && (
-                    <div className={styles.cardTags}>
-                      {blog.tags
-                        .slice(0, 3)
-                        .map((tag: string, index: number) => (
-                          <Tag key={index} className={styles.blogTag}>
-                            {tag}
-                          </Tag>
-                        ))}
-                      {blog.tags.length > 3 && (
-                        <Tag className={styles.moreTag}>
-                          +{blog.tags.length - 3}
-                        </Tag>
-                      )}
-                    </div>
-                  )}
                 </div>
               </Card>
             </Link>
@@ -384,27 +336,25 @@ export default function EventsPage() {
             <div className={styles.listHeader}>
               <div className={styles.listHeaderCell}>博客信息</div>
               <div className={styles.listHeaderCell}>时间</div>
-              <div className={styles.listHeaderCell}>作者</div>
-              <div className={styles.listHeaderCell}>翻译</div>
-              <div className={styles.listHeaderCell}>排版</div>
+              <div className={styles.listHeaderCell}>发布者</div>
+              <div className={styles.listHeaderCell}>浏览量</div>
+              <div className={styles.listHeaderCell}>状态</div>
               <div className={styles.listHeaderCell}>操作</div>
             </div>
             {currentBlogs.map((blog) => (
               <div key={blog.ID} className={styles.listRow}>
                 <div className={styles.listCell}>
                   <div className={styles.blogInfo}>
-                    <div className={styles.blogTitleRow}>
-                      <Link
-                        href={`/blogs/${blog.ID}`}
-                        key={blog.ID}
-                        className={styles.listLink}
-                      >
-                        {blog.title}
-                      </Link>
-                      {blog.featured && (
-                        <Star className={styles.listFeaturedIcon} />
-                      )}
-                    </div>
+                    <Link
+                      href={`/blogs/${blog.ID}`}
+                      key={blog.ID}
+                      className={styles.listLink}
+                    >
+                      {blog.title}
+                    </Link>
+                    {blog.featured && (
+                      <Star className={styles.listFeaturedIcon} />
+                    )}
                     <p className={styles.listEventDescription}>{blog.desc}</p>
                   </div>
                 </div>
@@ -422,22 +372,24 @@ export default function EventsPage() {
                   </div>
                 </div>
                 <div className={styles.listCell}>
-                  <div className={styles.participantsInfo}>
-                    <BookOpenText className={styles.listIcon} />
-                    <span>小符</span>
+                  <div className={styles.publisherInfo}>
+                    <span>{blog.publisher.username}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
-                  <div className={styles.participantsInfo}>
-                    <Languages className={styles.listIcon} />
-                    <span>Seven</span>
+                  <div className={styles.listViewCount}>
+                    <Eye size={24} />
+                    <span className={styles.listViewCountText}>{blog.view_count || '0'}</span>
                   </div>
                 </div>
-
                 <div className={styles.listCell}>
-                  <div className={styles.participantsInfo}>
-                    <TypeOutline className={styles.listIcon} />
-                    <span>QiuQiu</span>
+                  <div className={styles.publishStatusInfo}>
+                    {blog.publish_status === 1 && (
+                      <Tag color="warning">待审核</Tag>
+                    )}
+                    {blog.publish_status === 2 && (
+                      <Tag color="success">已发布</Tag>
+                    )}
                   </div>
                 </div>
 
@@ -462,8 +414,13 @@ export default function EventsPage() {
                     <Button
                       type="text"
                       size="small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(`${window.location.href}/${blog.ID}`)
+                        message.success("链接已复制到剪贴板")
+                      }}
                       icon={<Share2 className={styles.listActionIcon} />}
-                      title="分享博客"
+                      title="分享活动"
                     />
                     {status === 'authenticated' &&
                       permissions.includes('blog:delete') ? (

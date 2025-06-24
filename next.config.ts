@@ -20,11 +20,15 @@ const nextConfig: NextConfig = {
     'rc-input',
   ],
   images: {
-    domains: ['file-cdn.openbuild.xyz'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+      },
+       {
+        protocol: 'https',
+        hostname: 'file-cdn.openbuild.xyz',
+         pathname: '/**',
       },
     ],
   },

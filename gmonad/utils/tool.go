@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math/big"
 	"regexp"
+	"sort"
 	"time"
 )
 
@@ -78,8 +79,15 @@ func StringSlicesEqual(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
 	}
-	for i := range a {
-		if a[i] != b[i] {
+
+	aCopy := append([]string(nil), a...)
+	bCopy := append([]string(nil), b...)
+
+	sort.Strings(aCopy)
+	sort.Strings(bCopy)
+
+	for i := range aCopy {
+		if aCopy[i] != bCopy[i] {
 			return false
 		}
 	}

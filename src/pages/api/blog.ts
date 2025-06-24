@@ -38,6 +38,15 @@ export interface GetBlogsParams {
   publish_time?: string;
 }
 
+export interface User {
+  ID: number;
+  email: string;
+  username: string;
+  avatar: string;
+  github: string;
+}
+
+
 export interface Blog {
   ID: number;
   title: string;
@@ -53,6 +62,8 @@ export interface Blog {
   tags: string[];
   publish_status?: number;
   publish_time?: string;
+  publisher?: User; 
+  publisher_id?: number;
 }
 
 // 分页返回数据结构

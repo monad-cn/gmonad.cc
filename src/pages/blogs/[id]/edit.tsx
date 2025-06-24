@@ -1,148 +1,515 @@
-import React, { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Form,
+  Input,
+  Checkbox,
+  Upload,
+  Button,
+  Card,
+  Tag,
+  App as AntdApp,
+} from 'antd';
+import type { UploadProps, UploadFile } from 'antd';
 import { useRouter } from 'next/router';
-import { Form, Input, Button, Select, Card, App as AntdApp } from 'antd';
-import { Blog } from '../../../types/blog';
-import styles from '../index.module.css';
+import {
+  ArrowLeft,
+  Users,
+  FileText,
+  ImageIcon,
+  Save,
+  Plus,
+  X,
+  RotateCcw,
+} from 'lucide-react';
+import Link from 'next/link';
+import styles from './edit.module.css';
+
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 
-const { Option } = Select;
+import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
+import { getBlogById, updateBlog } from '@/pages/api/blog';
 
-// mock数据，实际应替换为API
-const blogs: Blog[] = [
-  {
-    id: 1,
-    name: 'Monad是什么？',
-    content: 'Monad 是下一代区块链技术...',
-    author: 'Alice',
-    translation: 'What is Monad?',
-    layout: '默认',
-    tags: ['区块链', '技术'],
-    date: '2024-06-01',
-  },
-  {
-    id: 2,
-    name: '区块链的未来',
-    content: '区块链将如何改变世界...',
-    author: 'Bob',
-    translation: 'phoouze',
-    layout: '科技',
-    tags: ['区块链', '未来'],
-    date: '2024-06-02',
-  },
-];
+const { Dragger } = Upload;
+const { TextArea } = Input;
 
-const layoutOptions = ['默认', '科技', '生活', '随笔'];
-const tagOptions = ['区块链', '技术', '未来', '生活', '随笔'];
-
-const EditBlog: React.FC = () => {
+export default function EditBlogPage() {
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const { id } = router.query;
-  const blog = blogs.find((b) => b.id === Number(id));
+  const rId = Array.isArray(id) ? id[0] : id;
+  const [loading, setLoading] = useState(true);
 
-  if (!blog) {
-    return <div style={{ padding: 32 }}>未找到该博客</div>;
-  }
 
-  const onFinish = (values: Omit<Blog, 'id' | 'date'> & { tags: string[] }) => {
-    // 实际应调用API，这里仅做演示
-    message.success('博客修改成功！');
-    setTimeout(() => {
-      router.push(`/blogs/${blog.id}`);
-    }, 800);
+  const [blog, setBlog] = useState<any>();
+  const [tags, setTags] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cloudinaryImg, setCloudinaryImg] = useState<any>();
+
+  // 格式化时间为字符串
+  const formatDateTime = (date: any, time: any) => {
+    if (!date || !time) return '';
+
+    const dateStr = date.format('YYYY-MM-DD');
+    const timeStr = time.format('HH:mm:ss');
+    return `${dateStr} ${timeStr}`;
   };
 
   // 富文本处理
   const handleQuillEditorChange = useCallback(
     (value: string) => {
-      form.setFieldValue('description', value);
+      form.setFieldValue('content', value);
     },
     [form]
   );
 
+  const handleSubmit = async (values: any) => {
+    try {
+      console.log(values);
+      setIsSubmitting(true);
+      const formData = {
+        ...values,
+        tags: tags, // 添加标签数据
+        coverImage: coverImage, // 添加封面图片
+      };
+      
+      const updateBlogRequest = {
+        title: values.title || '',
+        description: values.description || '',
+        content: values.content || '',
+        source_link: values.source || '',
+        category: "blog",
+        cover_img: cloudinaryImg?.secure_url || '',
+        tags: tags,
+        author: values.author || '',
+        translator: values.translator || '',
+      };
+
+      const result = await updateBlog(blog.ID, updateBlogRequest);
+      if (result.success) {
+        message.success(result.message);
+        router.push('/blogs');
+      } else {
+        message.error(result.message || '更新博客失败');
+      }
+    } catch (error) {
+      console.error('更新博客失败:', error);
+      message.error('更新博客出错，请重试');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAddTag = () => {
+    if (inputValue && !tags.includes(inputValue)) {
+      const newTags = [...tags, inputValue];
+      setTags(newTags);
+      setInputValue('');
+      console.log('添加标签后:', newTags);
+    }
+    setInputVisible(false);
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(newTags);
+    console.log('删除标签后:', newTags);
+  };
+
+  const handleImageChange = (info: any) => {
+    const { file, fileList } = info;
+
+    // 只保留最新上传的一个文件
+    if (fileList.length > 0) {
+      const latestFile = fileList[fileList.length - 1];
+      setCoverImage(latestFile);
+      console.log('上传图片:', latestFile);
+
+      // 创建预览URL
+      if (latestFile.originFileObj) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setPreviewUrl(e.target?.result as string);
+        };
+        reader.readAsDataURL(latestFile.originFileObj);
+      }
+    } else {
+      setCoverImage(null);
+      setPreviewUrl('');
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    setCoverImage(null);
+    setPreviewUrl('');
+    form.setFieldValue('cover', undefined);
+    console.log('删除图片');
+  };
+
+  const handleReplaceImage = () => {
+    // 触发文件选择
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // 创建一个符合 UploadFile 接口的对象
+        const uploadFile: UploadFile = {
+          uid: Date.now().toString(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified,
+          lastModifiedDate: new Date(file.lastModified),
+          status: 'done',
+          percent: 100,
+          // 使用类型断言来处理 originFileObj
+          originFileObj: file as any,
+        };
+
+        setCoverImage(uploadFile);
+        console.log('更换图片:', uploadFile);
+
+        const res = await uploadImgToCloud(file);
+        if (!res) {
+          message.error('图片上传失败，请重试');
+          return;
+        } else {
+          // set coverImage info
+          setCloudinaryImg(res);
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            setPreviewUrl(e.target?.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    };
+    input.click();
+  };
+
+  const uploadProps: UploadProps = {
+    name: 'file',
+    multiple: false,
+    accept: 'image/*',
+    showUploadList: false,
+    beforeUpload: async (file) => {
+      const isImage = file.type.startsWith('image/');
+      if (!isImage) {
+        message.error('只能上传图片文件!');
+        return false;
+      }
+
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error('图片大小不能超过 5MB!');
+        return false;
+      }
+
+      const res = await uploadImgToCloud(file);
+
+      if (!res) {
+        message.error('图片上传失败，请重试');
+        return false;
+      } else {
+        // set coverImage info
+        setCloudinaryImg(res);
+        return true;
+      }
+    },
+    onChange: handleImageChange,
+  };
+
+
+  useEffect(() => {
+    if (!router.isReady || !rId) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getBlogById(rId);
+        if (response.success) {
+          setBlog(response?.data);
+          form.setFieldsValue({
+            title: response.data?.title,
+            description: response.data?.description,
+            content: response.data?.content,
+            source: response.data?.source_link,
+            category: "blog",
+            cover: response.data?.cover_img,
+            author: response.data?.author,
+            translator: response.data?.translator || '',
+          });
+          setPreviewUrl(response.data?.cover_img || '');
+          setTags(response.data?.tags || []);
+        }
+      } catch (error) {
+        message.error('加载失败');
+        setBlog(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router.isReady, rId, form]);
+
+  if (!loading && !blog) {
+    return (
+      <div className={styles.error}>
+        <h2>博客不存在</h2>
+        <p>抱歉，找不到您要查看的博客</p>
+        <Link href="/blogs" className={styles.backButton}>
+          返回博客列表
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.containerEdit}>
-      <Card
-        bordered={false}
-        className={styles.card}
-        title={<span className={styles.cardTitle}>编辑博客</span>}
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <Link href="/new" className={styles.backButton}>
+          <ArrowLeft className={styles.backIcon} />
+          返回博客列表
+        </Link>
+      </div>
+
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className={styles.form}
+        initialValues={{
+          publishImmediately: true,
+        }}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={blog}
-        >
-          <Form.Item
-            name="name"
-            label="名称"
-            rules={[{ required: true, message: '请输入博客名称' }]}
+        <div className={styles.formGrid}>
+          {/* 左侧表单 */}
+          <div className={styles.leftColumn}>
+            {/* 基本信息 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <FileText className={styles.sectionIcon} />
+                基本信息
+              </h2>
+
+              <Form.Item
+                label="博客标题"
+                name="title"
+                rules={[{ required: true, message: '请输入博客标题' }]}
+              >
+                <Input placeholder="请输入博客标题" className={styles.input} maxLength={30} showCount />
+              </Form.Item>
+              <Form.Item
+                label="博客描述"
+                name="description"
+                rules={[{ required: true, message: '请输入博客描述' }]}
+              >
+                <TextArea
+                  rows={2}
+                  maxLength={60}
+                  showCount
+                  placeholder="请输入博客描述"
+                />
+              </Form.Item>
+              <Form.Item
+                label="博客内容"
+                name="content"
+                rules={[{ required: true, message: '请输入博客内容' }]}
+              >
+                <QuillEditor
+                  value={form.getFieldValue('content')}
+                  onChange={handleQuillEditorChange}
+                />
+              </Form.Item>
+              <Form.Item
+                label="原文链接"
+                name="source"
+                rules={[
+                  {
+                    type: 'url',
+                    message: '请输入有效的链接地址',
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="请输入原文链接" className={styles.input}
+                />
+              </Form.Item>
+            </Card>
+
+            {/* 参与人员 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Users className={styles.sectionIcon} />
+                作者与协作者
+              </h2>
+
+              <div className={styles.formRow}>
+                <Form.Item
+                  label="作者"
+                  name="author"
+                  rules={[{ required: true, message: '请输入作者姓名' }]}
+                >
+                  <Input placeholder="请输入作者" maxLength={10} showCount />
+                </Form.Item>
+              </div>
+
+              <div className={styles.formRow}>
+                <Form.Item label="翻译" name="translator">
+                  <Input placeholder="请输入翻译人员（可选）" maxLength={10} showCount />
+                </Form.Item>
+              </div>
+            </Card>
+          </div>
+
+          {/* 右侧表单 */}
+          <div className={styles.rightColumn}>
+            {/* 博客封面 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <ImageIcon className={styles.sectionIcon} />
+                博客封面
+              </h2>
+              <Form.Item
+                name="cover"
+                rules={[{ required: true, message: '请上传博客封面' }]}
+              >
+                <div className={styles.imageUpload}>
+                  {previewUrl ? (
+                    <div className={styles.imagePreviewContainer}>
+                      <img
+                        src={previewUrl || '/placeholder.svg'}
+                        alt="博客封面预览"
+                        className={styles.previewImage}
+                      />
+                      <div className={styles.imageOverlay}>
+                        <div className={styles.imageActions}>
+                          <button
+                            type="button"
+                            onClick={handleReplaceImage}
+                            className={styles.imageActionButton}
+                            title="更换图片"
+                          >
+                            <RotateCcw className={styles.imageActionIcon} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleRemoveImage}
+                            className={`${styles.imageActionButton} ${styles.removeButton}`}
+                            title="删除图片"
+                          >
+                            <X className={styles.imageActionIcon} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className={styles.imageInfo}>
+                        <span className={styles.imageName}>
+                          {coverImage?.name}
+                        </span>
+                        <span className={styles.imageSize}>
+                          {coverImage?.originFileObj
+                            ? `${(
+                              coverImage.originFileObj.size /
+                              1024 /
+                              1024
+                            ).toFixed(2)} MB`
+                            : ''}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <Dragger {...uploadProps} className={styles.imagePreview}>
+                      <ImageIcon className={styles.imageIcon} />
+                      <p className={styles.imageText}>点击或拖拽上传博客封面</p>
+                      <p className={styles.imageHint}>
+                        建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
+                      </p>
+                    </Dragger>
+                  )}
+                </div>
+              </Form.Item>
+            </Card>
+
+            {/* 标签 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Plus className={styles.sectionIcon} />
+                博客标签
+              </h2>
+
+              <div className={styles.tagsContainer}>
+                {tags.map((tag, index) => (
+                  <Tag
+                    key={index}
+                    closable
+                    onClose={() => handleRemoveTag(tag)}
+                    className={styles.tag}
+                  >
+                    {tag}
+                  </Tag>
+                ))}
+                {inputVisible ? (
+                  <Input
+                    type="text"
+                    size="small"
+                    className={styles.tagInput}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onBlur={handleAddTag}
+                    onPressEnter={handleAddTag}
+                    autoFocus
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setInputVisible(true)}
+                    className={styles.addTagButton}
+                  >
+                    <Plus className={styles.addTagIcon} />
+                    添加标签
+                  </button>
+                )}
+              </div>
+            </Card>
+
+            {/* 其他设置 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>其他设置</h2>
+              <Form.Item
+                name="publishImmediately"
+                valuePropName="checked"
+                className={styles.formGroup}
+              >
+                <Checkbox className={styles.checkbox}>立即发布博客</Checkbox>
+              </Form.Item>
+            </Card>
+          </div>
+        </div>
+
+        {/* 提交按钮 */}
+        <div className={styles.submitSection}>
+          <Link href="/" className={styles.cancelButton}>
+            取消
+          </Link>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.submitButton}
+            loading={isSubmitting}
+            disabled={isSubmitting}
           >
-            <Input placeholder="请输入博客名称" />
-          </Form.Item>
-          <Form.Item
-            name="author"
-            label="作者"
-            rules={[{ required: true, message: '请输入作者' }]}
-          >
-            <Input placeholder="请输入作者" />
-          </Form.Item>
-          <Form.Item name="translation" label="翻译">
-            <Input placeholder="请输入翻译（可选）" />
-          </Form.Item>
-          <Form.Item
-            name="layout"
-            label="排版"
-            rules={[{ required: true, message: '请选择排版' }]}
-          >
-            <Select placeholder="请选择排版">
-              {layoutOptions.map((l) => (
-                <Option value={l} key={l}>
-                  {l}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="tags"
-            label="标签"
-            rules={[{ required: true, message: '请选择标签' }]}
-          >
-            <Select mode="tags" placeholder="请选择标签">
-              {tagOptions.map((t) => (
-                <Option value={t} key={t}>
-                  {t}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="内容"
-            rules={[{ required: true, message: '请输入内容' }]}
-          >
-            <QuillEditor
-              placeholder="请输入博客内容"
-              value={form.getFieldValue('content')}
-              onChange={handleQuillEditorChange}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              提交
-            </Button>
-            <Button
-              style={{ marginLeft: 16 }}
-              onClick={() => router.push(`/blogs/${blog.id}`)}
-            >
-              取消
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+            <Save className={styles.submitIcon} />
+            {isSubmitting ? '更新中...' : '更新博客'}
+          </Button>
+        </div>
+      </Form>
     </div>
   );
-};
-
-export default EditBlog;
+}

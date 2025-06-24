@@ -242,15 +242,6 @@ export default function EventsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKeyword, selectedTag, sortOrder, currentPage, pageSize, statusFilter, locationKeyword, eventModeFilter, publishStatus]);
 
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.container}>
       {/* Title Section */}
@@ -315,7 +306,7 @@ export default function EventsPage() {
           <AntSearch
             placeholder="搜索活动标题、描述..."
             allowClear
-            size="small"
+            size="large"
             enterButton="搜索"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -340,7 +331,7 @@ export default function EventsPage() {
             <Option value="社区活动">社区活动</Option>
           </Select> */}
           <Select
-            size="small"
+            size="large"
             value={sortOrder}
             style={{ width: 100 }}
             onChange={handleSortChange}
@@ -351,7 +342,7 @@ export default function EventsPage() {
           <Select
             placeholder="活动状态"
             allowClear
-            size="small"
+            size="large"
             style={{ width: 120 }}
             value={statusFilter || undefined}
             onChange={handleStatusFilter}
@@ -363,7 +354,7 @@ export default function EventsPage() {
           </Select>
 
           <Select
-            size="small"
+            size="large"
             placeholder="活动形式"
             allowClear
             style={{ width: 120 }}
@@ -377,7 +368,7 @@ export default function EventsPage() {
 
           <div className={styles.locationSearch}>
             <Input
-              size="small"
+              size="large"
               placeholder="活动地点"
               allowClear
               value={locationKeyword}
@@ -385,8 +376,8 @@ export default function EventsPage() {
               onPressEnter={() => handleLocationSearch(locationKeyword)}
             />
           </div>
-          <Button size="small" onClick={handleClearFilters}>
-            清除筛选
+          <Button size="large" onClick={handleClearFilters}>
+            重置
           </Button>
         </div>
       </div>
@@ -416,8 +407,8 @@ export default function EventsPage() {
 
       {/* Events Display */}
       {loading ? (
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingText}>加载中...</div>
+        <div className={styles.loading}>
+          <div className={styles.loadingSpinner}></div>
         </div>
       ) : events.length === 0 ? (
         <div className={styles.emptyContainer}>
@@ -663,6 +654,11 @@ export default function EventsPage() {
                     <Button
                       type="text"
                       size="small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
+                        message.success("链接已复制到剪贴板")
+                      }}
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />

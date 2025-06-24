@@ -33,7 +33,7 @@ import router from 'next/router';
 const { Dragger } = Upload;
 const { TextArea } = Input;
 
-export default function NewEventPage() {
+export default function NewBlogPage() {
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
 
