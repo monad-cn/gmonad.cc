@@ -26,8 +26,8 @@ export default function Header() {
       <div className={styles.container}>
         <div className={styles.headerContent}>
           <Link href="/" passHref>
-            <div className={styles.logo} style={{ cursor: 'pointer' }}>
-              <Image preview={false} width={38} src="/logo.png" className={styles.logo}/>
+            <div className={styles.logoInfo} style={{ cursor: 'pointer' }}>
+              <Image preview={false} width={30} src="/logo.png" className={styles.logo} />
               <span className={styles.logoTitle}>Monad 中文社区</span>
             </div>
           </Link>
