@@ -253,7 +253,7 @@ export default function Home() {
           <div className={styles.statsGrid}>
             {[
               {
-                label: '社区贡献者',
+                label: '贡献者',
                 value: stats.members,
                 icon: <Users className={styles.statIcon} />,
               },
@@ -394,7 +394,7 @@ export default function Home() {
       <section className={styles.members}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>社区贡献者</h2>
+            <h2 className={styles.sectionTitle}>贡献者</h2>
             <p className={styles.sectionDescription}>
               感谢每一位贡献者，并期待更多热爱 Monad 的朋友加入我们，一起共建 Monad。
             </p>

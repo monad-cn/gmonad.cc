@@ -274,7 +274,7 @@ export default function EditBlogPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/new" className={styles.backButton}>
+        <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回博客列表
         </Link>

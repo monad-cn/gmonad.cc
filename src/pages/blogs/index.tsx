@@ -154,7 +154,7 @@ export default function BlogsPage() {
 
   useEffect(() => {
     loadBlogs();
-  }, [status]);
+  }, [status, searchKeyword]);
 
 
   return (
