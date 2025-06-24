@@ -1,6 +1,8 @@
 import { SiGithub, SiX, SiTelegram } from 'react-icons/si';
 import styles from "../styles/Footer.module.css"
 import Link from "next/link"
+import { Image } from 'antd'
+
 
 export default function Footer() {
   return (
@@ -10,8 +12,7 @@ export default function Footer() {
           <div className={styles.footerSection}>
             <div className={styles.footerLogo}>
               <div className={styles.footerLogoIcon}>
-                <span className={styles.footerLogoText}>M</span>
-                <div className={styles.footerLogoGlow}></div>
+                <Image preview={false} width={38} src="/logo.png" className={styles.logo} />
               </div>
               <span className={styles.footerLogoTitle}>Monad中文社区</span>
             </div>

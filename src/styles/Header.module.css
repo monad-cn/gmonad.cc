@@ -79,6 +79,10 @@
   transform: scale(1.05);
 }
 
+.logo {
+  border-radius: 4px;
+}
+
 /* Floating News Banner */
 .floatingNewsBanner {
   position: fixed;

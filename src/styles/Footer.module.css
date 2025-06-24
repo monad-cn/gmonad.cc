@@ -70,6 +70,10 @@
   margin-bottom: 1.5rem;
 }
 
+.logo {
+  border-radius: 4px;
+}
+
 .footerLinks {
   list-style: none;
   padding: 0;
