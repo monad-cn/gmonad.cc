@@ -1,0 +1,154 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  /* padding: 0 1rem; */
+}
+
+/* Footer */
+.footer {
+  background: #1f2937;
+  color: white;
+  padding: 4rem 1rem;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.footerSection {
+  margin-bottom: 2rem;
+}
+
+.footerLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.footerLogoIcon {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footerLogoText {
+  color: white;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.footerLogoGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  border-radius: 0.5rem;
+  filter: blur(10px);
+  opacity: 0.5;
+}
+
+.footerLogoTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.footerDescription {
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.footerSectionTitle {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  border-radius: 4px;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerLinks li {
+  margin-bottom: 0.75rem;
+}
+
+.footerLink {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footerLink:hover {
+  color: white;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialButton {
+  background: transparent;
+  border: 1px solid #4b5563;
+  color: #9ca3af;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.socialButton:hover {
+  background: #374151;
+  color: white;
+  transform: scale(1.1);
+}
+
+.socialIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.footerBottom {
+  border-top: 1px solid #374151;
+  padding-top: 2rem;
+  text-align: center;
+}
+
+.footerCopyright {
+  color: #9ca3af;
+  margin: 0;
+}
+
+.toOpenBuild {
+  color: #7c3aed;
+}
+
+.toOpenBuild:hover {
+  color: #7c3aed;
+}
+
+/* Responsive Design */
+@media screen and (min-width: 768px) {
+  .footerContent {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .footerContent {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+

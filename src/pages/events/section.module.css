@@ -1,0 +1,214 @@
+.activities {
+    padding: 5rem 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.sectionDescription {
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+.activitiesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.activityCard {
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.5s ease;
+}
+
+.activityCardGlow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    border-radius: 1rem;
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+.activityCard:hover .activityCardGlow {
+    opacity: 1;
+}
+
+.activityCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.activityCardHeader {
+    margin-bottom: 1.5rem;
+}
+
+.activityMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.activityBadge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.activityBadgeActive {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.activityBadgeInactive {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.activityBadgeEnded {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+
+.activityParticipants {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.activityIcon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.activityTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.activityDescription {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.activityCardContent {
+    margin-top: auto;
+}
+
+.activityInfo {
+    margin-bottom: 1.5rem;
+}
+
+.activityInfoItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7c3aed;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.tagsContainer {
+    margin: 8px 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background-color: white;
+    /* color: #b13de3; */
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    user-select: none;
+}
+
+.activityButton {
+    width: 100%;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.activityButton:hover {
+    background: #6d28d9;
+    transform: scale(1.05);
+}
+
+.moreButton {
+    background: transparent;
+    color: #7c3aed;
+    border: 1px solid #7c3aed;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.moreButton:hover {
+    background: rgba(124, 58, 237, 0.1);
+    transform: scale(1.05);
+}
+
+.sectionFooter {
+    text-align: center;
+}
+
+
+@media (max-width: 1024px) {
+    .activitiesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .activitiesGrid {
+        grid-template-columns: 1fr;
+    }
+}
