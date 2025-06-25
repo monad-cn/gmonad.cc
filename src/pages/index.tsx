@@ -238,10 +238,10 @@ export default function Home() {
                 <Users className={styles.buttonIcon} />
                 加入社区
               </Link>
-              <button className={styles.heroSecondaryButton}>
+              <Link href="/testnet" className={styles.heroSecondaryButton}>
                 <Globe className={styles.buttonIcon} />
                 体验测试网
-              </button>
+              </Link>
             </div>
           </div>
         </div>
