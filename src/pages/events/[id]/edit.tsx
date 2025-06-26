@@ -24,6 +24,7 @@ import {
   FileText,
   ImageIcon,
   Save,
+  NotepadTextDashed,
   Plus,
   X,
   RotateCcw,
@@ -35,7 +36,7 @@ import styles from './edit.module.css';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { getEventById, updateEvent } from '@/pages/api/event';
+import { getEventById, updateEvent, updateEventDraft } from '@/pages/api/event';
 
 type EventMode = '线上活动' | '线下活动';
 
@@ -93,6 +94,7 @@ export default function EditEventPage() {
   const [inputValue, setInputValue] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -113,6 +115,47 @@ export default function EditEventPage() {
     },
     [form]
   );
+
+  const handleSaveDraft = async () => {
+    try {
+      await form.validateFields(['title']);
+      setIsSavingDraft(true);
+      const values = form.getFieldsValue();
+      const updateEventRequest = {
+        title: values.title || '',
+        description: values.description || '',
+        event_mode: eventMode, // online 或 offline
+        location: eventMode === '线下活动' ? values.location || '' : '',
+        link: eventMode === '线上活动' ? values.location || '' : '',
+        start_time: formatDateTime(values.startDate, values.startTime),
+        end_time: formatDateTime(values.endDate, values.endTime),
+        // cover_img: coverImage,
+        cover_img: cloudinaryImg?.secure_url || '',
+        tags: tags,
+        twitter: values.twitter,
+      };
+
+      const result = await updateEventDraft(event.ID, updateEventRequest);
+
+      if (result.success) {
+        message.success(result.message);
+      } else {
+        message.error(result.message || '活动草稿更新失败');
+      }
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'errorFields' in error) {
+        const errorInfo = error as { errorFields: { name: string[], errors: string[] }[] };
+        if (errorInfo.errorFields && errorInfo.errorFields.length > 0) {
+          message.error('请输入活动标题');
+          form.scrollToField('title');
+        } else {
+          message.error('活动草稿更新失败，请重试');
+        }
+      }
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     try {
@@ -475,6 +518,15 @@ export default function EditEventPage() {
           <Link href="/" className={styles.cancelButton}>
             取消
           </Link>
+          <Button
+            className={styles.submitButton}
+            loading={isSavingDraft}
+            disabled={isSavingDraft}
+            onClick={handleSaveDraft}
+          >
+            <NotepadTextDashed className={styles.submitIcon} />
+            {isSavingDraft ? '保存中...' : '保存草稿'}
+          </Button>
           <Button
             type="primary"
             htmlType="submit"
