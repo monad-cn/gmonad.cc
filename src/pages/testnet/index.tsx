@@ -138,9 +138,9 @@ export default function TestnetPage() {
                                         value="运行中"
                                         valueStyle={{ color: "#10b981", fontSize: "18px", fontWeight: "600" }}
                                     />
-                                    <Tag color="success" className={styles.statusTag}>
+                                    {/* <Tag color="success" className={styles.statusTag}>
                                         正常运行
-                                    </Tag>
+                                    </Tag> */}
                                 </div>
                             </Card>
                         </Col>
@@ -156,9 +156,6 @@ export default function TestnetPage() {
                                     {/* <ExternalLink size={14} style={{ marginLeft: 4 }} /> */}
 
                                     <Statistic title="验证者节点" value={24} valueStyle={{ color: "#8b5cf6", fontWeight: "600" }} />
-                                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                                        分布式共识
-                                    </Text>
                                 </div>
                             </Card>
                         </Col>
@@ -172,9 +169,6 @@ export default function TestnetPage() {
                                         </div>
                                     </div>
                                     <Statistic title="区块高度" value={1234567} valueStyle={{ color: "#3b82f6", fontWeight: "600" }} />
-                                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                                        持续增长
-                                    </Text>
                                 </div>
                             </Card>
                         </Col>
@@ -188,9 +182,6 @@ export default function TestnetPage() {
                                         </div>
                                     </div>
                                     <Statistic title="活跃用户" value={8432} valueStyle={{ color: "#f59e0b", fontWeight: "600" }} />
-                                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                                        社区活跃
-                                    </Text>
                                 </div>
                             </Card>
                         </Col>
