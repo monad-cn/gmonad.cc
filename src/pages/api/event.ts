@@ -247,6 +247,30 @@ export const getEvents = async (params: GetEventsParams = {}): Promise<EventList
   }
 };
 
+export const getEventDrafts = async (params: GetEventsParams = {}): Promise<EventListResult> => {
+  try {
+    const query = new URLSearchParams();
+
+    query.append('page', (params.page ?? 1).toString());
+    query.append('page_size', (params.page_size ?? 6).toString());
+
+    const response = await apiRequest<EventListResult>(`/events/draft?${query.toString()}`, 'GET');
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '获取活动草稿列表成功',
+        data: response.data as unknown as PaginatedEventData
+      };
+    }
+
+    return { success: false, message: response.message ?? '获取活动草稿列表失败' };
+  } catch (error: any) {
+    console.error('获取活动草稿列表异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
 // 获取单个事件详情
 export const getEventById = async (eventId: string): Promise<EventResult> => {
   try {
