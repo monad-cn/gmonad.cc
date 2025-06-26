@@ -120,6 +120,41 @@ export const createEvent = async (params: CreateEventParams): Promise<EventResul
   }
 };
 
+export const saveEventDraft = async (params: CreateEventParams): Promise<EventResult> => {
+  try {
+    const body = {
+      title: params.title.trim(),
+      desc: params.description.trim(),
+      event_mode: params.event_mode,
+      location: params.event_mode === '线下活动' ? params.location.trim() : '',
+      link: params.event_mode === '线上活动' ? params.link.trim() : '',
+      start_time: params.start_time,
+      end_time: params.end_time,
+      cover_img: params.cover_img,
+      tags: params.tags ?? [],
+      twitter: params.twitter ?? '',
+      ...(params.max_participants != null && { max_participants: params.max_participants }),
+      ...(params.registration_deadline && { registration_deadline: params.registration_deadline }),
+      ...(typeof params.require_approval === 'boolean' && { require_approval: params.require_approval }),
+      ...(typeof params.allow_waitlist === 'boolean' && { allow_waitlist: params.allow_waitlist }),
+    };
+
+    const response = await apiRequest<EventResult>('/events/draft', 'POST', body);
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '保存草稿成功',
+        data: response.data as unknown as Event
+      };
+    }
+
+    return { success: false, message: response.message ?? '保存草稿失败' };
+  } catch (error: any) {
+    console.error('保存草稿异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
 
 export const updateEvent = async (eventId: string, params: UpdateEventParams): Promise<EventResult> => {
   try {

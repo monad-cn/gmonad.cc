@@ -21,6 +21,7 @@ import {
   Video,
   Globe,
   FileText,
+  NotepadTextDashed,
   Save,
   Plus,
   ImageIcon,
@@ -29,7 +30,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
-import { createEvent } from '../api/event';
+import { createEvent, saveEventDraft } from '../api/event';
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
@@ -44,6 +45,7 @@ export default function NewEventPage() {
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   // 封面图片
   const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -65,6 +67,46 @@ export default function NewEventPage() {
     },
     [form]
   );
+
+  const handleSaveDraft = async () => {
+    try {
+      await form.validateFields(['title']);
+      setIsSavingDraft(true);
+      const values = form.getFieldsValue();
+      const createEventRequest = {
+        title: values.title || '',
+        description: values.description || '',
+        event_mode: eventMode, // online 或 offline
+        location: eventMode === '线下活动' ? values.location || '' : '',
+        link: eventMode === '线上活动' ? values.location || '' : '',
+        start_time: formatDateTime(values.startDate, values.startTime),
+        end_time: formatDateTime(values.endDate, values.endTime),
+        // cover_img: coverImage,
+        cover_img: cloudinaryImg?.secure_url || '',
+        tags: tags,
+        twitter: values.twitter,
+      };
+      // 调用保存草稿接口
+      const result = await saveEventDraft(createEventRequest);
+      if (result.success) {
+        message.success(result.message);
+      } else {
+        message.error(result.message || '保存草稿失败');
+      }
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'errorFields' in error) {
+        const errorInfo = error as { errorFields: { name: string[], errors: string[] }[] };
+        if (errorInfo.errorFields && errorInfo.errorFields.length > 0) {
+          message.error('请输入活动标题');
+          form.scrollToField('title');
+        } else {
+          message.error('保存草稿失败，请重试');
+        }
+      }
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     try {
@@ -393,6 +435,15 @@ export default function NewEventPage() {
           <Link href="/" className={styles.cancelButton}>
             取消
           </Link>
+          <Button
+            className={styles.submitButton}
+            loading={isSavingDraft}
+            disabled={isSavingDraft}
+            onClick={handleSaveDraft}
+          >
+            <NotepadTextDashed className={styles.submitIcon} />
+            {isSavingDraft ? '保存中...' : '保存草稿'}
+          </Button>
           <Button
             type="primary"
             htmlType="submit"
