@@ -23,14 +23,70 @@ import {
     NotebookText,
     Book,
     Notebook,
+    Timer,
 } from "lucide-react"
 import styles from "./index.module.css"
 import { SiDiscord } from "react-icons/si"
-
+import { useEffect, useState } from "react"
+import { StatisticsUrl } from "../api/api"
+import CountUp from "react-countup"
 const { Title, Paragraph, Text } = Typography
+
+
+interface DynamicStatisticProps {
+    title: string | React.ReactNode;
+    value: number | string;
+    color?: string;
+    showDecimals?: boolean;
+    showSuffix?: boolean;
+    suffix?: string;
+    duration?: number;
+}
+
+function DynamicStatistic({
+    title,
+    value,
+    color = '#f59e0b',
+    showDecimals = true,
+    showSuffix = true,
+    suffix = 's',
+    duration = 1.5,
+}: DynamicStatisticProps) {
+    const numValue =
+        typeof value === 'number'
+            ? value
+            : typeof value === 'string'
+                ? parseFloat(value.replace(/[^\d.]/g, '')) || 0
+                : 0;
+
+    return (
+        <Statistic
+            title={title}
+            valueRender={() => (
+                <CountUp
+                    end={numValue}
+                    decimals={showDecimals ? 1 : 0}
+                    duration={duration}
+                    suffix={showSuffix ? suffix : ''}
+                    preserveValue={true}
+                />
+            )}
+            valueStyle={{ color, fontWeight: '600' }}
+        />
+    );
+}
+
+interface Stat {
+    block_num: number;
+    avg_block_time: string;
+    validators: number;
+    timestamp: number;
+}
+
 
 export default function TestnetPage() {
     const [messageApi, contextHolder] = message.useMessage()
+    const [stat, setStat] = useState<Stat | null>(null);
 
     const copyToClipboard = async (text: string, label: string) => {
         try {
@@ -68,6 +124,28 @@ export default function TestnetPage() {
             messageApi.warning("请先安装 MetaMask 钱包")
         }
     }
+
+    useEffect(() => {
+        const eventSource = new EventSource(StatisticsUrl);
+
+        eventSource.onmessage = (event) => {
+            try {
+                const parsed = JSON.parse(event.data);
+                setStat(parsed);
+            } catch (err) {
+                console.error('解析 SSE 数据失败:', err);
+            }
+        };
+
+        eventSource.onerror = (err) => {
+            console.error('SSE 连接错误:', err);
+            eventSource.close();
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, []);
 
     return (
         <div className={styles.container}>
@@ -147,6 +225,12 @@ export default function TestnetPage() {
 
                         <Col xs={24} sm={12} md={6}>
                             <Card className={`${styles.statusCard} ${styles.statusCardPurple}`}>
+                                <Link href="https://gmonads.com/" target="_blank">
+                                    <ExternalLink
+                                        size={16}
+                                        className={styles.externalIcon}
+                                    />
+                                </Link>
                                 <div className={styles.statusCardContent}>
                                     <div className={styles.statusIconWrapper}>
                                         <div className={styles.statusIcon}>
@@ -154,34 +238,50 @@ export default function TestnetPage() {
                                         </div>
                                     </div>
                                     {/* <ExternalLink size={14} style={{ marginLeft: 4 }} /> */}
-
-                                    <Statistic title="验证者节点" value={24} valueStyle={{ color: "#8b5cf6", fontWeight: "600" }} />
+                                    <DynamicStatistic
+                                        title={<span style={{ display: 'flex', marginLeft: 40, gap: 2 }}>
+                                            验证者节点
+                                            <Tag className={styles.validatorTag} style={{ borderRadius: 10 }}>Testnet-1</Tag>
+                                        </span>}
+                                        value={stat?.validators as number} color="#8b5cf6" showDecimals={false} showSuffix={false} />
                                 </div>
                             </Card>
                         </Col>
 
                         <Col xs={24} sm={12} md={6}>
                             <Card className={`${styles.statusCard} ${styles.statusCardBlue}`}>
+                                <Link href="https://testnet.monadexplorer.com/" target="_blank">
+                                    <ExternalLink
+                                        size={16}
+                                        className={styles.externalIcon}
+                                    />
+                                </Link>
                                 <div className={styles.statusCardContent}>
                                     <div className={styles.statusIconWrapper}>
                                         <div className={styles.statusIcon}>
                                             <Layers size={24} />
                                         </div>
                                     </div>
-                                    <Statistic title="区块高度" value={1234567} valueStyle={{ color: "#3b82f6", fontWeight: "600" }} />
+                                    <DynamicStatistic title="区块高度" value={stat?.block_num.toLocaleString() as string} color="#3b82f6" showDecimals={false} showSuffix={false} />
                                 </div>
                             </Card>
                         </Col>
 
                         <Col xs={24} sm={12} md={6}>
                             <Card className={`${styles.statusCard} ${styles.statusCardOrange}`}>
+                                <Link href="https://testnet.monadexplorer.com/" target="_blank">
+                                    <ExternalLink
+                                        size={16}
+                                        className={styles.externalIcon}
+                                    />
+                                </Link>
                                 <div className={styles.statusCardContent}>
                                     <div className={styles.statusIconWrapper}>
                                         <div className={styles.statusIcon}>
-                                            <Users size={24} />
+                                            <Timer size={24} />
                                         </div>
                                     </div>
-                                    <Statistic title="活跃用户" value={8432} valueStyle={{ color: "#f59e0b", fontWeight: "600" }} />
+                                    <DynamicStatistic title="出块时间" value={stat?.avg_block_time as string} color="#f59e0b" />
                                 </div>
                             </Card>
                         </Col>
@@ -357,7 +457,7 @@ export default function TestnetPage() {
                             <Title level={4} style={{ margin: 0 }}>
                                 测试币水龙头
                             </Title>
-                            <Text type="secondary">获取免费的测试币来体验网络功能</Text>
+                            <Text type="secondary">获取免费的测试币来体验测试网</Text>
                         </div>
                     </div>
                     <Divider style={{ margin: "20px 0" }} />
@@ -373,13 +473,13 @@ export default function TestnetPage() {
                                         </Tag>
                                     </div>
                                     <Text type="secondary" className={styles.faucetDescription}>
-                                        每24小时可领取 10 GMON
+                                        钱包需在 Ethereum 主网持有 ≥0.03 ETH，且完成 ≥3 笔主网交易；钱包内 MON 数量少于 5。符合条件可每 6 小时领取 2 MON。
                                     </Text>
                                     <Button
                                         type="primary"
                                         size="small"
                                         block
-                                        onClick={() => window.open("https://faucet.gmonads.com", "_blank")}
+                                        onClick={() => window.open("https://faucet.monad.xyz/", "_blank")}
                                         className={styles.faucetButton}
                                     >
                                         领取测试币
@@ -389,7 +489,7 @@ export default function TestnetPage() {
                             </Card>
                         </Col>
 
-                        <Col xs={24} md={8}>
+                        {/* <Col xs={24} md={8}>
                             <Card size="small" className={styles.faucetItem}>
                                 <div className={styles.faucetContent}>
                                     <div className={styles.faucetHeader}>
@@ -397,7 +497,7 @@ export default function TestnetPage() {
                                         <Tag className={styles.communityTag}>社区</Tag>
                                     </div>
                                     <Text type="secondary" className={styles.faucetDescription}>
-                                        每12小时可领取 5 GMON
+                                        每12小时可领取 0.1 GMON
                                     </Text>
                                     <Button
                                         size="small"
@@ -409,7 +509,7 @@ export default function TestnetPage() {
                                     </Button>
                                 </div>
                             </Card>
-                        </Col>
+                        </Col> */}
 
                         <Col xs={24} md={8}>
                             <Card size="small" className={styles.faucetItem}>
@@ -421,7 +521,13 @@ export default function TestnetPage() {
                                         </Tag>
                                     </div>
                                     <Text type="secondary" className={styles.faucetDescription}>
-                                        验证开发者身份后可领取 50 GMON
+                                        登录后绑定 GitHub 账号，根据 GitHub 账号等级每日可领 0.1-1 MON。<br />
+                                        <div style={{ display: 'flex', gap: '16px', marginTop: 4 }}>
+                                            <span><strong>S</strong>: 1 MON</span>
+                                            <span><strong>A</strong>: 0.4 MON</span>
+                                            <span><strong>B</strong>: 0.3 MON</span>
+                                            <span><strong>C</strong>: 0.1 MON</span>
+                                        </div>
                                     </Text>
                                     <Button
                                         size="small"

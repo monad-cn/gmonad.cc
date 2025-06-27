@@ -48,3 +48,17 @@ func (v *Validator) Update() error {
 func (v *Validator) GetLatest() error {
 	return db.Order("created_at desc").Find(v).Error
 }
+
+func GetStatistics() (uint64, string, uint, error) {
+	var testnet Testnet
+	if err := testnet.GetLatest(); err != nil {
+		return 0, "", 0, err
+	}
+
+	var validator Validator
+	if err := validator.GetLatest(); err != nil {
+		return 0, "", 0, err
+	}
+
+	return testnet.BlockNum, testnet.AvgBlockTime, validator.T1Validators, nil
+}
