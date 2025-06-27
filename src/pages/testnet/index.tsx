@@ -473,7 +473,7 @@ export default function TestnetPage() {
                                         </Tag>
                                     </div>
                                     <Text type="secondary" className={styles.faucetDescription}>
-                                        钱包需在 Ethereum 主网持有 ≥0.03 ETH，且完成 ≥3 笔主网交易；钱包内 MON 数量少于 5。符合条件可每 6 小时领取 0.1 MON。
+                                        钱包需在 Ethereum 主网持有 ≥0.03 ETH，且完成 ≥3 笔主网交易；钱包内 MON 数量少于 5。符合条件可每 6 小时领取 2 MON。
                                     </Text>
                                     <Button
                                         type="primary"
