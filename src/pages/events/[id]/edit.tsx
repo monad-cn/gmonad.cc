@@ -116,6 +116,7 @@ export default function EditEventPage() {
     [form]
   );
 
+  // 保存草稿的按钮暂时注释了
   const handleSaveDraft = async () => {
     try {
       await form.validateFields(['title']);
@@ -518,7 +519,7 @@ export default function EditEventPage() {
           <Link href="/" className={styles.cancelButton}>
             取消
           </Link>
-          <Button
+          {/* <Button
             className={styles.submitButton}
             loading={isSavingDraft}
             disabled={isSavingDraft}
@@ -526,7 +527,7 @@ export default function EditEventPage() {
           >
             <NotepadTextDashed className={styles.submitIcon} />
             {isSavingDraft ? '保存中...' : '保存草稿'}
-          </Button>
+          </Button> */}
           <Button
             type="primary"
             htmlType="submit"
