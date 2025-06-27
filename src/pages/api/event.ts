@@ -120,6 +120,77 @@ export const createEvent = async (params: CreateEventParams): Promise<EventResul
   }
 };
 
+export const saveEventDraft = async (params: CreateEventParams): Promise<EventResult> => {
+  try {
+    const body = {
+      title: params.title.trim(),
+      desc: params.description.trim(),
+      event_mode: params.event_mode,
+      location: params.event_mode === '线下活动' ? params.location.trim() : '',
+      link: params.event_mode === '线上活动' ? params.link.trim() : '',
+      start_time: params.start_time,
+      end_time: params.end_time,
+      cover_img: params.cover_img,
+      tags: params.tags ?? [],
+      twitter: params.twitter ?? '',
+      ...(params.max_participants != null && { max_participants: params.max_participants }),
+      ...(params.registration_deadline && { registration_deadline: params.registration_deadline }),
+      ...(typeof params.require_approval === 'boolean' && { require_approval: params.require_approval }),
+      ...(typeof params.allow_waitlist === 'boolean' && { allow_waitlist: params.allow_waitlist }),
+    };
+
+    const response = await apiRequest<EventResult>('/events/draft', 'POST', body);
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '保存草稿成功',
+        data: response.data as unknown as Event
+      };
+    }
+
+    return { success: false, message: response.message ?? '保存草稿失败' };
+  } catch (error: any) {
+    console.error('保存草稿异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
+export const updateEventDraft = async (eventId: string, params: UpdateEventParams): Promise<EventResult> => {
+  try {
+    const body = {
+      title: params.title.trim(),
+      desc: params.description.trim(),
+      event_mode: params.event_mode,
+      location: params.event_mode === '线下活动' ? params.location.trim() : '',
+      link: params.event_mode === '线上活动' ? params.link.trim() : '',
+      start_time: params.start_time,
+      end_time: params.end_time,
+      cover_img: params.cover_img,
+      tags: params.tags ?? [],
+      twitter: params.twitter ?? '',
+      ...(params.max_participants != null && { max_participants: params.max_participants }),
+      ...(params.registration_deadline && { registration_deadline: params.registration_deadline }),
+      ...(typeof params.require_approval === 'boolean' && { require_approval: params.require_approval }),
+      ...(typeof params.allow_waitlist === 'boolean' && { allow_waitlist: params.allow_waitlist }),
+    };
+
+    const response = await apiRequest<EventResult>(`/events/draft/${eventId}`, 'PUT', body);
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '活动草稿更新成功',
+        data: response.data as unknown as Event
+      };
+    }
+
+    return { success: false, message: response.message ?? '活动草稿更新失败' };
+  } catch (error: any) {
+    console.error('活动草稿更新异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
 
 export const updateEvent = async (eventId: string, params: UpdateEventParams): Promise<EventResult> => {
   try {
@@ -208,6 +279,30 @@ export const getEvents = async (params: GetEventsParams = {}): Promise<EventList
     return { success: false, message: response.message ?? '获取活动列表失败' };
   } catch (error: any) {
     console.error('获取活动列表异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
+export const getEventDrafts = async (params: GetEventsParams = {}): Promise<EventListResult> => {
+  try {
+    const query = new URLSearchParams();
+
+    query.append('page', (params.page ?? 1).toString());
+    query.append('page_size', (params.page_size ?? 6).toString());
+
+    const response = await apiRequest<EventListResult>(`/events/draft?${query.toString()}`, 'GET');
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '获取活动草稿列表成功',
+        data: response.data as unknown as PaginatedEventData
+      };
+    }
+
+    return { success: false, message: response.message ?? '获取活动草稿列表失败' };
+  } catch (error: any) {
+    console.error('获取活动草稿列表异常:', error);
     return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
   }
 };

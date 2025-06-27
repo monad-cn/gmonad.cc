@@ -118,6 +118,16 @@
   align-items: center;
 }
 
+.draftTableSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.draftTableSection h3 {
+  padding-left: 0.5rem;
+}
+
 /* Search Section */
 .searchSection {
   max-width: 1200px;
