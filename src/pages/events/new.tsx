@@ -31,8 +31,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 import { createEvent, saveEventDraft } from '../api/event';
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
+import dynamic from 'next/dynamic';
+
+const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
 
 export default function NewEventPage() {
   const { message } = AntdApp.useApp();
