@@ -60,3 +60,6 @@ export const apiRequest = async <T>(
     };
   }
 };
+
+
+export const StatisticsUrl = process.env.NEXT_PUBLIC_API_URL + "/statistics/stream"

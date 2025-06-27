@@ -126,13 +126,27 @@
 
 .statusCard {
     height: 100%;
+    position: relative;
     border-radius: 16px;
     border: 1px solid rgba(139, 92, 246, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     overflow: hidden;
     position: relative;
+
+    .externalIcon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        cursor: pointer;
+    }
+
+    .externalIcon:hover {
+        color: #8b5cf6;
+    }
 }
+
+
 
 .statusCard::before {
     content: "";
@@ -202,6 +216,12 @@
 .statusCardOrange .statusIcon {
     background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
+}
+
+.validatorTag {
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+    font-size: 10px;
 }
 
 .statusPulse {
