@@ -29,4 +29,5 @@ func SetupRouter(r *gin.Engine) {
 		blog.GET("/:id", controllers.GetArticle)
 		blog.GET("", controllers.QueryArticles)
 	}
+	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

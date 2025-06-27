@@ -1,6 +1,11 @@
 package controllers
 
-import "gmonad/models"
+import (
+	"encoding/json"
+	"fmt"
+	"gmonad/models"
+	"log"
+)
 
 // event
 type CreateEventRequest struct {
@@ -138,4 +143,22 @@ type UpdateArticleRequest struct {
 	Tags       []string `json:"tags"`
 	Author     string   `json:"author" binding:"required"`
 	Translator string   `json:"translator"`
+}
+
+// statistic
+type StatisticResponse struct {
+	BlockNum     uint64 `json:"block_num"`
+	AvgBlockTime string `json:"avg_block_time"`
+	Validators   uint   `json:"validators"`
+	Timestamp    int64  `json:"timestamp"`
+}
+
+func (s *StatisticResponse) ToSSE() string {
+	data, err := json.Marshal(s)
+	if err != nil {
+		log.Println("json marshal error:", err)
+		return ""
+	}
+	// 按照 SSE 协议格式：data: <json>\n\n
+	return fmt.Sprintf("data: %s\n\n", data)
 }
