@@ -13,6 +13,8 @@ func init() {
 	db.AutoMigrate(&Role{})
 	db.AutoMigrate(&Permission{})
 	db.AutoMigrate(&PermissionGroup{})
+	db.AutoMigrate(&Testnet{})
+	db.AutoMigrate(&Validator{})
 
 	InitRolesAndPermissions()
 }

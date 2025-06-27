@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "gmonad/config"
+	"gmonad/jobs"
 	"gmonad/logger"
 	"gmonad/middlewares"
 	"gmonad/routes"
@@ -15,6 +15,8 @@ func main() {
 	logFile := viper.GetString("log.file")
 	logLevel := viper.GetString("log.level")
 	logger.Init(logFile, logLevel)
+
+	jobs.HandleTask()
 
 	r := gin.Default()
 	r.Use(middlewares.Cors())

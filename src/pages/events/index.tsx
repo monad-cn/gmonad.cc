@@ -29,9 +29,10 @@ import {
 import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { getEvents, deleteEvent } from '../api/event';
+import { getEvents, deleteEvent, getEventDrafts } from '../api/event';
 import router from 'next/router';
 import { useSession } from 'next-auth/react';
+import EventDraftTable from '@/components/event/EventDraftTable';
 
 const { Search: AntSearch } = Input;
 const { Option } = Select;
@@ -46,10 +47,15 @@ export default function EventsPage() {
   const { message } = AntdApp.useApp();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageDraft, setCurrentPageDraft] = useState(1);
   const [pageSize, setPageSize] = useState(6);
+  const [pageSizeDraft, setPageSizeDraft] = useState(6);
   const [events, setEvents] = useState<any[]>([]);
+  const [eventDrafts, setEventDrafts] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
+  const [totalDraft, setTotalDraft] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingDraft, setLoadingDraft] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -121,6 +127,47 @@ export default function EventsPage() {
       setTotal(0);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 加载草稿列表
+  const loadEventDrafts = async (params?: {
+    page?: number;
+    page_size?: number;
+  }) => {
+    try {
+      setLoadingDraft(true);
+      const queryParams = {
+        page: params?.page || currentPage,
+        page_size: params?.page_size || pageSize,
+      };
+      const result = await getEventDrafts(queryParams);
+      if (result.success && result.data) {
+        // 处理后端返回的数据结构
+        if (result.data.events && Array.isArray(result.data.events)) {
+          setEventDrafts(result.data.events);
+          setCurrentPageDraft(result.data.page || 1);
+          setPageSizeDraft(result.data.page_size || 6);
+          setTotalDraft(result.data.total || result.data.events.length);
+        } else if (Array.isArray(result.data)) {
+          setEventDrafts(result.data);
+          setTotalDraft(result.data.length);
+        } else {
+          console.warn('API 返回的数据格式不符合预期:', result.data);
+          setEventDrafts([]);
+          setTotalDraft(0);
+        }
+      } else {
+        console.error('获取事件列表失败:', result.message);
+        setEventDrafts([]);
+        setTotalDraft(0);
+      }
+    } catch (error) {
+      console.error('加载事件列表异常:', error);
+      setEventDrafts([]);
+      setTotalDraft(0);
+    } finally {
+      setLoadingDraft(false);
     }
   };
 
@@ -239,6 +286,9 @@ export default function EventsPage() {
   useEffect(() => {
     // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
     loadEvents();
+    if (status === 'authenticated' && permissions.includes('event:write')) {
+      loadEventDrafts();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKeyword, selectedTag, sortOrder, currentPage, pageSize, statusFilter, locationKeyword, eventModeFilter, publishStatus]);
 
@@ -299,6 +349,23 @@ export default function EventsPage() {
           </div>
         </div>
       </div>
+
+      {status === 'authenticated' && permissions.includes('event:write') && eventDrafts.length > 0 &&
+        <div className={styles.draftTableSection}>
+          <EventDraftTable styles={styles} status={status} permissions={permissions}
+            data={eventDrafts} loading={loadingDraft}
+            pagination={{
+              current: currentPageDraft,
+              pageSize: pageSizeDraft,
+              total: totalDraft,
+              onChange: (page: number, pageSize?: number) => {
+                setCurrentPageDraft(page);
+                if (pageSize) {
+                  loadEventDrafts({ page, page_size: pageSize });
+                }
+              },
+            }} />
+        </div>}
 
       {/* Search and Filter Bar */}
       <div className={styles.searchSection}>

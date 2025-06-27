@@ -16,4 +16,5 @@ func init() {
 	}
 
 	ConnectDB()
+	ConnectChain()
 }
