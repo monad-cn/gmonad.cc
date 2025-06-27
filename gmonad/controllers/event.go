@@ -5,6 +5,7 @@ import (
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -210,7 +211,9 @@ func UpdateEventPublishStatus(c *gin.Context) {
 	}
 
 	// TODO: 2 -> 1 ?
+	now := time.Now()
 	event.PublishStatus = req.PublishStatus
+	event.PublishTime = &now
 
 	if err := event.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)

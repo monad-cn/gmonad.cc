@@ -27,6 +27,7 @@
     align-items: center;
     gap: 0.5rem;
     color: #6b7280;
+    font-size: 16px;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;

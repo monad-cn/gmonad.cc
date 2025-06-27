@@ -4,15 +4,17 @@ import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
 import {
   ArrowLeft,
   Calendar,
+  CheckCircle,
   Edit,
   Eye,
+  User,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useSession } from 'next-auth/react';
 import { updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
-import { getBlogById } from '@/pages/api/blog';
+import { getBlogById, updateBlogPublishStatus } from '@/pages/api/blog';
 import dayjs from 'dayjs';
 
 
@@ -35,19 +37,19 @@ export default function BlogDetailPage() {
 
   const permissions = session?.user?.permissions || [];
 
-  // const handleUpdatePublishStatus = async () => {
-  //   try {
-  //     const result = await updateEventPublishStatus(blog.ID, 2);
-  //     if (result.success) {
-  //       router.reload();
-  //       message.success(result.message);
-  //     } else {
-  //       message.error(result.message || '审核出错');
-  //     }
-  //   } catch (error) {
-  //     message.error('审核出错，请重试');
-  //   }
-  // };
+  const handleUpdatePublishStatus = async () => {
+    try {
+      const result = await updateBlogPublishStatus(blog.ID, 2);
+      if (result.success) {
+        router.reload();
+        message.success(result.message);
+      } else {
+        message.error(result.message || '审核出错');
+      }
+    } catch (error) {
+      message.error('审核出错，请重试');
+    }
+  };
 
   useEffect(() => {
     if (!router.isReady || !rId) return;
@@ -94,16 +96,20 @@ export default function BlogDetailPage() {
     );
   }
 
+  const isUnderReview = blog?.publish_status === 1;
+  const isPublisher = blog?.publisher_id?.toString() === session?.user?.uid;
+  const canReview = permissions.includes('blog:review');
+
   if (
     !blog ||
-    (blog.publish_status === 1 && !permissions.includes('blog:write'))
+    (isUnderReview && !isPublisher && !canReview)
   ) {
     return (
       <div className={styles.error}>
         <h2>博客不存在</h2>
-        <p>抱歉，找不到您要查看的活动</p>
-        <Link href="/events" className={styles.backButton}>
-          返回活动列表
+        <p>抱歉，找不到您要查看的博客</p>
+        <Link href="/blogs" className={styles.backButton}>
+          返回博客列表
         </Link>
       </div>
     );
@@ -136,8 +142,7 @@ export default function BlogDetailPage() {
             返回博客列表
           </Link>
           <div className={styles.headerActions}>
-            {status === 'authenticated' &&
-              permissions.includes('blog:write') ? (
+            {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -145,10 +150,10 @@ export default function BlogDetailPage() {
               >
                 编辑
               </Button>
-            ) : null}
-            {/* {event.publish_status === 1 &&
-            status === 'authenticated' &&
-            permissions.includes('event:review') ? (
+              : null}
+            {blog.publish_status === 1 &&
+              status === 'authenticated' &&
+              permissions.includes('event:review') ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -156,7 +161,7 @@ export default function BlogDetailPage() {
               >
                 审核通过
               </Button>
-            ) : null} */}
+            ) : null}
           </div>
         </div>
       </div>
@@ -165,7 +170,7 @@ export default function BlogDetailPage() {
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.heroLeft}>
-            {/* <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
 
               {blog.publish_status === 1 && (
                 <div
@@ -175,13 +180,17 @@ export default function BlogDetailPage() {
                   待审核
                 </div>
               )}
-            </div> */}
+            </div>
             <h1 className={styles.title}>{blog.title}</h1>
             <h3 className={styles.description}>{blog.description}</h3>
             <div className={styles.metaInfo}>
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
-                <div className={styles.metaText}>{formatTime(blog.CreatedAt)}</div>
+                <div className={styles.metaText}>{formatTime(blog.publish_time || blog.CreatedAt)}</div>
+              </div>
+               <div className={styles.metaItem}>
+                <User className={styles.metaIcon} />
+                <div className={styles.metaText}>{ blog.author || blog.publisher?.username || ''}</div>
               </div>
               <div className={styles.metaItem}>
                 <Eye className={styles.metaIcon} />

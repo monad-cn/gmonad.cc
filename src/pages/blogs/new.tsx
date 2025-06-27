@@ -113,7 +113,7 @@ export default function NewBlogPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/new" className={styles.backButton}>
+        <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回博客列表
         </Link>
@@ -299,7 +299,7 @@ export default function NewBlogPage() {
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Link href="/blogs" className={styles.cancelButton}>
             取消
           </Link>
           <Button

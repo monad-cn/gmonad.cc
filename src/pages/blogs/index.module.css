@@ -621,11 +621,12 @@
 
 .coverOverlay {
   position: absolute;
+  display: flex;
   top: 1rem;
   left: 1rem;
   right: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-start;
   z-index: 2;
 }

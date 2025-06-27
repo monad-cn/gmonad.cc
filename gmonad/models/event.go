@@ -25,6 +25,7 @@ type Event struct {
 	Participants         uint           `json:"participants"`
 	Status               uint           `gorm:"default:0" json:"status"`         // 0: 未开始，1: 进行中 2: 已结束 TODO: 定时器更新状态？
 	PublishStatus        uint           `gorm:"default:1" json:"publish_status"` // 0: 所有  1: 待审核 2: 已发布
+	PublishTime          *time.Time     `json:"publish_time"`
 	Twitter              string         `json:"twitter"`
 	UserId               uint           `json:"user_id"`
 	User                 User           `gorm:"foreignKey:UserId"`

@@ -145,6 +145,10 @@ type UpdateArticleRequest struct {
 	Translator string   `json:"translator"`
 }
 
+type UpdateBlogPublishStatusRequest struct {
+	PublishStatus uint `json:"publish_status"`
+}
+
 // statistic
 type StatisticResponse struct {
 	BlockNum     uint64 `json:"block_num"`
