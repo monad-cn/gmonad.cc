@@ -33,10 +33,13 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './edit.module.css';
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getEventById, updateEvent, updateEventDraft } from '@/pages/api/event';
+import dynamic from 'next/dynamic';
+
+const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
 
 type EventMode = '线上活动' | '线下活动';
 
