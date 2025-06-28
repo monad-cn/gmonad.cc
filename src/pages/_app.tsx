@@ -18,30 +18,8 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  const router = useRouter();
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Monad 中文社区';
-  // 定义不需要布局的页面
-  const noLayoutPages = ['/login'];
-
-  // 如果是登录或注册页，直接渲染页面，不应用布局
-  if (noLayoutPages.includes(router.pathname)) {
-    return (
-      <SessionProvider session={session}>
-        <ConfigProvider theme={customTheme}>
-          <AntdApp>
-            <Head>
-              <title>{appName}</title>
-            </Head>
-            <Component {...pageProps} />
-            {process.env.NEXT_PUBLIC_GA_ID && (
-              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-            )}
-          </AntdApp>
-        </ConfigProvider>
-      </SessionProvider>
-    );
-  }
-
+  
   return (
     <SessionProvider session={session}>
       <ConfigProvider theme={customTheme}>

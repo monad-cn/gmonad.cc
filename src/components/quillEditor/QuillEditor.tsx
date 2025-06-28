@@ -199,10 +199,10 @@ function QuillEditor(props: ReactQuillProps) {
           { indent: '-1' },
           { indent: '+1' },
         ],
-        ['link', 'image'],
+        // ['link', 'image'],
         ['clean'],
       ],
-      // TODO 图片上传, 插入图片后输入文字导致图片重载，页面闪动。 复制粘贴图片上传cloudinary 还没处理
+       
       // handlers: {
       //   image: async function imageHandler(this: any) {
       //     console.log('this', this);
