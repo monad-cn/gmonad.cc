@@ -38,7 +38,7 @@ const Auth: React.FC = () => {
     };
 
     tryLogin();
-  }, [code, session, router]);
+  }, [code, session]);
 
   const handleSignIn = () => {
     setLoading(true); // 点击按钮时设置为加载状态
