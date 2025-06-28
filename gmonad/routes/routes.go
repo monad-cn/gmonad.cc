@@ -28,6 +28,7 @@ func SetupRouter(r *gin.Engine) {
 		blog.PUT("/:id", middlewares.JWT("blog:write"), controllers.UpdateArticle)
 		blog.GET("/:id", controllers.GetArticle)
 		blog.GET("", controllers.QueryArticles)
+		blog.PUT("/:id/status", middlewares.JWT("blog:review"), controllers.UpdateArticlePublishStatus)
 	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

@@ -278,10 +278,10 @@ export default function EditEventPage() {
         layout="vertical"
         onFinish={handleSubmit}
         className={styles.form}
-        // initialValues={{
-        //     eventMode: '线上活动',
-        //     publishImmediately: true,
-        // }}
+      // initialValues={{
+      //     eventMode: '线上活动',
+      //     publishImmediately: true,
+      // }}
       >
         <div className={styles.formGrid}>
           {/* 左侧表单 */}
@@ -516,9 +516,9 @@ export default function EditEventPage() {
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
-          </Link>
+          </Button>
           {/* <Button
             className={styles.submitButton}
             loading={isSavingDraft}

@@ -62,7 +62,6 @@ export default function EventsPage() {
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
 
-  const [readyToLoad, setReadyToLoad] = useState(false);
   const { data: session, status } = useSession();
 
   const permissions = session?.user?.permissions || [];
@@ -276,7 +275,7 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && permissions.includes("event:review")) {
       setPublishStatus(0);
     } else if (status === 'unauthenticated') {
       setPublishStatus(2);

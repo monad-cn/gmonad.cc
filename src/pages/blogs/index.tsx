@@ -44,25 +44,22 @@ export function formatTime(isoTime: string): string {
 }
 
 export default function BlogsPage() {
-  const [viewMode, setViewMode] = useState<ViewMode>('grid'); // 视图模式
-  const [currentPage, setCurrentPage] = useState(1); // 当前页码
-  const [pageSize, setPageSize] = useState(6); // 每页条数
-  const [blogs, setBlogs] = useState<any[]>([]); // 博客列表
-  const [total, setTotal] = useState(0); // 总条数
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState(''); // 搜索关键词
-  const [selectedTag, setSelectedTag] = useState(''); // 标签
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc'); // 排序方式
-  const [wechatModalVisible, setWechatModalVisible] = useState(false); // 微信二维码弹窗
-  const [publishStatus, setPublishStatus] = useState(2); // 发布状态
-  const [readyToLoad, setReadyToLoad] = useState(false); // 是否加载
-  const { data: session, status } = useSession(); // 用户会话
-  const permissions = session?.user?.permissions || []; // 权限
-  const { message } = AntdApp.useApp();
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [wechatModalVisible, setWechatModalVisible] = useState(false);
+  const [publishStatus, setPublishStatus] = useState(2);
+  const { data: session, status } = useSession();
 
-  // 新增筛选状态
-  const [locationKeyword, setLocationKeyword] = useState(''); // 地点
-  const [blogModeFilter, setEventModeFilter] = useState(''); // 博客类型
+  const permissions = session?.user?.permissions || [];
+
+  const { message } = AntdApp.useApp();
 
   // 加载博客列表
   const loadBlogs = async (params?: {
@@ -71,6 +68,7 @@ export default function BlogsPage() {
     order?: 'asc' | 'desc';
     page?: number;
     page_size?: number;
+    publish_status?: number;
   }) => {
     try {
       setLoading(true);
@@ -81,56 +79,10 @@ export default function BlogsPage() {
         order: params?.order || sortOrder,
         page: params?.page || currentPage,
         page_size: params?.page_size || pageSize,
+        publish_status: params?.publish_status || publishStatus,
       };
 
-      // const result = await getBlogs(queryParams);
-      const result = {
-        success: true,
-        message: 'success',
-        data: {
-          blogs: [
-            {
-              ID: 1,
-              CreatedAt: '2025-06-24T02:04:51.570294+08:00',
-              UpdatedAt: '2025-06-24T02:04:51.570294+08:00',
-              DeletedAt: null,
-              title: 'Monad vs Rollups',
-              description:
-                'Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,0',
-              content:
-                '<p><span style="background-color: rgb(255, 255, 255); color: rgb(31, 35, 40);">Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,000 笔交易（TPS）的吞吐量，并在 1 秒内生成新的区块，提供单时隙最终性。</span></p>',
-              source_link: 'https://www.monad.xyz/post/monad-vs-rollups',
-              cover_img:
-                'https://res.cloudinary.com/gmonad/image/upload/v1750701711/monad_img/nu1t0aen0gxi2ak8msor.jpg',
-              tags: ['Rolluos', 'Monad', '并行执行'],
-              category: 'blog',
-              author: '小符',
-              translator: '',
-              publisher_id: 2,
-              publisher: {
-                ID: 2,
-                CreatedAt: '2025-06-21T20:40:55.271972+08:00',
-                UpdatedAt: '2025-06-24T19:44:20.010582+08:00',
-                DeletedAt: null,
-                email: 'smallfu666@gmail.com',
-                username: 'Phoouze',
-                avatar:
-                  'https://file-cdn.openbuild.xyz/users/36689/avatar/7012805-958944400.jpg',
-                github: 'phoouze',
-                events: null,
-                articles: null,
-              },
-              publish_time: null,
-              publish_status: 1,
-            },
-          ],
-          guides: null,
-          page: 1,
-          page_size: 6,
-          total: 1,
-        },
-      };
-
+      const result = await getBlogs(queryParams);
       if (result.success && result.data) {
         // 处理后端返回的数据结构
         if (result.data.blogs && Array.isArray(result.data.blogs)) {
@@ -199,8 +151,19 @@ export default function BlogsPage() {
   };
 
   useEffect(() => {
+    if (status === 'authenticated' && permissions.includes("blog:review")) {
+      // 只有审核人员才可以看到所有博客(待审核/已发布)
+      // TODO：个人主页，博客发布者可以在自己的主页看到待审核博客
+      setPublishStatus(0);
+    } else {
+      setPublishStatus(2);
+    }
+  });
+
+  useEffect(() => {
     loadBlogs();
-  }, [status, searchKeyword]);
+  }, [searchKeyword, status, publishStatus, currentPage, pageSize]);
+
 
   return (
     <div className={styles.container}>
@@ -270,11 +233,11 @@ export default function BlogsPage() {
           <div className={styles.emptyIcon}>📖</div>
           <div className={styles.emptyTitle}>暂无博客</div>
           <div className={styles.emptyDescription}>
-            {searchKeyword || selectedTag || locationKeyword || blogModeFilter
+            {searchKeyword || selectedTag
               ? '没有找到符合条件的博客'
               : '还没有创建任何博客'}
           </div>
-          {!searchKeyword && !selectedTag && !blogModeFilter && (
+          {!searchKeyword && !selectedTag && (
             <Link href="/blogs/new" className={styles.createButton}>
               <Plus className={styles.buttonIcon} />
               创建第一个博客
@@ -307,18 +270,8 @@ export default function BlogsPage() {
                         <Tag className={styles.noPublishStatus}>待审核</Tag>
                       )}
                       <div className={styles.cardActions}>
-                        <Button
-                          className={styles.actionIconButton}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            router.push(`/blogs/${blog.ID}/edit`);
-                          }}
-                          icon={<Edit className={styles.actionIcon} />}
-                          title="编辑活动"
-                        />
-
-                        {/* {status === 'authenticated' &&
-                        blog.publisher_id.toString() === session.user?.uid ? (
+                        {/* 只有博客发布者才可以编辑 */}
+                        {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -327,8 +280,9 @@ export default function BlogsPage() {
                             }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
-                          />
-                        ) : null}
+                          /> : null
+                        }
+
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
@@ -340,7 +294,7 @@ export default function BlogsPage() {
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享博客"
-                        /> */}
+                        />
                       </div>
                     </div>
                   </div>
@@ -454,14 +408,8 @@ export default function BlogsPage() {
 
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
-                    {/* <Button
-                      type="text"
-                      size="small"
-                      icon={<Eye className={styles.listActionIcon} />}
-                      title="查看详情"
-                    /> */}
-                    {status === 'authenticated' &&
-                    permissions.includes('blog:write') ? (
+                    {/* 只有博客发布者才可以编辑 */}
+                    {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
                       <Button
                         type="text"
                         size="small"
@@ -469,7 +417,8 @@ export default function BlogsPage() {
                         title="编辑博客"
                         onClick={() => router.push(`/blogs/${blog.ID}/edit`)}
                       />
-                    ) : null}
+                      : null
+                    }
                     <Button
                       type="text"
                       size="small"
@@ -483,8 +432,8 @@ export default function BlogsPage() {
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
-                    {status === 'authenticated' &&
-                    permissions.includes('blog:delete') ? (
+                    {/* 只有博客发布者才可以删除*/}
+                    {status === 'authenticated' && blog.publisher_id?.toString() === session?.user?.uid  ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"

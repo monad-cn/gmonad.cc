@@ -5,6 +5,7 @@ import (
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,6 @@ import (
 func CreateArticle(c *gin.Context) {
 	var req CreateArticleRequest
 
-	// 将 JSON 请求体绑定到 event 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -160,6 +160,45 @@ func UpdateArticle(c *gin.Context) {
 	article.CoverImg = req.CoverImg
 	article.Tags = req.Tags
 	article.Author = req.Author
+
+	if err := article.Update(); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update article", nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "success", article)
+}
+
+func UpdateArticlePublishStatus(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	var req UpdateBlogPublishStatusRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid input data", nil)
+		return
+	}
+
+	var article models.Article
+	article.ID = uint(id)
+
+	if err = article.GetByID(uint(id)); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid artcile", nil)
+		return
+	}
+
+	if article.PublishStatus != 1 && article.PublishStatus != 2 {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid status", nil)
+		return
+	}
+
+	// TODO: 2 -> 1 ?
+	now := time.Now()
+	article.PublishStatus = req.PublishStatus
+	article.PublishTime = &now
 
 	if err := article.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update article", nil)

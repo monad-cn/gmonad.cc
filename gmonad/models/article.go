@@ -23,6 +23,7 @@ type Article struct {
 	Publisher     User           `gorm:"foreignKey:PublisherId" json:"publisher"`
 	PublishTime   *time.Time     `json:"publish_time"`
 	PublishStatus uint           `gorm:"default:1" json:"publish_status"` // 0:全部 1:待审核 2:已发布
+	ViewCount     uint           `gorm:"default:0" json:"view_count"`
 }
 
 func (a *Article) Create() error {
@@ -30,7 +31,13 @@ func (a *Article) Create() error {
 }
 
 func (a *Article) GetByID(id uint) error {
-	return db.First(a, id).Error
+	if err := db.Preload("Publisher").First(a, id).Error; err != nil {
+		return err
+	}
+
+	// 更新浏览量（+1）
+	// TODO: handle in controller
+	return db.Model(a).Update("view_count", gorm.Expr("view_count + ?", 1)).Error
 }
 
 func (a *Article) Update() error {

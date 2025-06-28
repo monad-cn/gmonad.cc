@@ -432,9 +432,9 @@ export default function NewEventPage() {
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
-          </Link>
+          </Button>
           <Button
             className={styles.submitButton}
             loading={isSavingDraft}

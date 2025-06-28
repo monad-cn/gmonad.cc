@@ -68,16 +68,16 @@ func InitRolesAndPermissions() error {
 		return p, err
 	}
 
-	// 博客创作者：创作博客
+	// 博客创作者：创作博客，删除博客
 	blogWrite, _ := getPermByName("blog:write")
-	err := db.Model(&permissionGroups[0]).Association("Permissions").Append(&blogWrite)
+	blogDelete, _ := getPermByName("blog:delete")
+	err := db.Model(&permissionGroups[0]).Association("Permissions").Append(&blogWrite, &blogDelete)
 	if err != nil {
 		return err
 	}
 
 	// 博客管理员：创作博客，审核博客，发布博客
 	blogReview, _ := getPermByName("blog:review")
-	blogDelete, _ := getPermByName("blog:delete")
 	blogPublish, _ := getPermByName("blog:publish")
 	err = db.Model(&permissionGroups[1]).Association("Permissions").Append(&blogWrite, &blogReview, &blogDelete, &blogPublish)
 	if err != nil {
