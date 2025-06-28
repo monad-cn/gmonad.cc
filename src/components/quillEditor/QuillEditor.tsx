@@ -1,13 +1,14 @@
+"use client"
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { App as AntdApp, } from 'antd'
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
-import ReactQuill from 'react-quill-new';
 import type { DeltaStatic } from 'react-quill-new';
+import type ReactQuillType from 'react-quill-new';
 
-// const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-type ReactQuillProps = React.ComponentProps<typeof ReactQuill>;
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
+type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
 type DeltaOperation = {
   insert?: string | { [key: string]: any };
   delete?: number;
@@ -199,7 +200,7 @@ function QuillEditor(props: ReactQuillProps) {
           { indent: '-1' },
           { indent: '+1' },
         ],
-        // ['link', 'image'],
+        ['link', 'image'],
         ['clean'],
       ],
        
@@ -248,115 +249,115 @@ function QuillEditor(props: ReactQuillProps) {
   };
 
   // 监听粘贴事件并处理图片
-  const handlePaste = useCallback(async (event: React.ClipboardEvent<HTMLDivElement>) => {
-    // 检查剪贴板中是否有图片文件
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        event.preventDefault(); // 阻止默认的粘贴行为
-        const file = items[i].getAsFile();
-        if (file) {
-          let hideLoading: any;
-          try {
-            if (!quillRef.current) {
-              console.error("Quill editor instance is not available during paste.");
-              return;
-            }
-            const { uploadImgToCloud } = await import('@/lib/cloudinary');
-            hideLoading = message.loading('图片上传中...', 0);
-            const result = await uploadImgToCloud(file);
-            // const result: any = {}
-            // result.secure_url = 'http://res.cloudinary.com/gmonad/image/upload/v1750928186/monad_img/rzrpgz11sasfrcfmpaug.avif'
-            if (result && result.secure_url) {
-              const quill = quillRef.current?.getEditor();
-              const range = quill.getSelection();
-              quill.insertEmbed(range.index, 'image', result.secure_url);
-              quill.setSelection(range.index + 1);
-              hideLoading();
-              message.success('图片上传成功');
-            } else {
-              hideLoading();
-              message.error('图片上传失败，请重试');
-            }
-          } catch (error) {
-            if (hideLoading) hideLoading();
-            message.error('图片上传失败，请检查网络连接');
-          }
-        }
-        return
-      }
-    }
-  }, []);
+  // const handlePaste = useCallback(async (event: React.ClipboardEvent<HTMLDivElement>) => {
+  //   // 检查剪贴板中是否有图片文件
+  //   const items = event.clipboardData.items;
+  //   for (let i = 0; i < items.length; i++) {
+  //     if (items[i].type.indexOf('image') !== -1) {
+  //       event.preventDefault(); // 阻止默认的粘贴行为
+  //       const file = items[i].getAsFile();
+  //       if (file) {
+  //         let hideLoading: any;
+  //         try {
+  //           if (!quillRef.current) {
+  //             console.error("Quill editor instance is not available during paste.");
+  //             return;
+  //           }
+  //           const { uploadImgToCloud } = await import('@/lib/cloudinary');
+  //           hideLoading = message.loading('图片上传中...', 0);
+  //           const result = await uploadImgToCloud(file);
+  //           // const result: any = {}
+  //           // result.secure_url = 'http://res.cloudinary.com/gmonad/image/upload/v1750928186/monad_img/rzrpgz11sasfrcfmpaug.avif'
+  //           if (result && result.secure_url) {
+  //             const quill = quillRef.current?.getEditor();
+  //             const range = quill.getSelection();
+  //             quill.insertEmbed(range.index, 'image', result.secure_url);
+  //             quill.setSelection(range.index + 1);
+  //             hideLoading();
+  //             message.success('图片上传成功');
+  //           } else {
+  //             hideLoading();
+  //             message.error('图片上传失败，请重试');
+  //           }
+  //         } catch (error) {
+  //           if (hideLoading) hideLoading();
+  //           message.error('图片上传失败，请检查网络连接');
+  //         }
+  //       }
+  //       return
+  //     }
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      // 监听 Quill 的文本变化事件
-      quill.on('text-change', (delta: DeltaStatic, oldDelta: DeltaStatic, source: 'user' | 'api') => {
-        // if (source === 'user') {
-        //   // 检查是否插入了 data:image 格式的图片
-        //   const ops = delta.ops || [];
-        //   ops.forEach((op: DeltaOperation, index: number) => {
-        //     console.log('op', op)
-        //     if (op.insert && typeof op.insert === 'object' && op.insert.image) {
-        //       const imageUrl = op.insert.image;
-        //       if (imageUrl.startsWith('data:image')) {
-        //         // 删除这个 data:image 图片
-        //         const currentContents = quill.getContents();
-        //         let position = 0;
-        //         for (let i = 0; i < index; i++) {
-        //           if (typeof currentContents.ops[i].insert === 'string') {
-        //             position += currentContents.ops[i].insert.length;
-        //           } else {
-        //             position += 1;
-        //           }
-        //         }
-        //         quill.deleteText(position, 1);
-        //         console.log('delete')
-        //       }
-        //     }
-        //   });
-        // }
-        if (source === 'user') {
-          const ops = delta.ops || [];
-          let hasBase64Image = false;
-          let imageIndex = -1;
+  // useEffect(() => {
+  //   if (quillRef.current) {
+  //     const quill = quillRef.current.getEditor();
+  //     // 监听 Quill 的文本变化事件
+  //     quill.on('text-change', (delta: DeltaStatic, oldDelta: DeltaStatic, source: 'user' | 'api') => {
+  //       // if (source === 'user') {
+  //       //   // 检查是否插入了 data:image 格式的图片
+  //       //   const ops = delta.ops || [];
+  //       //   ops.forEach((op: DeltaOperation, index: number) => {
+  //       //     console.log('op', op)
+  //       //     if (op.insert && typeof op.insert === 'object' && op.insert.image) {
+  //       //       const imageUrl = op.insert.image;
+  //       //       if (imageUrl.startsWith('data:image')) {
+  //       //         // 删除这个 data:image 图片
+  //       //         const currentContents = quill.getContents();
+  //       //         let position = 0;
+  //       //         for (let i = 0; i < index; i++) {
+  //       //           if (typeof currentContents.ops[i].insert === 'string') {
+  //       //             position += currentContents.ops[i].insert.length;
+  //       //           } else {
+  //       //             position += 1;
+  //       //           }
+  //       //         }
+  //       //         quill.deleteText(position, 1);
+  //       //         console.log('delete')
+  //       //       }
+  //       //     }
+  //       //   });
+  //       // }
+  //       if (source === 'user') {
+  //         const ops = delta.ops || [];
+  //         let hasBase64Image = false;
+  //         let imageIndex = -1;
 
-          ops.forEach((op: DeltaOperation, index: number) => {
-            if (
-              typeof op.insert === 'object' &&
-              op.insert !== null &&
-              'image' in op.insert &&
-              typeof op.insert.image === 'string' &&
-              op.insert.image.startsWith('data:image')
-            ) {
-              hasBase64Image = true;
-              imageIndex = index;
-            }
-          });
+  //         ops.forEach((op: DeltaOperation, index: number) => {
+  //           if (
+  //             typeof op.insert === 'object' &&
+  //             op.insert !== null &&
+  //             'image' in op.insert &&
+  //             typeof op.insert.image === 'string' &&
+  //             op.insert.image.startsWith('data:image')
+  //           ) {
+  //             hasBase64Image = true;
+  //             imageIndex = index;
+  //           }
+  //         });
 
-          if (hasBase64Image) {
-            // 找到并删除 base64 图片
-            const contents = quill.getContents();
-            const newOps = contents.ops?.filter((op: any) => {
-              return !(op.insert && op.insert.image && op.insert.image.startsWith('data:image'));
-            });
+  //         if (hasBase64Image) {
+  //           // 找到并删除 base64 图片
+  //           const contents = quill.getContents();
+  //           const newOps = contents.ops?.filter((op: any) => {
+  //             return !(op.insert && op.insert.image && op.insert.image.startsWith('data:image'));
+  //           });
 
-            if (newOps) {
-              quill.setContents({ ops: newOps });
-            }
-          }
-        }
-      });
-    }
-  }, []);
+  //           if (newOps) {
+  //             quill.setContents({ ops: newOps });
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
+  // }, []);
+  // onPaste={handlePaste}
 
   return (
-    <div onPaste={handlePaste}
+    <div 
       className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
     >
       <ReactQuill
-        ref={quillRef}
         placeholder="请输入..."
         {...props}
         modules={props.modules || modulesDefault}
