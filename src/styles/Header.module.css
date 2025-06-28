@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 1rem 1rem;
 }
 
 .logoInfo {
@@ -175,9 +175,182 @@
   }
 }
 
+/* 移动端导航菜单 */
+.mobileNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobileMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobileMenuButton:hover {
+  background: #f3f4f6;
+  border-color: #7c3aed;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+
+.mobileMenuButton:active {
+  transform: scale(0.95);
+}
+
+.mobileMenuIcon {
+  width: 20px;
+  height: 20px;
+  color: #374151;
+}
+
+/* 移动端菜单内容样式 */
+.mobileMenuContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobileMenuSection {
+  margin-bottom: 0;
+}
+
+.mobileMenuSectionTitle {
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.mobileMenuSectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 2rem;
+  height: 2px;
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+  border-radius: 1px;
+}
+
+.mobileMenuLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobileMenuLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.mobileMenuLink:hover {
+  background: rgba(139, 92, 246, 0.05);
+  border-color: rgba(139, 92, 246, 0.2);
+  color: #7c3aed;
+  transform: translateX(4px);
+}
+
+.mobileMenuLink span:first-child {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  text-align: center;
+}
+
+.mobileMenuLink span:last-child {
+  font-weight: 500;
+}
+
+/* 移动端菜单响应式优化 */
+@media (max-width: 480px) {
+  .mobileMenuContent {
+    gap: 1.5rem;
+  }
+  
+  .mobileMenuLink {
+    padding: 0.6rem 0.75rem;
+    gap: 0.6rem;
+  }
+  
+  .mobileMenuLink span:first-child {
+    font-size: 1rem;
+    width: 1.25rem;
+  }
+  
+  .mobileMenuSectionTitle {
+    font-size: 0.95rem;
+  }
+}
+
+/* 移动端 Header 优化 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0;
+  }
+  
+  .headerContent {
+    padding: 0.75rem 1rem;
+    min-height: 60px;
+  }
+  
+  .container {
+    padding: 0;
+  }
+  
+  .logoTitle {
+    font-size: 1.2rem !important;
+  }
+  
+  .logoInfo {
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    padding: 0.6rem 0.75rem;
+    min-height: 56px;
+  }
+  
+  .logoTitle {
+    font-size: 1.1rem !important;
+  }
+  
+  .mobileMenuButton {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .mobileMenuIcon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* Responsive Design */
 @media screen and (min-width: 768px) {
   .nav {
     display: flex;
+  }
+  
+  .mobileNav {
+    display: none;
   }
 }

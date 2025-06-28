@@ -1,11 +1,14 @@
-import { ChevronDown } from 'lucide-react';
-import { Image } from 'antd';
+import { ChevronDown, Menu as MenuIcon } from 'lucide-react';
+import { Image, Drawer } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
 import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
+import { useState } from 'react';
 
 export default function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -82,8 +85,99 @@ export default function Header() {
 
             <Auth />
           </nav>
+          
+          {/* 移动端导航 */}
+          <div className={styles.mobileNav}>
+            <Auth />
+            <button 
+              className={styles.mobileMenuButton}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <MenuIcon className={styles.mobileMenuIcon} />
+            </button>
+          </div>
         </div>
       </div>
+      
+      {/* 移动端菜单抽屉 */}
+      <Drawer
+        title={
+          <div style={{ 
+            background: 'linear-gradient(135deg, #1f2937, #7c3aed)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+            fontWeight: 'bold',
+            fontSize: '1.1rem'
+          }}>
+            导航菜单
+          </div>
+        }
+        placement="right"
+        onClose={() => setMobileMenuOpen(false)}
+        open={mobileMenuOpen}
+        width={280}
+        styles={{
+          body: { padding: '1.5rem 1rem' },
+          header: { borderBottom: '1px solid #f3f4f6', paddingBottom: '1rem' }
+        }}
+      >
+        <div className={styles.mobileMenuContent}>
+          <div className={styles.mobileMenuSection}>
+            <h3 className={styles.mobileMenuSectionTitle}>生态系统</h3>
+            <div className={styles.mobileMenuLinks}>
+              <Link href="/community" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🏗️</span>
+                <span>社区项目</span>
+              </Link>
+              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🛠️</span>
+                <span>开发工具</span>
+              </Link>
+              <Link href="https://testnet.monadexplorer.com" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🔍</span>
+                <span>区块浏览器</span>
+              </Link>
+            </div>
+          </div>
+          
+          <div className={styles.mobileMenuSection}>
+            <h3 className={styles.mobileMenuSectionTitle}>开发者</h3>
+            <div className={styles.mobileMenuLinks}>
+              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>📖</span>
+                <span>开发文档</span>
+              </Link>
+              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>💻</span>
+                <span>示例代码</span>
+              </Link>
+              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>⚙️</span>
+                <span>SDK 工具</span>
+              </Link>
+            </div>
+          </div>
+          
+          <div className={styles.mobileMenuSection}>
+            <h3 className={styles.mobileMenuSectionTitle}>资源</h3>
+            <div className={styles.mobileMenuLinks}>
+              <Link href="/blogs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>📝</span>
+                <span>博客</span>
+              </Link>
+              <Link href="/events" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🎉</span>
+                <span>活动</span>
+              </Link>
+              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>❓</span>
+                <span>常见问题</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Drawer>
       {/* Floating News Banner */}
       {/* {showNewsBanner && (
         <div className={styles.floatingNewsBanner}>
