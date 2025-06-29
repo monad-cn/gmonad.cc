@@ -893,6 +893,7 @@
 
 .milestoneIconContent {
   position: relative;
+  display: flex;
   z-index: 2;
 }
 
@@ -1146,7 +1147,7 @@
 .memberTwitter {
   margin-top: 10px;
   color: #6b7280;
-  font-size: 0.8rem;
+  font-size: 1rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -1229,6 +1230,7 @@
 
 .ctaPrimaryButton:hover {
   background: #f3f4f6;
+  color: #7c3aed;
   transform: scale(1.1);
 }
 
@@ -1248,6 +1250,7 @@
 
 .ctaSecondaryButton:hover {
   background: rgba(255, 255, 255, 0.1);
+  color: white;
   transform: scale(1.1);
 }
 
