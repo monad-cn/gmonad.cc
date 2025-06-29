@@ -725,7 +725,7 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
     .content {
-        padding: 24px 16px;
+        padding: 24px 16px 0 16px;
     }
 
     .heroSection {
