@@ -66,7 +66,7 @@ export default function Home() {
     {
       icon: <Zap className={styles.featureIcon} />,
       title: '极致性能',
-      description: '并行执行引擎，TPS达到10,000+',
+      description: '并行执行引擎，TPS达到10,000+, 出块时间达0.5s',
     },
     {
       icon: <Shield className={styles.featureIcon} />,
@@ -295,7 +295,7 @@ export default function Home() {
       <section className={styles.milestones}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>里程碑</h2>
+            <h2 className={styles.sectionTitle}>Monad 里程碑</h2>
           </div>
           <div className={styles.timeline}>
             <div className={styles.timelineLine}></div>
