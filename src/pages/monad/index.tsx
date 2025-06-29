@@ -58,9 +58,8 @@ export default function MonadIntro() {
 
   const roadmapItems = [
     { phase: "Phase 1", title: "测试网上线", status: "completed", date: "2024 Q1" },
-    { phase: "Phase 2", title: "主网启动", status: "current", date: "2024 Q2" },
-    { phase: "Phase 3", title: "生态扩展", status: "upcoming", date: "2024 Q3" },
-    { phase: "Phase 4", title: "跨链互操作", status: "upcoming", date: "2024 Q4" },
+    { phase: "Phase 2", title: "生态扩展", status: "upcoming", date: "2024 Q3" },
+    { phase: "Phase 3", title: "跨链互操作", status: "upcoming", date: "2024 Q4" },
   ]
 
   return (
