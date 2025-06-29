@@ -4,10 +4,13 @@ import styles from '../styles/Header.module.css';
 import Link from 'next/link';
 import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // 使用 useMemo 确保 Auth 组件只创建一次，避免重复渲染
+  const authComponent = useMemo(() => <Auth />, []);
   
   // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
@@ -83,12 +86,12 @@ export default function Header() {
               </div>
             </Dropdown>
 
-            <Auth />
+            {authComponent}
           </nav>
           
           {/* 移动端导航 */}
           <div className={styles.mobileNav}>
-            <Auth />
+            {authComponent}
             <button 
               className={styles.mobileMenuButton}
               onClick={() => setMobileMenuOpen(true)}

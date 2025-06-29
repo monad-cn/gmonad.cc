@@ -62,11 +62,20 @@ export default NextAuth({
 
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 1 day - 减少 session 更新频率
   },
 
   pages: {
     signIn: '/login',
+  },
+
+  // 减少不必要的请求
+  events: {
+    async signIn(message) {
+      // 登录成功时的处理
+      console.log('User signed in:', message.user.email);
+    },
   },
 
   callbacks: {

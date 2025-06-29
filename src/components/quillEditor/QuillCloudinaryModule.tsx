@@ -137,3 +137,4 @@ export class QuillCloudinaryModule {
 }
 
 // 模块将通过 QuillEditor 动态注册，避免循环引用
+// 注意：此模块需要通过动态导入方式使用，以避免与主编辑器组件的循环依赖

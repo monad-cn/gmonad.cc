@@ -4,8 +4,7 @@ import { App as AntdApp } from 'antd';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
-import type ReactQuillType from 'react-quill-new';
-// import { QuillCloudinaryModule } from './QuillCloudinaryModule';
+import type ReactQuillType from 'react-quill-new'; 
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
 type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
@@ -187,6 +186,41 @@ function QuillEditor(props: ReactQuillProps) {
     };
   }, [isFullscreen]);
 
+  // 状态管理模块注册
+  const [isModuleRegistered, setIsModuleRegistered] = useState(false);
+  const [isEditorReady, setIsEditorReady] = useState(false);
+  
+  // 动态注册Cloudinary模块到Quill
+  useEffect(() => {
+    let mounted = true;
+    
+    const initializeModule = async () => {
+      try {
+        // 使用单例模式的注册管理器
+        const QuillModuleRegistry = (await import('./QuillModuleRegistry')).default;
+        const registry = QuillModuleRegistry.getInstance();
+        
+        const registered = await registry.ensureModuleRegistered();
+        
+        if (mounted) {
+          setIsModuleRegistered(registered);
+          setIsEditorReady(true);
+        }
+      } catch (error) {
+        console.warn('Failed to initialize Quill module:', error);
+        if (mounted) {
+          setIsEditorReady(true); // 即使失败也允许编辑器加载
+        }
+      }
+    };
+
+    initializeModule();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   // Quill模块配置中包含Cloudinary上传模块
   const modulesWithCloudinary = useCallback(() => {
     const defaultModules = props.modules || {
@@ -206,48 +240,35 @@ function QuillEditor(props: ReactQuillProps) {
       },
     };
 
-    return {
-      ...defaultModules,
-      cloudinaryUploader: {
-        onError: handleImageError,
-      },
-    };
-  }, [props.modules, handleImageError]);
-
-  // 动态注册Cloudinary模块到Quill
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const registerModule = async () => {
-        try {
-          const [ReactQuillModule, CloudinaryModule] = await Promise.all([
-            import('react-quill-new'),
-            import('./QuillCloudinaryModule')
-          ]);
-          
-          const Quill = ReactQuillModule.default?.Quill || (window as any).Quill;
-          
-          if (Quill && !Quill.imports?.['modules/cloudinaryUploader']) {
-            Quill.register('modules/cloudinaryUploader', CloudinaryModule.QuillCloudinaryModule);
-          }
-        } catch (error) {
-          console.warn('Failed to register Quill module:', error);
-        }
+    // 只有在模块注册成功后才添加cloudinaryUploader配置
+    if (isModuleRegistered) {
+      return {
+        ...defaultModules,
+        cloudinaryUploader: {
+          onError: handleImageError,
+        },
       };
-      
-      registerModule();
     }
-  }, []);
+
+    return defaultModules;
+  }, [props.modules, handleImageError, isModuleRegistered]);
 
   return (
     <div
       className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
     >
-      <ReactQuill
-        placeholder="请输入..."
-        {...props}
-        modules={modulesWithCloudinary()}
-        className={isFullscreen ? styles.fullscreenEditor : ''}
-      />
+      {isEditorReady ? (
+        <ReactQuill
+          placeholder="请输入..."
+          {...props}
+          modules={modulesWithCloudinary()}
+          className={isFullscreen ? styles.fullscreenEditor : ''}
+        />
+      ) : (
+        <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+          正在加载编辑器...
+        </div>
+      )}
     </div>
   );
 }
