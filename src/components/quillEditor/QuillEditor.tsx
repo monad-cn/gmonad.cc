@@ -1,20 +1,15 @@
-"use client"
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { App as AntdApp, } from 'antd'
+'use client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { App as AntdApp } from 'antd';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
-import type { DeltaStatic } from 'react-quill-new';
 import type ReactQuillType from 'react-quill-new';
+// import { QuillCloudinaryModule } from './QuillCloudinaryModule';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
 type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
-type DeltaOperation = {
-  insert?: string | { [key: string]: any };
-  delete?: number;
-  retain?: number | Record<string, any>;
-  attributes?: Record<string, any>;
-};
+
 
 const FULLSCREEN_ICONS = {
   ENTER: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,7 +30,11 @@ const FULLSCREEN_ICONS = {
 function QuillEditor(props: ReactQuillProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { message } = AntdApp.useApp();
-  const quillRef = useRef<any>(null);
+  
+  // 图片上传错误处理
+  const handleImageError = useCallback((error: string) => {
+    message.error(error);
+  }, [message]);
 
   useEffect(() => {
     let fullscreenBtn: HTMLButtonElement | null = null;
@@ -188,179 +187,65 @@ function QuillEditor(props: ReactQuillProps) {
     };
   }, [isFullscreen]);
 
-  // 重点：handler 用 function，不要用箭头函数
-  const modulesDefault = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, 4, 5, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [
-          { list: 'ordered' },
-          { list: 'bullet' },
-          { indent: '-1' },
-          { indent: '+1' },
+  // Quill模块配置中包含Cloudinary上传模块
+  const modulesWithCloudinary = useCallback(() => {
+    const defaultModules = props.modules || {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, false] }],
+          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          [
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { indent: '-1' },
+            { indent: '+1' },
+          ],
+          ['link', 'image'],
+          ['clean'],
         ],
-        ['link', 'image'],
-        ['clean'],
-      ],
-       
-      // handlers: {
-      //   image: async function imageHandler(this: any) {
-      //     console.log('this', this);
-      //     const input = document.createElement('input');
-      //     input.setAttribute('type', 'file');
-      //     input.setAttribute('accept', 'image/*');
-      //     input.click();
+      },
+    };
 
-      //     input.onchange = async () => {
-      //       const file = input.files?.[0];
-      //       if (file) {
-      //         const { uploadImgToCloud } = await import('@/lib/cloudinary');
+    return {
+      ...defaultModules,
+      cloudinaryUploader: {
+        onError: handleImageError,
+      },
+    };
+  }, [props.modules, handleImageError]);
 
-      //         let hideLoading: any;
-      //         try {
-      //           hideLoading = message.loading('图片上传中...', 0);
-      //           const result = await uploadImgToCloud(file);
-      //           if (result && result.secure_url) {
-      //             const range = this.quill.getSelection();
-      //             this.quill.insertEmbed(
-      //               range.index,
-      //               'image',
-      //               result.secure_url
-      //             );
-      //             this.quill.setSelection(range.index + 1);
-      //             hideLoading();
-
-      //             message.success('图片上传成功');
-      //           } else {
-      //             hideLoading();
-      //             message.error('图片上传失败，请重试');
-      //           }
-      //         } catch (error) {
-      //           if (hideLoading) hideLoading();
-
-      //           message.error('图片上传失败，请检查网络连接');
-      //         }
-      //       }
-      //     };
-      //   },
-      // },
-    },
-  };
-
-  // 监听粘贴事件并处理图片
-  // const handlePaste = useCallback(async (event: React.ClipboardEvent<HTMLDivElement>) => {
-  //   // 检查剪贴板中是否有图片文件
-  //   const items = event.clipboardData.items;
-  //   for (let i = 0; i < items.length; i++) {
-  //     if (items[i].type.indexOf('image') !== -1) {
-  //       event.preventDefault(); // 阻止默认的粘贴行为
-  //       const file = items[i].getAsFile();
-  //       if (file) {
-  //         let hideLoading: any;
-  //         try {
-  //           if (!quillRef.current) {
-  //             console.error("Quill editor instance is not available during paste.");
-  //             return;
-  //           }
-  //           const { uploadImgToCloud } = await import('@/lib/cloudinary');
-  //           hideLoading = message.loading('图片上传中...', 0);
-  //           const result = await uploadImgToCloud(file);
-  //           // const result: any = {}
-  //           // result.secure_url = 'http://res.cloudinary.com/gmonad/image/upload/v1750928186/monad_img/rzrpgz11sasfrcfmpaug.avif'
-  //           if (result && result.secure_url) {
-  //             const quill = quillRef.current?.getEditor();
-  //             const range = quill.getSelection();
-  //             quill.insertEmbed(range.index, 'image', result.secure_url);
-  //             quill.setSelection(range.index + 1);
-  //             hideLoading();
-  //             message.success('图片上传成功');
-  //           } else {
-  //             hideLoading();
-  //             message.error('图片上传失败，请重试');
-  //           }
-  //         } catch (error) {
-  //           if (hideLoading) hideLoading();
-  //           message.error('图片上传失败，请检查网络连接');
-  //         }
-  //       }
-  //       return
-  //     }
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (quillRef.current) {
-  //     const quill = quillRef.current.getEditor();
-  //     // 监听 Quill 的文本变化事件
-  //     quill.on('text-change', (delta: DeltaStatic, oldDelta: DeltaStatic, source: 'user' | 'api') => {
-  //       // if (source === 'user') {
-  //       //   // 检查是否插入了 data:image 格式的图片
-  //       //   const ops = delta.ops || [];
-  //       //   ops.forEach((op: DeltaOperation, index: number) => {
-  //       //     console.log('op', op)
-  //       //     if (op.insert && typeof op.insert === 'object' && op.insert.image) {
-  //       //       const imageUrl = op.insert.image;
-  //       //       if (imageUrl.startsWith('data:image')) {
-  //       //         // 删除这个 data:image 图片
-  //       //         const currentContents = quill.getContents();
-  //       //         let position = 0;
-  //       //         for (let i = 0; i < index; i++) {
-  //       //           if (typeof currentContents.ops[i].insert === 'string') {
-  //       //             position += currentContents.ops[i].insert.length;
-  //       //           } else {
-  //       //             position += 1;
-  //       //           }
-  //       //         }
-  //       //         quill.deleteText(position, 1);
-  //       //         console.log('delete')
-  //       //       }
-  //       //     }
-  //       //   });
-  //       // }
-  //       if (source === 'user') {
-  //         const ops = delta.ops || [];
-  //         let hasBase64Image = false;
-  //         let imageIndex = -1;
-
-  //         ops.forEach((op: DeltaOperation, index: number) => {
-  //           if (
-  //             typeof op.insert === 'object' &&
-  //             op.insert !== null &&
-  //             'image' in op.insert &&
-  //             typeof op.insert.image === 'string' &&
-  //             op.insert.image.startsWith('data:image')
-  //           ) {
-  //             hasBase64Image = true;
-  //             imageIndex = index;
-  //           }
-  //         });
-
-  //         if (hasBase64Image) {
-  //           // 找到并删除 base64 图片
-  //           const contents = quill.getContents();
-  //           const newOps = contents.ops?.filter((op: any) => {
-  //             return !(op.insert && op.insert.image && op.insert.image.startsWith('data:image'));
-  //           });
-
-  //           if (newOps) {
-  //             quill.setContents({ ops: newOps });
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
-  // }, []);
-  // onPaste={handlePaste}
+  // 动态注册Cloudinary模块到Quill
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const registerModule = async () => {
+        try {
+          const [ReactQuillModule, CloudinaryModule] = await Promise.all([
+            import('react-quill-new'),
+            import('./QuillCloudinaryModule')
+          ]);
+          
+          const Quill = ReactQuillModule.default?.Quill || (window as any).Quill;
+          
+          if (Quill && !Quill.imports?.['modules/cloudinaryUploader']) {
+            Quill.register('modules/cloudinaryUploader', CloudinaryModule.QuillCloudinaryModule);
+          }
+        } catch (error) {
+          console.warn('Failed to register Quill module:', error);
+        }
+      };
+      
+      registerModule();
+    }
+  }, []);
 
   return (
-    <div 
+    <div
       className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
     >
       <ReactQuill
         placeholder="请输入..."
         {...props}
-        modules={props.modules || modulesDefault}
+        modules={modulesWithCloudinary()}
         className={isFullscreen ? styles.fullscreenEditor : ''}
       />
     </div>

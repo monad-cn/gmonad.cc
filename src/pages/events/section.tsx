@@ -5,6 +5,7 @@ import { Key, useEffect, useState } from 'react';
 import { getEvents } from '../api/event';
 import dayjs from 'dayjs';
 import { Tag } from 'antd';
+import { useSession } from 'next-auth/react';
 
 
 const activities = [
@@ -32,6 +33,7 @@ export function formatTime(isoTime: string): string {
 
 
 export default function EventSection() {
+    const { status } = useSession();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [events, setEvents] = useState<any[]>([])
 
@@ -80,10 +82,12 @@ export default function EventSection() {
         }
     }
 
-    // 组件挂载时加载数据
+    // 组件挂载时加载数据，但避免在认证过程中重复请求
     useEffect(() => {
-        loadEvents()
-    }, [])
+        if (status !== 'loading') {
+            loadEvents()
+        }
+    }, [status])
 
     return (
         <section className={styles.activities}>
