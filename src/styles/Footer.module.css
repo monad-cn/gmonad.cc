@@ -24,17 +24,23 @@
   }
 }
 
-.footerContent {
+/* .footerContent {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+} */
+
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-/* 移动端 Footer 内容布局优化 */
 @media (max-width: 768px) {
   .footerContent {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 2fr repeat(4, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
@@ -49,22 +55,23 @@
 }
 
 .footerSection {
+  flex: 1 1 150px;
   margin-bottom: 2rem;
 }
 
-/* 移动端 Section 优化 */
-@media (max-width: 768px) {
-  .footerSection {
-    margin-bottom: 0;
-  }
+.footerSection:first-child {
+  flex: 2 1 220px;
 }
 
-/* 特殊处理第一个section（logo区域）在移动端的布局 */
 @media (max-width: 768px) {
+  .footerSection {
+    flex: 1 1 100%;
+    margin-bottom: 1.5rem;
+  }
+
   .footerSection:first-child {
-    grid-column: 1 / -1;
+    flex: 1 1 100%;
     text-align: center;
-    margin-bottom: 1rem;
   }
 }
 
@@ -225,7 +232,7 @@
     height: 2.25rem;
     padding: 0;
   }
-  
+
   .socialIcon {
     width: 1rem;
     height: 1rem;
@@ -298,7 +305,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 2.5rem;
   }
-  
+
   .footerSection:first-child {
     grid-column: 1 / -1;
     text-align: left;
@@ -311,11 +318,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 3rem;
   }
-  
+
   .footerSection:first-child {
     grid-column: 1;
     text-align: left;
     margin-bottom: 0;
   }
 }
-

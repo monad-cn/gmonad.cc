@@ -168,6 +168,21 @@ export default function Home() {
 
   const members = [
     {
+      name: 'luluisangry',
+      twitter: 'https://x.com/lulu70191243',
+      avatar: "lulu.jpg",
+    },
+    {
+      name: 'Harvey C',
+      twitter: 'https://x.com/Harveycww',
+      avatar: "harvey.jpg",
+    },
+    {
+      name: 'Box',
+      twitter: 'https://x.com/BoxMrChen',
+      avatar: "box.jpg",
+    },
+    {
       name: 'Seven',
       twitter: 'https://x.com/_Seven7777777',
       avatar: "seven.jpg",
@@ -337,7 +352,7 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>技术特色</h2>
             <p className={styles.sectionDescription}>
-              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
+              Monad 采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
             </p>
           </div>
           <div className={styles.featuresGrid}>
@@ -404,11 +419,12 @@ export default function Home() {
             <div className={styles.membersGradientLeft}></div>
             <div className={styles.membersGradientRight}></div>
             <div
-              className={
-                duplicatedMembers.length <= 6
-                  ? styles.membersScrollStatic
-                  : styles.membersScrollAuto
-              }
+              // className={
+              //   duplicatedMembers.length <= 6
+              //     ? styles.membersScrollStatic
+              //     : styles.membersScrollAuto
+              // }
+              className={styles.membersScrollStatic}
             >
               {duplicatedMembers.map((member, index) => (
                 <div key={index} className={styles.memberItem}>

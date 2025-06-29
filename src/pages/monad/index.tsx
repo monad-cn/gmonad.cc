@@ -17,6 +17,7 @@ import {
   Code,
 } from "lucide-react"
 import styles from "./index.module.css"
+import Link from "next/link"
 
 export default function MonadIntro() {
   const [activeFeature, setActiveFeature] = useState(0)
@@ -33,13 +34,13 @@ export default function MonadIntro() {
     {
       icon: <Zap className={styles.featureIcon} />,
       title: "极致性能",
-      description: "10,000 TPS的超高吞吐量，1秒确认时间",
-      details: "Monad通过并行执行和优化的状态访问实现了前所未有的性能表现",
+      description: "10,000 TPS 的超高吞吐量，0.5 秒确认时间",
+      details: "Monad 通过并行执行和优化的状态访问实现了前所未有的性能表现",
     },
     {
       icon: <Shield className={styles.featureIcon} />,
-      title: "EVM兼容",
-      description: "100%兼容以太坊虚拟机，无缝迁移",
+      title: "EVM 兼容",
+      description: "100% 兼容以太坊虚拟机，无缝迁移",
       details: "开发者可以直接部署现有的以太坊智能合约，无需任何修改",
     },
     {
@@ -78,7 +79,7 @@ export default function MonadIntro() {
               下一代高性能区块链
             </h1>
             <p className={styles.heroDescription}>
-              突破性的并行执行技术，实现10,000 TPS的超高性能， 同时保持100%的EVM兼容性。重新定义区块链的可能性。
+              突破性的并行执行技术，实现 10,000 TPS的超高性能， 同时保持 100% 的EVM兼容性。重新定义区块链的可能性。
             </p>
             <div className={styles.heroStats}>
               <div className={styles.statItem}>
@@ -95,11 +96,11 @@ export default function MonadIntro() {
               </div>
             </div>
             <div className={styles.heroActions}>
-              <button className={styles.primaryButton}>
+              <Link href="/testnet" className={styles.primaryButton}>
                 开始体验
                 <ArrowRight className={styles.buttonIcon} />
-              </button>
-              <button className={styles.secondaryButton}>查看文档</button>
+              </Link>
+              <Link href="https://www.monad.xyz/" target="_blank" className={styles.secondaryButton}>访问官网</Link>
             </div>
           </div>
           <div className={styles.heroVisual}>
@@ -170,7 +171,7 @@ export default function MonadIntro() {
         <div className={styles.sectionContainer}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>核心特性</h2>
-            <p className={styles.sectionDescription}>Monad通过创新技术栈，为区块链行业带来革命性突破</p>
+            <p className={styles.sectionDescription}>Monad 通过创新技术，为区块链行业带来革命性突破</p>
           </div>
           <div className={styles.featuresGrid}>
             <div className={styles.featuresNav}>
@@ -279,7 +280,7 @@ export default function MonadIntro() {
               </div>
               <p>改进的BFT共识算法，确保网络安全性和最终性</p>
               <div className={styles.cardMetric}>
-                <span className={styles.metricNumber}>1s</span>
+                <span className={styles.metricNumber}>0.5s</span>
                 <span className={styles.metricText}>最终确认</span>
               </div>
             </div>

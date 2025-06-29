@@ -66,6 +66,14 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+            <div className={styles.footerSection}>
+            <h3 className={styles.footerSectionTitle}>社区</h3>
+            <ul className={styles.footerLinks}>
+              <li><a href="/events" className={styles.footerLink}>活动</a></li>
+              <li><a href="/blogs" className={styles.footerLink}>博客</a></li>
+              <li><a href="#" className={styles.footerLink}>FAQ</a></li>
+            </ul>
+          </div>
           <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>联系我们</h3>
             <div className={styles.footerSocial}>
