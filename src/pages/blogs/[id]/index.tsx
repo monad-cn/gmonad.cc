@@ -153,7 +153,7 @@ export default function BlogDetailPage() {
               : null}
             {blog.publish_status === 1 &&
               status === 'authenticated' &&
-              permissions.includes('event:review') ? (
+              permissions.includes('blog:review') ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
