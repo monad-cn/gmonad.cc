@@ -264,7 +264,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className={styles.stats}>
+      {/* <section className={styles.stats}>
         <div className={styles.container}>
           <div className={styles.statsGrid}>
             {[
@@ -302,7 +302,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Activities Section */}
       <EventSection />
