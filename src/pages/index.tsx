@@ -249,14 +249,15 @@ export default function Home() {
               </span>
             </p>
             <div className={styles.heroButtons}>
-              <Link href="/events" className={styles.heroPrimaryButton}>
+              <Link href="/monad" className={styles.heroPrimaryButton}>
+                <Globe className={styles.buttonIcon} />
+                了解 Monad
+              </Link>
+              <Link href="/events" className={styles.heroSecondaryButton}>
                 <Users className={styles.buttonIcon} />
                 加入社区
               </Link>
-              <Link href="/testnet" className={styles.heroSecondaryButton}>
-                <Globe className={styles.buttonIcon} />
-                体验测试网
-              </Link>
+
             </div>
           </div>
         </div>
