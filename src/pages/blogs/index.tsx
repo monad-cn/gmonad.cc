@@ -151,7 +151,7 @@ export default function BlogsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && permissions.includes("blog:review")) {
+    if (status === 'authenticated' && permissions.includes('blog:review')) {
       // 只有审核人员才可以看到所有博客(待审核/已发布)
       // TODO：个人主页，博客发布者可以在自己的主页看到待审核博客
       setPublishStatus(0);
@@ -163,7 +163,6 @@ export default function BlogsPage() {
   useEffect(() => {
     loadBlogs();
   }, [searchKeyword, status, publishStatus, currentPage, pageSize]);
-
 
   return (
     <div className={styles.container}>
@@ -271,7 +270,8 @@ export default function BlogsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {/* 只有博客发布者才可以编辑 */}
-                        {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
+                        {status === 'authenticated' &&
+                        blog.publisher_id.toString() === session?.user?.uid ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -280,8 +280,8 @@ export default function BlogsPage() {
                             }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
-                          /> : null
-                        }
+                          />
+                        ) : null}
 
                         <Button
                           className={styles.actionIconButton}
@@ -315,6 +315,7 @@ export default function BlogsPage() {
                         height={32}
                         preview={false}
                         className={styles.avatar}
+                        referrerPolicy="no-referrer"
                       />
                       <div className={styles.authorText}>
                         <span className={styles.authorName}>
@@ -409,7 +410,8 @@ export default function BlogsPage() {
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
                     {/* 只有博客发布者才可以编辑 */}
-                    {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
+                    {status === 'authenticated' &&
+                    blog.publisher_id.toString() === session?.user?.uid ? (
                       <Button
                         type="text"
                         size="small"
@@ -417,8 +419,7 @@ export default function BlogsPage() {
                         title="编辑博客"
                         onClick={() => router.push(`/blogs/${blog.ID}/edit`)}
                       />
-                      : null
-                    }
+                    ) : null}
                     <Button
                       type="text"
                       size="small"
@@ -433,7 +434,8 @@ export default function BlogsPage() {
                       title="分享活动"
                     />
                     {/* 只有博客发布者才可以删除*/}
-                    {status === 'authenticated' && blog.publisher_id?.toString() === session?.user?.uid  ? (
+                    {status === 'authenticated' &&
+                    blog.publisher_id?.toString() === session?.user?.uid ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
