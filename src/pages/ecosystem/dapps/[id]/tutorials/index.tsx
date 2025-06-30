@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import { ArrowLeft, Clock, BarChart3, BookOpen, Play } from "lucide-react"
@@ -108,19 +108,30 @@ const dappsData: DApp[] = [
     },
 ]
 
-export default function TutorialsPage() {
+export default function DappTutorialsPage() {
     const router = useRouter()
     const { id } = router.query
 
     const [selectedDifficulty, setSelectedDifficulty] = useState<"全部" | "初级" | "中级" | "高级">("全部")
+    const [dapp, setDapp] = useState<any>(null)
 
-    const dapp = dappsData.find((d) => d.id === id)
+    useEffect(() => {
+        if (id && typeof id === "string") {
+            const found = dappsData.find((d) => d.id === id)
+            setDapp(found || null)
+        }
+    }, [id])
 
-    if (!dapp) {
-        notFound()
+    // 等待 query ready 时显示 loading
+    if (!router.isReady) {
+        return <p>Loading...</p>
     }
 
-    const filteredTutorials = dapp.tutorials.filter((tutorial) => {
+    if (!dapp) {
+        return <p>未找到对应的 Dapp</p>
+    }
+
+    const filteredTutorials = dapp.tutorials.filter((tutorial: { difficulty: string }) => {
         if (selectedDifficulty === "全部") return true
         return tutorial.difficulty === selectedDifficulty
     })
