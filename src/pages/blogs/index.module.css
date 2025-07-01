@@ -443,10 +443,6 @@
   object-fit: contain;
 }
 
-.cardBodyNew {
-  padding-top: 1rem;
-}
-
 .blogTitleNew {
   font-size: 18px;
   font-weight: bold;
@@ -464,7 +460,11 @@
   color: #555;
   font-size: 14px;
   line-height: 1.5;
-  min-height: 3.5em;
+  height: 4.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cardFooter {
