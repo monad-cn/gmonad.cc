@@ -22,6 +22,7 @@
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   font-weight: 500;
+  font-size: 20px;
   margin-bottom: 2rem;
   transition: all 0.3s ease;
 }
@@ -79,7 +80,7 @@
 .dappMeta {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .category {
@@ -91,33 +92,46 @@
 }
 
 .xLink {
+  display: flex;
   color: white;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  /* font-size: 0.875rem; */
 }
 
 .xLink:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.5);
+  color: white;
 }
 
 .websiteLink {
+  display: flex;
   color: white;
   text-decoration: none;
+  align-items: center;
+  justify-content: center;
   font-weight: 500;
   padding: 0.5rem 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  /* font-size: 0.875rem; */
 }
 
 .websiteLink:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.actionIcon {
+  font-size: 1rem;
 }
 
 /* Tutorials Section */

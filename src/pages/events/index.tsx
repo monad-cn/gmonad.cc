@@ -559,7 +559,7 @@ export default function EventsPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             if (event.twitter) {
-                              window.open(event.twitter, '_blank'); // 打开外部链接
+                              window.open(event.twitter, '_blank'); 
                             }
                           }}
                           icon={<SiX className={styles.actionIcon} />}

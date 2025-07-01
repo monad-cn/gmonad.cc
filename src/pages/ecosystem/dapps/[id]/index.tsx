@@ -100,12 +100,12 @@ export default function DappTutorialsPage() {
                                     <span className={styles.category}>{dapp.category?.name}</span>
                                      {dapp.x && (
                                         <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.xLink}>
-                                             <SiX />
+                                             <SiX className={styles.actionIcon} />
                                         </Link>
                                     )}
                                     {dapp.site && (
                                         <Link href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.websiteLink}>
-                                            <Globe  />
+                                            <Globe  className={styles.actionIcon} />
                                         </Link>
                                     )}
                                 </div>

@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Search, Star, ExternalLink, BookOpen, BarChart3, Plus, Globe } from "lucide-react"
-import { Spin, Pagination } from "antd"
+import { Spin, Pagination, Tag } from "antd"
 import styles from "./index.module.css"
 import { getDapps } from "@/pages/api/dapp"
 import { SiX } from "react-icons/si"
@@ -35,7 +35,6 @@ interface DApp {
     tags: string[]
     featured?: boolean
     tutorials: Tutorial[]
-    subcategories?: string[]
 }
 
 const categories: DAppCategory[] = ["DeFi", "基础设施", "游戏", "NFT", "社交", "开发工具", "AI", "DePIN", "RWA", "支付"]
@@ -251,65 +250,47 @@ export default function EcosystemPage() {
     )
 }
 
-function DAppCard({ dapp, getCategoryColor }: { dapp: DApp; getCategoryColor: (category: string) => string }) {
+function DAppCard({ dapp }: { dapp: DApp }) {
     return (
         <div className={styles.dappCard}>
             {/* 封面图 */}
-            {dapp.cover_img && (
-                <div className={styles.coverContainer}>
-                    <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
-
-                    {/* 新增 tags 区域 */}
-
-                </div>
-            )}
-            {dapp.tags?.length > 0 && (
-                <div className={styles.coverTags}>
-                    {dapp.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className={styles.tagItem}>
-                            {tag}
-                        </span>
-                    ))}
-                </div>
-            )}
-            {/* 顶部区域 */}
-            <div className={styles.cardTop}>
-                <div className={styles.logoContainer}>
-                    <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
-                </div>
-                <div className={styles.cardActions}>
-                    {dapp.featured && (
-                        <div className={styles.featuredBadge}>
-                            <Star className={styles.featuredIcon} />
-                        </div>
-                    )}
-                    {dapp.x && (
-                        <a href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
-                            <SiX className={styles.actionIcon} />
-                        </a>
-                    )}
-                    {dapp.site && (
-                        <a href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
-                            <Globe className={styles.actionIcon} />
-                        </a>
-                    )}
+            <div className={styles.coverContainer}>
+                <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                <div className={styles.cardTop}>
+                    <div className={styles.cardActions}>
+                        {dapp.featured && (
+                            <div className={styles.featuredBadge}>
+                                <Star className={styles.featuredIcon} />
+                            </div>
+                        )}
+                        {dapp.x && (
+                            <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
+                                <SiX className={styles.actionIcon} />
+                            </Link>
+                        )}
+                        {dapp.site && (
+                            <Link href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
+                                <Globe className={styles.actionIcon} />
+                            </Link>
+                        )}
+                    </div>
                 </div>
             </div>
+
+
+            <div className={styles.logoContainer}>
+                <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+            </div>
+            {/* 顶部区域 */}
+
 
             {/* 内容 */}
             <div className={styles.cardContent}>
                 <h3 className={styles.dappName}>{dapp.name}</h3>
                 <p className={styles.dappDescription}>{dapp.description}</p>
 
-                <div className={styles.categories}>
-                    <span className={styles.primaryCategory}>
-                        {dapp.category?.name}
-                    </span>
-                    {dapp.subcategories?.slice(0, 2).map((sub) => (
-                        <span key={sub} className={styles.subCategory} style={{ borderColor: getCategoryColor(sub) }}>
-                            {sub}
-                        </span>
-                    ))}
+                <div className={styles.category}>
+                    <Tag className={styles.tag}>{dapp.category?.name}</Tag>
                 </div>
             </div>
 
