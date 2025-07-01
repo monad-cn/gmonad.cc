@@ -27,7 +27,6 @@ import {
   TypeOutline,
   Eye,
 } from 'lucide-react';
-import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { getEvents, deleteEvent } from '../api/event';

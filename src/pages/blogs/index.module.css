@@ -452,6 +452,12 @@
   font-weight: bold;
   margin: 0 0 0.5rem 0;
   color: #111;
+  height: 2.5em;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .blogDescriptionNew {
@@ -613,8 +619,8 @@
 }
 
 .coverImage {
-  width: 100% !important;
-  height: 100% !important;
+  width: auto !important;
+  height: 200px !important;
   object-fit: cover !important;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
