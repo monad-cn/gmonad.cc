@@ -143,7 +143,7 @@ export default function UploadCardImg(props: {
         <div className={styles.imagePreviewContainer}>
           <img
             src={previewUrl || '/placeholder.svg'}
-            alt="活动封面预览"
+            alt="图片预览"
             className={styles.previewImage}
           />
           {isImageLoading && (
@@ -195,7 +195,7 @@ export default function UploadCardImg(props: {
           ) : (
             <>
               <ImageIcon className={styles.imageIcon} />
-              <p className={styles.imageText}>点击或拖拽上传活动封面</p>
+              <p className={styles.imageText}>点击或拖拽上传图片</p>
               <p className={styles.imageHint}>
                 建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
               </p>

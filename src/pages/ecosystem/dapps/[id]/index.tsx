@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import { ArrowLeft, Clock, BarChart3, BookOpen, Play } from "lucide-react"
-import { notFound } from "next/navigation"
+import { ArrowLeft, Clock, BarChart3, BookOpen, Play, Globe } from "lucide-react"
 import styles from "./index.module.css"
+import { getDappById } from "@/pages/api/dapp"
+import { SiX } from "react-icons/si"
 
-// Types (same as in main page)
-type DAppCategory = "DeFi" | "基础设施" | "游戏" | "NFT" | "社交" | "开发工具" | "AI" | "DePIN" | "RWA" | "支付"
-
+// Types
 interface Tutorial {
     id: string
     title: string
@@ -23,118 +22,41 @@ interface DApp {
     description: string
     logo: string
     website?: string
-    category: DAppCategory
-    subcategories?: string[]
-    featured?: boolean
+    category: string
     tutorials: Tutorial[]
 }
-
-// Mock data (same as in main page)
-const dappsData: DApp[] = [
-    {
-        id: "uniswap",
-        name: "Uniswap",
-        description: "以太坊上最大的去中心化交易协议，通过流动性池实现自动化代币交换。",
-        logo: "/placeholder.svg?height=60&width=60&text=UNI",
-        website: "https://uniswap.org",
-        category: "DeFi",
-        subcategories: ["DEX", "AMM"],
-        featured: true,
-        tutorials: [
-            {
-                id: "swap-tokens",
-                title: "如何交换代币",
-                description: "学习如何在 Uniswap 上以最低费用交换代币",
-                difficulty: "初级",
-                estimatedTime: "5 分钟",
-                steps: 4,
-            },
-            {
-                id: "provide-liquidity",
-                title: "提供流动性",
-                description: "通过为交易对提供流动性来赚取手续费",
-                difficulty: "中级",
-                estimatedTime: "10 分钟",
-                steps: 6,
-            },
-        ],
-    },
-    {
-        id: "aave",
-        name: "Aave",
-        description: "去中心化借贷协议，用户可以在没有中介的情况下借出和借入加密货币。",
-        logo: "/placeholder.svg?height=60&width=60&text=AAVE",
-        website: "https://aave.com",
-        category: "DeFi",
-        subcategories: ["借贷", "存款"],
-        tutorials: [
-            {
-                id: "supply-assets",
-                title: "存入资产赚取收益",
-                description: "学习如何存入资产并赚取利息",
-                difficulty: "初级",
-                estimatedTime: "7 分钟",
-                steps: 5,
-            },
-        ],
-    },
-    {
-        id: "metamask",
-        name: "MetaMask",
-        description: "领先的加密钱包浏览器扩展和移动应用，用于与以太坊区块链交互。",
-        logo: "/placeholder.svg?height=60&width=60&text=MM",
-        website: "https://metamask.io",
-        category: "基础设施",
-        subcategories: ["钱包", "浏览器扩展"],
-        featured: true,
-        tutorials: [
-            {
-                id: "setup-wallet",
-                title: "设置 MetaMask",
-                description: "安装和配置 MetaMask 的完整指南",
-                difficulty: "初级",
-                estimatedTime: "10 分钟",
-                steps: 7,
-            },
-            {
-                id: "add-network",
-                title: "添加自定义网络",
-                description: "学习如何向 MetaMask 添加自定义网络",
-                difficulty: "中级",
-                estimatedTime: "5 分钟",
-                steps: 3,
-            },
-        ],
-    },
-]
 
 export default function DappTutorialsPage() {
     const router = useRouter()
     const { id } = router.query
+    const rId = Array.isArray(id) ? id[0] : id
 
+    const [loading, setLoading] = useState(true)
+    const [dapp, setDapp] = useState<any | null>(null)
     const [selectedDifficulty, setSelectedDifficulty] = useState<"全部" | "初级" | "中级" | "高级">("全部")
-    const [dapp, setDapp] = useState<any>(null)
 
     useEffect(() => {
-        if (id && typeof id === "string") {
-            const found = dappsData.find((d) => d.id === id)
-            setDapp(found || null)
+        if (!router.isReady || !rId) return
+
+        const fetchData = async () => {
+            setLoading(true)
+            try {
+                const response = await getDappById(rId)
+                if (response.success && response.data) {
+                    setDapp(response.data)
+                } else {
+                    setDapp(null)
+                }
+            } catch (error) {
+                console.error("获取 DApp 数据失败:", error)
+                setDapp(null)
+            } finally {
+                setLoading(false)
+            }
         }
-    }, [id])
 
-    // 等待 query ready 时显示 loading
-    if (!router.isReady) {
-        return <p>Loading...</p>
-    }
-
-    if (!dapp) {
-        return <p>未找到对应的 Dapp</p>
-    }
-
-    const filteredTutorials = dapp.tutorials.filter((tutorial: { difficulty: string }) => {
-        if (selectedDifficulty === "全部") return true
-        return tutorial.difficulty === selectedDifficulty
-    })
+        fetchData()
+    }, [router.isReady, rId])
 
     const getDifficultyColor = (difficulty: string) => {
         const colors = {
@@ -144,6 +66,19 @@ export default function DappTutorialsPage() {
         }
         return colors[difficulty as keyof typeof colors] || "#8B5CF6"
     }
+
+    if (loading) {
+        return <div className={styles.loading}>加载中...</div>
+    }
+
+    if (!dapp) {
+        return <div className={styles.notFound}>未找到 DApp 数据</div>
+    }
+
+    // const filteredTutorials = dapp.tutorials.filter((tutorial: { difficulty: string }) => {
+    //     if (selectedDifficulty === "全部") return true
+    //     return tutorial.difficulty === selectedDifficulty
+    // })
 
     return (
         <div className={styles.container}>
@@ -162,11 +97,16 @@ export default function DappTutorialsPage() {
                                 <h1 className={styles.dappName}>{dapp.name}</h1>
                                 <p className={styles.dappDescription}>{dapp.description}</p>
                                 <div className={styles.dappMeta}>
-                                    <span className={styles.category}>{dapp.category}</span>
-                                    {dapp.website && (
-                                        <a href={dapp.website} target="_blank" rel="noopener noreferrer" className={styles.websiteLink}>
-                                            访问网站
-                                        </a>
+                                    <span className={styles.category}>{dapp.category?.name}</span>
+                                     {dapp.x && (
+                                        <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.xLink}>
+                                             <SiX />
+                                        </Link>
+                                    )}
+                                    {dapp.site && (
+                                        <Link href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.websiteLink}>
+                                            <Globe  />
+                                        </Link>
                                     )}
                                 </div>
                             </div>
@@ -181,7 +121,7 @@ export default function DappTutorialsPage() {
                     <div className={styles.tutorialsHeader}>
                         <h2 className={styles.tutorialsTitle}>
                             交互教程
-                            <span className={styles.tutorialsCount}>({dapp.tutorials.length})</span>
+                            <span className={styles.tutorialsCount}>({dapp?.tutorials?.length || 0})</span>
                         </h2>
 
                         {/* Difficulty Filter */}
@@ -207,7 +147,7 @@ export default function DappTutorialsPage() {
                     </div>
 
                     {/* Tutorials Grid */}
-                    <div className={styles.tutorialsGrid}>
+                    {/* <div className={styles.tutorialsGrid}>
                         {filteredTutorials.map((tutorial, index) => (
                             <TutorialCard
                                 key={tutorial.id}
@@ -224,7 +164,7 @@ export default function DappTutorialsPage() {
                             <h3 className={styles.emptyTitle}>暂无该难度的教程</h3>
                             <p className={styles.emptyDescription}>尝试选择其他难度级别查看更多教程。</p>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </section>
         </div>

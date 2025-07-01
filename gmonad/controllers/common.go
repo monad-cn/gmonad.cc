@@ -166,3 +166,30 @@ func (s *StatisticResponse) ToSSE() string {
 	// 按照 SSE 协议格式：data: <json>\n\n
 	return fmt.Sprintf("data: %s\n\n", data)
 }
+
+// Dapp
+type CreateDappRequest struct {
+	Name        string   `json:"name" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	X           string   `json:"x" binding:"required"`
+	Logo        string   `json:"logo" binding:"required"`
+	Site        string   `json:"site" binding:"required"`
+	CoverImg    string   `json:"cover_img" binding:"required"`
+	CategoryId  uint     `json:"category_id" binding:"required"`
+	Tags        []string `json:"tags"`
+}
+
+type QueryDappsResponse struct {
+	Dapps    []models.Dapp `json:"dapps"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+	Total    int64         `json:"total"`
+}
+
+// category
+type QueryCategoriesResponse struct {
+	Categories []models.Category `json:"categories"`
+	Page       int               `json:"page"`
+	PageSize   int               `json:"page_size"`
+	Total      int64             `json:"total"`
+}

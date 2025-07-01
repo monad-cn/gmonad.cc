@@ -90,12 +90,26 @@
   font-weight: 600;
 }
 
+.xLink {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.xLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .websiteLink {
   color: white;
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
   font-size: 0.875rem;

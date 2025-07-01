@@ -15,6 +15,9 @@ func init() {
 	db.AutoMigrate(&PermissionGroup{})
 	db.AutoMigrate(&Testnet{})
 	db.AutoMigrate(&Validator{})
+	db.AutoMigrate(&Category{})
+	db.AutoMigrate(&Dapp{})
 
 	InitRolesAndPermissions()
+	InitCategories()
 }

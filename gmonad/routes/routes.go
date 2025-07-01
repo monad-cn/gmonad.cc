@@ -30,5 +30,13 @@ func SetupRouter(r *gin.Engine) {
 		blog.GET("", controllers.QueryArticles)
 		blog.PUT("/:id/status", middlewares.JWT("blog:review"), controllers.UpdateArticlePublishStatus)
 	}
+	dapp := r.Group("/v1/dapps")
+	{
+		dapp.POST("", middlewares.JWT("dapp:write"), controllers.CreateDapp)
+		dapp.DELETE("/:id", middlewares.JWT("dapp:delete"), controllers.DeleteDapp)
+		dapp.GET("/:id", controllers.GetDapp)
+		dapp.GET("/categories", controllers.QueryCategories)
+		dapp.GET("", controllers.QueryDapps)
+	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

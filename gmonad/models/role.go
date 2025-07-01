@@ -42,6 +42,10 @@ func InitRolesAndPermissions() error {
 		{Name: "event:review", Description: "审核活动"},
 		{Name: "event:delete", Description: "删除活动"},
 		{Name: "event:publish", Description: "发布活动"},
+		{Name: "dapp:write", Description: "增加Dapp"},
+		{Name: "dapp:review", Description: "审核Dapp"},
+		{Name: "dapp:delete", Description: "删除Dapp"},
+		{Name: "dapp:publish", Description: "发布Dapp"},
 	}
 	if err := db.Create(&permissions).Error; err != nil {
 		return err
@@ -54,6 +58,7 @@ func InitRolesAndPermissions() error {
 		{Name: "活动创建者", Description: "活动创建权限组"},
 		{Name: "活动管理员", Description: "活动管理权限组"},
 		{Name: "内容管理员", Description: "内容管理权限组"},
+		{Name: "Dapp管理员", Description: "Dapp管理权限组"},
 		{Name: "超级管理员", Description: "拥有所有权限"},
 	}
 	if err := db.Create(&permissionGroups).Error; err != nil {
@@ -100,14 +105,29 @@ func InitRolesAndPermissions() error {
 		return err
 	}
 
+	blogPermissions := []*Permission{&blogWrite, &blogReview, &blogDelete, &blogPublish}
+	eventPermissions := []*Permission{&eventWrite, &eventReview, &eventDelete, &eventPublish}
+
 	// 内容管理员：拥有所有内容管理权限
-	err = db.Model(&permissionGroups[4]).Association("Permissions").Append(&permissions)
+	err = db.Model(&permissionGroups[4]).Association("Permissions").Append(blogPermissions, eventPermissions)
 	if err != nil {
 		return err
 
 	}
+
+	dappWrite, _ := getPermByName("dapp:write")
+	dappReview, _ := getPermByName("dapp:review")
+	dappDelete, _ := getPermByName("dapp:delete")
+	dappPublish, _ := getPermByName("dapp:publish")
+	dappPermissions := []*Permission{&dappWrite, &dappReview, &dappDelete, &dappPublish}
+	err = db.Model(&permissionGroups[5]).Association("Permissions").Append(dappPermissions)
+	if err != nil {
+		return err
+
+	}
+
 	// 超级管理员：拥有所有权限
-	err = db.Model(&permissionGroups[5]).Association("Permissions").Append(&permissions)
+	err = db.Model(&permissionGroups[6]).Association("Permissions").Append(blogPermissions, eventPermissions, dappPermissions)
 	if err != nil {
 		return err
 	}
@@ -119,6 +139,7 @@ func InitRolesAndPermissions() error {
 		{Name: "event_creator", Description: "活动创建角色"},
 		{Name: "event_admin", Description: "活动管理员角色"},
 		{Name: "content_admin", Description: "内容管理员角色"},
+		{Name: "dapp_admin", Description: "Dapp管理员角色"},
 		{Name: "super_admin", Description: "超级管理员角色"},
 	}
 
@@ -151,7 +172,13 @@ func InitRolesAndPermissions() error {
 	if err != nil {
 		return err
 	}
-	err = db.Model(&roles[5]).Association("PermissionGroups").Append(&permissionGroups[5]) // 超级管理员
+
+	err = db.Model(&roles[5]).Association("PermissionGroups").Append(&permissionGroups[5]) // Dapp 管理员
+	if err != nil {
+		return err
+	}
+
+	err = db.Model(&roles[6]).Association("PermissionGroups").Append(&permissionGroups[6]) // 超级管理员
 	if err != nil {
 		return err
 	}

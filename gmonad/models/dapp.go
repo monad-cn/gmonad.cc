@@ -15,7 +15,8 @@ type Dapp struct {
 	Logo        string         `json:"logo"`
 	Site        string         `json:"site"`
 	CoverImg    string         `json:"cover_img"`
-	Category    string         `json:"category"`
+	CategoryId  uint           `json:"category_id"`
+	Category    Category       `gorm:"foreignKey:CategoryId" json:"category"`
 	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
 	UserId      uint           `json:"user_id"`
 	User        User           `gorm:"foreignKey:UserId"`
@@ -26,7 +27,7 @@ func (d *Dapp) Create() error {
 }
 
 func (d *Dapp) GetByID(id uint) error {
-	return db.First(d, id).Error
+	return db.Preload("Category").First(d, id).Error
 }
 
 func (d *Dapp) Update() error {
@@ -44,7 +45,7 @@ func (d *Dapp) Delete() error {
 }
 
 type DappFilter struct {
-	Name      string
+	Keyword   string
 	Tag       string
 	Category  string
 	OrderDesc bool // 是否按创建时间倒序
@@ -52,15 +53,15 @@ type DappFilter struct {
 	PageSize  int  // 每页数量，建议默认 10
 }
 
-func QueryDapp(filter DappFilter) ([]Dapp, int64, error) {
+func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 	var dapps []Dapp
 	var total int64
 
 	query := db.Model(&Dapp{})
 
-	if filter.Name != "" {
-		likePattern := "%" + filter.Name + "%"
-		query = query.Where("name LIKE ?", likePattern)
+	if filter.Keyword != "" {
+		likePattern := "%" + filter.Keyword + "%"
+		query = query.Where("name LIKE ? OR description LIKE ?", likePattern, likePattern)
 	}
 
 	if filter.Tag != "" {
