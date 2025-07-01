@@ -57,7 +57,7 @@ func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 	var dapps []Dapp
 	var total int64
 
-	query := db.Model(&Dapp{})
+	query := db.Preload("Category").Model(&Dapp{})
 
 	if filter.Keyword != "" {
 		likePattern := "%" + filter.Keyword + "%"
