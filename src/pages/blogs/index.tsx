@@ -26,6 +26,7 @@ import {
   Languages,
   TypeOutline,
   Eye,
+  UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
@@ -39,7 +40,7 @@ const { Search: AntSearch } = Input;
 type ViewMode = 'grid' | 'list';
 
 export function formatTime(isoTime: string): string {
-  return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
+  return dayjs(isoTime).format('YYYY-MM-DD');
 }
 
 export default function BlogsPage() {
@@ -152,11 +153,12 @@ export default function BlogsPage() {
 
   useEffect(() => {
     if (status === 'loading') return; // 等待认证状态确定
-    
-    const newPublishStatus = (status === 'authenticated' && permissions.includes('blog:review')) ? 0 : 2;
+
+    const newPublishStatus =
+      status === 'authenticated' && permissions.includes('blog:review') ? 0 : 2;
     setPublishStatus(newPublishStatus);
-    console.log("newPublishStatus:",newPublishStatus);
-     
+    console.log('newPublishStatus:', newPublishStatus);
+
     // 直接调用 loadBlogs，避免 publishStatus 状态更新延迟
     loadBlogs({ publish_status: newPublishStatus });
   }, [status, permissions]);
@@ -266,7 +268,7 @@ export default function BlogsPage() {
                         <Tag className={styles.noPublishStatus}>待审核</Tag>
                       )}
                       <div className={styles.cardActions}>
-                        {/* 只有博客发布者才可以编辑 */}
+                        {/* 只有博客作者才可以编辑 */}
                         {status === 'authenticated' &&
                         blog.publisher_id.toString() === session?.user?.uid ? (
                           <Button
@@ -345,7 +347,7 @@ export default function BlogsPage() {
             <div className={styles.listHeader}>
               <div className={styles.listHeaderCell}>博客信息</div>
               <div className={styles.listHeaderCell}>时间</div>
-              <div className={styles.listHeaderCell}>发布者</div>
+              <div className={styles.listHeaderCell}>作者</div>
               <div className={styles.listHeaderCell}>浏览量</div>
               <div className={styles.listHeaderCell}>状态</div>
               <div className={styles.listHeaderCell}>操作</div>
@@ -364,7 +366,6 @@ export default function BlogsPage() {
                     {blog.featured && (
                       <Star className={styles.listFeaturedIcon} />
                     )}
-                    <p className={styles.listEventDescription}>{blog.desc}</p>
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -382,7 +383,8 @@ export default function BlogsPage() {
                 </div>
                 <div className={styles.listCell}>
                   <div className={styles.publisherInfo}>
-                    <span>{blog.publisher.username}</span>
+                    <UserRound className={styles.listIcon} />
+                    <span>{blog.author}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>

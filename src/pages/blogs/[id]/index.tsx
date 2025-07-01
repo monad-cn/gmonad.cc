@@ -17,7 +17,6 @@ import { SiX } from 'react-icons/si';
 import { getBlogById, updateBlogPublishStatus } from '@/pages/api/blog';
 import dayjs from 'dayjs';
 
-
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
 }
@@ -72,8 +71,6 @@ export default function BlogDetailPage() {
     fetchData();
   }, [router.isReady, id]);
 
-
-
   const handleShare = (platform?: string) => {
     if (platform === 'copy') {
       navigator.clipboard.writeText(window.location.href);
@@ -101,10 +98,7 @@ export default function BlogDetailPage() {
   const isPublisher = blog?.publisher_id?.toString() === session?.user?.uid;
   const canReview = permissions.includes('blog:review');
 
-  if (
-    !blog ||
-    (isUnderReview && !isPublisher && !canReview)
-  ) {
+  if (!blog || (isUnderReview && !isPublisher && !canReview)) {
     return (
       <div className={styles.error}>
         <h2>博客不存在</h2>
@@ -115,7 +109,6 @@ export default function BlogDetailPage() {
       </div>
     );
   }
-
 
   const formatDateTime = (dateTime: string) => {
     const date = new Date(dateTime);
@@ -143,7 +136,8 @@ export default function BlogDetailPage() {
             返回博客列表
           </Link>
           <div className={styles.headerActions}>
-            {status === 'authenticated' && blog.publisher_id.toString() === session?.user?.uid ?
+            {status === 'authenticated' &&
+            blog.publisher_id.toString() === session?.user?.uid ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -151,10 +145,10 @@ export default function BlogDetailPage() {
               >
                 编辑
               </Button>
-              : null}
+            ) : null}
             {blog.publish_status === 1 &&
-              status === 'authenticated' &&
-              permissions.includes('blog:review') ? (
+            status === 'authenticated' &&
+            permissions.includes('blog:review') ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -172,7 +166,6 @@ export default function BlogDetailPage() {
         <div className={styles.heroContent}>
           <div className={styles.heroLeft}>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-
               {blog.publish_status === 1 && (
                 <div
                   className={styles.statusBadge}
@@ -187,15 +180,27 @@ export default function BlogDetailPage() {
             <div className={styles.metaInfo}>
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
-                <div className={styles.metaText}>{formatTime(blog.publish_time || blog.CreatedAt)}</div>
+                <div className={styles.metaText}>
+                  发布时间：{formatTime(blog.publish_time || blog.CreatedAt)}
+                </div>
               </div>
-               <div className={styles.metaItem}>
+              <div className={styles.metaItem}>
                 <User className={styles.metaIcon} />
-                <div className={styles.metaText}>{ blog.author || blog.publisher?.username || ''}</div>
+                <div className={styles.metaText}>
+                  作者：{blog.author || blog.publisher?.username || ''}
+                </div>
+              </div>
+              <div className={styles.metaItem}>
+                <User className={styles.metaIcon} />
+                <div className={styles.metaText}>
+                  发布者：{blog.publisher?.username || ''}
+                </div>
               </div>
               <div className={styles.metaItem}>
                 <Eye className={styles.metaIcon} />
-                <div className={styles.metaText}>{blog.view_count || '0'}</div>
+                <div className={styles.metaText}>
+                  浏览量：{blog.view_count || '0'}
+                </div>
               </div>
               <div className={styles.tags}>
                 {blog.tags.map((tag: string, index: number) => (
@@ -215,6 +220,7 @@ export default function BlogDetailPage() {
                 width={400}
                 height={300}
                 className={styles.coverImage}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>
@@ -236,8 +242,6 @@ export default function BlogDetailPage() {
             </section>
           </div>
         </div>
-
-
 
         {/* <div className={styles.shareCard}>
           <h3 className={styles.cardTitle}>分享活动</h3>
