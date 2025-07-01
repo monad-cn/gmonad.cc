@@ -81,7 +81,7 @@ export default function EditBlogPage() {
         content: values.content || '',
         source_link: values.source || '',
         category: 'blog',
-        cover_img: cloudinaryImg?.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url || previewUrl, // 当用户未修改封面则使用详情返回的previewUrl
         tags: tags,
         author: values.author || '',
         translator: values.translator || '',

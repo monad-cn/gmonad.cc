@@ -2,13 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Avatar, Dropdown, Button, message } from 'antd';
 import type { MenuProps } from 'antd';
 import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
 import styles from '../styles/Auth.module.css';
 import Image from 'next/image';
 import AuthManager from '@/lib/authManager';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Auth: React.FC = () => {
-  const { data: session } = useSession();
+  // 使用简化的认证上下文，利用 NextAuth 内置缓存机制
+  const { session } = useAuth();
   const router = useRouter();
   const { code } = router.query;
   const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ const Auth: React.FC = () => {
 
         if (res?.ok) {
           message.success('登录成功');
-          // 清除 URL 中的 code 参数
+          // 清除 URL 中的 code 参数，NextAuth 会自动更新 session 状态
           router.replace(router.pathname, undefined, { shallow: true });
         } else {
           message.warning('登录失败...');
@@ -69,6 +71,7 @@ const Auth: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    // 执行登出操作，NextAuth 会自动清除会话状态
     await signOut({ redirect: true, callbackUrl: '/' });
   };
 

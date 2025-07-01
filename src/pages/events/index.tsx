@@ -31,7 +31,7 @@ import Link from 'next/link';
 import styles from './index.module.css';
 import { getEvents, deleteEvent, getEventDrafts } from '../api/event';
 import router from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/contexts/AuthContext';
 import EventDraftTable from '@/components/event/EventDraftTable';
 
 const { Search: AntSearch } = Input;
@@ -62,7 +62,8 @@ export default function EventsPage() {
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
 
-  const { data: session, status } = useSession();
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 

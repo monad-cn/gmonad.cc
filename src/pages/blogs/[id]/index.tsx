@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/contexts/AuthContext';
 import { updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
 import { getBlogById, updateBlogPublishStatus } from '@/pages/api/blog';
@@ -33,7 +33,8 @@ export default function BlogDetailPage() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
-  const { data: session, status } = useSession();
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 

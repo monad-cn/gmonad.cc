@@ -66,6 +66,14 @@ export default NextAuth({
     updateAge: 60 * 60 * 24, // 1 day - 减少 session 更新频率
   },
 
+  // 优化客户端配置，减少不必要的请求
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  
+  // 配置 JWT 和 session 的缓存策略
+  jwt: {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  },
+
   pages: {
     signIn: '/login',
   },

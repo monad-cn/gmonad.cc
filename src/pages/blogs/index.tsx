@@ -32,7 +32,7 @@ import Link from 'next/link';
 import styles from './index.module.css';
 import { getEvents, deleteEvent } from '../api/event';
 import router from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/contexts/AuthContext';
 import { getBlogs } from '../api/blog';
 
 const { Search: AntSearch } = Input;
@@ -55,7 +55,8 @@ export default function BlogsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
-  const { data: session, status } = useSession();
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 
@@ -74,12 +75,12 @@ export default function BlogsPage() {
       setLoading(true);
 
       const queryParams = {
-        keyword: params?.keyword || searchKeyword,
-        tag: params?.tag || selectedTag,
-        order: params?.order || sortOrder,
-        page: params?.page || currentPage,
-        page_size: params?.page_size || pageSize,
-        publish_status: params?.publish_status || publishStatus,
+        keyword: params?.keyword ?? searchKeyword,
+        tag: params?.tag ?? selectedTag,
+        order: params?.order ?? sortOrder,
+        page: params?.page ?? currentPage,
+        page_size: params?.page_size ?? pageSize,
+        publish_status: params?.publish_status ?? publishStatus,
       };
 
       const result = await getBlogs(queryParams);
@@ -151,18 +152,15 @@ export default function BlogsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && permissions.includes('blog:review')) {
-      // 只有审核人员才可以看到所有博客(待审核/已发布)
-      // TODO：个人主页，博客发布者可以在自己的主页看到待审核博客
-      setPublishStatus(0);
-    } else {
-      setPublishStatus(2);
-    }
-  });
-
-  useEffect(() => {
-    loadBlogs();
-  }, [searchKeyword, status, publishStatus, currentPage, pageSize]);
+    if (status === 'loading') return; // 等待认证状态确定
+    
+    const newPublishStatus = (status === 'authenticated' && permissions.includes('blog:review')) ? 0 : 2;
+    setPublishStatus(newPublishStatus);
+    console.log("newPublishStatus:",newPublishStatus);
+     
+    // 直接调用 loadBlogs，避免 publishStatus 状态更新延迟
+    loadBlogs({ publish_status: newPublishStatus });
+  }, [status, permissions]);
 
   return (
     <div className={styles.container}>

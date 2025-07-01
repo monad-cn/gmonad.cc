@@ -5,7 +5,7 @@ import { Key, useEffect, useState } from 'react';
 import { getEvents } from '../api/event';
 import dayjs from 'dayjs';
 import { Tag } from 'antd';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/contexts/AuthContext';
 
 
 const activities = [
@@ -33,7 +33,8 @@ export function formatTime(isoTime: string): string {
 
 
 export default function EventSection() {
-    const { status } = useSession();
+    // 使用统一的认证上下文，避免重复调用 useSession
+    const { status } = useAuth();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [events, setEvents] = useState<any[]>([])
 
@@ -84,7 +85,7 @@ export default function EventSection() {
 
     // 组件挂载时加载数据，但避免在认证过程中重复请求
     useEffect(() => {
-        if (status !== 'loading') {
+        if (!status || status !== 'loading') {
             loadEvents()
         }
     }, [status])
