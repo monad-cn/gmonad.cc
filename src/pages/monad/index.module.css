@@ -215,39 +215,63 @@
 }
 
 .group1 {
-  transform-origin: 250px 210px;
-  animation: rotateOrbit1 10s linear infinite;
+    transform-origin: 250px 210px;
+    animation: rotateOrbit1 10s linear infinite;
 }
+
 @keyframes rotateOrbit1 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .group2 {
-  transform-origin: 250px 210px;
-  animation: rotateOrbit2 12s linear infinite;
+    transform-origin: 250px 210px;
+    animation: rotateOrbit2 12s linear infinite;
 }
+
 @keyframes rotateOrbit2 {
-  from { transform: rotate(90deg); }
-  to { transform: rotate(450deg); }
+    from {
+        transform: rotate(90deg);
+    }
+
+    to {
+        transform: rotate(450deg);
+    }
 }
 
 .group3 {
-  transform-origin: 250px 210px;
-  animation: rotateOrbit3 14s linear infinite;
+    transform-origin: 250px 210px;
+    animation: rotateOrbit3 14s linear infinite;
 }
+
 @keyframes rotateOrbit3 {
-  from { transform: rotate(180deg); }
-  to { transform: rotate(540deg); }
+    from {
+        transform: rotate(180deg);
+    }
+
+    to {
+        transform: rotate(540deg);
+    }
 }
 
 .group4 {
-  transform-origin: 250px 210px;
-  animation: rotateOrbit4 16s linear infinite;
+    transform-origin: 250px 210px;
+    animation: rotateOrbit4 16s linear infinite;
 }
+
 @keyframes rotateOrbit4 {
-  from { transform: rotate(270deg); }
-  to { transform: rotate(630deg); }
+    from {
+        transform: rotate(270deg);
+    }
+
+    to {
+        transform: rotate(630deg);
+    }
 }
 
 .scrollIndicator {
@@ -274,7 +298,6 @@
 .sectionContainer {
     max-width: 1200px;
     margin: 0 auto;
-    /* padding: 0 2rem; */
 }
 
 .sectionHeader {
@@ -296,199 +319,160 @@
     margin: 0 auto;
 }
 
-.featuresGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.featuresNav {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.featureNavItem {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
-    background: white;
-}
-
-.featureNavItem:hover,
-.featureNavItem.active {
-    background: #f8fafc;
-    border-color: #8b5cf6;
-    transform: translateX(10px);
-    box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.1);
-}
-
-.featureIcon {
-    width: 2rem;
-    height: 2rem;
-    color: #8b5cf6;
-    flex-shrink: 0;
-}
-
-.featureNavItem h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #111827;
-}
-
-.featureNavItem p {
-    color: #6b7280;
-    font-size: 0.875rem;
-}
-
-.featureContent {
-    background: #f9fafb;
-    border-radius: 20px;
-    padding: 2rem;
-    border: 1px solid #e5e7eb;
-}
-
-.featureDetails h3 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #111827;
-}
-
-.featureDetails p {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: #6b7280;
-    margin-bottom: 2rem;
-}
-
-.featureMetrics {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.metric {
-    text-align: center;
-}
-
-.metricValue {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #8b5cf6;
-}
-
-.metricLabel {
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.featureVisualization img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-}
-
-/* Video Section */
-.videoSection {
-    padding: 8rem 0;
-    background: #f9fafb;
-}
-
-.videoContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.videoWrapper {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.videoThumbnail {
-    position: relative;
-    cursor: pointer;
-}
-
-.videoThumbnail img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.playButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
-    background: rgba(139, 92, 246, 0.9);
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.playButton:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    background: #8b5cf6;
-}
-
-.playIcon {
-    width: 2rem;
-    height: 2rem;
-    color: white;
-    margin-left: 4px;
-}
-
-.videoInfo {
-    position: absolute;
-    bottom: 2rem;
-    left: 2rem;
-    color: white;
-}
-
-.videoInfo h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.videoInfo p {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.video {
-    width: 100%;
-    height: auto;
-}
-
-/* Architecture Section */
-.architecture {
+/* 团队与创始人 */
+.founders {
     padding: 8rem 0;
     background: white;
 }
 
-.architectureGrid {
+.foundersGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
 }
 
-.architectureCard {
+.founderCard {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.founderCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
+    border-color: #8b5cf6;
+}
+
+.founderAvatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #8b5cf6;
+}
+
+.founderAvatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.founderName {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.founderRole {
+    color: #8b5cf6;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.founderBackground {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 融资历程 */
+.funding {
+    padding: 8rem 0;
+    background: #f9fafb;
+}
+
+.fundingTimeline {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.fundingRound {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: start;
+}
+
+.fundingDate {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #8b5cf6;
+    text-align: right;
+    padding-top: 1rem;
+}
+
+.fundingContent {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+}
+
+.fundingContent::before {
+    content: "";
+    position: absolute;
+    left: -11px;
+    top: 2rem;
+    width: 20px;
+    height: 20px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    border: 4px solid white;
+}
+
+.fundingHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.fundingRoundTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.fundingAmount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+.fundingLead {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.fundingDescription {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 核心技术亮点 */
+.technology {
+    padding: 8rem 0;
+    background: white;
+}
+
+.techGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.techCard {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 20px;
@@ -498,228 +482,257 @@
     overflow: hidden;
 }
 
-.architectureCard::before {
+.techCard::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 3px;
-    background: #8b5cf6;
+    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
 }
 
-.architectureCard:hover {
+.techCard:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
     border-color: #8b5cf6;
 }
 
-.cardHeader {
+.techCardHeader {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
 }
 
-.cardHeader .cardIcon {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: #8b5cf6;
-}
-
-.cardHeader h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #111827;
-}
-
-.architectureCard p {
-    color: #6b7280;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-}
-
-.cardMetric {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-}
-
-.metricNumber {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #8b5cf6;
-}
-
-.metricText {
-    color: #6b7280;
-    font-size: 0.875rem;
-}
-
-/* Roadmap Section */
-.roadmap {
-    padding: 8rem 0;
-    background: #f9fafb;
-}
-
-.roadmapTimeline {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.roadmapTimeline::before {
-    content: "";
-    position: absolute;
-    left: 2rem;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #d1d5db;
-}
-
-.roadmapItem {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 3rem;
-}
-
-.roadmapMarker {
-    position: relative;
-    width: 4rem;
-    height: 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.roadmapDot {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    background: #f3f4f6;
-    border: 3px solid #d1d5db;
-}
-
-.roadmapItem.completed .roadmapDot {
-    background: #10b981;
-    border-color: #10b981;
-}
-
-.roadmapItem.current .roadmapDot {
-    background: #8b5cf6;
-    border-color: #8b5cf6;
-    animation: pulse 2s infinite;
-}
-
-.roadmapContent {
-    margin-left: 2rem;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 1.5rem;
-    flex: 1;
-}
-
-.roadmapPhase {
-    color: #8b5cf6;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.roadmapTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0.5rem 0;
-    color: #111827;
-}
-
-.roadmapDate {
-    color: #6b7280;
-    font-size: 0.875rem;
-}
-
-/* Community Section */
-.community {
-    padding: 8rem 0;
-    background: white;
-}
-
-.communityContent {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.communityStats {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 2rem 0;
-}
-
-.communityStat {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.statIcon {
+.techIcon {
     width: 2rem;
     height: 2rem;
     color: #8b5cf6;
+    flex-shrink: 0;
 }
 
-.statValue {
-    font-size: 1.5rem;
-    font-weight: 700;
+.techCardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
     color: #111827;
 }
 
-.statLabel {
+.techCardDescription {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 性能指标速览 */
+.performance {
+    padding: 8rem 0;
+    background: #f9fafb;
+}
+
+.performanceTable {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.performanceRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    align-items: center;
+}
+
+.performanceRow:last-child {
+    border-bottom: none;
+}
+
+.performanceRow:nth-child(odd) {
+    background: #f9fafb;
+}
+
+.performanceMetric {
+    font-weight: 600;
+    color: #111827;
+}
+
+.performanceValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+.performanceComparison {
     color: #6b7280;
     font-size: 0.875rem;
 }
 
-.socialLinks {
-    display: flex;
-    gap: 1rem;
+/* 生态与计划 */
+.ecosystem {
+    padding: 8rem 0;
+    background: white;
 }
 
-.socialLink {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+.ecosystemGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.ecosystemCard {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    color: #374151;
-    text-decoration: none;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
-.socialLink:hover {
-    background: white;
+.ecosystemCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
     border-color: #8b5cf6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.1);
 }
 
-.socialIcon {
-    width: 1.25rem;
-    height: 1.25rem;
+.ecosystemIcon {
+    width: 4rem;
+    height: 4rem;
+    background: #8b5cf6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
 }
 
-.communityVisual img {
-    width: 100%;
-    height: auto;
+.cardIcon {
+    width: 2rem;
+    height: 2rem;
+    color: white;
+}
+
+.ecosystemCard h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.ecosystemCard p {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 为什么选择 Monad */
+.whyChoose {
+    padding: 8rem 0;
+    background: #f9fafb;
+}
+
+.reasonsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.reasonCard {
+    background: white;
+    border: 1px solid #e5e7eb;
     border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.reasonCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
+    border-color: #8b5cf6;
+}
+
+.reasonIcon {
+    width: 3rem;
+    height: 3rem;
+    color: #8b5cf6;
+    margin: 0 auto 1rem;
+}
+
+.reasonTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.reasonDescription {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 如何开始 */
+.getStarted {
+    padding: 8rem 0;
+    background: white;
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.stepCard {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.stepCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
+    border-color: #8b5cf6;
+}
+
+.stepNumber {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background: #8b5cf6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.stepIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #8b5cf6;
+    margin: 1rem auto;
+}
+
+.stepTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.stepDescription {
+    color: #6b7280;
+    font-size: 0.875rem;
 }
 
 /* CTA Section */
@@ -781,6 +794,7 @@
 
 .ctaPrimary:hover {
     background: #f9fafb;
+    color: #8b5cf6;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
@@ -799,11 +813,12 @@
 
 .ctaSecondary:hover {
     border-color: white;
+    color: white;
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
 
-/* Animations */
+/* 动画 */
 @keyframes float {
 
     0%,
@@ -865,21 +880,6 @@
     }
 }
 
-@keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.7;
-        transform: scale(1.1);
-    }
-}
-
-/* 添加旋转动画 */
 @keyframes rotate {
     from {
         transform: rotate(0deg);
@@ -890,7 +890,7 @@
     }
 }
 
-/* Responsive Design */
+/* 响应式设计 */
 @media (max-width: 1024px) {
     .heroContent {
         grid-template-columns: 1fr;
@@ -907,21 +907,23 @@
         height: 600px;
     }
 
-    .group1,
-    .group2,
-    .group3,
-    .group4 {
-        transform-origin: 250px 210px;
+    .fundingRound {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
-    .featuresGrid {
-        grid-template-columns: 1fr;
-        gap: 3rem;
+    .fundingDate {
+        text-align: left;
+        padding-top: 0;
     }
 
-    .communityContent {
+    .fundingContent::before {
+        display: none;
+    }
+
+    .performanceRow {
         grid-template-columns: 1fr;
-        gap: 3rem;
+        gap: 0.5rem;
         text-align: center;
     }
 }
@@ -949,26 +951,25 @@
         height: 500px;
     }
 
-    .orbit {
-        stroke-width: 0.8;
-    }
-
-    .dot {
-        r: 3;
-    }
-
-    .architectureGrid {
-        grid-template-columns: 1fr;
-    }
-
     .ctaActions {
         flex-direction: column;
         align-items: center;
     }
 
-    .socialLinks {
-        justify-content: center;
-        flex-wrap: wrap;
+    .foundersGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .techGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .reasonsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .stepsGrid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -994,11 +995,11 @@
         height: 400px;
     }
 
-    .orbit {
-        stroke-width: 0.6;
+    .stepsGrid {
+        grid-template-columns: 1fr;
     }
 
-    .dot {
-        r: 2.5;
+    .ecosystemGrid {
+        grid-template-columns: 1fr;
     }
 }

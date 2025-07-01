@@ -249,21 +249,22 @@ export default function Home() {
               </span>
             </p>
             <div className={styles.heroButtons}>
-              <Link href="/events" className={styles.heroPrimaryButton}>
+              <Link href="/monad" className={styles.heroPrimaryButton}>
+                <Globe className={styles.buttonIcon} />
+                了解 Monad
+              </Link>
+              <Link href="/events" className={styles.heroSecondaryButton}>
                 <Users className={styles.buttonIcon} />
                 加入社区
               </Link>
-              <Link href="/testnet" className={styles.heroSecondaryButton}>
-                <Globe className={styles.buttonIcon} />
-                体验测试网
-              </Link>
+
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className={styles.stats}>
+      {/* <section className={styles.stats}>
         <div className={styles.container}>
           <div className={styles.statsGrid}>
             {[
@@ -301,7 +302,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Activities Section */}
       <EventSection />

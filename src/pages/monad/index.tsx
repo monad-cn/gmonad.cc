@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import {
   Play,
@@ -8,13 +6,18 @@ import {
   Shield,
   Cpu,
   Users,
-  Github,
-  Twitter,
   MessageCircle,
   ChevronDown,
   Star,
   Globe,
   Code,
+  BookOpen,
+  Settings,
+  Award,
+  TrendingUp,
+  Clock,
+  Rocket,
+  Database,
 } from "lucide-react"
 import styles from "./index.module.css"
 import Link from "next/link"
@@ -30,37 +33,125 @@ export default function MonadIntro() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const features = [
+  const founders = [
     {
-      icon: <Zap className={styles.featureIcon} />,
-      title: "极致性能",
-      description: "10,000 TPS 的超高吞吐量，0.5 秒确认时间",
-      details: "Monad 通过并行执行和优化的状态访问实现了前所未有的性能表现",
+      name: "Keone Hon",
+      role: "CEO",
+      background: "曾担任 Jump Crypto 研究主管，是并行执行和量化交易专家",
+      avatar: "/avatar/keone.jpg",
+      x: "https://x.com/keoneHD",
     },
     {
-      icon: <Shield className={styles.featureIcon} />,
-      title: "EVM 兼容",
-      description: "100% 兼容以太坊虚拟机，无缝迁移",
-      details: "开发者可以直接部署现有的以太坊智能合约，无需任何修改",
+      name: "James Hunsaker",
+      role: "CTO",
+      background: "曾任 Jump Trading 高级工程师，也是 Pyth Network 的核心维护者",
+      avatar: "/avatar/james.jpg",
+      x: "https://x.com/_jhunsaker",
     },
     {
-      icon: <Cpu className={styles.featureIcon} />,
-      title: "创新架构",
-      description: "并行执行引擎，革命性的区块链设计",
-      details: "采用乐观并行执行和延迟状态访问，突破传统区块链性能瓶颈",
-    },
-    {
-      icon: <Users className={styles.featureIcon} />,
-      title: "开发者友好",
-      description: "完整的工具链和丰富的文档支持",
-      details: "提供熟悉的开发环境和强大的调试工具，让开发更加高效",
+      name: "Eunice Giarta",
+      role: "COO",
+      background: "具备分布式系统和低延迟编程背景",
+      avatar: "/avatar/eunice.jpg",
+      x: "https://x.com/0x_eunice",
     },
   ]
 
-  const roadmapItems = [
-    { phase: "Phase 1", title: "测试网上线", status: "completed", date: "2024 Q1" },
-    { phase: "Phase 2", title: "生态扩展", status: "upcoming", date: "2024 Q3" },
-    { phase: "Phase 3", title: "跨链互操作", status: "upcoming", date: "2024 Q4" },
+  const fundingRounds = [
+    {
+      date: "2023年2月",
+      round: "种子轮",
+      amount: "1900万美元",
+      lead: "Dragonfly Capital",
+      description: "完成种子轮融资，为技术开发奠定基础",
+    },
+    {
+      date: "2024年4月",
+      round: "A轮",
+      amount: "2.25亿美元",
+      lead: "Paradigm",
+      description: "当年最大规模的加密融资之一，估值约30亿美元",
+    },
+  ]
+
+  const techFeatures = [
+    {
+      icon: <Zap className={styles.techIcon} />,
+      title: "乐观并行执行",
+      description: "采用乐观并行执行模式，事务并行处理后再验证顺序，提高吞吐能力",
+    },
+    {
+      icon: <Shield className={styles.techIcon} />,
+      title: "MonadBFT 共识",
+      description: "基于 HotStuff 优化，仅需两阶段通信，显著加快出块速度",
+    },
+    {
+      icon: <Clock className={styles.techIcon} />,
+      title: "延迟执行",
+      description: "共识与执行分离，异步处理结果，提高效率",
+    },
+    {
+      icon: <Database className={styles.techIcon} />,
+      title: "MonadDB",
+      description: "针对 EVM State Trie 定制设计，支持高效并行访问",
+    },
+  ]
+
+  const performanceMetrics = [
+    { metric: "TPS（测试网）", value: "≈ 10,000", comparison: "远超 ETH ≈ 15 TPS" },
+    { metric: "出块时间", value: "0.5s", comparison: "确认时间 1s 单槽最终确认" },
+    { metric: "Gas 费用", value: "近乎零", comparison: "极低手续费" },
+    { metric: "节点资源需求", value: "轻量级", comparison: "支持 SSD 存储、轻 RAM 需求" },
+  ]
+
+  const whyChooseReasons = [
+    {
+      icon: <TrendingUp className={styles.reasonIcon} />,
+      title: "性能革命",
+      description: "高 TPS + 快确认，开启实用级链上应用",
+    },
+    {
+      icon: <Code className={styles.reasonIcon} />,
+      title: "EVM 无缝迁移",
+      description: "Solidity 合约、以太工具立即可用",
+    },
+    {
+      icon: <Rocket className={styles.reasonIcon} />,
+      title: "高拓展性",
+      description: "并行架构 + 优化把握未来扩展",
+    },
+    {
+      icon: <Users className={styles.reasonIcon} />,
+      title: "开发者友好",
+      description: "低门槛、丰富活动支持、轻硬件要求",
+    },
+  ]
+
+  const getStartedSteps = [
+    {
+      icon: <BookOpen className={styles.stepIcon} />,
+      title: "了解 Monad ",
+      description: "快速入门 Monad",
+      href: "/monad"
+    },
+    {
+      icon: <Settings className={styles.stepIcon} />,
+      title: "参与 Testnet",
+      description: "体验生态应用",
+      href: "/testnet"
+    },
+    {
+      icon: <MessageCircle className={styles.stepIcon} />,
+      title: "加入社群",
+      description: "X/中文社群",
+      href: "/events"
+    },
+    {
+      icon: <Award className={styles.stepIcon} />,
+      title: "参加活动",
+      description: "社区活动 & 黑客松 & AMA",
+      href: "/events"
+    },
   ]
 
   return (
@@ -166,156 +257,25 @@ export default function MonadIntro() {
         </div> */}
       </section>
 
-      {/* Features Section */}
-      <section className={styles.features}>
+      {/* 团队与创始人 */}
+      <section className={styles.founders}>
         <div className={styles.sectionContainer}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>核心特性</h2>
-            <p className={styles.sectionDescription}>Monad 通过创新技术，为区块链行业带来革命性突破</p>
+            <h2 className={styles.sectionTitle}>团队与创始人</h2>
+            <p className={styles.sectionDescription}>由三位资深专家共同创立，拥有丰富的区块链和金融科技经验</p>
           </div>
-          <div className={styles.featuresGrid}>
-            <div className={styles.featuresNav}>
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className={`${styles.featureNavItem} ${activeFeature === index ? styles.active : ""}`}
-                  onClick={() => setActiveFeature(index)}
-                >
-                  {feature.icon}
-                  <div>
-                    <h3>{feature.title}</h3>
-                    <p>{feature.description}</p>
+          <div className={styles.foundersGrid}>
+            {founders.map((founder, index) => (
+              <div key={index} className={styles.founderCard}>
+                <Link href={founder.x} target="_blank">
+                  <div className={styles.founderAvatar}>
+                    <img src={founder.avatar || "/placeholder.svg"} alt={founder.name} />
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className={styles.featureContent}>
-              <div className={styles.featureDetails}>
-                <h3>{features[activeFeature].title}</h3>
-                <p>{features[activeFeature].details}</p>
-                <div className={styles.featureMetrics}>
-                  <div className={styles.metric}>
-                    <div className={styles.metricValue}>99.9%</div>
-                    <div className={styles.metricLabel}>正常运行时间</div>
-                  </div>
-                  <div className={styles.metric}>
-                    <div className={styles.metricValue}>0.001s</div>
-                    <div className={styles.metricLabel}>延迟</div>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.featureVisualization}>
-                <img
-                  src={`/placeholder.svg?height=400&width=600&query=${features[activeFeature].title} blockchain technology visualization`}
-                  alt={features[activeFeature].title}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Video Section */}
-      <section className={styles.videoSection}>
-        <div className={styles.sectionContainer}>
-          <div className={styles.videoContainer}>
-            <div className={styles.videoWrapper}>
-              {!isVideoPlaying ? (
-                <div className={styles.videoThumbnail}>
-                  <img
-                    src="/placeholder.svg?height=600&width=1000"
-                    alt="Video Thumbnail"
-                  />
-                  <button
-                    className={styles.playButton}
-                    onClick={() => setIsVideoPlaying(true)}
-                  >
-                    <Play className={styles.playIcon} />
-                  </button>
-                  <div className={styles.videoInfo}>
-                    <h3>Monad 技术演示</h3>
-                    <p>深入了解 Monad 的并行执行原理</p>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.iframeWrapper}>
-                  <iframe
-                    width="100%"
-                    height="600"
-                    src="https://www.youtube.com/embed/dLmtXXFv3Ro?autoplay=1"
-                    title="Monad 技术演示"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Architecture Section */}
-      <section className={styles.architecture}>
-        <div className={styles.sectionContainer}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>技术架构</h2>
-            <p className={styles.sectionDescription}>创新的并行执行引擎和优化的共识机制</p>
-          </div>
-          <div className={styles.architectureGrid}>
-            <div className={styles.architectureCard}>
-              <div className={styles.cardHeader}>
-                <Code className={styles.cardIcon} />
-                <h3>并行执行引擎</h3>
-              </div>
-              <p>通过乐观并行执行，同时处理多个交易，大幅提升吞吐量</p>
-              <div className={styles.cardMetric}>
-                <span className={styles.metricNumber}>1000x</span>
-                <span className={styles.metricText}>性能提升</span>
-              </div>
-            </div>
-            <div className={styles.architectureCard}>
-              <div className={styles.cardHeader}>
-                <Shield className={styles.cardIcon} />
-                <h3>优化共识</h3>
-              </div>
-              <p>改进的BFT共识算法，确保网络安全性和最终性</p>
-              <div className={styles.cardMetric}>
-                <span className={styles.metricNumber}>0.5s</span>
-                <span className={styles.metricText}>最终确认</span>
-              </div>
-            </div>
-            <div className={styles.architectureCard}>
-              <div className={styles.cardHeader}>
-                <Cpu className={styles.cardIcon} />
-                <h3>状态管理</h3>
-              </div>
-              <p>延迟状态访问和智能缓存，最大化执行效率</p>
-              <div className={styles.cardMetric}>
-                <span className={styles.metricNumber}>90%</span>
-                <span className={styles.metricText}>缓存命中率</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Roadmap Section */}
-      <section className={styles.roadmap}>
-        <div className={styles.sectionContainer}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>发展路线图</h2>
-            <p className={styles.sectionDescription}>Monad的发展历程和未来规划</p>
-          </div>
-          <div className={styles.roadmapTimeline}>
-            {roadmapItems.map((item, index) => (
-              <div key={index} className={`${styles.roadmapItem} ${styles[item.status]}`}>
-                <div className={styles.roadmapMarker}>
-                  <div className={styles.roadmapDot}></div>
-                </div>
-                <div className={styles.roadmapContent}>
-                  <div className={styles.roadmapPhase}>{item.phase}</div>
-                  <h3 className={styles.roadmapTitle}>{item.title}</h3>
-                  <div className={styles.roadmapDate}>{item.date}</div>
+                </Link>
+                <div className={styles.founderInfo}>
+                  <h3 className={styles.founderName}>{founder.name}</h3>
+                  <div className={styles.founderRole}>{founder.role}</div>
+                  <p className={styles.founderBackground}>{founder.background}</p>
                 </div>
               </div>
             ))}
@@ -323,54 +283,143 @@ export default function MonadIntro() {
         </div>
       </section>
 
-      {/* Community Section */}
-      <section className={styles.community}>
+      {/* 融资历程 */}
+      <section className={styles.funding}>
         <div className={styles.sectionContainer}>
-          <div className={styles.communityContent}>
-            <div className={styles.communityText}>
-              <h2 className={styles.sectionTitle}>加入Monad社区</h2>
-              <p className={styles.sectionDescription}>与全球开发者和用户一起，共同构建下一代区块链生态系统</p>
-              <div className={styles.communityStats}>
-                <div className={styles.communityStat}>
-                  <Star className={styles.statIcon} />
-                  <div>
-                    <div className={styles.statValue}>50K+</div>
-                    <div className={styles.statLabel}>社区成员</div>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>融资历程</h2>
+            <p className={styles.sectionDescription}>获得顶级投资机构支持，总融资约2.44亿美元</p>
+          </div>
+          <div className={styles.fundingTimeline}>
+            {fundingRounds.map((round, index) => (
+              <div key={index} className={styles.fundingRound}>
+                <div className={styles.fundingDate}>{round.date}</div>
+                <div className={styles.fundingContent}>
+                  <div className={styles.fundingHeader}>
+                    <h3 className={styles.fundingRoundTitle}>{round.round}</h3>
+                    <div className={styles.fundingAmount}>{round.amount}</div>
                   </div>
-                </div>
-                <div className={styles.communityStat}>
-                  <Code className={styles.statIcon} />
-                  <div>
-                    <div className={styles.statValue}>1000+</div>
-                    <div className={styles.statLabel}>开发者</div>
-                  </div>
-                </div>
-                <div className={styles.communityStat}>
-                  <Globe className={styles.statIcon} />
-                  <div>
-                    <div className={styles.statValue}>100+</div>
-                    <div className={styles.statLabel}>项目</div>
-                  </div>
+                  <div className={styles.fundingLead}>主投：{round.lead}</div>
+                  <p className={styles.fundingDescription}>{round.description}</p>
                 </div>
               </div>
-              <div className={styles.socialLinks}>
-                <a href="#" className={styles.socialLink}>
-                  <Twitter className={styles.socialIcon} />
-                  <span>Twitter</span>
-                </a>
-                <a href="#" className={styles.socialLink}>
-                  <MessageCircle className={styles.socialIcon} />
-                  <span>Discord</span>
-                </a>
-                <a href="#" className={styles.socialLink}>
-                  <Github className={styles.socialIcon} />
-                  <span>GitHub</span>
-                </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 核心技术亮点 */}
+      <section className={styles.technology}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>核心技术亮点</h2>
+            <p className={styles.sectionDescription}>创新的技术架构，实现前所未有的性能突破</p>
+          </div>
+          <div className={styles.techGrid}>
+            {techFeatures.map((feature, index) => (
+              <div key={index} className={styles.techCard}>
+                <div className={styles.techCardHeader}>
+                  {feature.icon}
+                  <h3 className={styles.techCardTitle}>{feature.title}</h3>
+                </div>
+                <p className={styles.techCardDescription}>{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 性能指标速览 */}
+      <section className={styles.performance}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>性能指标速览</h2>
+            <p className={styles.sectionDescription}>卓越的性能表现，重新定义区块链标准</p>
+          </div>
+          <div className={styles.performanceTable}>
+            {performanceMetrics.map((metric, index) => (
+              <div key={index} className={styles.performanceRow}>
+                <div className={styles.performanceMetric}>{metric.metric}</div>
+                <div className={styles.performanceValue}>{metric.value}</div>
+                <div className={styles.performanceComparison}>{metric.comparison}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Monad 的生态与计划 */}
+      <section className={styles.ecosystem}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Monad 的生态与计划</h2>
+            <p className={styles.sectionDescription}>构建完整的开发者生态系统</p>
+          </div>
+          <div className={styles.ecosystemContent}>
+            <div className={styles.ecosystemGrid}>
+              <div className={styles.ecosystemCard}>
+                <div className={styles.ecosystemIcon}>
+                  <Rocket className={styles.cardIcon} />
+                </div>
+                <h3>测试网进展</h3>
+                <p>Monad Testnet 已上线，测试网已进入活跃阶段，技术与生态正同步稳步前进</p>
+              </div>
+              <div className={styles.ecosystemCard}>
+                <div className={styles.ecosystemIcon}>
+                  <Award className={styles.cardIcon} />
+                </div>
+                <h3>Builder 计划</h3>
+                <p>Hackathon（如 Blitz）、加速器 Mach、全球项目/Pitch 赛 Monad Madness 等支持计划</p>
+              </div>
+              <div className={styles.ecosystemCard}>
+                <div className={styles.ecosystemIcon}>
+                  <Users className={styles.cardIcon} />
+                </div>
+                <h3>社区活跃</h3>
+                <p>覆盖 Discord、X、中文社群等平台，定期举办社区活动</p>
               </div>
             </div>
-            <div className={styles.communityVisual}>
-              <img src="/placeholder.svg?height=500&width=600" alt="Community" />
-            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 为什么选择 Monad */}
+      <section className={styles.whyChoose}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>为什么选择 Monad？</h2>
+            <p className={styles.sectionDescription}>四大核心优势，引领区块链技术革新</p>
+          </div>
+          <div className={styles.reasonsGrid}>
+            {whyChooseReasons.map((reason, index) => (
+              <div key={index} className={styles.reasonCard}>
+                <div className={styles.reasonIcon}>{reason.icon}</div>
+                <h3 className={styles.reasonTitle}>{reason.title}</h3>
+                <p className={styles.reasonDescription}>{reason.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 如何开始 */}
+      <section className={styles.getStarted}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>如何开始</h2>
+            <p className={styles.sectionDescription}>四个简单步骤，开启您的 Monad 之旅</p>
+          </div>
+          <div className={styles.stepsGrid}>
+            {getStartedSteps.map((step, index) => (
+              <div key={index} className={styles.stepCard}>
+                <Link href={step.href || '/'}>
+                <div className={styles.stepNumber}>{index + 1}</div>
+                <div className={styles.stepIcon}>{step.icon}</div>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+                <p className={styles.stepDescription}>{step.description}</p>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -379,14 +428,14 @@ export default function MonadIntro() {
       <section className={styles.cta}>
         <div className={styles.ctaContainer}>
           <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>准备好体验未来了吗？</h2>
-            <p className={styles.ctaDescription}>立即开始使用Monad，体验前所未有的区块链性能</p>
+            <h2 className={styles.ctaTitle}>准备好体验测试网了吗？</h2>
+            <p className={styles.ctaDescription}>立即开始使用 Monad，体验前所未有的区块链性能</p>
             <div className={styles.ctaActions}>
-              <button className={styles.ctaPrimary}>
-                启动测试网
+              <Link  href="/testnet" className={styles.ctaPrimary}>
+                体验测试网
                 <ArrowRight className={styles.buttonIcon} />
-              </button>
-              <button className={styles.ctaSecondary}>开发者文档</button>
+              </Link>
+              <Link href="/events" className={styles.ctaSecondary}>加入中文社区</Link>
             </div>
           </div>
         </div>
