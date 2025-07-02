@@ -28,7 +28,7 @@ type Event struct {
 	PublishTime          *time.Time     `json:"publish_time"`
 	Twitter              string         `json:"twitter"`
 	UserId               uint           `json:"user_id"`
-	User                 User           `gorm:"foreignKey:UserId"`
+	User                 *User          `gorm:"foreignKey:UserId"`
 }
 
 func (e *Event) Create() error {

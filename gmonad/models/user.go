@@ -12,7 +12,7 @@ type User struct {
 	Github   string    `json:"github"`
 	Uid      uint      `json:"-"` // OAUTH
 	RoleID   uint      `json:"-"`
-	Role     Role      `gorm:"foreignKey:RoleID" json:"-"`
+	Role     *Role     `gorm:"foreignKey:RoleID" json:"-"`
 	Events   []Event   `gorm:"foreignKey:UserId" json:"events"`
 	Articles []Article `gorm:"foreignKey:PublisherId"  json:"articles"`
 }

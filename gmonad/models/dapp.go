@@ -16,10 +16,10 @@ type Dapp struct {
 	Site        string         `json:"site"`
 	CoverImg    string         `json:"cover_img"`
 	CategoryId  uint           `json:"category_id"`
-	Category    Category       `gorm:"foreignKey:CategoryId" json:"category"`
+	Category    *Category      `gorm:"foreignKey:CategoryId" json:"category"`
 	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
 	UserId      uint           `json:"user_id"`
-	User        User           `gorm:"foreignKey:UserId"`
+	User        *User          `gorm:"foreignKey:UserId"`
 }
 
 func (d *Dapp) Create() error {
