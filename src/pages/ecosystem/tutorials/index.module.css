@@ -84,6 +84,17 @@
   min-width: 120px;
 }
 
+.loading {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 1rem;
+}
+
 .tutorialGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -110,6 +121,7 @@
 .cardImage {
   position: relative;
   height: 160px;
+  width: 100%;
   overflow: hidden;
 }
 

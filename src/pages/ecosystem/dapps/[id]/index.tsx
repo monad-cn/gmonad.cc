@@ -5,26 +5,20 @@ import { ArrowLeft, Clock, BarChart3, BookOpen, Play, Globe } from "lucide-react
 import styles from "./index.module.css"
 import { getDappById } from "@/pages/api/dapp"
 import { SiX } from "react-icons/si"
+import { Avatar } from "antd"
+import dayjs from "dayjs"
 
 // Types
 interface Tutorial {
-    id: string
+    ID: string
+    CreatedAt: string
     title: string
     description: string
-    difficulty: "初级" | "中级" | "高级"
-    estimatedTime: string
-    steps: number
+    tags: string[]
+    view_count: number
+    publish_time: string
 }
 
-interface DApp {
-    id: string
-    name: string
-    description: string
-    logo: string
-    website?: string
-    category: string
-    tutorials: Tutorial[]
-}
 
 export default function DappTutorialsPage() {
     const router = useRouter()
@@ -98,14 +92,14 @@ export default function DappTutorialsPage() {
                                 <p className={styles.dappDescription}>{dapp.description}</p>
                                 <div className={styles.dappMeta}>
                                     <span className={styles.category}>{dapp.category?.name}</span>
-                                     {dapp.x && (
+                                    {dapp.x && (
                                         <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.xLink}>
-                                             <SiX className={styles.actionIcon} />
+                                            <SiX className={styles.actionIcon} />
                                         </Link>
                                     )}
                                     {dapp.site && (
                                         <Link href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.websiteLink}>
-                                            <Globe  className={styles.actionIcon} />
+                                            <Globe className={styles.actionIcon} />
                                         </Link>
                                     )}
                                 </div>
@@ -147,10 +141,10 @@ export default function DappTutorialsPage() {
                     </div>
 
                     {/* Tutorials Grid */}
-                    {/* <div className={styles.tutorialsGrid}>
-                        {filteredTutorials.map((tutorial, index) => (
+                    <div className={styles.tutorialsGrid}>
+                        {dapp.tutorials.map((tutorial: Tutorial, index: number) => (
                             <TutorialCard
-                                key={tutorial.id}
+                                key={tutorial.ID}
                                 tutorial={tutorial}
                                 index={index}
                                 getDifficultyColor={getDifficultyColor}
@@ -158,39 +152,30 @@ export default function DappTutorialsPage() {
                         ))}
                     </div>
 
-                    {filteredTutorials.length === 0 && (
+                    {dapp.tutorials.length === 0 && (
                         <div className={styles.emptyState}>
                             <div className={styles.emptyIcon}>📚</div>
                             <h3 className={styles.emptyTitle}>暂无该难度的教程</h3>
                             <p className={styles.emptyDescription}>尝试选择其他难度级别查看更多教程。</p>
                         </div>
-                    )} */}
+                    )}
                 </div>
             </section>
         </div>
     )
 }
 
-function TutorialCard({
-    tutorial,
-    index,
-    getDifficultyColor,
-}: {
-    tutorial: Tutorial
-    index: number
-    getDifficultyColor: (difficulty: string) => string
-}) {
+
+
+interface Props {
+    tutorial: Tutorial;
+    index: number;
+    getDifficultyColor: (difficulty: string) => string;
+}
+
+function TutorialCard({ tutorial, index, getDifficultyColor }: Props) {
     return (
         <div className={styles.tutorialCard}>
-            <div className={styles.cardHeader}>
-                <div className={styles.tutorialNumber}>{index + 1}</div>
-                <div className={styles.cardActions}>
-                    <div className={styles.difficultyBadge} style={{ backgroundColor: getDifficultyColor(tutorial.difficulty) }}>
-                        {tutorial.difficulty}
-                    </div>
-                </div>
-            </div>
-
             <div className={styles.cardContent}>
                 <h3 className={styles.tutorialTitle}>{tutorial.title}</h3>
                 <p className={styles.tutorialDescription}>{tutorial.description}</p>
@@ -198,25 +183,21 @@ function TutorialCard({
                 <div className={styles.tutorialMeta}>
                     <div className={styles.metaItem}>
                         <Clock className={styles.metaIcon} />
-                        <span>{tutorial.estimatedTime}</span>
-                    </div>
-                    <div className={styles.metaItem}>
-                        <BookOpen className={styles.metaIcon} />
-                        <span>{tutorial.steps} 个步骤</span>
+                        <span>{dayjs(tutorial.publish_time || tutorial.CreatedAt).format('YYYY-MM-DD')}</span>
                     </div>
                     <div className={styles.metaItem}>
                         <BarChart3 className={styles.metaIcon} />
-                        <span>{tutorial.difficulty}</span>
+                        <span>{tutorial.view_count || 0}</span>
                     </div>
                 </div>
             </div>
 
             <div className={styles.cardFooter}>
-                <button className={styles.startButton}>
+                <Link href={`/ecosystem/tutorials/${tutorial.ID}`} className={styles.startButton}>
                     <Play className={styles.startIcon} />
                     开始教程
-                </button>
+                </Link>
             </div>
         </div>
-    )
+    );
 }

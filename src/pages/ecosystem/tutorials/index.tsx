@@ -1,116 +1,76 @@
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Input, Select, Card, Tag, Empty, Spin } from "antd"
-import { Search, Clock, BookOpen, Star, Filter } from "lucide-react"
-import styles from "./index.module.css"
-import { getBlogs } from "@/pages/api/blog"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Input, Select, Card, Tag, Empty, Spin, Image } from "antd";
+import { Search, BookOpen, Star, Filter } from "lucide-react";
+import styles from "./index.module.css";
+import { getTutorials } from "@/pages/api/tutorial";
+import { useAuth } from "@/contexts/AuthContext";
 
-const { Option } = Select
-
-interface Tutorial {
-    id: string
-    title: string
-    description: string
-    dappName: string
-    category: string
-    difficulty: "beginner" | "intermediate" | "advanced"
-    duration: string
-    image: string
-    tags: string[]
-    dappId: string
-}
+const { Option } = Select;
 
 export default function TutorialsPage() {
-    const [tutorials, setTutorials] = useState<any[]>([])
-    const [selectedCategory, setSelectedCategory] = useState("all")
-    const [selectedDifficulty, setSelectedDifficulty] = useState("all")
+    const [tutorials, setTutorials] = useState<any[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [selectedDifficulty, setSelectedDifficulty] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(6);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [selectedTag, setSelectedTag] = useState('');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const [searchKeyword, setSearchKeyword] = useState("");
     const [publishStatus, setPublishStatus] = useState(2);
 
-    const categories = ["all", "DeFi", "NFT", "钱包", "游戏", "工具"]
-    const difficulties = ["all", "beginner", "intermediate", "advanced"]
+    // 使用统一的认证上下文，避免重复调用 useSession
+    const { session, status } = useAuth();
 
-    const getDifficultyLabel = (difficulty: string) => {
-        switch (difficulty) {
-            case "beginner":
-                return "初级"
-            case "intermediate":
-                return "中级"
-            case "advanced":
-                return "高级"
-            default:
-                return difficulty
-        }
-    }
+    const permissions = session?.user?.permissions || [];
 
-    const getDifficultyColor = (difficulty: string) => {
-        switch (difficulty) {
-            case "beginner":
-                return "success"
-            case "intermediate":
-                return "warning"
-            case "advanced":
-                return "error"
-            default:
-                return "default"
-        }
-    }
-    const fetchTutorials = async (params?: {
-        keyword?: string;
-        tag?: string;
-        order?: 'asc' | 'desc';
-        page?: number;
-        page_size?: number;
-        publish_status?: number;
-    }) => {
+    const categories = ["all", "DeFi", "NFT", "钱包", "游戏", "工具"];
+    const difficulties = ["all", "beginner", "intermediate", "advanced"];
+
+    const fetchTutorials = async (p0: { publish_status: number; }) => {
         try {
             setLoading(true);
 
-            const queryParams = {
-                keyword: params?.keyword ?? searchKeyword,
-                order: params?.order ?? sortOrder,
-                page: params?.page ?? currentPage,
-                page_size: params?.page_size ?? pageSize,
-                publish_status: params?.publish_status ?? publishStatus,
+            const params = {
+                keyword: searchKeyword || undefined,
+                page: currentPage,
+                page_size: pageSize,
+                publish_status: publishStatus,
             };
 
-            const result = await getBlogs(queryParams);
+            const result = await getTutorials(params);
             if (result.success && result.data) {
-                // 处理后端返回的数据结构
-                if (result.data.blogs && Array.isArray(result.data.blogs)) {
-                    console.log(result.data.blogs);
-                    setTutorials(result.data.blogs);
-                    setCurrentPage(result.data.page || 1);
-                    setPageSize(result.data.page_size || 6);
-                    setTotal(result.data.total || result.data.blogs.length);
-                } else {
-                    console.warn('API 返回的数据格式不符合预期:', result.data);
-                    setTutorials([]);
-                    setTotal(0);
-                }
+                setTutorials(result.data.tutorials || []);
+                setCurrentPage(result.data.page || 1);
+                setPageSize(result.data.page_size || 6);
+                setTotal(result.data.total || 0);
             } else {
-                console.error('获取博客列表失败:', result.message);
+                console.error("获取教程列表失败:", result.message);
                 setTutorials([]);
                 setTotal(0);
             }
         } catch (error) {
-            console.error('加载博客列表异常:', error);
+            console.error("加载教程列表异常:", error);
             setTutorials([]);
             setTotal(0);
         } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
-        fetchTutorials()
-    }, [selectedCategory, selectedDifficulty, searchKeyword, selectedTag])
+        if (status === "loading") return;
+
+        const newPublishStatus =
+            status === "authenticated" && permissions.includes("tutorial:review") ? 0 : 2;
+
+        setPublishStatus(newPublishStatus);
+    }, [status, permissions]);
+
+    useEffect(() => {
+        fetchTutorials({ publish_status: publishStatus });
+    }, [publishStatus, searchKeyword, selectedCategory, selectedDifficulty, currentPage, pageSize]);
+
 
     return (
         <div className={styles.container}>
@@ -133,8 +93,8 @@ export default function TutorialsPage() {
                             size="large"
                             placeholder="搜索教程、DApp 名称或关键词..."
                             prefix={<Search size={20} />}
-                            // value={searchTerm}
-                            // onChange={(e) => setSearchTerm(e.target.value)}
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
                             className={styles.searchInput}
                         />
                     </div>
@@ -143,7 +103,12 @@ export default function TutorialsPage() {
                         <div className={styles.filterItem}>
                             <Filter size={16} className={styles.filterIcon} />
                             <span className={styles.filterLabel}>分类：</span>
-                            <Select value={selectedCategory} onChange={setSelectedCategory} className={styles.select} size="middle">
+                            <Select
+                                value={selectedCategory}
+                                onChange={setSelectedCategory}
+                                className={styles.select}
+                                size="middle"
+                            >
                                 {categories.map((category) => (
                                     <Option key={category} value={category}>
                                         {category === "all" ? "全部分类" : category}
@@ -163,20 +128,11 @@ export default function TutorialsPage() {
                             >
                                 {difficulties.map((difficulty) => (
                                     <Option key={difficulty} value={difficulty}>
-                                        {difficulty === "all" ? "全部难度" : getDifficultyLabel(difficulty)}
+                                        {difficulty === "all" ? "全部难度" : difficulty}
                                     </Option>
                                 ))}
                             </Select>
                         </div>
-
-                        {/* <div className={styles.filterItem}>
-                            <Clock size={16} className={styles.filterIcon} />
-                            <span className={styles.filterLabel}>排序：</span>
-                            <Select value={sortBy} onChange={setSortBy} className={styles.select} size="middle">
-                                <Option value="latest">最新发布</Option>
-                                <Option value="popular">最受欢迎</Option>
-                            </Select>
-                        </div> */}
                     </div>
                 </Card>
 
@@ -187,7 +143,11 @@ export default function TutorialsPage() {
                 ) : tutorials.length > 0 ? (
                     <div className={styles.tutorialGrid}>
                         {tutorials.map((tutorial) => (
-                            <Link key={tutorial.ID} href={`/ecosystem/tutorials/${tutorial.ID}`} className={styles.tutorialLink}>
+                            <Link
+                                key={tutorial.ID}
+                                href={`/ecosystem/tutorials/${tutorial.ID}`}
+                                className={styles.tutorialLink}
+                            >
                                 <Card
                                     hoverable
                                     className={styles.tutorialCard}
@@ -196,15 +156,11 @@ export default function TutorialsPage() {
                                             <Image
                                                 src={tutorial.cover_img || "/placeholder.svg"}
                                                 alt={tutorial.title}
-                                                width={280}
-                                                height={160}
                                                 className={styles.image}
+                                                preview={false}
+                                                referrerPolicy="no-referrer"
+
                                             />
-                                            {/* <div className={styles.cardOverlay}>
-                                                <Tag icon={<Clock size={12} />} className={styles.duration}>
-                                                    {tutorial.duration}
-                                                </Tag>
-                                            </div> */}
                                         </div>
                                     }
                                 >
@@ -212,10 +168,7 @@ export default function TutorialsPage() {
                                         <div className={styles.cardHeader}>
                                             <h3 className={styles.cardTitle}>{tutorial.title}</h3>
                                             <div className={styles.cardMeta}>
-                                                <span className={styles.dappName}>{tutorial.dapp.name}</span>
-                                                {/* <Tag color={getDifficultyColor(tutorial.difficulty)} className={styles.difficulty}>
-                                                    {getDifficultyLabel(tutorial.difficulty)}
-                                                </Tag> */}
+                                                <span className={styles.dappName}>{tutorial.dapp?.name}</span>
                                             </div>
                                         </div>
 
@@ -223,15 +176,12 @@ export default function TutorialsPage() {
 
                                         <div className={styles.cardFooter}>
                                             <div className={styles.tags}>
-                                                {tutorial.tags.slice(0, 2).map((tag: any) => (
+                                                {tutorial.tags?.slice(0, 2).map((tag: any) => (
                                                     <Tag key={tag} className={styles.tag}>
                                                         {tag}
                                                     </Tag>
                                                 ))}
                                             </div>
-                                            {/* <Tag color="purple" className={styles.category}>
-                                                {tutorial.category}
-                                            </Tag> */}
                                         </div>
                                     </div>
                                 </Card>
@@ -253,5 +203,5 @@ export default function TutorialsPage() {
                 )}
             </div>
         </div>
-    )
+    );
 }

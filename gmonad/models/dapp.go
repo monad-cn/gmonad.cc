@@ -20,14 +20,15 @@ type Dapp struct {
 	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
 	UserId      uint           `json:"user_id"`
 	User        *User          `gorm:"foreignKey:UserId"`
+	Tutorials   []Tutorial     `gorm:"foreignKey:DappId" json:"tutorials"`
 }
 
 func (d *Dapp) Create() error {
 	return db.Create(d).Error
 }
 
-func (d *Dapp) GetByID(id uint) error {
-	return db.Preload("Category").First(d, id).Error
+func (d *Dapp) GetByID() error {
+	return db.Preload("Tutorials").Preload("Category").First(d, d.ID).Error
 }
 
 func (d *Dapp) Update() error {
@@ -57,7 +58,7 @@ func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 	var dapps []Dapp
 	var total int64
 
-	query := db.Preload("Category").Model(&Dapp{})
+	query := db.Preload("Tutorials").Preload("Category").Model(&Dapp{})
 
 	if filter.Keyword != "" {
 		likePattern := "%" + filter.Keyword + "%"
