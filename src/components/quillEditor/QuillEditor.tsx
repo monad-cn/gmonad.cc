@@ -9,6 +9,11 @@ import type ReactQuillType from 'react-quill-new';
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
 type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
 
+interface QuillEditorProps extends ReactQuillProps {
+  height?: number | string;
+  autoHeight?: boolean;
+}
+
 
 const FULLSCREEN_ICONS = {
   ENTER: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -26,7 +31,8 @@ const FULLSCREEN_ICONS = {
   </svg>`,
 };
 
-function QuillEditor(props: ReactQuillProps) {
+function QuillEditor(props: QuillEditorProps) {
+  const { height, autoHeight, ...restProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { message } = AntdApp.useApp();
   
@@ -34,6 +40,40 @@ function QuillEditor(props: ReactQuillProps) {
   const handleImageError = useCallback((error: string) => {
     message.error(error);
   }, [message]);
+
+  // 高度样式计算
+  const getContainerStyle = useCallback(() => {
+    if (isFullscreen) return {};
+    
+    const style: React.CSSProperties = {};
+    
+    if (autoHeight) {
+      style.height = '100%';
+    } else if (height !== undefined) {
+      style.height = typeof height === 'number' ? `${height}px` : height;
+    }
+    
+    return style;
+  }, [height, autoHeight, isFullscreen]);
+
+  const getEditorStyle = useCallback(() => {
+    if (isFullscreen) return {};
+    
+    const style: React.CSSProperties = {};
+    
+    if (autoHeight) {
+      style.height = '100%';
+      style.display = 'flex';
+      style.flexDirection = 'column';
+    } else if (height !== undefined) {
+      const containerHeight = typeof height === 'number' ? `${height}px` : height;
+      style.height = containerHeight;
+      style.display = 'flex';
+      style.flexDirection = 'column';
+    }
+    
+    return style;
+  }, [height, autoHeight, isFullscreen]);
 
   useEffect(() => {
     let fullscreenBtn: HTMLButtonElement | null = null;
@@ -223,7 +263,7 @@ function QuillEditor(props: ReactQuillProps) {
 
   // Quill模块配置中包含Cloudinary上传模块
   const modulesWithCloudinary = useCallback(() => {
-    const defaultModules = props.modules || {
+    const defaultModules = restProps.modules || {
       toolbar: {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],
@@ -251,18 +291,20 @@ function QuillEditor(props: ReactQuillProps) {
     }
 
     return defaultModules;
-  }, [props.modules, handleImageError, isModuleRegistered]);
+  }, [restProps.modules, handleImageError, isModuleRegistered]);
 
   return (
     <div
-      className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
+      className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''} ${autoHeight ? styles.autoHeightContainer : ''}`}
+      style={getContainerStyle()}
     >
       {isEditorReady ? (
         <ReactQuill
           placeholder="请输入..."
-          {...props}
+          {...restProps}
           modules={modulesWithCloudinary()}
-          className={isFullscreen ? styles.fullscreenEditor : ''}
+          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${(height !== undefined || autoHeight) ? styles.heightControlledEditor : ''}`}
+          style={getEditorStyle()}
         />
       ) : (
         <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>

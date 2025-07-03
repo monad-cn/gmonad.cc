@@ -4,6 +4,33 @@
   transition: all 0.3s ease;
 }
 
+/* 自适应高度容器 */
+.autoHeightContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 高度控制编辑器 */
+.heightControlledEditor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.heightControlledEditor :global(.ql-container) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.heightControlledEditor :global(.ql-editor) {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
 .fullscreenContainer {
   position: fixed;
   top: 0;
