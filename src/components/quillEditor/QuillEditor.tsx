@@ -11,6 +11,7 @@ type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
 
 interface QuillEditorProps extends ReactQuillProps {
   height?: number | string;
+  minHeight?: number | string;
   autoHeight?: boolean;
 }
 
@@ -32,7 +33,7 @@ const FULLSCREEN_ICONS = {
 };
 
 function QuillEditor(props: QuillEditorProps) {
-  const { height, autoHeight, ...restProps } = props;
+  const { height, minHeight, autoHeight, ...restProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { message } = AntdApp.useApp();
   
@@ -53,8 +54,12 @@ function QuillEditor(props: QuillEditorProps) {
       style.height = typeof height === 'number' ? `${height}px` : height;
     }
     
+    if (minHeight !== undefined) {
+      style.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+    }
+    
     return style;
-  }, [height, autoHeight, isFullscreen]);
+  }, [height, minHeight, autoHeight, isFullscreen]);
 
   const getEditorStyle = useCallback(() => {
     if (isFullscreen) return {};
@@ -72,8 +77,16 @@ function QuillEditor(props: QuillEditorProps) {
       style.flexDirection = 'column';
     }
     
+    if (minHeight !== undefined) {
+      style.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+      if (!style.display) {
+        style.display = 'flex';
+        style.flexDirection = 'column';
+      }
+    }
+    
     return style;
-  }, [height, autoHeight, isFullscreen]);
+  }, [height, minHeight, autoHeight, isFullscreen]);
 
   useEffect(() => {
     let fullscreenBtn: HTMLButtonElement | null = null;
@@ -303,7 +316,7 @@ function QuillEditor(props: QuillEditorProps) {
           placeholder="请输入..."
           {...restProps}
           modules={modulesWithCloudinary()}
-          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${(height !== undefined || autoHeight) ? styles.heightControlledEditor : ''}`}
+          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${(height !== undefined || minHeight !== undefined || autoHeight) ? styles.heightControlledEditor : ''}`}
           style={getEditorStyle()}
         />
       ) : (
