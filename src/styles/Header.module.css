@@ -1,60 +1,87 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0;
 }
 
 /* Header */
 .header {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  background: transparent;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
+  padding: 0.75rem 1rem 0;
 }
 
 .headerContent {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 2px 4px rgba(226, 226, 226, 0.5);
+  border-radius: 72px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-height: 72px;
+}
+
+.headerContent:hover {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0px 6px 16px rgba(110, 84, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 .logoInfo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .logoTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, #1f2937, #6E54FF);
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1f2937 0%, #6E54FF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
 }
 
 .nav {
   display: none;
   align-items: center;
   gap: 2rem;
+  flex: 1;
+  justify-content: center;
+  margin: 0 2.5rem;
 }
 
 .navItem {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: #374151;
+  color: #4b5563;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  white-space: nowrap;
+  position: relative;
 }
 
 .navItem:hover {
   color: #6E54FF;
-  transform: scale(1.05);
+  background: rgba(110, 84, 255, 0.1);
 }
 
 .navIcon {
@@ -63,20 +90,25 @@
 }
 
 .navButton {
-  background: linear-gradient(135deg, #6E54FF, #6366F1);
+  background: #6E54FF;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(110, 84, 255, 0.3);
   transition: all 0.3s ease;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
 }
 
 .navButton:hover {
-  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
-  transform: scale(1.05);
+  background: #5b47d1;
+  box-shadow: 0 4px 12px rgba(110, 84, 255, 0.4);
+  transform: translateY(-1px);
 }
 
 .logo {
@@ -302,35 +334,40 @@
 /* 移动端 Header 优化 */
 @media (max-width: 768px) {
   .header {
-    padding: 0;
+    padding: 0.5rem 1rem 0;
   }
   
   .headerContent {
-    padding: 0.75rem 1rem;
+    max-width: calc(100% - 2rem);
+    padding: 0.75rem 1.25rem;
+    margin: 0 1rem;
     min-height: 60px;
   }
   
-  .container {
-    padding: 0;
-  }
-  
   .logoTitle {
-    font-size: 1.2rem !important;
+    font-size: 1.2rem;
   }
   
-  .logoInfo {
-    gap: 0.4rem;
+  .navButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
+  .header {
+    padding: 0.375rem 0.5rem 0;
+  }
+  
   .headerContent {
-    padding: 0.6rem 0.75rem;
+    padding: 0.6rem 1rem;
+    margin: 0 0.5rem;
+    max-width: calc(100% - 1rem);
     min-height: 56px;
   }
   
   .logoTitle {
-    font-size: 1.1rem !important;
+    font-size: 1.1rem;
   }
   
   .mobileMenuButton {
@@ -341,6 +378,11 @@
   .mobileMenuIcon {
     width: 18px;
     height: 18px;
+  }
+  
+  .navButton {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
 

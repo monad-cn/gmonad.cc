@@ -218,9 +218,22 @@
 .hero {
   position: relative;
   padding: 8rem 1rem;
-  padding-top: 12rem;
-  /* 增加顶部间距以适应固定的header和新闻栏 */
+  padding-top: 5rem;
+  /* 最小化顶部间距，让内容更贴近header */
   overflow: hidden;
+}
+
+/* 移动端Hero优化 */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 4.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 4rem;
+  }
 }
 
 .heroBackground {
