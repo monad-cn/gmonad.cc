@@ -10,12 +10,8 @@ import { SiX } from "react-icons/si"
 type DAppCategory = "DeFi" | "基础设施" | "游戏" | "NFT" | "社交" | "开发工具" | "AI" | "DePIN" | "RWA" | "支付"
 
 interface Tutorial {
-    id: string
+    ID: string
     title: string
-    description: string
-    difficulty: "初级" | "中级" | "高级"
-    estimatedTime: string
-    steps: number
 }
 
 interface Category {

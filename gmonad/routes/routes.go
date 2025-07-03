@@ -38,5 +38,14 @@ func SetupRouter(r *gin.Engine) {
 		dapp.GET("/categories", controllers.QueryCategories)
 		dapp.GET("", controllers.QueryDapps)
 	}
+	tutorial := r.Group("/v1/tutorials")
+	{
+		tutorial.POST("", middlewares.JWT("tutorial:write"), controllers.CreateTutorial)
+		tutorial.DELETE("/:id", middlewares.JWT("tutorial:delete"), controllers.DeleteTutorial)
+		tutorial.PUT("/:id", middlewares.JWT("tutorial:write"), controllers.UpdateTutorial)
+		tutorial.GET("/:id", controllers.GetTutorial)
+		tutorial.GET("", controllers.QueryTutorials)
+		tutorial.PUT("/:id/status", middlewares.JWT("tutorial:review"), controllers.UpdateTutorialPublishStatus)
+	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

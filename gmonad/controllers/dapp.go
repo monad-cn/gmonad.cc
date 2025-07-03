@@ -66,7 +66,7 @@ func GetDapp(c *gin.Context) {
 	var dapp models.Dapp
 	dapp.ID = uint(id)
 
-	if err = dapp.GetByID(uint(id)); err != nil {
+	if err = dapp.GetByID(); err != nil {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid dapp", nil)
 		return
 	}
@@ -118,7 +118,7 @@ func DeleteDapp(c *gin.Context) {
 	var dapp models.Dapp
 	dapp.ID = uint(id)
 
-	if err = dapp.GetByID(uint(id)); err != nil {
+	if err = dapp.GetByID(); err != nil {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid dapp", nil)
 		return
 	}

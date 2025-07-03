@@ -1,15 +1,14 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Form,
   Input,
-  Checkbox,
   Button,
   Card,
   Tag,
   Select,
   App as AntdApp,
 } from 'antd';
-import type { UploadFile } from 'antd';
+import { useRouter } from 'next/router';
 import {
   ArrowLeft,
   FileText,
@@ -18,21 +17,23 @@ import {
   Plus,
 } from 'lucide-react';
 import Link from 'next/link';
-import router from 'next/router';
-import styles from './new.module.css';
+import styles from './edit.module.css';
 
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { createTutorial } from '@/pages/api/tutorial';
-import { getDapps } from '@/pages/api/dapp'; 
+import { getTutorialById, updateTutorial } from '@/pages/api/tutorial';
+import { getDapps } from '@/pages/api/dapp';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-export default function NewTutorialPage() {
+export default function EditTutorialPage() {
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
+  const router = useRouter();
+  const { id } = router.query;
+  const rId = Array.isArray(id) ? id[0] : id;
 
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
@@ -41,6 +42,8 @@ export default function NewTutorialPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
   const [dappList, setDappList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tutorial, setTutorial] = useState<any>();
 
   // 获取 Dapp 列表
   const fetchDapps = async () => {
@@ -71,31 +74,33 @@ export default function NewTutorialPage() {
 
   const handleSubmit = async (values: any) => {
     try {
+      if (!previewUrl && !cloudinaryImg?.secure_url) {
+        message.error('请上传教程封面');
+        return;
+      }
+
       setIsSubmitting(true);
 
-      const createTutorialRequest: any = {
+      const updateTutorialRequest: any = {
         title: values.title || '',
         description: values.description || '',
         content: values.content || '',
-        cover_img: cloudinaryImg?.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url || previewUrl,
         tags: tags,
         source_link: values.source || '',
+        dapp_id: values.dappId || undefined,
       };
 
-      if (values.dappId) {
-        createTutorialRequest.dapp_id = values.dappId;
-      }
-
-      const result = await createTutorial(createTutorialRequest);
+      const result = await updateTutorial(tutorial.ID.toString(), updateTutorialRequest);
       if (result.success) {
-        message.success(result.message || '教程创建成功');
+        message.success(result.message || '教程更新成功');
         router.push('/ecosystem/tutorials');
       } else {
-        message.error(result.message || '创建教程失败');
+        message.error(result.message || '更新教程失败');
       }
     } catch (error) {
-      console.error('创建教程失败:', error);
-      message.error('创建教程出错，请重试');
+      console.error('更新教程失败:', error);
+      message.error('更新教程出错，请重试');
     } finally {
       setIsSubmitting(false);
     }
@@ -114,6 +119,49 @@ export default function NewTutorialPage() {
     setTags(newTags);
   };
 
+  useEffect(() => {
+    if (!router.isReady || !rId) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getTutorialById(rId);
+        if (response.success && response.data) {
+          setTutorial(response.data);
+          form.setFieldsValue({
+            title: response.data.title,
+            description: response.data.description,
+            content: response.data.content,
+            source: response.data.source_link,
+            dappId: response.data.dapp_id,
+          });
+          setPreviewUrl(response.data.cover_img || '');
+          setTags(response.data.tags || []);
+        } else {
+          message.error('加载教程失败');
+        }
+      } catch (error) {
+        console.error('加载教程失败:', error);
+        message.error('加载教程出错');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router.isReady, rId, form]);
+
+  if (!loading && !tutorial) {
+    return (
+      <div className={styles.error}>
+        <h2>教程不存在</h2>
+        <p>抱歉，找不到您要查看的教程</p>
+        <Link href="/ecosystem/tutorials" className={styles.backButton}>
+          返回教程列表
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -124,7 +172,7 @@ export default function NewTutorialPage() {
       </div>
 
       <div className={styles.titleSection}>
-        <h1 className={styles.title}>新建教程</h1>
+        <h1 className={styles.title}>编辑教程</h1>
       </div>
 
       <Form
@@ -187,30 +235,19 @@ export default function NewTutorialPage() {
                 <ImageIcon className={styles.sectionIcon} />
                 教程封面
               </h2>
-              <Form.Item
-                name="cover"
-                rules={[{ required: true, message: '请上传教程封面' }]}
-              >
-                <UploadCardImg
-                  previewUrl={previewUrl}
-                  setPreviewUrl={setPreviewUrl}
-                  cloudinaryImg={cloudinaryImg}
-                  setCloudinaryImg={setCloudinaryImg}
-                  form={form}
-                />
-              </Form.Item>
+              <UploadCardImg
+                previewUrl={previewUrl}
+                setPreviewUrl={setPreviewUrl}
+                cloudinaryImg={cloudinaryImg}
+                setCloudinaryImg={setCloudinaryImg}
+                form={form}
+              />
             </Card>
 
             {/* 关联 DApp */}
             <Card className={styles.section}>
-              <Form.Item
-                label="关联 DApp（可选）"
-                name="dappId"
-              >
-                <Select
-                  allowClear
-                  placeholder="请选择关联 DApp"
-                >
+              <Form.Item label="关联 DApp（可选）" name="dappId">
+                <Select allowClear placeholder="请选择关联 DApp">
                   {dappList.map((dapp) => (
                     <Option key={dapp.ID} value={dapp.ID}>
                       {dapp.name}
@@ -222,12 +259,7 @@ export default function NewTutorialPage() {
               <Form.Item
                 label="参考链接（可选）"
                 name="source"
-                rules={[
-                  {
-                    type: 'url',
-                    message: '请输入有效的链接地址',
-                  },
-                ]}
+                rules={[{ type: 'url', message: '请输入有效的链接地址' }]}
               >
                 <Input placeholder="请输入参考链接" />
               </Form.Item>
@@ -274,25 +306,13 @@ export default function NewTutorialPage() {
                 )}
               </div>
             </Card>
-
-            {/* 其他设置 */}
-            {/* <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>其他设置</h2>
-              <Form.Item
-                name="publishImmediately"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>立即发布教程</Checkbox>
-              </Form.Item>
-            </Card> */}
           </div>
         </div>
 
         <div className={styles.submitSection}>
-          <Link href="/ecosystem/tutorials" className={styles.cancelButton}>
+          <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
-          </Link>
+          </Button>
           <Button
             type="primary"
             htmlType="submit"
@@ -301,7 +321,7 @@ export default function NewTutorialPage() {
             disabled={isSubmitting}
           >
             <Save className={styles.submitIcon} />
-            {isSubmitting ? '创建中...' : '创建教程'}
+            {isSubmitting ? '更新中...' : '更新教程'}
           </Button>
         </div>
       </Form>

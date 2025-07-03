@@ -193,3 +193,35 @@ type QueryCategoriesResponse struct {
 	PageSize   int               `json:"page_size"`
 	Total      int64             `json:"total"`
 }
+
+// tutorial
+type CreateTutorialRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	DappId     uint     `json:"dapp_id"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+}
+
+type QueryTutorialsResponse struct {
+	Tutorials []models.Tutorial `json:"tutorials"`
+	Page      int               `json:"page"`
+	PageSize  int               `json:"page_size"`
+	Total     int64             `json:"total"`
+}
+
+type UpdateTutorialRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	DappId     uint     `json:"dapp_id"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+}
+
+type UpdateTutorialPublishStatusRequest struct {
+	PublishStatus uint `json:"publish_status" binding:"required"`
+}
