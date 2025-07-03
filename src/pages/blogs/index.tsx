@@ -153,15 +153,13 @@ export default function BlogsPage() {
 
   useEffect(() => {
     if (status === 'loading') return; // 等待认证状态确定
-
     const newPublishStatus =
       status === 'authenticated' && permissions.includes('blog:review') ? 0 : 2;
     setPublishStatus(newPublishStatus);
-    console.log('newPublishStatus:', newPublishStatus);
-
+    
     // 直接调用 loadBlogs，避免 publishStatus 状态更新延迟
     loadBlogs({ publish_status: newPublishStatus });
-  }, [status, permissions]);
+  }, [status, permissions.length]);
 
   return (
     <div className={styles.container}>
