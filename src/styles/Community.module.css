@@ -29,7 +29,7 @@
 }
 
 .title a {
-  color: #7c3aed;
+  color: #6E54FF;
   text-decoration: none;
 }
 
@@ -77,8 +77,8 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #7c3aed;
-  border-color: #7c3aed;
+  color: #6E54FF;
+  border-color: #6E54FF;
   transform: translateY(-5px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
@@ -100,7 +100,7 @@
 .category {
   display: inline-block;
   background-color: #f3e8ff;
-  color: #7c3aed;
+  color: #6E54FF;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.875rem;
@@ -119,7 +119,7 @@
 }
 
 .githubIcon:hover {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .card {

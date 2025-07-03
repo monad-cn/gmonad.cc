@@ -66,7 +66,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #8b5cf6;
+  background-color: #6366F1;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -79,7 +79,7 @@
 }
 
 .createButton:hover {
-  background-color: #7c3aed;
+  background-color: #6E54FF;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   color: white;
@@ -100,7 +100,7 @@
 
 .settingsButton:hover {
   background-color: #f9fafb;
-  border-color: #8b5cf6;
+  border-color: #6366F1;
   transform: translateY(-1px);
 }
 
@@ -224,7 +224,7 @@
 }
 
 .viewModeButton.active {
-  background-color: #8b5cf6;
+  background-color: #6366F1;
   color: white;
 }
 
@@ -476,7 +476,7 @@
 }
 
 .actionIconButton:hover .actionIcon {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .eventCard {
@@ -678,7 +678,7 @@
 .metaIcon {
   width: 1rem;
   height: 1rem;
-  color: #8b5cf6;
+  color: #6366F1;
   flex-shrink: 0;
 }
 
@@ -755,7 +755,7 @@
 /* Action Buttons */
 .primaryAction {
   flex: 1 !important;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
   border: none !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
@@ -765,7 +765,7 @@
 }
 
 .primaryAction:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  background: linear-gradient(135deg, #6E54FF 0%, #4338CA 100%) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3) !important;
   color: white !important;
@@ -785,8 +785,8 @@
 
 .secondaryAction:hover {
   background: #f8fafc !important;
-  border-color: #8b5cf6 !important;
-  color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
+  color: #6366F1 !important;
   transform: translateY(-1px) !important;
 }
 
@@ -855,7 +855,7 @@
 .listLink {
   display: block;
   padding: 0.75rem 1rem;
-  color: #8b5cf6;
+  color: #6366F1;
   text-decoration: none;
   align-items: center;
   border-left: 3px solid transparent;
@@ -863,7 +863,7 @@
 }
 
 .listLink:hover {
-  color: #8b5cf6;
+  color: #6366F1;
   font-weight: bold;
 }
 
@@ -1203,7 +1203,7 @@
 .statIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .statInfo {
@@ -1430,8 +1430,8 @@
 .socialButton:hover {
   background-color: #f7f7f7;
   /* Lighter hover */
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+  border-color: #6366F1;
+  color: #6366F1;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }

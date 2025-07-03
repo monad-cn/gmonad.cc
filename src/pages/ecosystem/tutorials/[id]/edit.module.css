@@ -22,7 +22,7 @@
 }
 
 .backButton:hover {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .backIcon {
@@ -90,7 +90,7 @@
 .sectionIcon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .tagsContainer {
@@ -136,8 +136,8 @@
   align-items: center;
   gap: 0.5rem;
   background-color: transparent;
-  color: #8b5cf6;
-  border: 1px dashed #8b5cf6;
+  color: #6366F1;
+  border: 1px dashed #6366F1;
   border-radius: 9999px;
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
@@ -184,8 +184,8 @@
 
 .cancelButton:hover {
   background-color: #f9fafb;
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+  border-color: #6366F1;
+  color: #6366F1;
 }
 
 .submitButton {
@@ -193,7 +193,7 @@
   align-items: center !important;
   gap: 0.5rem !important;
   padding: 0.75rem 1.5rem !important;
-  background-color: #8b5cf6 !important;
+  background-color: #6366F1 !important;
   color: white !important;
   border: none !important;
   border-radius: 0.5rem !important;
@@ -205,12 +205,12 @@
 }
 
 .submitButton:hover {
-  background-color: #7c3aed !important;
+  background-color: #6E54FF !important;
   transform: translateY(-1px) !important;
 }
 
 .submitButton:focus {
-  background-color: #7c3aed !important;
+  background-color: #6E54FF !important;
   color: white !important;
   border: none !important;
   box-shadow: none !important;

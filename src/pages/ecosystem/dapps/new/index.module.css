@@ -6,7 +6,7 @@
 
 .header {
   padding: 2rem 0;
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #6366F1 50%, #c084fc 100%);
   color: white;
 }
 
@@ -86,7 +86,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .formItem {
@@ -105,14 +105,14 @@
 .input:focus,
 .textarea:focus,
 .select:focus {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
 .input:hover,
 .textarea:hover,
 .select:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
 }
 
 .ant-form-item-label > label {
@@ -153,7 +153,7 @@
 }
 
 .ant-upload-select:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background: #faf5ff !important;
 }
 
@@ -216,15 +216,15 @@
 
 .tagInput {
   width: 150px !important;
-  border: 2px solid #8b5cf6 !important;
+  border: 2px solid #6366F1 !important;
   border-radius: 1rem !important;
 }
 
 .addTag {
   background: #f3f4f6 !important;
-  border: 1px dashed #8b5cf6 !important;
+  border: 1px dashed #6366F1 !important;
   border-radius: 1rem !important;
-  color: #8b5cf6 !important;
+  color: #6366F1 !important;
   cursor: pointer !important;
   transition: all 0.3s ease !important;
 }
@@ -251,7 +251,7 @@
 
 .predefinedTag {
   background: #f9fafb !important;
-  border: 1px dashed #8b5cf6 !important;
+  border: 1px dashed #6366F1 !important;
   border-radius: 1rem !important;
   color: #374151 !important;
   cursor: pointer !important;
@@ -260,7 +260,7 @@
 
 .predefinedTag:hover {
   background: #faf5ff !important;
-  color: #8b5cf6 !important;
+  color: #6366F1 !important;
 }
 
 .predefinedIcon {
@@ -277,8 +277,8 @@
 
 /* Button 组件样式 */
 .submitButton {
-  background: #8b5cf6 !important;
-  border-color: #8b5cf6 !important;
+  background: #6366F1 !important;
+  border-color: #6366F1 !important;
   border-radius: 0.75rem !important;
   font-size: 1.1rem !important;
   font-weight: 600 !important;
@@ -288,15 +288,15 @@
 }
 
 .submitButton:hover {
-  background: #7c3aed !important;
-  border-color: #7c3aed !important;
+  background: #6E54FF !important;
+  border-color: #6E54FF !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3) !important;
 }
 
 .submitButton:focus {
-  background: #7c3aed !important;
-  border-color: #7c3aed !important;
+  background: #6E54FF !important;
+  border-color: #6E54FF !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
 }
 

@@ -44,7 +44,7 @@
   position: relative;
   width: 2.5rem;
   height: 2.5rem;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@
 .logoGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.75rem;
   filter: blur(10px);
   opacity: 0.5;
@@ -71,7 +71,7 @@
 .logoTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #1f2937, #7c3aed);
+  background: linear-gradient(135deg, #1f2937, #6E54FF);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -93,7 +93,7 @@
 }
 
 .navItem:hover {
-  color: #7c3aed;
+  color: #6E54FF;
   transform: scale(1.05);
 }
 
@@ -103,7 +103,7 @@
 }
 
 .navButton {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -162,7 +162,7 @@
 }
 
 .newsBadge {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   border: 1px solid rgba(124, 58, 237, 0.3);
   padding: 0.25rem 0.75rem;
@@ -251,7 +251,7 @@
   position: absolute;
   width: 4px;
   height: 4px;
-  background: #a855f7;
+  background: #6366F1;
   border-radius: 50%;
   opacity: 0.2;
   animation: pulse 2s infinite;
@@ -279,7 +279,7 @@
       rgba(168, 85, 247, 0.2),
       rgba(59, 130, 246, 0.2));
   border: 1px solid rgba(168, 85, 247, 0.3);
-  color: #7c3aed;
+  color: #6E54FF;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   font-size: 0.875rem;
@@ -295,14 +295,14 @@
 }
 
 .heroTitlePrimary {
-  background: linear-gradient(135deg, #1f2937, #7c3aed, #3b82f6);
+  background: linear-gradient(135deg, #1f2937, #6E54FF, #3b82f6);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .heroTitleSecondary {
-  background: linear-gradient(135deg, #7c3aed, #ec4899, #3b82f6);
+  background: linear-gradient(135deg, #6E54FF, #ec4899, #3b82f6);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -320,7 +320,7 @@
 }
 
 .heroHighlight {
-  color: #7c3aed;
+  color: #6E54FF;
   font-weight: 500;
 }
 
@@ -333,7 +333,7 @@
 }
 
 .heroPrimaryButton {
-  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  background: linear-gradient(135deg, #6E54FF, #3b82f6);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -355,7 +355,7 @@
 
 .heroSecondaryButton {
   background: transparent;
-  color: #7c3aed;
+  color: #6E54FF;
   border: 1px solid rgba(124, 58, 237, 0.5);
   padding: 1rem 2rem;
   border-radius: 0.5rem;
@@ -371,10 +371,10 @@
 
 .heroSecondaryButton:hover {
   background: rgba(124, 58, 237, 0.1);
-  border-color: #7c3aed;
+  border-color: #6E54FF;
   box-shadow: 0 15px 35px rgba(124, 58, 237, 0.2);
   transform: scale(1.1);
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .buttonIcon {
@@ -432,7 +432,7 @@
   padding: 0.75rem;
   border-radius: 50%;
   background: #f3e8ff;
-  color: #7c3aed;
+  color: #6E54FF;
   transition: transform 0.3s ease;
 }
 
@@ -454,7 +454,7 @@
 }
 
 .statItem:hover .statValue {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .statLabel {
@@ -542,7 +542,7 @@
   padding: 1rem;
   border-radius: 50%;
   background: #f3e8ff;
-  color: #7c3aed;
+  color: #6E54FF;
   margin-bottom: 1rem;
   transition: transform 0.3s ease;
 }
@@ -690,7 +690,7 @@
 
 .activityButton {
   width: 100%;
-  background: #7c3aed;
+  background: #6E54FF;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -701,14 +701,14 @@
 }
 
 .activityButton:hover {
-  background: #6d28d9;
+  background: #4338CA;
   transform: scale(1.05);
 }
 
 .moreButton {
   background: transparent;
-  color: #7c3aed;
-  border: 1px solid #7c3aed;
+  color: #6E54FF;
+  border: 1px solid #6E54FF;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -742,7 +742,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #7c3aed, #8b5cf6, #a78bfa);
+  background: linear-gradient(to bottom, #6E54FF, #6366F1, #a78bfa);
   border-radius: 2px;
 }
 
@@ -813,7 +813,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #7c3aed;
+  color: #6E54FF;
   font-weight: 600;
   font-size: 0.875rem;
   background: #f3e8ff;
@@ -836,7 +836,7 @@
 }
 
 .milestoneCard:hover .milestoneTitle {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .milestoneCard:hover .milestoneDescription {
@@ -874,7 +874,7 @@
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  background: linear-gradient(135deg, #6E54FF, #a78bfa);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -901,7 +901,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  background: linear-gradient(135deg, #6E54FF, #a78bfa);
   filter: blur(10px);
   opacity: 0.5;
   animation: pulse 3s infinite;
@@ -998,7 +998,7 @@
   padding: 1rem;
   border-radius: 50%;
   background: #f3e8ff;
-  color: #7c3aed;
+  color: #6E54FF;
   margin-bottom: 1rem;
   transition: transform 0.3s ease;
 }
@@ -1030,7 +1030,7 @@
 
 .resourceButton {
   width: 100%;
-  background: #7c3aed;
+  background: #6E54FF;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -1041,7 +1041,7 @@
 }
 
 .resourceButton:hover {
-  background: #6d28d9;
+  background: #4338CA;
   transform: scale(1.05);
 }
 
@@ -1154,17 +1154,17 @@
 }
 
 .memberItem:hover .memberName {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .memberItem:hover .memberTwitter {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 /* CTA Section */
 .cta {
   padding: 5rem 1rem;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   position: relative;
   overflow: hidden;
@@ -1216,7 +1216,7 @@
 
 .ctaPrimaryButton {
   background: white;
-  color: #7c3aed;
+  color: #6E54FF;
   border: none;
   padding: 0.75rem 2rem;
   border-radius: 0.5rem;
@@ -1230,7 +1230,7 @@
 
 .ctaPrimaryButton:hover {
   background: #f3f4f6;
-  color: #7c3aed;
+  color: #6E54FF;
   transform: scale(1.1);
 }
 
@@ -1283,7 +1283,7 @@
   position: relative;
   width: 2rem;
   height: 2rem;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
@@ -1299,7 +1299,7 @@
 .footerLogoGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.5rem;
   filter: blur(10px);
   opacity: 0.5;

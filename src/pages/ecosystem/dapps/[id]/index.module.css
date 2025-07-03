@@ -187,8 +187,8 @@
 }
 
 .difficultyButton:hover {
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+  border-color: #6366F1;
+  color: #6366F1;
 }
 
 .difficultyButton.active {
@@ -214,7 +214,7 @@
 .tutorialCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border-color: #8b5cf6;
+  border-color: #6366F1;
 }
 
 .cardHeader {
@@ -225,7 +225,7 @@
 }
 
 .tutorialNumber {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(135deg, #6366F1, #6E54FF);
   color: white;
   width: 2.5rem;
   height: 2.5rem;
@@ -295,7 +295,7 @@
 
 .startButton {
   width: 100%;
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(135deg, #6366F1, #6E54FF);
   color: white;
   padding: 0.75rem 1rem;
   border: none;
@@ -311,7 +311,7 @@
 }
 
 .startButton:hover {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  background: linear-gradient(135deg, #6E54FF, #4338CA);
   transform: translateY(-1px);
 }
 

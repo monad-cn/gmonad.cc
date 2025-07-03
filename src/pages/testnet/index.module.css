@@ -11,7 +11,7 @@
     left: 0;
     right: 0;
     height: 600px;
-    /* background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%); */
+    /* background: linear-gradient(135deg, #6366F1 0%, #6E54FF 50%, #4338CA 100%); */
     opacity: 0.03;
     z-index: 0;
 }
@@ -66,7 +66,7 @@
 }
 
 .titleGradient {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -88,7 +88,7 @@
 }
 
 .primaryButton {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
     border: none !important;
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     transition: all 0.3s ease !important;
@@ -107,8 +107,8 @@
 }
 
 .secondaryButton:hover {
-    border-color: #8b5cf6;
-    color: #8b5cf6;
+    border-color: #6366F1;
+    color: #6366F1;
     background: rgba(139, 92, 246, 0.05);
 }
 
@@ -142,7 +142,7 @@
     }
 
     .externalIcon:hover {
-        color: #8b5cf6;
+        color: #6366F1;
     }
 }
 
@@ -155,7 +155,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(90deg, #6366F1, #6E54FF);
 }
 
 .statusCard:hover {
@@ -168,7 +168,7 @@
 }
 
 .statusCardPurple::before {
-    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(90deg, #6366F1, #6E54FF);
 }
 
 .statusCardBlue::before {
@@ -198,7 +198,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(139, 92, 246, 0.1);
-    color: #8b5cf6;
+    color: #6366F1;
     position: relative;
     z-index: 2;
 }
@@ -219,8 +219,8 @@
 }
 
 .validatorTag {
-    border-color: #8b5cf6;
-    color: #8b5cf6;
+    border-color: #6366F1;
+    color: #6366F1;
     font-size: 10px;
 }
 
@@ -285,7 +285,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, #6366F1, #6E54FF);
     color: white;
 }
 
@@ -301,7 +301,7 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 12px;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .phaseText {
@@ -309,7 +309,7 @@
 }
 
 .phaseTime {
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .launchInfo {
@@ -321,7 +321,7 @@
 .launchDate {
     font-size: 16px;
     font-weight: 600;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .phaseTag {
@@ -391,12 +391,12 @@
 }
 
 .copyButton:hover {
-    border-color: #8b5cf6;
-    color: #8b5cf6;
+    border-color: #6366F1;
+    color: #6366F1;
 }
 
 .walletButton {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
     border: none !important;
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     transition: all 0.3s ease !important;
@@ -423,7 +423,7 @@
 }
 
 .faucetItem:hover {
-    border-color: #8b5cf6;
+    border-color: #6366F1;
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
     transform: translateY(-2px);
 }
@@ -458,8 +458,8 @@
     border-radius: 12px;
     font-size: 10px;
     font-weight: 500;
-    color: #8b5cf6;
-    border-color: #8b5cf6;
+    color: #6366F1;
+    border-color: #6366F1;
 }
 
 .communityTag,
@@ -470,7 +470,7 @@
 }
 
 .faucetButton {
-    background: #8b5cf6 !important;
+    background: #6366F1 !important;
     border: none !important;
     margin-top: 10px;
     border-radius: 8px !important;
@@ -488,8 +488,8 @@
 }
 
 .faucetButtonSecondary:hover {
-    border-color: #8b5cf6;
-    color: #8b5cf6;
+    border-color: #6366F1;
+    color: #6366F1;
 }
 
 .ecosystemCard {
@@ -507,7 +507,7 @@
 }
 
 .projectCard:hover {
-    border-color: #8b5cf6;
+    border-color: #6366F1;
     box-shadow: 0 6px 25px rgba(139, 92, 246, 0.15);
     transform: translateY(-4px);
 }
@@ -567,12 +567,12 @@
     font-size: 11px;
     padding: 0;
     height: auto;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .ctaSection {
     margin: 60px calc(-50vw + 50%) 0 calc(-50vw + 50%);
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 50%, #4338CA 100%);
     padding: 80px 24px;
     position: relative;
     overflow: hidden;
@@ -654,7 +654,7 @@
 .ctaWhiteButton {
     background: white !important;
     border: none !important;
-    color: #8b5cf6 !important;
+    color: #6366F1 !important;
     font-weight: 500 !important;
     padding: 0 32px !important;
     height: 48px !important;
@@ -665,7 +665,7 @@
 
 .ctaWhiteButton:hover {
     background: #f8fafc !important;
-    color: #7c3aed !important;
+    color: #6E54FF !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
 }

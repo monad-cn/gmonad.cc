@@ -31,7 +31,7 @@
 .logoTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #1f2937, #7c3aed);
+  background: linear-gradient(135deg, #1f2937, #6E54FF);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -53,7 +53,7 @@
 }
 
 .navItem:hover {
-  color: #7c3aed;
+  color: #6E54FF;
   transform: scale(1.05);
 }
 
@@ -63,7 +63,7 @@
 }
 
 .navButton {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -121,7 +121,7 @@
 }
 
 .newsBadge {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   border: 1px solid rgba(124, 58, 237, 0.3);
   padding: 0.25rem 0.75rem;
@@ -197,7 +197,7 @@
 
 .mobileMenuButton:hover {
   background: #f3f4f6;
-  border-color: #7c3aed;
+  border-color: #6E54FF;
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
 }
 
@@ -238,7 +238,7 @@
   left: 0;
   width: 2rem;
   height: 2px;
-  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(90deg, #6366F1, #6E54FF);
   border-radius: 1px;
 }
 
@@ -264,7 +264,7 @@
 .mobileMenuLink:hover {
   background: rgba(139, 92, 246, 0.05);
   border-color: rgba(139, 92, 246, 0.2);
-  color: #7c3aed;
+  color: #6E54FF;
   transform: translateX(4px);
 }
 

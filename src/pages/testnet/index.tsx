@@ -198,7 +198,7 @@ export default function TestnetPage() {
                 {/* Network Status */}
                 <div className={styles.statusSection}>
                     <Title level={3} className={styles.sectionTitle}>
-                        <Activity size={20} style={{ marginRight: 8, color: "#8b5cf6" }} />
+                        <Activity size={20} style={{ marginRight: 8, color: "#6366F1" }} />
                         网络实时状态
                     </Title>
                     <Row gutter={[24, 24]}>
@@ -243,7 +243,7 @@ export default function TestnetPage() {
                                             验证者节点
                                             <Tag className={styles.validatorTag} style={{ borderRadius: 10 }}>Testnet-1</Tag>
                                         </span>}
-                                        value={stat?.validators as number} color="#8b5cf6" showDecimals={false} showSuffix={false} />
+                                        value={stat?.validators as number} color="#6366F1" showDecimals={false} showSuffix={false} />
                                 </div>
                             </Card>
                         </Col>
@@ -573,7 +573,7 @@ export default function TestnetPage() {
                                 name: "XXX",
                                 category: "NFT",
                                 icon: Star,
-                                color: "#8b5cf6",
+                                color: "#6366F1",
                                 description: "NFT 市场平台，支持创建、交易和展示数字艺术品",
                                 metric: "交易量: 1.2K ETH",
                             },

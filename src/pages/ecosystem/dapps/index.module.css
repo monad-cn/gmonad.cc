@@ -5,7 +5,7 @@
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #6366F1 50%, #c084fc 100%);
     padding: 4rem 0;
     color: white;
 }
@@ -171,7 +171,7 @@
 
 .searchInput:focus {
     outline: none;
-    border-color: #8b5cf6;
+    border-color: #6366F1;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
@@ -195,14 +195,14 @@
 }
 
 .categoryButton:hover {
-    border-color: var(--category-color, #8b5cf6);
-    color: var(--category-color, #8b5cf6);
+    border-color: var(--category-color, #6366F1);
+    color: var(--category-color, #6366F1);
     transform: translateY(-1px);
 }
 
 .categoryButton.active {
-    background: var(--category-color, #8b5cf6);
-    border-color: var(--category-color, #8b5cf6);
+    background: var(--category-color, #6366F1);
+    border-color: var(--category-color, #6366F1);
     color: white;
 }
 
@@ -338,9 +338,9 @@
 }
 
 .tag {
-    color: #8b5cf6;
+    color: #6366F1;
     padding: 2px 6px;
-    border-color: #8b5cf6;
+    border-color: #6366F1;
     border-radius: 4px;
     font-size: 12px;
     line-height: 1;
@@ -365,12 +365,12 @@
 .tutorialsButton {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #8b5cf6;
+    color: #6366F1;
     text-decoration: none;
 }
 
 .tutorialsButton:hover {
-    color: #8b5cf6;
+    color: #6366F1;
     font-size: 0.9rem;
 }
 
