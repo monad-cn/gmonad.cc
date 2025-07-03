@@ -12,6 +12,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; 
+  gap: 1rem;
+
 }
 
 .title {
@@ -35,6 +41,29 @@
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
+}
+
+.addTutorialButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #8b5cf6;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.addTutorialButton:hover {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.addIcon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .content {

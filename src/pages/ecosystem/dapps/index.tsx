@@ -6,6 +6,7 @@ import { Spin, Pagination, Tag } from "antd"
 import styles from "./index.module.css"
 import { getDapps } from "@/pages/api/dapp"
 import { SiX } from "react-icons/si"
+import { useAuth } from "@/contexts/AuthContext"
 
 type DAppCategory = "DeFi" | "基础设施" | "游戏" | "NFT" | "社交" | "开发工具" | "AI" | "DePIN" | "RWA" | "支付"
 
@@ -43,6 +44,10 @@ export default function EcosystemPage() {
     const [total, setTotal] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(8)
+
+    const { session, status } = useAuth();
+
+    const permissions = session?.user?.permissions || [];
 
     useEffect(() => {
         const fetchDapps = async () => {
@@ -114,10 +119,12 @@ export default function EcosystemPage() {
                                 探索基于 Monad 构建的去中心化应用生态系统。从 DeFi 协议到基础设施工具，通过交互式教程开始体验和使用。
                             </p>
                         </div>
-                        <Link href="/ecosystem/dapps/new" className={styles.addDappButton}>
-                            <Plus className={styles.addIcon} />
-                            添加 DApp
-                        </Link>
+                        {status === "authenticated" && permissions.includes("dapp:write") &&
+                            <Link href="/ecosystem/dapps/new" className={styles.addDappButton}>
+                                <Plus className={styles.addIcon} />
+                                添加 DApp
+                            </Link>
+                        }
                     </div>
 
                     {/* Stats */}
@@ -212,7 +219,7 @@ export default function EcosystemPage() {
                     ) : (
                         <div className={styles.dappsGrid}>
                             {dapps.map((dapp) => (
-                                <DAppCard key={dapp.ID} dapp={dapp} getCategoryColor={getCategoryColor} />
+                                <DAppCard key={dapp.ID} dapp={dapp} />
                             ))}
                         </div>
                     )}

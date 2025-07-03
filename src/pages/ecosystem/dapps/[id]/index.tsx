@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import { ArrowLeft, Clock, BarChart3, BookOpen, Play, Globe } from "lucide-react"
+import { ArrowLeft, Clock, BarChart3, BookOpen, Play, Globe, Plus } from "lucide-react"
 import styles from "./index.module.css"
 import { getDappById } from "@/pages/api/dapp"
 import { SiX } from "react-icons/si"
 import { Avatar } from "antd"
 import dayjs from "dayjs"
+import { useAuth } from "@/contexts/AuthContext"
 
 // Types
 interface Tutorial {
@@ -19,7 +20,6 @@ interface Tutorial {
     publish_time: string
 }
 
-
 export default function DappTutorialsPage() {
     const router = useRouter()
     const { id } = router.query
@@ -28,7 +28,10 @@ export default function DappTutorialsPage() {
     const [loading, setLoading] = useState(true)
     const [dapp, setDapp] = useState<any | null>(null)
     const [selectedDifficulty, setSelectedDifficulty] = useState<"全部" | "初级" | "中级" | "高级">("全部")
-
+ 
+    const { session, status } = useAuth();
+    const permissions = session?.user?.permissions || [];
+    
     useEffect(() => {
         if (!router.isReady || !rId) return
 
@@ -68,11 +71,6 @@ export default function DappTutorialsPage() {
     if (!dapp) {
         return <div className={styles.notFound}>未找到 DApp 数据</div>
     }
-
-    // const filteredTutorials = dapp.tutorials.filter((tutorial: { difficulty: string }) => {
-    //     if (selectedDifficulty === "全部") return true
-    //     return tutorial.difficulty === selectedDifficulty
-    // })
 
     return (
         <div className={styles.container}>
@@ -120,6 +118,25 @@ export default function DappTutorialsPage() {
 
                         {/* Difficulty Filter */}
                         <div className={styles.difficultyFilters}>
+                            {/* 新增：添加教程按钮 */}
+                            {status === "authenticated" && permissions.includes("tutorial:write") &&
+                            <Link
+                                href={`/ecosystem/tutorials/new?dappId=${dapp.ID}`}
+                                className={`${styles.difficultyButton} ${styles.addTutorialButton}`}
+                                style={{
+                                    backgroundColor: "#8B5CF6",
+                                    borderColor: "#8B5CF6",
+                                    color: "white",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                }}
+                            >
+                                <Plus size={14} />
+                                添加教程
+                            </Link>
+}
+
                             {["全部", "初级", "中级", "高级"].map((difficulty) => (
                                 <button
                                     key={difficulty}
@@ -164,8 +181,6 @@ export default function DappTutorialsPage() {
         </div>
     )
 }
-
-
 
 interface Props {
     tutorial: Tutorial;

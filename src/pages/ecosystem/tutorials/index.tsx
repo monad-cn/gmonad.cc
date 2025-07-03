@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input, Select, Card, Tag, Empty, Spin, Image } from "antd";
-import { Search, BookOpen, Star, Filter } from "lucide-react";
+import { Search, BookOpen, Star, Filter, Plus } from "lucide-react";
 import styles from "./index.module.css";
 import { getTutorials } from "@/pages/api/tutorial";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,15 +19,13 @@ export default function TutorialsPage() {
     const [searchKeyword, setSearchKeyword] = useState("");
     const [publishStatus, setPublishStatus] = useState(2);
 
-    // 使用统一的认证上下文，避免重复调用 useSession
     const { session, status } = useAuth();
-
     const permissions = session?.user?.permissions || [];
 
     const categories = ["all", "DeFi", "NFT", "钱包", "游戏", "工具"];
     const difficulties = ["all", "beginner", "intermediate", "advanced"];
 
-    const fetchTutorials = async (p0: { publish_status: number; }) => {
+    const fetchTutorials = async (p0: { publish_status: number }) => {
         try {
             setLoading(true);
 
@@ -71,18 +69,25 @@ export default function TutorialsPage() {
         fetchTutorials({ publish_status: publishStatus });
     }, [publishStatus, searchKeyword, selectedCategory, selectedDifficulty, currentPage, pageSize]);
 
-
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.headerContent}>
-                    <h1 className={styles.title}>
-                        <BookOpen className={styles.titleIcon} />
-                        DApp 交互教程
-                    </h1>
-                    <p className={styles.subtitle}>
-                        从基础到进阶，掌握各种 DApp 的使用技巧。跟随我们的详细教程，轻松上手区块链应用，探索 Web3 世界的无限可能。
-                    </p>
+                    <div className={styles.headerLeft}>
+                        <h1 className={styles.title}>
+                            <BookOpen className={styles.titleIcon} />
+                            DApp 交互教程
+                        </h1>
+                        <p className={styles.subtitle}>
+                            从基础到进阶，掌握各种 DApp 的使用技巧。跟随我们的详细教程，轻松上手区块链应用，探索 Web3 世界的无限可能。
+                        </p>
+                    </div>
+                    {status === "authenticated" && permissions.includes("tutorial:write") &&
+                        <Link href="/ecosystem/tutorials/new" className={styles.addTutorialButton}>
+                            <Plus className={styles.addIcon} />
+                            添加教程
+                        </Link>
+                    }
                 </div>
             </div>
 
@@ -159,7 +164,6 @@ export default function TutorialsPage() {
                                                 className={styles.image}
                                                 preview={false}
                                                 referrerPolicy="no-referrer"
-
                                             />
                                         </div>
                                     }
