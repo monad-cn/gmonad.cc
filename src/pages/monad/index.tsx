@@ -208,7 +208,7 @@ export default function MonadIntro() {
                     <defs>
                       {/* 阴影滤镜 */}
                       <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feDropShadow dx="0" dy="8" stdDeviation="15" floodColor="#7c3aed" floodOpacity="0.3" />
+                        <feDropShadow dx="0" dy="8" stdDeviation="15" floodColor="#6E54FF" floodOpacity="0.3" />
                       </filter>
                     </defs>
 
@@ -243,7 +243,7 @@ export default function MonadIntro() {
 
                     {/* 第四个轨道上的小点 */}
                     <g className={styles.group4}>
-                      <circle className={styles.dot} cx="470" cy="210" fill="#8b5cf6" />
+                      <circle className={styles.dot} cx="470" cy="210" fill="#6366F1" />
                     </g>
 
                   </svg>

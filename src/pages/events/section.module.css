@@ -139,7 +139,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #7c3aed;
+    color: #6E54FF;
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
 }
@@ -162,7 +162,7 @@
 
 .activityButton {
     width: 100%;
-    background: #7c3aed;
+    background: #6E54FF;
     color: white;
     border: none;
     padding: 0.75rem 1rem;
@@ -173,14 +173,14 @@
 }
 
 .activityButton:hover {
-    background: #6d28d9;
+    background: #4338CA;
     transform: scale(1.05);
 }
 
 .moreButton {
     background: transparent;
-    color: #7c3aed;
-    border: 1px solid #7c3aed;
+    color: #6E54FF;
+    border: 1px solid #6E54FF;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 500;

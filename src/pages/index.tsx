@@ -20,6 +20,8 @@ import {
   Server,
   ServerCog,
   ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -37,6 +39,32 @@ export default function Home() {
     projects: 20,
     commits: 1250,
   });
+
+  const scrollGallery = (direction: 'left' | 'right') => {
+    const container = document.querySelector(`.${styles.galleryContainer}`) as HTMLElement;
+    if (container) {
+      const scrollAmount = 312; // Width of one image (280px) plus gap (32px)
+      const currentScroll = container.scrollLeft;
+      
+      let targetScroll;
+      if (direction === 'left') {
+        // Scroll to absolute left if we're close to the beginning
+        if (currentScroll <= scrollAmount) {
+          targetScroll = 0;
+        } else {
+          targetScroll = currentScroll - scrollAmount;
+        }
+      } else {
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        targetScroll = Math.min(maxScroll, currentScroll + scrollAmount);
+      }
+      
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -219,35 +247,75 @@ export default function Home() {
               background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.15), transparent 40%)`,
             }}
           ></div>
-          <div className={styles.particles}>
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className={styles.particle}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 3}s`,
-                }}
-              ></div>
-            ))}
-          </div>
         </div>
 
         <div className={styles.container}>
           <div
             className={`${styles.heroContent} ${isVisible ? styles.heroVisible : ''}`}
           >
-            <div className={styles.heroBadge}>🚀 下一代区块链技术</div>
             <h1 className={styles.heroTitle}>
               <span className={styles.heroTitleSecondary}>Monad中文社区</span>
             </h1>
+            
+            {/* 标题装饰 */}
+            <div className={styles.titleDecoration}>
+              <div className={styles.decorationGradient}></div>
+              <div className={styles.decorationLine}></div>
+            </div>
             <p className={styles.heroSubtitle}>
               <span className={styles.heroHighlight}>
                 加入我们，和 Nads 一起了解、参与、构建 Monad
               </span>
             </p>
+            {/* 图片画廊 */}
+            <div className={styles.heroGallery}>
+              <button 
+                className={`${styles.galleryNavigation} ${styles.galleryNavPrev}`}
+                onClick={() => scrollGallery('left')}
+                aria-label="Previous images"
+              >
+                <ChevronLeft className={styles.galleryNavIcon} />
+              </button>
+              
+              <div className={styles.galleryContainer}>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp1.jpg" alt="Monad社区活动1" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp2.jpg" alt="Monad社区活动2" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp3.jpg" alt="Monad社区活动3" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp4.jpg" alt="Monad社区活动4" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp6.jpg" alt="Monad社区活动5" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp7.jpg" alt="Monad社区活动6" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp8.jpg" alt="Monad社区活动7" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp9.jpg" alt="Monad社区活动8" />
+                </div>
+                <div className={styles.galleryImage}>
+                  <img src="/community/cp10.jpg" alt="Monad社区活动9" />
+                </div>
+              </div>
+              
+              <button 
+                className={`${styles.galleryNavigation} ${styles.galleryNavNext}`}
+                onClick={() => scrollGallery('right')}
+                aria-label="Next images"
+              >
+                <ChevronRight className={styles.galleryNavIcon} />
+              </button>
+            </div>
+
             <div className={styles.heroButtons}>
               <Link href="/monad" className={styles.heroPrimaryButton}>
                 <Globe className={styles.buttonIcon} />
@@ -257,7 +325,6 @@ export default function Home() {
                 <Users className={styles.buttonIcon} />
                 加入社区
               </Link>
-
             </div>
           </div>
         </div>

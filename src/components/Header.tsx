@@ -106,7 +106,7 @@ export default function Header() {
       <Drawer
         title={
           <div style={{ 
-            background: 'linear-gradient(135deg, #1f2937, #7c3aed)',
+            background: 'linear-gradient(135deg, #1f2937, #6E54FF)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
             color: 'transparent',

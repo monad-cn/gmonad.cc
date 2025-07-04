@@ -11,7 +11,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 const customTheme = {
   token: {
-    colorPrimary: '#7c3aed',
+    colorPrimary: '#6E54FF',
   },
 };
 

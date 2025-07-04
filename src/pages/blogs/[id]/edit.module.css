@@ -21,7 +21,7 @@
 }
 
 .backButton:hover {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .backIcon {
@@ -61,7 +61,7 @@
 }
 
 .backButton:hover {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .backIcon {
@@ -84,7 +84,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f4f6;
-  border-top: 4px solid #8b5cf6;
+  border-top: 4px solid #6366F1;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -130,7 +130,7 @@
 .sectionIcon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 /* 覆盖 Ant Design Form.Item 样式 */
@@ -185,7 +185,7 @@
 .input.ant-input-focused,
 .textarea.ant-input-focused {
   outline: none !important;
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
@@ -252,21 +252,21 @@
 }
 
 .radioContent:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
 .radioOption.ant-radio-wrapper-checked .radioContent {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
 .radioOption.ant-radio-wrapper-checked .radioContent::before {
-  border-color: #8b5cf6 !important;
-  background-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
+  background-color: #6366F1 !important;
   box-shadow: inset 0 0 0 3px white !important;
 }
 
@@ -285,11 +285,11 @@
 }
 
 .radioOption.ant-radio-wrapper-checked .radioIcon {
-  color: #8b5cf6 !important;
+  color: #6366F1 !important;
 }
 
 .radioOption.ant-radio-wrapper-checked .radioText {
-  color: #8b5cf6 !important;
+  color: #6366F1 !important;
 }
 
 /* 移除之前的 radioButton 样式 */
@@ -314,8 +314,8 @@
 }
 
 .checkbox .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #8b5cf6 !important;
-  border-color: #8b5cf6 !important;
+  background-color: #6366F1 !important;
+  border-color: #6366F1 !important;
 }
 
 /* 覆盖 Ant Design Upload 样式 */
@@ -327,7 +327,7 @@
 }
 
 .imageUpload:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
 }
 
@@ -342,7 +342,7 @@
 .uploadIconSvg {
   width: 3rem;
   height: 3rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .uploadText {
@@ -383,7 +383,7 @@
 }
 
 .imagePreviewContainer:hover {
-  border-color: #8b5cf6;
+  border-color: #6366F1;
 }
 
 .previewImage {
@@ -490,7 +490,7 @@
 }
 
 .imagePreview:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
 }
 
@@ -568,8 +568,8 @@
   align-items: center;
   gap: 0.5rem;
   background-color: transparent;
-  color: #8b5cf6;
-  border: 1px dashed #8b5cf6;
+  color: #6366F1;
+  border: 1px dashed #6366F1;
   border-radius: 9999px;
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
@@ -617,8 +617,8 @@
 
 .cancelButton:hover {
   background-color: #f9fafb;
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+  border-color: #6366F1;
+  color: #6366F1;
 }
 
 /* 覆盖 Ant Design Button 样式 */
@@ -627,7 +627,7 @@
   align-items: center !important;
   gap: 0.5rem !important;
   padding: 0.75rem 1.5rem !important;
-  background-color: #8b5cf6 !important;
+  background-color: #6366F1 !important;
   color: white !important;
   border: none !important;
   border-radius: 0.5rem !important;
@@ -640,14 +640,14 @@
 }
 
 .submitButton:hover {
-  background-color: #7c3aed !important;
+  background-color: #6E54FF !important;
   transform: translateY(-1px) !important;
   color: white !important;
   border: none !important;
 }
 
 .submitButton:focus {
-  background-color: #7c3aed !important;
+  background-color: #6E54FF !important;
   color: white !important;
   border: none !important;
   box-shadow: none !important;
@@ -674,7 +674,7 @@
 }
 
 .form .ant-picker.ant-picker-focused {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
@@ -699,7 +699,7 @@
 }
 
 .form .ant-input-number.ant-input-number-focused {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
 }
 
