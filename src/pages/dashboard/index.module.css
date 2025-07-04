@@ -1,12 +1,11 @@
 .container {
-  padding: 0;
   background: #f8f9fa;
   min-height: 100vh;
 }
 
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 0;
+  padding: 80px 0 40px;
   margin-bottom: 24px;
 }
 
@@ -20,6 +19,12 @@
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.bottomPagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .avatar {
@@ -50,6 +55,11 @@
   color: rgba(255, 255, 255, 0.7) !important;
   font-size: 14px !important;
   display: block;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .content {
@@ -262,12 +272,14 @@
   font-size: 14px;
 }
 
+
+
 /* ͔�� */
 @media (max-width: 1024px) {
   .content {
     padding: 0 16px;
   }
-  
+
   .profileSection {
     padding: 0 16px;
   }
@@ -277,19 +289,19 @@
   .content {
     flex-direction: column;
   }
-  
+
   .profileInfo {
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
-  
+
   .cardHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .itemFooter {
     flex-wrap: wrap;
   }

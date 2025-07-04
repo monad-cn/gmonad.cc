@@ -4,14 +4,14 @@ import {
   Row,
   Col,
   List,
-  Avatar,
   Tag,
   Divider,
   Typography,
-  Button,
   Space,
   Menu,
   Image,
+  Pagination,
+  Button,
 } from 'antd';
 import { BookOpen, FileText, Eye, Clock, User, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
@@ -31,19 +31,34 @@ export default function DashboardPage() {
   const [tutorials, setTutorials] = useState<any[]>([]);
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [tutorialsLoading, setTutorialsLoading] = useState(false);
+  const [blogsPagination, setBlogsPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+  const [tutorialsPagination, setTutorialsPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const { session } = useAuth();
 
-  const loadBlogs = async () => {
+  const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
       setBlogsLoading(true);
       const result = await getBlogs({
-        page: 1,
-        page_size: 6,
-        publish_status: 2,
+        page,
+        page_size: pageSize,
+        publish_status: 0,
         order: 'desc',
       });
       if (result.success && result.data) {
         setBlogs(result.data.blogs || []);
+        setBlogsPagination({
+          current: result.data.page || 1,
+          pageSize: result.data.page_size || pageSize,
+          total: result.data.total || 0,
+        });
       }
     } catch (error) {
       console.error('加载博客列表失败:', error);
@@ -53,16 +68,21 @@ export default function DashboardPage() {
     }
   };
 
-  const loadTutorials = async () => {
+  const loadTutorials = async (page = 1, pageSize = 10) => {
     try {
       setTutorialsLoading(true);
       const result = await getTutorials({
-        page: 1,
-        page_size: 6,
-        publish_status: 2,
+        page,
+        page_size: pageSize,
+        publish_status: 0,
       });
       if (result.success && result.data) {
         setTutorials(result.data.tutorials || []);
+        setTutorialsPagination({
+          current: result.data.page || 1,
+          pageSize: result.data.page_size || pageSize,
+          total: result.data.total || 0,
+        });
       }
     } catch (error) {
       console.error('加载教程列表失败:', error);
@@ -110,7 +130,6 @@ export default function DashboardPage() {
               <FileText className={styles.cardIcon} />
               最新博客
             </Title>
-            
           </div>
           <Divider />
           <List
@@ -119,6 +138,7 @@ export default function DashboardPage() {
             renderItem={(blog) => (
               <List.Item
                 key={blog.ID}
+                className={styles.listItem}
                 actions={[
                   <Space key="meta" className={styles.itemMeta}>
                     <Eye size={16} />
@@ -126,44 +146,48 @@ export default function DashboardPage() {
                   </Space>,
                 ]}
               >
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={blog.publisher?.avatar}
-                      className={styles.itemAvatar}
-                    />
-                  }
-                  title={
+                <div className={styles.itemContent}>
+                  <div className={styles.itemMain}>
                     <Link
                       href={`/blogs/${blog.ID}`}
                       className={styles.itemTitle}
                     >
                       {blog.title}
                     </Link>
-                  }
-                  description={
-                    <div className={styles.itemDescription}>
-                      <Text type="secondary" className={styles.itemDesc}>
-                        {blog.description}
-                      </Text>
-                      <div className={styles.itemFooter}>
-                        <Space>
-                          <User size={14} />
-                          <span>{blog.publisher?.username}</span>
-                          <Clock size={14} />
-                          <span>
-                            {dayjs(blog.publish_time || blog.CreatedAt).format(
-                              'YYYY-MM-DD'
-                            )}
-                          </span>
-                        </Space>
-                      </div>
+                    <Text type="secondary" className={styles.itemDesc}>
+                      {blog.description}
+                    </Text>
+                    <div className={styles.itemFooter}>
+                      <Space>
+                        <User size={14} />
+                        <span>{blog.publisher?.username}</span>
+                        <Clock size={14} />
+                        <span>
+                          {dayjs(blog.publish_time || blog.CreatedAt).format(
+                            'YYYY-MM-DD'
+                          )}
+                        </span>
+                      </Space>
                     </div>
-                  }
-                />
+                  </div>
+                </div>
               </List.Item>
             )}
           />
+           <div className={styles.bottomPagination}>
+            <Pagination
+              current={blogsPagination.current}
+              total={blogsPagination.total}
+              pageSize={blogsPagination.pageSize}
+              onChange={(page, pageSize) => loadBlogs(page, pageSize)}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total, range) =>
+                `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
+              }
+            
+            />
+          </div>
         </Card>
       );
     }
@@ -176,7 +200,6 @@ export default function DashboardPage() {
               <BookOpen className={styles.cardIcon} />
               热门教程
             </Title>
-            
           </div>
           <Divider />
           <List
@@ -185,6 +208,7 @@ export default function DashboardPage() {
             renderItem={(tutorial) => (
               <List.Item
                 key={tutorial.ID}
+                className={styles.listItem}
                 actions={[
                   <Space key="meta" className={styles.itemMeta}>
                     <TrendingUp size={16} />
@@ -192,47 +216,64 @@ export default function DashboardPage() {
                   </Space>,
                 ]}
               >
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={tutorial.cover_img || '/placeholder.svg'}
-                      className={styles.itemAvatar}
-                      shape="square"
-                    />
-                  }
-                  title={
+                <div className={styles.itemContent}>
+                  <div className={styles.itemMain}>
                     <Link
                       href={`/ecosystem/tutorials/${tutorial.ID}`}
                       className={styles.itemTitle}
                     >
                       {tutorial.title}
                     </Link>
-                  }
-                  description={
-                    <div className={styles.itemDescription}>
-                      <Text type="secondary" className={styles.itemDesc}>
-                        {tutorial.description}
-                      </Text>
-                      <div className={styles.itemFooter}>
-                        <Space>
-                          {tutorial.dapp?.name && (
-                            <Tag className={styles.itemTag}>
-                              {tutorial.dapp.name}
-                            </Tag>
-                          )}
-                          {tutorial.tags?.slice(0, 2).map((tag: string) => (
-                            <Tag key={tag} className={styles.itemTag}>
-                              {tag}
-                            </Tag>
-                          ))}
-                        </Space>
-                      </div>
+                    <Text type="secondary" className={styles.itemDesc}>
+                      {tutorial.description}
+                    </Text>
+                    <div className={styles.itemFooter}>
+                      <Space>
+                        {tutorial.dapp?.name && (
+                          <Tag className={styles.itemTag}>
+                            {tutorial.dapp.name}
+                          </Tag>
+                        )}
+                        {tutorial.tags?.slice(0, 2).map((tag: string) => (
+                          <Tag key={tag} className={styles.itemTag}>
+                            {tag}
+                          </Tag>
+                        ))}
+                      </Space>
                     </div>
-                  }
-                />
+                  </div>
+                </div>
               </List.Item>
             )}
           />
+{/* 
+          <Pagination
+            current={tutorialsPagination.current}
+            total={tutorialsPagination.total}
+            pageSize={tutorialsPagination.pageSize}
+            onChange={(page, pageSize) => loadTutorials(page, pageSize)}
+            showSizeChanger
+            showQuickJumper
+            showTotal={(total, range) =>
+              `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
+            }
+          /> */}
+
+          
+            <div className={styles.bottomPagination}>
+              <Pagination
+                current={tutorialsPagination.current}
+                total={tutorialsPagination.total}
+                pageSize={tutorialsPagination.pageSize}
+                onChange={(page, pageSize) => loadTutorials(page, pageSize)}
+                showSizeChanger
+                showQuickJumper
+                showTotal={(total, range) =>
+                  `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
+                }
+              />
+            </div>
+    
         </Card>
       );
     }
@@ -243,50 +284,62 @@ export default function DashboardPage() {
       <div className={styles.header}>
         <div className={styles.profileSection}>
           <div className={styles.profileInfo}>
-            <Image
-              src={profileData.avatar}
-              alt={profileData.name}
-              width={80}
-              height={80}
-              preview={false}
-              className={styles.avatar}
-              referrerPolicy="no-referrer"
-            />
+            {profileData.avatar ? (
+              <Image
+                src={profileData.avatar}
+                alt={profileData.name}
+                width={80}
+                height={80}
+                preview={false}
+                className={styles.avatar}
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className={`${styles.avatar} ${styles.avatarFallback}`}>
+                <span className={styles.avatarText}>
+                  {profileData.name
+                    ? profileData.name.charAt(0).toUpperCase()
+                    : 'U'}
+                </span>
+              </div>
+            )}
             <div className={styles.profileDetails}>
               <Title level={2} className={styles.name}>
                 {profileData.name}
               </Title>
               <Text className={styles.subtitle}>
                 {' '}
-                Emial: {profileData.email}
+                Email: {profileData.email}
               </Text>
             </div>
           </div>
         </div>
       </div>
 
-      <Row gutter={[24, 24]} className={styles.content}>
-        <Col span={6}>
-          <Card className={styles.sidebarCard}>
-            <div className={styles.menuSection}>
-              <Title level={4} className={styles.sectionTitle}>
-                内容导航
-              </Title>
-              <Menu
-                mode="vertical"
-                selectedKeys={[activeTab]}
-                items={menuItems}
-                onClick={({ key }) => handleMenuClick(key)}
-                className={styles.navigationMenu}
-              />
-            </div>
-          </Card>
-        </Col>
+      <div className={styles.contentWrapper}>
+        <Row gutter={[24, 24]} className={styles.content}>
+          <Col span={6}>
+            <Card className={styles.sidebarCard}>
+              <div className={styles.menuSection}>
+                <Title level={4} className={styles.sectionTitle}>
+                  内容导航
+                </Title>
+                <Menu
+                  mode="vertical"
+                  selectedKeys={[activeTab]}
+                  items={menuItems}
+                  onClick={({ key }) => handleMenuClick(key)}
+                  className={styles.navigationMenu}
+                />
+              </div>
+            </Card>
+          </Col>
 
-        <Col span={18}>
-          <div className={styles.mainContent}>{renderContent()}</div>
-        </Col>
-      </Row>
+          <Col span={18}>
+            <div className={styles.mainContent}>{renderContent()}</div>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }
