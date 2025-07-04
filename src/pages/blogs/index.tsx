@@ -40,7 +40,7 @@ const { Search: AntSearch } = Input;
 type ViewMode = 'grid' | 'list';
 
 export function formatTime(isoTime: string): string {
-  return dayjs(isoTime).format('YYYY-MM-DD');
+  return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
 }
 
 export default function BlogsPage() {
@@ -156,7 +156,7 @@ export default function BlogsPage() {
     const newPublishStatus =
       status === 'authenticated' && permissions.includes('blog:review') ? 0 : 2;
     setPublishStatus(newPublishStatus);
-    
+
     // 直接调用 loadBlogs，避免 publishStatus 状态更新延迟
     loadBlogs({ publish_status: newPublishStatus });
   }, [status, permissions.length]);
@@ -344,8 +344,8 @@ export default function BlogsPage() {
           <div className={styles.blogsList}>
             <div className={styles.listHeader}>
               <div className={styles.listHeaderCell}>博客信息</div>
-              <div className={styles.listHeaderCell}>时间</div>
               <div className={styles.listHeaderCell}>作者</div>
+              <div className={styles.listHeaderCell}>时间</div>
               <div className={styles.listHeaderCell}>浏览量</div>
               <div className={styles.listHeaderCell}>状态</div>
               <div className={styles.listHeaderCell}>操作</div>
@@ -367,22 +367,17 @@ export default function BlogsPage() {
                   </div>
                 </div>
                 <div className={styles.listCell}>
+                  <div className={styles.publisherInfo}>
+                    <UserRound className={styles.listIcon} />
+                    <span>{blog.author}</span>
+                  </div>
+                </div>
+                <div className={styles.listCell}>
                   <div className={styles.timeInfo}>
                     <div className={styles.dateTime}>
                       <Calendar className={styles.listIcon} />
                       <span>{formatTime(blog.start_time)}</span>
                     </div>
-                    {/* {blog.end_time && (
-                      <div className={styles.time}>
-                        至 {formatTime(blog.end_time)}
-                      </div>
-                    )} */}
-                  </div>
-                </div>
-                <div className={styles.listCell}>
-                  <div className={styles.publisherInfo}>
-                    <UserRound className={styles.listIcon} />
-                    <span>{blog.author}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>

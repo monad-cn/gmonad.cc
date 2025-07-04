@@ -992,7 +992,7 @@
 
 .listHeader {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 0.6fr 0.6fr 0.8fr;
+  grid-template-columns: 3fr 1fr 1.4fr 0.6fr 0.6fr 0.8fr;
   gap: 0.6rem;
   padding: 1rem 0rem;
   background-color: #f9fafb;
@@ -1013,7 +1013,7 @@
 
 .listRow {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 0.6fr 0.6fr 0.8fr;
+  grid-template-columns: 3fr 1fr 1.4fr 0.6fr 0.6fr 0.8fr;
   gap: 1rem;
   border-bottom: 1px solid #f3f4f6;
   transition: background-color 0.2s;
