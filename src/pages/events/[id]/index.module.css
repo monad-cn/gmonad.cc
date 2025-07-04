@@ -34,7 +34,7 @@
 }
 
 .backLink:hover {
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .backIcon {
@@ -343,7 +343,7 @@
   margin: 1.5rem 0;
   padding: 1rem 1.5rem;
   background: #f8fafc;
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid #6366F1;
   border-radius: 0 8px 8px 0;
   font-style: italic;
   color: #475569;
@@ -377,15 +377,15 @@
 }
 
 .eventDescription a {
-  color: #8b5cf6;
+  color: #6366F1;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: all 0.2s;
 }
 
 .eventDescription a:hover {
-  color: #7c3aed;
-  border-bottom-color: #7c3aed;
+  color: #6E54FF;
+  border-bottom-color: #6E54FF;
 }
 
 .eventDescription img {
@@ -443,7 +443,7 @@
   padding: 1.5rem;
   background: #f9fafb;
   border-radius: 12px;
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid #6366F1;
 }
 
 .agendaTime {
@@ -452,7 +452,7 @@
   gap: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #8b5cf6;
+  color: #6366F1;
   white-space: nowrap;
   min-width: 120px;
 }
@@ -479,7 +479,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #8b5cf6;
+  color: #6366F1;
   font-weight: 500;
 }
 
@@ -592,13 +592,13 @@
   border-radius: 8px !important;
   font-weight: 600 !important;
   font-size: 1rem !important;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
   border: none !important;
   box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3) !important;
 }
 
 .registerButton:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  background: linear-gradient(135deg, #6E54FF 0%, #4338CA 100%) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 8px -1px rgba(139, 92, 246, 0.4) !important;
 }
@@ -617,14 +617,14 @@
   height: 40px !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
-  border-color: #8b5cf6 !important;
-  color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
+  color: #6366F1 !important;
 }
 
 .joinButton:hover {
-  background: #8b5cf6 !important;
+  background: #6366F1 !important;
   color: white !important;
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
 }
 
 /* Organizer Card */
@@ -680,7 +680,7 @@
 }
 
 .contactLink:hover {
-  background: #8b5cf6;
+  background: #6366F1;
   color: white;
   transform: translateY(-1px);
 }
@@ -769,7 +769,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f4f6;
-  border-top: 4px solid #8b5cf6;
+  border-top: 4px solid #6366F1;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -799,7 +799,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #8b5cf6;
+  background: #6366F1;
   color: white;
   font-size: 20px;
   padding: 0.75rem 1.5rem;
@@ -810,7 +810,7 @@
 }
 
 .backButton:hover {
-  background: #7c3aed;
+  background: #6E54FF;
   color: white;
   transform: translateY(-1px);
 }

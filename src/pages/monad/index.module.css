@@ -67,7 +67,7 @@
 }
 
 .titleGradient {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, #6366F1, #6E54FF);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -93,7 +93,7 @@
 .statNumber {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .statLabel {
@@ -109,7 +109,7 @@
 }
 
 .primaryButton {
-    background: #8b5cf6;
+    background: #6366F1;
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -125,7 +125,7 @@
 }
 
 .primaryButton:hover {
-    background: #7c3aed;
+    background: #6E54FF;
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
@@ -146,7 +146,7 @@
 .secondaryButton:hover {
     background: #f9fafb;
     color: #374151;
-    border-color: #8b5cf6;
+    border-color: #6366F1;
     transform: translateY(-2px);
 }
 
@@ -344,7 +344,7 @@
 .founderCard:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
-    border-color: #8b5cf6;
+    border-color: #6366F1;
 }
 
 .founderAvatar {
@@ -353,7 +353,7 @@
     margin: 0 auto 1.5rem;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid #8b5cf6;
+    border: 4px solid #6366F1;
 }
 
 .founderAvatar img {
@@ -370,7 +370,7 @@
 }
 
 .founderRole {
-    color: #8b5cf6;
+    color: #6366F1;
     font-weight: 600;
     font-size: 1rem;
     margin-bottom: 1rem;
@@ -405,7 +405,7 @@
 .fundingDate {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #8b5cf6;
+    color: #6366F1;
     text-align: right;
     padding-top: 1rem;
 }
@@ -425,7 +425,7 @@
     top: 2rem;
     width: 20px;
     height: 20px;
-    background: #8b5cf6;
+    background: #6366F1;
     border-radius: 50%;
     border: 4px solid white;
 }
@@ -446,7 +446,7 @@
 .fundingAmount {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .fundingLead {
@@ -489,13 +489,13 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(90deg, #6366F1, #6E54FF);
 }
 
 .techCard:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
-    border-color: #8b5cf6;
+    border-color: #6366F1;
 }
 
 .techCardHeader {
@@ -508,7 +508,7 @@
 .techIcon {
     width: 2rem;
     height: 2rem;
-    color: #8b5cf6;
+    color: #6366F1;
     flex-shrink: 0;
 }
 
@@ -561,7 +561,7 @@
 .performanceValue {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #8b5cf6;
+    color: #6366F1;
 }
 
 .performanceComparison {
@@ -593,13 +593,13 @@
 .ecosystemCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
-    border-color: #8b5cf6;
+    border-color: #6366F1;
 }
 
 .ecosystemIcon {
     width: 4rem;
     height: 4rem;
-    background: #8b5cf6;
+    background: #6366F1;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -649,13 +649,13 @@
 .reasonCard:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1);
-    border-color: #8b5cf6;
+    border-color: #6366F1;
 }
 
 .reasonIcon {
     width: 3rem;
     height: 3rem;
-    color: #8b5cf6;
+    color: #6366F1;
     margin: 0 auto 1rem;
 }
 
@@ -696,7 +696,7 @@
 .stepCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
-    border-color: #8b5cf6;
+    border-color: #6366F1;
 }
 
 .stepNumber {
@@ -706,7 +706,7 @@
     transform: translateX(-50%);
     width: 30px;
     height: 30px;
-    background: #8b5cf6;
+    background: #6366F1;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -719,7 +719,7 @@
 .stepIcon {
     width: 2.5rem;
     height: 2.5rem;
-    color: #8b5cf6;
+    color: #6366F1;
     margin: 1rem auto;
 }
 
@@ -738,7 +738,7 @@
 /* CTA Section */
 .cta {
     padding: 6rem 0;
-    background: #8b5cf6;
+    background: #6366F1;
     position: relative;
     overflow: hidden;
 }
@@ -779,7 +779,7 @@
 
 .ctaPrimary {
     background: white;
-    color: #8b5cf6;
+    color: #6366F1;
     border: 2px solid white;
     padding: 1rem 2rem;
     border-radius: 12px;
@@ -794,7 +794,7 @@
 
 .ctaPrimary:hover {
     background: #f9fafb;
-    color: #8b5cf6;
+    color: #6366F1;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }

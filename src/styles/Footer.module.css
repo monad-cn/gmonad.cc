@@ -86,7 +86,7 @@
   position: relative;
   width: 2rem;
   height: 2rem;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
@@ -102,7 +102,7 @@
 .footerLogoGlow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   border-radius: 0.5rem;
   filter: blur(10px);
   opacity: 0.5;
@@ -292,11 +292,11 @@
 }
 
 .toOpenBuild {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 .toOpenBuild:hover {
-  color: #7c3aed;
+  color: #6E54FF;
 }
 
 /* Responsive Design */

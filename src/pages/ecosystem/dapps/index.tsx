@@ -87,7 +87,7 @@ export default function EcosystemPage() {
 
     const getCategoryColor = (category: string) => {
         const colors: Record<string, string> = {
-            DeFi: "#8B5CF6",
+            DeFi: "#6366F1",
             基础设施: "#06B6D4",
             游戏: "#F59E0B",
             NFT: "#EF4444",
@@ -98,7 +98,7 @@ export default function EcosystemPage() {
             RWA: "#F97316",
             支付: "#3B82F6",
         }
-        return colors[category] || "#8B5CF6"
+        return colors[category] || "#6366F1"
     }
 
     const stats = {
