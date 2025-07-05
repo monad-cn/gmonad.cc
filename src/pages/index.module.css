@@ -218,8 +218,8 @@
 .hero {
   position: relative;
   padding: 4rem 1rem;
-  padding-top: 5rem;
-  /* 适度高度，不占满屏 */
+  padding-top: 5.5rem;
+  /* 为固定导航栏自然留出空间 */
   overflow: hidden;
   background: transparent;
 }
@@ -245,7 +245,7 @@
 @media (max-width: 480px) {
   .hero {
     padding: 2rem 0.5rem;
-    padding-top: 4rem;
+    padding-top: 3rem;
   }
   
   .heroTitle {
@@ -359,6 +359,23 @@
     min-height: unset !important;
   }
 }
+
+/* 1024px-1200px之间的优化：增加导航栏空间并调整标题装饰间距 */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .hero {
+    padding-top: 6.5rem;
+  }
+  
+  .heroTitle {
+    transform: translateY(-30px);
+  }
+  
+  .titleDecoration {
+    margin-top: -1rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
 
 .heroTitlePrimary {
   background: linear-gradient(135deg, #1f2937, #6E54FF, #3b82f6);
@@ -516,12 +533,13 @@
 .heroGallery {
   margin: 0.5rem 0 1.5rem;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   padding: 0 2rem;
 }
 
-@media (min-width: 769px) {
+/* 只在非触摸设备（桌面端）显示导航按钮 */
+@media (hover: hover) and (pointer: fine) {
   .heroGallery:hover .galleryNavigation {
     opacity: 1;
     transform: translateY(-50%) scale(1);
@@ -530,11 +548,6 @@
   .galleryNavigation:hover {
     opacity: 1 !important;
     transform: translateY(-50%) scale(1.1) !important;
-  }
-  
-  .galleryContainer:hover ~ .galleryNavigation {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
   }
 }
 
@@ -614,7 +627,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%) scale(0.8);
-  z-index: 50;
+  z-index: 100;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(16px);
   border: 2px solid rgba(255, 255, 255, 0.8);
@@ -656,6 +669,13 @@
   color: #5b47d1;
 }
 
+/* 在触摸设备上隐藏导航按钮 */
+@media (hover: none) and (pointer: coarse) {
+  .galleryNavigation {
+    display: none !important;
+  }
+}
+
 .galleryImage {
   flex: 0 0 auto;
   border-radius: 16px;
@@ -672,10 +692,10 @@
 }
 
 .galleryImage:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 16px 48px rgba(110, 84, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  border-color: rgba(110, 84, 255, 0.4);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .galleryImage img {
@@ -750,7 +770,7 @@
     height: auto !important;
     min-height: unset !important;
     position: relative;
-    transform: translateY(80px) !important;
+    transform: translateY(60px) !important;
   }
   
   .titleDecoration {
@@ -781,10 +801,11 @@
   }
   
   .galleryContainer {
-    justify-content: center;
+    justify-content: flex-start;
     padding: 1.5rem 1rem;
     gap: 1rem;
     max-width: none;
+    scroll-padding-left: 1rem;
   }
   
   .galleryImage {
@@ -796,9 +817,6 @@
     height: 130px;
   }
   
-  .galleryNavigation {
-    display: none;
-  }
   
   .heroButtons {
     flex-direction: column;
@@ -861,6 +879,8 @@
   .galleryContainer {
     padding: 1rem 0.5rem;
     gap: 0.5rem;
+    justify-content: flex-start;
+    scroll-padding-left: 0.5rem;
   }
   
   .galleryImage {
@@ -1019,7 +1039,7 @@
 }
 
 .featureCard:hover .featureCardGlow {
-  opacity: 1;
+  opacity: 0.3;
 }
 
 .featureCardContent {
@@ -1034,23 +1054,23 @@
 }
 
 .featureCard:hover .featureCardContent {
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(110, 84, 255, 0.2);
 }
 
 .featureIconWrapper {
   display: inline-flex;
   padding: 1rem;
   border-radius: 50%;
-  background: #f3e8ff;
-  color: #6E54FF;
+  background: #f8fafc;
+  color: #374151;
   margin-bottom: 1rem;
   transition: transform 0.3s ease;
 }
 
 .featureCard:hover .featureIconWrapper {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .featureIcon {
@@ -1107,13 +1127,13 @@
 }
 
 .activityCard:hover .activityCardGlow {
-  opacity: 1;
+  opacity: 0.2;
 }
 
 .activityCard:hover {
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(110, 84, 255, 0.2);
 }
 
 .activityCardHeader {
@@ -1192,7 +1212,7 @@
 
 .activityButton {
   width: 100%;
-  background: #6E54FF;
+  background: #374151;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -1203,14 +1223,14 @@
 }
 
 .activityButton:hover {
-  background: #4338CA;
-  transform: scale(1.05);
+  background: #374151;
+  transform: translateY(-1px);
 }
 
 .moreButton {
   background: transparent;
-  color: #6E54FF;
-  border: 1px solid #6E54FF;
+  color: #374151;
+  border: 1px solid #d1d5db;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -1222,8 +1242,8 @@
 }
 
 .moreButton:hover {
-  background: rgba(124, 58, 237, 0.1);
-  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
 }
 
 /* Milestones Section */
@@ -1398,12 +1418,12 @@
   justify-content: center;
   font-size: 1.4rem;
   box-shadow: 
-    0 12px 28px rgba(110, 84, 255, 0.25),
-    0 4px 12px rgba(110, 84, 255, 0.15),
-    inset 0 2px 6px rgba(255, 255, 255, 0.2);
+    0 8px 16px rgba(110, 84, 255, 0.15),
+    0 2px 8px rgba(110, 84, 255, 0.1),
+    inset 0 1px 3px rgba(255, 255, 255, 0.3);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-  border: 3px solid rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
 }
 
@@ -1418,7 +1438,7 @@
   display: flex;
   z-index: 2;
   color: white;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
   transition: all 0.3s ease;
 }
 
@@ -1433,16 +1453,16 @@
 }
 
 .milestoneItem:hover .milestoneIcon {
-  transform: translateX(-50%) scale(1.1);
+  transform: translateX(-50%) scale(1.05);
   box-shadow: 
-    0 16px 40px rgba(110, 84, 255, 0.3),
-    0 6px 16px rgba(110, 84, 255, 0.2),
-    inset 0 3px 8px rgba(255, 255, 255, 0.25);
+    0 12px 24px rgba(110, 84, 255, 0.2),
+    0 4px 12px rgba(110, 84, 255, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .milestoneItem:hover .milestoneIconContent {
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
-  transform: scale(1.05);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transform: scale(1.02);
 }
 
 .milestoneDateBadge:hover {
@@ -1519,13 +1539,13 @@
 }
 
 .resourceCard:hover .resourceCardGlow {
-  opacity: 1;
+  opacity: 0.2;
 }
 
 .resourceCard:hover {
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(110, 84, 255, 0.2);
 }
 
 .resourceCardHeader {
@@ -1537,14 +1557,14 @@
   display: inline-flex;
   padding: 1rem;
   border-radius: 50%;
-  background: #f3e8ff;
-  color: #6E54FF;
+  background: #f8fafc;
+  color: #374151;
   margin-bottom: 1rem;
   transition: transform 0.3s ease;
 }
 
 .resourceCard:hover .resourceIconWrapper {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .resourceIcon {
@@ -1570,7 +1590,7 @@
 
 .resourceButton {
   width: 100%;
-  background: #6E54FF;
+  background: #374151;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -1581,8 +1601,8 @@
 }
 
 .resourceButton:hover {
-  background: #4338CA;
-  transform: scale(1.05);
+  background: #374151;
+  transform: translateY(-1px);
 }
 
 /* Members Section */

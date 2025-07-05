@@ -5,7 +5,7 @@
 
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 80px 0 40px;
+  padding: 140px 0 40px; /* 增加顶部padding为导航栏留出空间 */
   margin-bottom: 24px;
 }
 
@@ -288,6 +288,10 @@
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: 120px 0 40px; /* 移动端调整 */
+  }
+  
   .content {
     flex-direction: column;
   }
@@ -306,5 +310,11 @@
 
   .itemFooter {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 110px 0 40px; /* 小屏幕调整 */
   }
 }
