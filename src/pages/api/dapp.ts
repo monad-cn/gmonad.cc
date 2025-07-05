@@ -62,7 +62,7 @@ export const createDapp = async (
       description: params.description.trim(),
       category_id: params.category_id,
       x: params.x.trim(),
-      site: params.x.trim(),
+      site: params.site.trim(),
       cover_img: params.cover_img,
       logo: params.logo,
       tags: params.tags ?? [],

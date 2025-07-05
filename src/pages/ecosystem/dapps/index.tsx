@@ -43,7 +43,7 @@ export default function EcosystemPage() {
     const [loading, setLoading] = useState(true)
     const [total, setTotal] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
-    const [pageSize, setPageSize] = useState(8)
+    const [pageSize, setPageSize] = useState(6)
 
     const { session, status } = useAuth();
 
@@ -242,8 +242,8 @@ export default function EcosystemPage() {
                                     setCurrentPage(page)
                                     setPageSize(size!)
                                 }}
-                                showSizeChanger
-                                showQuickJumper
+                                // showSizeChanger
+                                // showQuickJumper
                             />
                         </div>
                     )}
