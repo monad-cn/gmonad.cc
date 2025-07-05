@@ -29,7 +29,7 @@ const Auth: React.FC = () => {
 
       try {
         const authManager = AuthManager.getInstance();
-        
+
         // 使用 AuthManager 确保只有一个登录请求在执行
         const res = await authManager.ensureLogin(async () => {
           return await signIn('credentials', {
@@ -57,7 +57,7 @@ const Auth: React.FC = () => {
 
     // 延迟执行，避免 React Strict Mode 导致的重复调用
     const timer = setTimeout(tryLogin, 50);
-    
+
     return () => {
       clearTimeout(timer);
     };
@@ -77,6 +77,8 @@ const Auth: React.FC = () => {
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     if (key === 'logout') handleLogout();
+
+    if (key === 'profile') router.push('/dashboard');
   };
 
   const items: MenuProps['items'] = [
@@ -84,6 +86,10 @@ const Auth: React.FC = () => {
       key: 'name',
       label: <span>{session?.user?.username}</span>,
       disabled: true,
+    },
+    {
+      key: 'profile',
+      label: '个人页面',
     },
     {
       key: 'logout',

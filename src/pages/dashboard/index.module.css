@@ -11,6 +11,7 @@
 
 .profileSection {
   max-width: 1200px;
+   min-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -64,6 +65,7 @@
 
 .content {
   max-width: 1200px;
+  min-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }

@@ -308,7 +308,6 @@ export default function DashboardPage() {
                 {profileData.name}
               </Title>
               <Text className={styles.subtitle}>
-                {' '}
                 Email: {profileData.email}
               </Text>
             </div>
