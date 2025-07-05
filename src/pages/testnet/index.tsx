@@ -26,10 +26,11 @@ import {
     Timer,
 } from "lucide-react"
 import styles from "./index.module.css"
-import { SiDiscord } from "react-icons/si"
-import { useEffect, useState } from "react"
+import { SiDiscord, SiX } from "react-icons/si"
+import { useEffect, useRef, useState } from "react"
 import { StatisticsUrl } from "../api/api"
 import CountUp from "react-countup"
+import { getDapps } from "../api/dapp"
 const { Title, Paragraph, Text } = Typography
 
 
@@ -87,6 +88,9 @@ interface Stat {
 export default function TestnetPage() {
     const [messageApi, contextHolder] = message.useMessage()
     const [stat, setStat] = useState<Stat | null>(null);
+    const [dapps, setDapps] = useState<any[]>([])
+    const scrollRef = useRef<HTMLDivElement | null>(null)
+    const [startedScroll, setStartedScroll] = useState(false)
 
     const copyToClipboard = async (text: string, label: string) => {
         try {
@@ -146,6 +150,78 @@ export default function TestnetPage() {
             eventSource.close();
         };
     }, []);
+
+
+    useEffect(() => {
+        const eventSource = new EventSource(StatisticsUrl);
+        eventSource.onmessage = (event) => {
+            try {
+                const parsed = JSON.parse(event.data);
+                setStat(parsed);
+            } catch (err) {
+                console.error('解析 SSE 数据失败:', err);
+            }
+        };
+        eventSource.onerror = () => {
+            eventSource.close();
+        };
+        return () => {
+            eventSource.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        const fetchDapps = async () => {
+            try {
+                const params: any = {
+                    page: 1,
+                    page_size: 20, // 你可以根据需要修改数量
+                }
+                const result = await getDapps(params)
+                if (result.success && result.data && Array.isArray(result.data.dapps)) {
+                    setDapps(result.data.dapps)
+                }
+            } catch (error) {
+                console.error("获取 DApps 失败:", error)
+            }
+        }
+        fetchDapps()
+    }, [])
+
+    // 滚动监听
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !startedScroll) {
+                    setStartedScroll(true)
+                    autoScroll()
+                }
+            },
+            { threshold: 0.3 }
+        )
+        if (scrollRef.current) {
+            observer.observe(scrollRef.current)
+        }
+        return () => {
+            observer.disconnect()
+        }
+    }, [startedScroll])
+
+    const autoScroll = () => {
+        if (!scrollRef.current) return
+        let scrollAmount = 0
+        const step = 1
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+
+        const scroll = () => {
+            if (scrollAmount < maxScroll) {
+                scrollRef.current!.scrollLeft += step
+                scrollAmount += step
+                requestAnimationFrame(scroll)
+            }
+        }
+        scroll()
+    }
 
     return (
         <div className={styles.container}>
@@ -559,71 +635,54 @@ export default function TestnetPage() {
                     </div>
                     <Divider style={{ margin: "20px 0" }} />
 
-                    <Row gutter={[16, 16]}>
-                        {[
-                            {
-                                name: "XXX",
-                                category: "DeFi",
-                                icon: TrendingUp,
-                                color: "#10b981",
-                                description: "去中心化交易所，提供代币交换、流动性挖矿等功能",
-                                metric: "TVL: $2.3M",
-                            },
-                            {
-                                name: "XXX",
-                                category: "NFT",
-                                icon: Star,
-                                color: "#6366F1",
-                                description: "NFT 市场平台，支持创建、交易和展示数字艺术品",
-                                metric: "交易量: 1.2K ETH",
-                            },
-                            {
-                                name: "XXXX",
-                                category: "游戏",
-                                icon: Zap,
-                                color: "#3b82f6",
-                                description: "区块链游戏平台，玩家可以赚取代币和NFT奖励",
-                                metric: "活跃玩家: 5.6K",
-                            },
-                        ].map((project, index) => (
-                            <Col xs={24} sm={12} lg={8} key={index}>
-                                <Card size="small" className={styles.projectCard}>
-                                    <div className={styles.projectContent}>
-                                        <div className={styles.projectHeader}>
-                                            <div className={styles.projectIcon} style={{ background: `${project.color}15` }}>
-                                                <project.icon size={20} color={project.color} />
-                                            </div>
-                                            <div className={styles.projectInfo}>
-                                                <Text strong className={styles.projectName}>
-                                                    {project.name}
-                                                </Text>
-                                                <Tag style={{ background: `${project.color}15`, color: project.color, border: 0 }}>
-                                                    {project.category}
-                                                </Tag>
-                                            </div>
-                                        </div>
-                                        <Text type="secondary" className={styles.projectDescription}>
-                                            {project.description}
-                                        </Text>
-                                        <div className={styles.projectFooter}>
-                                            <Text type="secondary" className={styles.projectMetric}>
-                                                {project.metric}
-                                            </Text>
-                                            <Button
-                                                size="small"
-                                                type="link"
-                                                className={styles.projectButton}
-                                            >
-                                                体验 <ExternalLink size={10} />
-                                            </Button>
+                    <div className={styles.dappsScrollContainer} ref={scrollRef}>
+                        {dapps.map((dapp) => (
+                            <div key={dapp.ID} className={styles.dappCard}>
+                                <div className={styles.coverContainer}>
+                                    <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                                    <div className={styles.cardTop}>
+                                        <div className={styles.cardActions}>
+                                            {dapp.featured && (
+                                                <div className={styles.featuredBadge}>
+                                                    <Star className={styles.featuredIcon} />
+                                                </div>
+                                            )}
+                                            {dapp.x && (
+                                                <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
+                                                     <SiX size={20} />
+                                                </Link>
+                                            )}
+                                            {dapp.site && (
+                                                <Link href={dapp.site} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
+                                                    <Globe size={20} />
+                                                </Link>
+                                            )}
                                         </div>
                                     </div>
-                                </Card>
-                            </Col>
+                                </div>
+                                <div className={styles.logoContainer}>
+                                    <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+                                </div>
+                                <div className={styles.cardContent}>
+                                    <h3 className={styles.dappName}>{dapp.name}</h3>
+                                    <p className={styles.dappDescription}>{dapp.description}</p>
+                                    <div className={styles.category}>
+                                        <Tag className={styles.tag}>{dapp.category?.name}</Tag>
+                                    </div>
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    <div className={styles.tutorialsInfo}>
+                                        <Book size={16} />
+                                        <span className={styles.tutorialCount}>{dapp.tutorials?.length || 0} 个教程</span>
+                                    </div>
+                                    <Link href={`/ecosystem/dapps/${dapp.ID}`} className={styles.tutorialsButton}>
+                                        查看教程
+                                    </Link>
+                                </div>
+                            </div>
                         ))}
-                    </Row>
+                    </div>
                 </Card>
-
                 {/* Call to Action */}
                 <div className={styles.ctaSection}>
                     <div className={styles.ctaStars}>
