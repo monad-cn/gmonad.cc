@@ -771,9 +771,10 @@
 }
 
 
-/* 热门项目横向滚动区域 */
+/* 横向滚动容器 */
 .dappsScrollContainer {
     display: flex;
+    flex-wrap: nowrap;
     overflow-x: auto;
     scroll-behavior: smooth;
     gap: 1rem;
@@ -781,11 +782,11 @@
     margin-top: 1rem;
 }
 
-/* 隐藏滚动条（可选） */
 .dappsScrollContainer::-webkit-scrollbar {
     display: none;
 }
 
+/* DApp 卡片 */
 .dappCard {
     flex: 0 0 auto;
     width: 300px;

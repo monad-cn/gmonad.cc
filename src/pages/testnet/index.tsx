@@ -208,20 +208,19 @@ export default function TestnetPage() {
     }, [startedScroll])
 
     const autoScroll = () => {
-        if (!scrollRef.current) return
-        let scrollAmount = 0
-        const step = 1
-        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+        if (!scrollRef.current) return;
+        const container = scrollRef.current;
+        let step = 1;
 
         const scroll = () => {
-            if (scrollAmount < maxScroll) {
-                scrollRef.current!.scrollLeft += step
-                scrollAmount += step
-                requestAnimationFrame(scroll)
+            container.scrollLeft += step;
+            if (container.scrollLeft + container.clientWidth >= container.scrollWidth) {
+                container.scrollLeft = 0; // 到底后回到最左侧
             }
-        }
-        scroll()
-    }
+            requestAnimationFrame(scroll);
+        };
+        scroll();
+    };
 
     return (
         <div className={styles.container}>
@@ -649,7 +648,7 @@ export default function TestnetPage() {
                                             )}
                                             {dapp.x && (
                                                 <Link href={dapp.x} target="_blank" rel="noopener noreferrer" className={styles.actionButton}>
-                                                     <SiX size={20} />
+                                                    <SiX size={20} />
                                                 </Link>
                                             )}
                                             {dapp.site && (
