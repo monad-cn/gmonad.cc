@@ -931,3 +931,33 @@
 .tutorialsButton:hover {
     color: #6366F1;
 }
+
+.cardHeaderWithButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cardHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.viewMoreButton {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6366F1;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #6366F1;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.viewMoreButton:hover {
+    background: #6366F1;
+    color: #fff;
+}

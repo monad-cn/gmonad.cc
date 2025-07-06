@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import styles from '../styles/Community.module.css';
+import styles from './index.module.css';
 import { Github } from 'lucide-react';
 
 const Community: NextPage = () => {

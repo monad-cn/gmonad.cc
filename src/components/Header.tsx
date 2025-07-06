@@ -40,8 +40,9 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'projects', label: <Link href="/community">社区项目</Link> },
-                  { key: 'tools', label: <Link href="/">开发工具</Link> },
+                   { key: 'projects', label: <Link href="/ecosystem/dapps">生态 Dapp</Link> },
+                  { key: 'projects', label: <Link href="/ecosystem/community">社区项目</Link> },
+                  { key: 'tools', label: <Link href="/ecosystem/tutorials">交互教程</Link> },
                   { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com" target='_blank'>区块浏览器</Link> },
                 ],
               }}

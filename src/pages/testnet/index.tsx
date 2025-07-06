@@ -31,6 +31,7 @@ import { useEffect, useRef, useState } from "react"
 import { StatisticsUrl } from "../api/api"
 import CountUp from "react-countup"
 import { getDapps } from "../api/dapp"
+import router from "next/router"
 const { Title, Paragraph, Text } = Typography
 
 
@@ -621,16 +622,21 @@ export default function TestnetPage() {
 
                 {/* Ecosystem Projects */}
                 <Card className={styles.ecosystemCard} id="dappSection">
-                    <div className={styles.cardHeader}>
-                        <div className={styles.cardIcon}>
-                            <Star size={20} />
+                    <div className={styles.cardHeaderWithButton}>
+                        <div className={styles.cardHeaderLeft}>
+                            <div className={styles.cardIcon}>
+                                <Star size={20} />
+                            </div>
+                            <div>
+                                <Title level={4} style={{ margin: 0 }}>
+                                    体验热门项目
+                                </Title>
+                                <Text type="secondary">探索在 Monad 测试网上构建的优秀项目</Text>
+                            </div>
                         </div>
-                        <div>
-                            <Title level={4} style={{ margin: 0 }}>
-                                体验热门项目
-                            </Title>
-                            <Text type="secondary">探索在 Monad 测试网上构建的优秀项目</Text>
-                        </div>
+                        <Link href="/ecosystem/dapps" className={styles.viewMoreButton}>
+                            查看更多 →
+                        </Link>
                     </div>
                     <Divider style={{ margin: "20px 0" }} />
 
@@ -705,17 +711,17 @@ export default function TestnetPage() {
                         <Space size="middle" className={styles.ctaActions}>
                             <Button
                                 size="large"
-                                onClick={() => window.open("https://developers.monad.xyz/#quick-start", "_blank")}
                                 className={styles.ctaWhiteButton}
+                                   onClick={() => router.push("/ecosystem/dapps")}
                             >
                                 快速开始
                             </Button>
                             <Button
                                 size="large"
-                                onClick={() => window.open("https://docs.monad.xyz/", "_blank")}
+                                onClick={() => window.open("https://testnet.monad.xyz/", "_blank")}
                                 className={styles.ctaTransparentButton}
                             >
-                                开发文档
+                                访问官网
                             </Button>
                         </Space>
                     </div>
