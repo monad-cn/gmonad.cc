@@ -230,12 +230,12 @@
     padding: 3rem 1rem;
     padding-top: 4.5rem;
   }
-  
+
   .heroTitle {
     font-size: clamp(2rem, 8vw, 2.5rem);
     margin-bottom: 1rem;
   }
-  
+
   .heroButtons {
     flex-direction: column;
     gap: 0.75rem;
@@ -247,20 +247,20 @@
     padding: 2rem 0.5rem;
     padding-top: 3rem;
   }
-  
+
   .heroTitle {
     font-size: clamp(1.8rem, 8vw, 2.2rem);
     margin-bottom: 0.75rem;
   }
-  
+
   .heroContent {
     padding: 0 0.5rem;
   }
-  
+
   .heroSubtitle {
     margin-bottom: 2rem;
   }
-  
+
   .heroGallery {
     margin: 2rem 0 1.5rem;
   }
@@ -365,11 +365,11 @@
   .hero {
     padding-top: 6.5rem;
   }
-  
+
   .heroTitle {
     transform: translateY(-30px);
   }
-  
+
   .titleDecoration {
     margin-top: -1rem;
     margin-bottom: 2.5rem;
@@ -513,6 +513,13 @@
   transition: all 0.3s ease;
 }
 
+.buttonIconX {
+  width: 1rem;
+  height: 1rem;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
 .heroPrimaryButton .buttonIcon {
   color: white;
 }
@@ -544,7 +551,7 @@
     opacity: 1;
     transform: translateY(-50%) scale(1);
   }
-  
+
   .galleryNavigation:hover {
     opacity: 1 !important;
     transform: translateY(-50%) scale(1.1) !important;
@@ -588,13 +595,13 @@
     max-width: 1400px;
     padding: 1.5rem 0;
   }
-  
+
   .heroGallery {
     padding: 0;
     overflow: hidden;
     margin: 0.25rem 0 1rem;
   }
-  
+
   .galleryContainer {
     max-width: none;
     margin: 0 auto;
@@ -603,16 +610,16 @@
     overflow-x: auto;
     gap: 2rem;
   }
-  
+
   .galleryImage {
     min-width: 280px;
   }
-  
+
   .galleryImage img {
     width: 280px;
     height: 182px;
   }
-  
+
   .heroButtons {
     margin-bottom: 0.25rem;
   }
@@ -723,23 +730,23 @@
     align-items: center;
     transform: translateY(60px);
   }
-  
+
   .titleDecoration {
     width: 100%;
     max-width: 500px;
     margin-top: -1rem;
   }
-  
+
   .decorationGradient {
     width: 100%;
     max-width: 500px;
   }
-  
+
   .decorationLine {
     width: 100%;
     max-width: 500px;
   }
-  
+
   .heroSubtitle {
     width: 100%;
     max-width: 600px;
@@ -756,7 +763,7 @@
   .heroContent {
     padding: 1.5rem 1rem;
   }
-  
+
   .heroTitle {
     font-size: 48px !important;
     line-height: 56px !important;
@@ -772,21 +779,21 @@
     position: relative;
     transform: translateY(60px) !important;
   }
-  
+
   .titleDecoration {
     max-width: 400px;
     width: 100%;
     margin-top: 0rem !important;
   }
-  
+
   .decorationGradient {
     width: 100%;
   }
-  
+
   .decorationLine {
     width: 100%;
   }
-  
+
   .heroSubtitle {
     font-size: 18px;
     line-height: 28px;
@@ -795,11 +802,11 @@
     margin-top: -1.2rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .heroGallery {
     margin: 0.25rem 0 1.25rem;
   }
-  
+
   .galleryContainer {
     justify-content: flex-start;
     padding: 1.5rem 1rem;
@@ -807,22 +814,22 @@
     max-width: none;
     scroll-padding-left: 1rem;
   }
-  
+
   .galleryImage {
     min-width: 200px;
   }
-  
+
   .galleryImage img {
     width: 200px;
     height: 130px;
   }
-  
-  
+
+
   .heroButtons {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .heroPrimaryButton,
   .heroSecondaryButton {
     width: 100%;
@@ -835,7 +842,7 @@
   .heroTitle {
     transform: translateY(70px) !important;
   }
-  
+
   .titleDecoration {
     margin-top: 0rem !important;
   }
@@ -857,13 +864,13 @@
     position: relative;
     transform: translateY(60px) !important;
   }
-  
+
   .titleDecoration {
     max-width: 300px;
     width: 100%;
     margin-top: 0rem !important;
   }
-  
+
   .heroSubtitle {
     font-size: 16px;
     line-height: 24px;
@@ -871,31 +878,31 @@
     width: 100%;
     margin-top: -1rem;
   }
-  
+
   .heroGallery {
     margin: 0rem 0 1rem;
   }
-  
+
   .galleryContainer {
     padding: 1rem 0.5rem;
     gap: 0.5rem;
     justify-content: flex-start;
     scroll-padding-left: 0.5rem;
   }
-  
+
   .galleryImage {
     min-width: 160px;
   }
-  
+
   .galleryImage img {
     width: 160px;
     height: 104px;
   }
-  
+
   .heroButtons {
     gap: 0.5rem;
   }
-  
+
   .heroPrimaryButton,
   .heroSecondaryButton {
     padding: 0.6rem 1.2rem;
@@ -1264,12 +1271,11 @@
   top: 0;
   bottom: 0;
   width: 5px;
-  background: linear-gradient(to bottom, 
-    #6E54FF 0%, 
-    #6366F1 35%, 
-    #8B5CF6 65%, 
-    #a78bfa 100%
-  );
+  background: linear-gradient(to bottom,
+      #6E54FF 0%,
+      #6366F1 35%,
+      #8B5CF6 65%,
+      #a78bfa 100%);
   border-radius: 3px;
   box-shadow: 0 0 16px rgba(110, 84, 255, 0.25);
 }
@@ -1417,7 +1423,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  box-shadow: 
+  box-shadow:
     0 8px 16px rgba(110, 84, 255, 0.15),
     0 2px 8px rgba(110, 84, 255, 0.1),
     inset 0 1px 3px rgba(255, 255, 255, 0.3);
@@ -1454,7 +1460,7 @@
 
 .milestoneItem:hover .milestoneIcon {
   transform: translateX(-50%) scale(1.05);
-  box-shadow: 
+  box-shadow:
     0 12px 24px rgba(110, 84, 255, 0.2),
     0 4px 12px rgba(110, 84, 255, 0.15),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
@@ -2041,4 +2047,176 @@
     height: 3rem;
     font-size: 1.25rem;
   }
+}
+
+
+.dappShowcase {
+  padding: 5rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.dappsScrollContainer {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  scroll-behavior: smooth;
+}
+
+.dappsScrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.dappCard {
+  flex: 0 0 auto;
+  width: 300px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+.dappCard:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.coverContainer {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardTop {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 6px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.actionIcon {
+  font-size: 20px;
+}
+
+.featuredBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #facc15;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.featuredIcon {
+  width: 16px;
+  height: 16px;
+  color: #000;
+}
+
+.logoContainer {
+  position: relative;
+  margin-left: 16px;
+  margin-top: -32px;
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cardContent {
+  padding: 16px;
+  flex-grow: 1;
+}
+
+.dappName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #1e293b;
+}
+
+.dappDescription {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  height: 2.5rem;
+  overflow: hidden;
+}
+
+.category {
+  margin-top: 0.25rem;
+}
+
+.tag {
+  color: #6366F1;
+  padding: 2px 6px;
+  border-color: #6366F1;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.viewMoreWrapper {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.viewMoreButton {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.viewMoreButton:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
 }

@@ -771,7 +771,7 @@ export default function EventsPage() {
         </div>
       </div>
       {/* Stats Section */}
-      <div className={styles.statsSection}>
+      {/* <div className={styles.statsSection}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
             <div className={styles.statIcon}>
@@ -816,7 +816,7 @@ export default function EventsPage() {
             </div>
           </div>
         </Card>
-      </div>
+      </div> */}
       <Modal
         open={wechatModalVisible}
         onCancel={() => setWechatModalVisible(false)}

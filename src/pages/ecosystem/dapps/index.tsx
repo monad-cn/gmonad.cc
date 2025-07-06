@@ -176,7 +176,7 @@ export default function EcosystemPage() {
                         </div>
                     </div>
 
-                    <div className={styles.categoryFilters}>
+                    {/* <div className={styles.categoryFilters}>
                         <button
                             onClick={() => {
                                 setSelectedCategory("all")
@@ -199,7 +199,7 @@ export default function EcosystemPage() {
                                 {category}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             </section>
 

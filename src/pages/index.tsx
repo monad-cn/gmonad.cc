@@ -23,16 +23,22 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { SiDiscord, SiTelegram } from 'react-icons/si';
+import { SiDiscord, SiTelegram, SiX } from 'react-icons/si';
 import { Avatar } from 'antd';
 import EventSection from './events/section';
+import { getDapps } from './api/dapp';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [dapps, setDapps] = useState<any[]>([]);
+  const pageSize = 20;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+
   const [stats, setStats] = useState({
     members: 1000,
     activities: 50,
@@ -45,7 +51,7 @@ export default function Home() {
     if (container) {
       const scrollAmount = 312; // Width of one image (280px) plus gap (32px)
       const currentScroll = container.scrollLeft;
-      
+
       let targetScroll;
       if (direction === 'left') {
         // Scroll to absolute left if we're close to the beginning
@@ -58,13 +64,51 @@ export default function Home() {
         const maxScroll = container.scrollWidth - container.clientWidth;
         targetScroll = Math.min(maxScroll, currentScroll + scrollAmount);
       }
-      
+
       container.scrollTo({
         left: targetScroll,
         behavior: 'smooth'
       });
     }
   };
+
+  useEffect(() => {
+    const fetchDapps = async () => {
+      try {
+        const params = {
+          page: 1,
+          page_size: pageSize,
+        };
+        const result = await getDapps(params);
+        if (result.success && result.data && Array.isArray(result.data.dapps)) {
+          setDapps(result.data.dapps);
+        }
+      } catch (error) {
+        console.error("获取 DApps 列表失败:", error);
+      }
+    };
+    fetchDapps();
+  }, []);
+
+  useEffect(() => {
+    let animationFrame: number;
+    const scrollContainer = scrollRef.current;
+
+    const scroll = () => {
+      if (scrollContainer && !isHovering) {
+        scrollContainer.scrollLeft += 0.5; // 每帧增加 0.5px，可根据需要调整
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+          scrollContainer.scrollLeft = 0; // 回到开头循环滚动
+        }
+      }
+      animationFrame = requestAnimationFrame(scroll);
+    };
+
+    animationFrame = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isHovering]);
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -256,7 +300,7 @@ export default function Home() {
             <h1 className={styles.heroTitle}>
               <span className={styles.heroTitleSecondary}>Monad中文社区</span>
             </h1>
-            
+
             {/* 标题装饰 */}
             <div className={styles.titleDecoration}>
               <div className={styles.decorationGradient}></div>
@@ -269,14 +313,14 @@ export default function Home() {
             </p>
             {/* 图片画廊 */}
             <div className={styles.heroGallery}>
-              <button 
+              <button
                 className={`${styles.galleryNavigation} ${styles.galleryNavPrev}`}
                 onClick={() => scrollGallery('left')}
                 aria-label="Previous images"
               >
                 <ChevronLeft className={styles.galleryNavIcon} />
               </button>
-              
+
               <div className={styles.galleryContainer}>
                 <div className={styles.galleryImage}>
                   <img src="/community/cp1.jpg" alt="Monad社区活动1" />
@@ -306,8 +350,8 @@ export default function Home() {
                   <img src="/community/cp10.jpg" alt="Monad社区活动9" />
                 </div>
               </div>
-              
-              <button 
+
+              <button
                 className={`${styles.galleryNavigation} ${styles.galleryNavNext}`}
                 onClick={() => scrollGallery('right')}
                 aria-label="Next images"
@@ -442,6 +486,65 @@ export default function Home() {
         </div>
       </section>
 
+      {/* DApp Showcase Section */}
+      <section className={styles.dappShowcase}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>生态 DApps</h2>
+            <p className={styles.sectionDescription}>
+              探索正在 Monad 测试网构建和活跃的优秀 DApp 项目
+            </p>
+          </div>
+          <div className={styles.dappsScrollContainer}
+            ref={scrollRef}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            {dapps.map((dapp) => (
+              <Link href={`/ecosystem/dapps/${dapp.ID}`}>
+                <div key={dapp.ID} className={styles.dappCard}>
+                  <div className={styles.coverContainer}>
+                    <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                    <div className={styles.cardTop}>
+                      <div className={styles.cardActions}>
+                        {dapp.featured && (
+                          <div className={styles.featuredBadge}>
+                            <Star className={styles.featuredIcon} />
+                          </div>
+                        )}
+                        {dapp.x && (
+                          <Link href={dapp.x} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                            <SiX className={styles.actionIcon} />
+                          </Link>
+                        )}
+                        {dapp.site && (
+                          <Link href={dapp.site} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                            <Globe className={styles.actionIcon} />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.logoContainer}>
+                    <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+                  </div>
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.dappName}>{dapp.name}</h3>
+                    <p className={styles.dappDescription}>{dapp.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className={styles.viewMoreWrapper}>
+            <Link href="/ecosystem/dapps" className={styles.viewMoreButton}>
+              查看更多 DApps →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+
       {/* Resources Section */}
       <section className={styles.resources}>
         <div className={styles.container}>
@@ -540,20 +643,20 @@ export default function Home() {
             <h2 className={styles.ctaTitle}>准备好加入 Monad 中文社区了吗？</h2>
             <div className={styles.ctaButtons}>
               <Link
-                href="https://discord.gg/monad"
+                href="https://x.com/monad_zw"
                 target="_blank"
                 className={styles.ctaPrimaryButton}
               >
-                <SiDiscord className={styles.buttonIcon} />
-                加入 Discord
+                <SiX className={styles.buttonIconX}  />
+                关注 X
               </Link>
               <Link
-                href="https://www.monad.xyz/"
+                href="https://t.me/Chinads"
                 target="_blank"
                 className={styles.ctaSecondaryButton}
               >
-                <Globe className={styles.buttonIcon} />
-                访问官方网站
+                <SiTelegram className={styles.buttonIcon} />
+                加入 Telegram
               </Link>
             </div>
           </div>
