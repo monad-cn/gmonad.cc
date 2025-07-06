@@ -29,6 +29,7 @@ export interface GetTutorialsParams {
   page_size?: number;
   publish_status?: number;
   dapp_id?: number;
+  user_id?: number;
 }
 
 // 关联 User
@@ -106,7 +107,11 @@ export const createTutorial = async (
       dapp_id: params.dapp_id,
     };
 
-    const response = await apiRequest<TutorialResult>('/tutorials', 'POST', body);
+    const response = await apiRequest<TutorialResult>(
+      '/tutorials',
+      'POST',
+      body
+    );
 
     if (response.code === 200 && response.data) {
       return {
@@ -176,7 +181,10 @@ export const getTutorials = async (
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
     if (params.publish_status != null)
       query.append('publish_status', params.publish_status.toString());
-    if (params.dapp_id != null) query.append('dapp_id', params.dapp_id.toString());
+    if (params.dapp_id != null)
+      query.append('dapp_id', params.dapp_id.toString());
+    if (params.user_id != null)
+      query.append('user_id', params.user_id.toString());
 
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());
@@ -206,13 +214,18 @@ export const getTutorials = async (
 };
 
 // 根据 ID 获取教程
-export const getTutorialById = async (tutorialId: string): Promise<TutorialResult> => {
+export const getTutorialById = async (
+  tutorialId: string
+): Promise<TutorialResult> => {
   try {
     if (!tutorialId) {
       return { success: false, message: '教程ID不能为空' };
     }
 
-    const response = await apiRequest<TutorialResult>(`/tutorials/${tutorialId}`, 'GET');
+    const response = await apiRequest<TutorialResult>(
+      `/tutorials/${tutorialId}`,
+      'GET'
+    );
 
     if (response.code === 200 && response.data) {
       return {
@@ -233,9 +246,14 @@ export const getTutorialById = async (tutorialId: string): Promise<TutorialResul
 };
 
 // 删除教程
-export const deleteTutorial = async (tutorialId: number): Promise<TutorialResult> => {
+export const deleteTutorial = async (
+  tutorialId: number
+): Promise<TutorialResult> => {
   try {
-    const response = await apiRequest<TutorialResult>(`/tutorials/${tutorialId}`, 'DELETE');
+    const response = await apiRequest<TutorialResult>(
+      `/tutorials/${tutorialId}`,
+      'DELETE'
+    );
 
     if (response.code === 200) {
       return { success: true, message: response.message ?? '删除成功' };
@@ -277,6 +295,9 @@ export const updateTutorialPublishStatus = async (
 
     return { success: false, message: response.message ?? '教程状态更新失败' };
   } catch (error: any) {
-    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+    return {
+      success: false,
+      message: error?.message ?? '网络错误，请稍后重试',
+    };
   }
 };

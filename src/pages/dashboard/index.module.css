@@ -179,6 +179,11 @@
   border-radius: 8px !important;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+}
+
 .itemTitle {
   color: #262626 !important;
   font-size: 16px !important;
@@ -214,7 +219,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 6px;
 }
+
 
 .itemFooter span {
   color: #8c8c8c;
@@ -225,6 +232,10 @@
   color: #d9d9d9;
   width: 14px;
   height: 14px;
+}
+
+.itemClock {
+  margin-top: 5px;
 }
 
 .itemMeta {

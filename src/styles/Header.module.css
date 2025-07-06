@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 780px;
+  /* max-width: 1200px; */
   margin: 0 auto;
   padding: 1rem 2rem;
   background: rgba(255, 255, 255, 0.5);
@@ -60,7 +60,7 @@
   align-items: center;
   gap: 2rem;
   flex: 1;
-  justify-content: center;
+  justify-content: flex-end;
   margin: 0 2.5rem;
 }
 

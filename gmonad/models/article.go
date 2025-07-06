@@ -61,8 +61,9 @@ type ArticleFilter struct {
 	Category      string // 分类
 	OrderDesc     bool   // 是否按发布时间排序
 	PublishStatus int    // 发布状态
-	Page          int    // 当前页码，从 1 开始
-	PageSize      int    // 每页数量，建议默认 10
+	PublisherId   int
+	Page          int // 当前页码，从 1 开始
+	PageSize      int // 每页数量，建议默认 10
 }
 
 func QueryArticles(filter ArticleFilter) ([]Article, int64, error) {
@@ -86,6 +87,10 @@ func QueryArticles(filter ArticleFilter) ([]Article, int64, error) {
 
 	if filter.PublishStatus != 0 {
 		query = query.Where("publish_status = ?", filter.PublishStatus)
+	}
+
+	if filter.PublisherId != 0 {
+		query = query.Where("publisher_id = ?", filter.PublisherId)
 	}
 
 	// 统计总数（不加 limit 和 offset）

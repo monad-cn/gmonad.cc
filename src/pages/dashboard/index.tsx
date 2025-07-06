@@ -49,6 +49,7 @@ export default function DashboardPage() {
       const result = await getBlogs({
         page,
         page_size: pageSize,
+        user_id: session?.user?.uid as unknown as number,
         publish_status: 0,
         order: 'desc',
       });
@@ -74,6 +75,7 @@ export default function DashboardPage() {
       const result = await getTutorials({
         page,
         page_size: pageSize,
+        user_id: session?.user?.uid as unknown as number,
         publish_status: 0,
       });
       if (result.success && result.data) {
@@ -100,7 +102,7 @@ export default function DashboardPage() {
   const profileData = {
     name: session?.user?.username || '',
     email: session?.user?.email || '',
-    subtitle: '前端开发人员其他',
+    // subtitle: '前端开发人员其他',
     avatar: session?.user?.avatar || '',
   };
 
@@ -108,12 +110,12 @@ export default function DashboardPage() {
     {
       key: 'blogs',
       icon: <FileText className={styles.menuIcon} />,
-      label: '博客',
+      label: '我的博客',
     },
     {
       key: 'tutorials',
       icon: <BookOpen className={styles.menuIcon} />,
-      label: '教程',
+      label: '我的教程',
     },
   ];
 
@@ -128,7 +130,7 @@ export default function DashboardPage() {
           <div className={styles.cardHeader}>
             <Title level={3} className={styles.cardTitle}>
               <FileText className={styles.cardIcon} />
-              最新博客
+              我的博客
             </Title>
           </div>
           <Divider />
@@ -148,23 +150,33 @@ export default function DashboardPage() {
               >
                 <div className={styles.itemContent}>
                   <div className={styles.itemMain}>
-                    <Link
-                      href={`/blogs/${blog.ID}`}
-                      className={styles.itemTitle}
-                    >
-                      {blog.title}
-                    </Link>
+                    <div className={styles.titleRow}>
+                      <Link
+                        href={`/blogs/${blog.ID}`}
+                        className={styles.itemTitle}
+                      >
+                        {blog.title}
+                      </Link>
+                      {blog.publish_status === 1 && (
+                        <Tag color="orange" style={{ marginLeft: 8 }}>待审核</Tag>
+                      )}
+                      {blog.publish_status === 2 && (
+                        <Tag color="green" style={{ marginLeft: 8 }}>已发布</Tag>
+                      )}
+                      {blog.publish_status === 3 && (
+                        <Tag color="red" style={{ marginLeft: 8 }}>未通过</Tag>
+                      )}
+                    </div>
                     <Text type="secondary" className={styles.itemDesc}>
                       {blog.description}
                     </Text>
+
                     <div className={styles.itemFooter}>
                       <Space>
-                        <User size={14} />
-                        <span>{blog.publisher?.username}</span>
-                        <Clock size={14} />
+                        <Clock size={14} className={styles.itemClock} />
                         <span>
                           {dayjs(blog.publish_time || blog.CreatedAt).format(
-                            'YYYY-MM-DD'
+                            'YYYY-MM-DD HH:MM'
                           )}
                         </span>
                       </Space>
@@ -174,7 +186,7 @@ export default function DashboardPage() {
               </List.Item>
             )}
           />
-           <div className={styles.bottomPagination}>
+          <div className={styles.bottomPagination}>
             <Pagination
               current={blogsPagination.current}
               total={blogsPagination.total}
@@ -185,7 +197,7 @@ export default function DashboardPage() {
               showTotal={(total, range) =>
                 `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
               }
-            
+
             />
           </div>
         </Card>
@@ -198,7 +210,7 @@ export default function DashboardPage() {
           <div className={styles.cardHeader}>
             <Title level={3} className={styles.cardTitle}>
               <BookOpen className={styles.cardIcon} />
-              热门教程
+              我的教程
             </Title>
           </div>
           <Divider />
@@ -218,27 +230,44 @@ export default function DashboardPage() {
               >
                 <div className={styles.itemContent}>
                   <div className={styles.itemMain}>
-                    <Link
-                      href={`/ecosystem/tutorials/${tutorial.ID}`}
-                      className={styles.itemTitle}
-                    >
-                      {tutorial.title}
-                    </Link>
+                    <div className={styles.titleRow}>
+                      <Link
+                        href={`/ecosystem/tutorials/${tutorial.ID}`}
+                        className={styles.itemTitle}
+                      >
+                        {tutorial.title}
+                      </Link>
+                      {tutorial.publish_status === 1 && (
+                        <Tag color="orange" style={{ marginLeft: 8 }}>待审核</Tag>
+                      )}
+                      {tutorial.publish_status === 2 && (
+                        <Tag color="green" style={{ marginLeft: 8 }}>已发布</Tag>
+                      )}
+                      {tutorial.publish_status === 3 && (
+                        <Tag color="red" style={{ marginLeft: 8 }}>未通过</Tag>
+                      )}
+                    </div>
                     <Text type="secondary" className={styles.itemDesc}>
                       {tutorial.description}
                     </Text>
                     <div className={styles.itemFooter}>
                       <Space>
-                        {tutorial.dapp?.name && (
+                        {/* {tutorial.dapp?.name && (
                           <Tag className={styles.itemTag}>
                             {tutorial.dapp.name}
                           </Tag>
-                        )}
-                        {tutorial.tags?.slice(0, 2).map((tag: string) => (
+                        )} */}
+                        {/* {tutorial.tags?.slice(0, 2).map((tag: string) => (
                           <Tag key={tag} className={styles.itemTag}>
                             {tag}
                           </Tag>
-                        ))}
+                        ))} */}
+                        <Clock size={14}  className={styles.itemClock} />
+                        <span>
+                          {dayjs(tutorial.publish_time || tutorial.CreatedAt).format(
+                            'YYYY-MM-DD HH:MM'
+                          )}
+                        </span>
                       </Space>
                     </div>
                   </div>
@@ -246,7 +275,7 @@ export default function DashboardPage() {
               </List.Item>
             )}
           />
-{/* 
+          {/* 
           <Pagination
             current={tutorialsPagination.current}
             total={tutorialsPagination.total}
@@ -259,21 +288,21 @@ export default function DashboardPage() {
             }
           /> */}
 
-          
-            <div className={styles.bottomPagination}>
-              <Pagination
-                current={tutorialsPagination.current}
-                total={tutorialsPagination.total}
-                pageSize={tutorialsPagination.pageSize}
-                onChange={(page, pageSize) => loadTutorials(page, pageSize)}
-                showSizeChanger
-                showQuickJumper
-                showTotal={(total, range) =>
-                  `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
-                }
-              />
-            </div>
-    
+
+          <div className={styles.bottomPagination}>
+            <Pagination
+              current={tutorialsPagination.current}
+              total={tutorialsPagination.total}
+              pageSize={tutorialsPagination.pageSize}
+              onChange={(page, pageSize) => loadTutorials(page, pageSize)}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total, range) =>
+                `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
+              }
+            />
+          </div>
+
         </Card>
       );
     }

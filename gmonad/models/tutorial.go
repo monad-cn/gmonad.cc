@@ -57,6 +57,7 @@ type TutorialFilter struct {
 	Keyword       string // 标题或描述关键词
 	Tag           string // 包含某个 tag
 	DappId        uint
+	PublisherId   int
 	OrderDesc     bool // 是否按发布时间排序
 	PublishStatus int  // 发布状态
 	Page          int  // 当前页码，从 1 开始
@@ -80,6 +81,10 @@ func QueryTutorials(filter TutorialFilter) ([]Tutorial, int64, error) {
 
 	if filter.DappId != 0 {
 		query = query.Where("dapp_id = ?", filter.DappId)
+	}
+
+	if filter.PublisherId != 0 {
+		query = query.Where("publish_id = ?", filter.PublisherId)
 	}
 
 	if filter.PublishStatus != 0 {

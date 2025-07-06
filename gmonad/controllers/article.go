@@ -73,6 +73,7 @@ func QueryArticles(c *gin.Context) {
 	category := c.Query("category")
 	order := c.DefaultQuery("order", "desc")
 	publishStatus, _ := strconv.Atoi(c.DefaultQuery("publish_status", "0"))
+	userId, _ := strconv.Atoi(c.Query("user_id"))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -83,6 +84,7 @@ func QueryArticles(c *gin.Context) {
 		Author:        author,
 		Category:      category,
 		PublishStatus: publishStatus,
+		PublisherId:   userId,
 		OrderDesc:     order == "desc",
 		Page:          page,
 		PageSize:      pageSize,

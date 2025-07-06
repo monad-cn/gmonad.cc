@@ -78,6 +78,7 @@ func QueryTutorials(c *gin.Context) {
 	order := c.DefaultQuery("order", "desc")
 	dappId, _ := strconv.Atoi(c.DefaultQuery("dapp_id", "0"))
 	publishStatus, _ := strconv.Atoi(c.DefaultQuery("publish_status", "0"))
+	userId, _ := strconv.Atoi(c.Query("user_id"))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -86,6 +87,7 @@ func QueryTutorials(c *gin.Context) {
 		Keyword:       keyword,
 		Tag:           tag,
 		DappId:        uint(dappId),
+		PublisherId:   userId,
 		PublishStatus: publishStatus,
 		OrderDesc:     order == "desc",
 		Page:          page,

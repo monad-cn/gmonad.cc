@@ -30,6 +30,7 @@ export interface GetBlogsParams {
   tag?: string;
   order?: 'asc' | 'desc';
   page?: number;
+  user_id?: number;
   page_size?: number;
   category?: string;
   author?: string;
@@ -63,7 +64,7 @@ export interface Blog {
   publish_time?: string;
   publisher?: User;
   publisher_id?: number;
-  view_count?:number;
+  view_count?: number;
 }
 
 // 分页返回数据结构
@@ -173,6 +174,8 @@ export const getBlogs = async (
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
     if (params.publish_status != null)
       query.append('publish_status', params.publish_status.toString());
+    if (params.user_id != null)
+      query.append('user_id', params.user_id.toString());
 
     query.append('category', 'blog');
     query.append('order', params.order ?? 'desc');
@@ -276,24 +279,34 @@ export const formatDateTime = (date: any, time: any): string => {
   }
 };
 
-export const updateBlogPublishStatus = async (blogId: string, publishStatus: number): Promise<BlogResult> => {
+export const updateBlogPublishStatus = async (
+  blogId: string,
+  publishStatus: number
+): Promise<BlogResult> => {
   try {
     const body = {
       publish_status: publishStatus,
     };
 
-    const response = await apiRequest<EventResult>(`/blogs/${blogId}/status`, 'PUT', body);
+    const response = await apiRequest<EventResult>(
+      `/blogs/${blogId}/status`,
+      'PUT',
+      body
+    );
 
     if (response.code === 200 && response.data) {
       return {
         success: true,
         message: response.message ?? '博客状态更新成功',
-        data: response.data as unknown as Blog
+        data: response.data as unknown as Blog,
       };
     }
 
     return { success: false, message: response.message ?? '博客状态更新失败' };
   } catch (error: any) {
-    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+    return {
+      success: false,
+      message: error?.message ?? '网络错误，请稍后重试',
+    };
   }
 };
