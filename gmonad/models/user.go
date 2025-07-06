@@ -27,7 +27,7 @@ func GetUserByUid(uid uint) (*User, error) {
 
 func CreateUser(u *User) error {
 	var role Role
-	if err := db.Where("name = ?", "blog_writer").First(&role).Error; err != nil {
+	if err := db.Where("name = ?", "content_creator").First(&role).Error; err != nil {
 		return err
 	}
 
