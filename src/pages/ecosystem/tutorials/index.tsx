@@ -122,7 +122,7 @@ export default function TutorialsPage() {
                             </Select>
                         </div>
 
-                        <div className={styles.filterItem}>
+                        {/* <div className={styles.filterItem}>
                             <Star size={16} className={styles.filterIcon} />
                             <span className={styles.filterLabel}>难度：</span>
                             <Select
@@ -137,7 +137,7 @@ export default function TutorialsPage() {
                                     </Option>
                                 ))}
                             </Select>
-                        </div>
+                        </div> */}
                     </div>
                 </Card>
 
@@ -199,7 +199,7 @@ export default function TutorialsPage() {
                             description={
                                 <div>
                                     <h3>未找到相关教程</h3>
-                                    <p>请尝试调整搜索条件或筛选器</p>
+                                    <p>请尝试调整搜索条件</p>
                                 </div>
                             }
                         />

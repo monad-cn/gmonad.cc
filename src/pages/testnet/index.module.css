@@ -355,6 +355,11 @@
     font-size: 13px;
 }
 
+.blockexplorerLink {
+  vertical-align: middle;
+  margin-left: 4px; 
+}
+
 .configRow {
     display: flex;
     align-items: center;

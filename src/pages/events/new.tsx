@@ -438,7 +438,7 @@ export default function NewEventPage() {
           <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
           </Button>
-          <Button
+          {/* <Button
             className={styles.submitButton}
             loading={isSavingDraft}
             disabled={isSavingDraft}
@@ -446,7 +446,7 @@ export default function NewEventPage() {
           >
             <NotepadTextDashed className={styles.submitIcon} />
             {isSavingDraft ? '保存中...' : '保存草稿'}
-          </Button>
+          </Button> */}
           <Button
             type="primary"
             htmlType="submit"
