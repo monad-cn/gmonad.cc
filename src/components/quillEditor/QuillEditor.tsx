@@ -286,16 +286,27 @@ function QuillEditor(props: QuillEditorProps) {
       toolbar: {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [{ color: [] }, { background: [] }], // 文本颜色和背景颜色
+
+          [
+            'bold',
+            'italic',
+            'underline',
+            'strike',
+            'blockquote',
+            'formula',
+            { align: [] },
+            { color: [] },
+            { background: [] },
+          ],
           [
             { list: 'ordered' },
             { list: 'bullet' },
             { indent: '-1' },
             { indent: '+1' },
+            'link',
+            'image',
+            'clean',
           ],
-          ['link', 'image'],
-          ['clean'],
         ],
       },
     };

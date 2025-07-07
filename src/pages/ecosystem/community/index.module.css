@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding: 0 0.5rem;
+  padding: 1rem 0.5rem 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,7 +29,7 @@
 }
 
 .title a {
-  color: #6E54FF;
+  color: #6e54ff;
   text-decoration: none;
 }
 
@@ -77,10 +77,12 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #6E54FF;
-  border-color: #6E54FF;
+  color: #6e54ff;
+  border-color: #6e54ff;
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .card h2 {
@@ -100,7 +102,7 @@
 .category {
   display: inline-block;
   background-color: #f3e8ff;
-  color: #6E54FF;
+  color: #6e54ff;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.875rem;
@@ -119,7 +121,7 @@
 }
 
 .githubIcon:hover {
-  color: #6E54FF;
+  color: #6e54ff;
 }
 
 .card {
@@ -139,7 +141,7 @@
   overflow: hidden;
 }
 
-.card a[href*="github"] {
+.card a[href*='github'] {
   position: absolute;
   bottom: 1.5rem;
   right: 1.5rem;
@@ -153,7 +155,7 @@
   transition: all 0.2s ease;
 }
 
-.card a[href*="github"]:hover {
+.card a[href*='github']:hover {
   background-color: #e5e7eb;
   transform: translateY(-2px);
 }
@@ -163,11 +165,11 @@
     grid-template-columns: 1fr;
     max-width: 500px;
   }
-  
+
   .title {
     font-size: 2rem;
   }
-  
+
   .description {
     font-size: 1.1rem;
   }

@@ -268,6 +268,7 @@ export default function EventDetailPage() {
                 width={400}
                 height={300}
                 className={styles.coverImage}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>
