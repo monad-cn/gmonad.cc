@@ -4,7 +4,7 @@ import { App as AntdApp } from 'antd';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
-import type ReactQuillType from 'react-quill-new'; 
+import type ReactQuillType from 'react-quill-new';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
 type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
@@ -14,7 +14,6 @@ interface QuillEditorProps extends ReactQuillProps {
   minHeight?: number | string;
   autoHeight?: boolean;
 }
-
 
 const FULLSCREEN_ICONS = {
   ENTER: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -36,55 +35,61 @@ function QuillEditor(props: QuillEditorProps) {
   const { height, minHeight, autoHeight, ...restProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { message } = AntdApp.useApp();
-  
+
   // 图片上传错误处理
-  const handleImageError = useCallback((error: string) => {
-    message.error(error);
-  }, [message]);
+  const handleImageError = useCallback(
+    (error: string) => {
+      message.error(error);
+    },
+    [message]
+  );
 
   // 高度样式计算
   const getContainerStyle = useCallback(() => {
     if (isFullscreen) return {};
-    
+
     const style: React.CSSProperties = {};
-    
+
     if (autoHeight) {
       style.height = '100%';
     } else if (height !== undefined) {
       style.height = typeof height === 'number' ? `${height}px` : height;
     }
-    
+
     if (minHeight !== undefined) {
-      style.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+      style.minHeight =
+        typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
     }
-    
+
     return style;
   }, [height, minHeight, autoHeight, isFullscreen]);
 
   const getEditorStyle = useCallback(() => {
     if (isFullscreen) return {};
-    
+
     const style: React.CSSProperties = {};
-    
+
     if (autoHeight) {
       style.height = '100%';
       style.display = 'flex';
       style.flexDirection = 'column';
     } else if (height !== undefined) {
-      const containerHeight = typeof height === 'number' ? `${height}px` : height;
+      const containerHeight =
+        typeof height === 'number' ? `${height}px` : height;
       style.height = containerHeight;
       style.display = 'flex';
       style.flexDirection = 'column';
     }
-    
+
     if (minHeight !== undefined) {
-      style.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+      style.minHeight =
+        typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
       if (!style.display) {
         style.display = 'flex';
         style.flexDirection = 'column';
       }
     }
-    
+
     return style;
   }, [height, minHeight, autoHeight, isFullscreen]);
 
@@ -242,19 +247,20 @@ function QuillEditor(props: QuillEditorProps) {
   // 状态管理模块注册
   const [isModuleRegistered, setIsModuleRegistered] = useState(false);
   const [isEditorReady, setIsEditorReady] = useState(false);
-  
+
   // 动态注册Cloudinary模块到Quill
   useEffect(() => {
     let mounted = true;
-    
+
     const initializeModule = async () => {
       try {
         // 使用单例模式的注册管理器
-        const QuillModuleRegistry = (await import('./QuillModuleRegistry')).default;
+        const QuillModuleRegistry = (await import('./QuillModuleRegistry'))
+          .default;
         const registry = QuillModuleRegistry.getInstance();
-        
+
         const registered = await registry.ensureModuleRegistered();
-        
+
         if (mounted) {
           setIsModuleRegistered(registered);
           setIsEditorReady(true);
@@ -281,6 +287,7 @@ function QuillEditor(props: QuillEditorProps) {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          [{ color: [] }, { background: [] }], // 文本颜色和背景颜色
           [
             { list: 'ordered' },
             { list: 'bullet' },
@@ -316,7 +323,7 @@ function QuillEditor(props: QuillEditorProps) {
           placeholder="请输入..."
           {...restProps}
           modules={modulesWithCloudinary()}
-          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${(height !== undefined || minHeight !== undefined || autoHeight) ? styles.heightControlledEditor : ''}`}
+          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${height !== undefined || minHeight !== undefined || autoHeight ? styles.heightControlledEditor : ''}`}
           style={getEditorStyle()}
         />
       ) : (
