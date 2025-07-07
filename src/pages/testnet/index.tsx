@@ -482,6 +482,13 @@ export default function TestnetPage() {
                                 <div className={styles.configItem}>
                                     <Text strong className={styles.configLabel}>
                                         区块链浏览器
+                                        <Link
+                                            href="https://testnet.monadexplorer.com/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <ExternalLink size={16} className={styles.blockexplorerLink} />
+                                        </Link>
                                     </Text>
                                     <div className={styles.configRow}>
                                         <code className={styles.configCode}>https://testnet.monadexplorer.com/</code>
@@ -712,7 +719,7 @@ export default function TestnetPage() {
                             <Button
                                 size="large"
                                 className={styles.ctaWhiteButton}
-                                   onClick={() => router.push("/ecosystem/dapps")}
+                                onClick={() => router.push("/ecosystem/dapps")}
                             >
                                 快速开始
                             </Button>
