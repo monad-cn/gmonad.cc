@@ -64,12 +64,12 @@ export default function DappTutorialsPage() {
         return colors[difficulty as keyof typeof colors] || "#6366F1"
     }
 
-    if (loading) {
-        return <div className={styles.loading}>加载中...</div>
-    }
-
-    if (!dapp) {
-        return <div className={styles.notFound}>未找到 DApp 数据</div>
+    if (loading || !dapp) {
+        return (
+            <div className={styles.loading}>
+                <div className={styles.loadingSpinner}></div>
+            </div>
+        )
     }
 
     return (
@@ -157,23 +157,32 @@ export default function DappTutorialsPage() {
                         </div>
                     </div>
 
-                    {/* Tutorials Grid */}
-                    <div className={styles.tutorialsGrid}>
-                        {dapp.tutorials.map((tutorial: Tutorial, index: number) => (
-                            <TutorialCard
-                                key={tutorial.ID}
-                                tutorial={tutorial}
-                                index={index}
-                                getDifficultyColor={getDifficultyColor}
-                            />
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className={styles.loading}>
+                            <div className={styles.loadingSpinner}></div>
+                        </div>
+                    ) : (
+                        <div>
 
-                    {dapp.tutorials.length === 0 && (
-                        <div className={styles.emptyState}>
-                            <div className={styles.emptyIcon}>📚</div>
-                            <h3 className={styles.emptyTitle}>暂无该难度的教程</h3>
-                            <p className={styles.emptyDescription}>尝试选择其他难度级别查看更多教程。</p>
+                            {/* Tutorials Grid */}
+                            <div className={styles.tutorialsGrid}>
+                                {dapp.tutorials.map((tutorial: Tutorial, index: number) => (
+                                    <TutorialCard
+                                        key={tutorial.ID}
+                                        tutorial={tutorial}
+                                        index={index}
+                                        getDifficultyColor={getDifficultyColor}
+                                    />
+                                ))}
+                            </div>
+
+                            {dapp.tutorials.length === 0 && (
+                                <div className={styles.emptyState}>
+                                    <div className={styles.emptyIcon}>📚</div>
+                                    <h3 className={styles.emptyTitle}>暂无教程</h3>
+                                    {/* <p className={styles.emptyDescription}>尝试选择其他难度级别查看更多教程。</p> */}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
