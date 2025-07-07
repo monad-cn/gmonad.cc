@@ -181,6 +181,7 @@ export default function NewTutorialPage() {
                                 rules={[{ required: true, message: '请输入教程内容' }]}
                             >
                                 <QuillEditor
+                                    minHeight={400}
                                     value={form.getFieldValue('content')}
                                     onChange={handleQuillEditorChange}
                                 />
