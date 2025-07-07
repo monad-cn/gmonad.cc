@@ -151,7 +151,7 @@ export default function NewDAppPage() {
     }, [coverCloudinaryImg, form])
 
     return (
-        <div className={styles.container}>
+           <div className={`${styles.container} nav-t-top`}>
             <div className={styles.header}>
                 <div className={styles.headerContent}>
                     <Link href="/ecosystem" className={styles.backButton}>

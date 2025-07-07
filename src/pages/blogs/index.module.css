@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   background-color: #f9fafb;
-  padding: 3rem 1rem;
+  padding: 0rem 1rem;
   padding-top: 6.5rem; /* 为固定导航栏自然留出空间 */
 }
 
@@ -14,13 +14,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+ 
 }
 
 .titleSection {
   max-width: 1200px;
   margin: 0 auto;
-  margin-bottom: 2rem;
 }
 
 .titleHeader {
@@ -1545,9 +1544,7 @@
     flex-wrap: wrap;
   }
 
-  .titleSection {
-    text-align: center;
-  }
+ 
 
   .subtitle {
     margin-left: auto;

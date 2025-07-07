@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   background-color: #f9fafb;
-  padding: 3rem 1rem;
+  padding: 0rem 1rem;
   padding-top: 6.5rem; /* 为固定导航栏自然留出空间 */
 }
 
@@ -67,7 +67,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -101,7 +101,7 @@
 
 .settingsButton:hover {
   background-color: #f9fafb;
-  border-color: #6366F1;
+  border-color: #6366f1;
   transform: translateY(-1px);
 }
 
@@ -225,7 +225,7 @@
 }
 
 .viewModeButton.active {
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: white;
 }
 
@@ -399,13 +399,13 @@
 }
 
 /* 为单个卡片设置最大宽度，避免过宽 */
-.grid>* {
+.grid > * {
   max-width: 600px;
   margin: 0 auto;
 }
 
 /* 当有多个卡片时，移除最大宽度限制 */
-.grid:has(> :nth-child(2))>* {
+.grid:has(> :nth-child(2)) > * {
   max-width: none;
   margin: 0;
 }
@@ -477,13 +477,15 @@
 }
 
 .actionIconButton:hover .actionIcon {
-  color: #6366F1;
+  color: #6366f1;
 }
 
 .eventCard {
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: 1px solid #f1f5f9 !important;
   background: white !important;
@@ -507,12 +509,12 @@
   margin: 0 !important;
 }
 
-.eventCard .ant-card-actions>li {
+.eventCard .ant-card-actions > li {
   margin: 0 !important;
   padding: 0 0.25rem !important;
 }
 
-.eventCard .ant-card-actions>li:not(:last-child) {
+.eventCard .ant-card-actions > li:not(:last-child) {
   border-right: none !important;
 }
 
@@ -679,7 +681,7 @@
 .metaIcon {
   width: 1rem;
   height: 1rem;
-  color: #6366F1;
+  color: #6366f1;
   flex-shrink: 0;
 }
 
@@ -756,7 +758,7 @@
 /* Action Buttons */
 .primaryAction {
   flex: 1 !important;
-  background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
+  background: linear-gradient(135deg, #6366f1 0%, #6e54ff 100%) !important;
   border: none !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
@@ -766,7 +768,7 @@
 }
 
 .primaryAction:hover {
-  background: linear-gradient(135deg, #6E54FF 0%, #4338CA 100%) !important;
+  background: linear-gradient(135deg, #6e54ff 0%, #4338ca 100%) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3) !important;
   color: white !important;
@@ -786,8 +788,8 @@
 
 .secondaryAction:hover {
   background: #f8fafc !important;
-  border-color: #6366F1 !important;
-  color: #6366F1 !important;
+  border-color: #6366f1 !important;
+  color: #6366f1 !important;
   transform: translateY(-1px) !important;
 }
 
@@ -856,7 +858,7 @@
 .listLink {
   display: block;
   padding: 0.75rem 1rem;
-  color: #6366F1;
+  color: #6366f1;
   text-decoration: none;
   align-items: center;
   border-left: 3px solid transparent;
@@ -864,7 +866,7 @@
 }
 
 .listLink:hover {
-  color: #6366F1;
+  color: #6366f1;
   font-weight: bold;
 }
 
@@ -957,9 +959,9 @@
 }
 
 .nameColumn {
-  width: 400px; 
-  min-width: 300px; 
-  max-width: 500px; 
+  width: 400px;
+  min-width: 300px;
+  max-width: 500px;
   flex-grow: 1;
 }
 
@@ -1204,7 +1206,7 @@
 .statIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #6366F1;
+  color: #6366f1;
 }
 
 .statInfo {
@@ -1226,7 +1228,6 @@
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-
   .listHeader,
   .listRow {
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1355,7 +1356,7 @@
   .container {
     padding-top: 4rem; /* 小屏幕调整 */
   }
-  
+
   .cardBody {
     padding: 1rem !important;
   }
@@ -1394,7 +1395,6 @@
     height: 0.875rem;
   }
 }
-
 
 /* New styles for header right actions and social links */
 .headerRightActions {

@@ -1,9 +1,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #6E54FF;
-  --primary-light: #6366F1;
-  --primary-dark: #4338CA;
+  --primary: #6e54ff;
+  --primary-light: #6366f1;
+  --primary-dark: #4338ca;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,3 +56,9 @@ a {
 .ql-editor p {
   min-height: 1em;
 }
+
+/* 配合浮动导航栏加一个上内边距样式类 */
+.nav-t-top {
+  padding-top: 6rem!important;
+}
+ 

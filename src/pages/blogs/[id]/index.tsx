@@ -127,7 +127,7 @@ export default function BlogDetailPage() {
   };
 
   return (
-    <div className={styles.container}>
+     <div className={`${styles.container} nav-t-top`}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>

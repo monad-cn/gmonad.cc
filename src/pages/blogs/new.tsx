@@ -111,7 +111,7 @@ export default function NewBlogPage() {
   };
 
   return (
-    <div className={styles.container}>
+     <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />

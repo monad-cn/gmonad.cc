@@ -162,7 +162,7 @@ export default function BlogsPage() {
   }, [status, permissions.length]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Title Section */}
       <div className={styles.header}>
         <div className={styles.headerContent}>

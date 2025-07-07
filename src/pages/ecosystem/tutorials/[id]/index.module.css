@@ -1,11 +1,11 @@
 .container {
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: #fff;
 }
 
 /* Header */
 .header {
-  background: white;
+  background: #fff;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem 0;
   position: sticky;

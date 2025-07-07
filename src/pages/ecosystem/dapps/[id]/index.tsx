@@ -73,7 +73,7 @@ export default function DappTutorialsPage() {
     }
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} nav-t-top`}>
             {/* Header */}
             <section className={styles.header}>
                 <div className={styles.headerContent}>

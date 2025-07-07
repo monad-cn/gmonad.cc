@@ -108,7 +108,7 @@ export default function EcosystemPage() {
     }
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} nav-t-top`}>
             {/* Hero Section */}
             <section className={styles.hero}>
                 <div className={styles.heroContent}>

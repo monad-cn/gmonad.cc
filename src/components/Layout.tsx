@@ -12,23 +12,24 @@ export default function Layout({ children }: LayoutProps) {
   const router = useRouter();
   
   // Define routes that should hide the navbar
-  const hideNavbarRoutes = [
-    '/blogs/[id]',
-    '/events/[id]',
-    '/blogs/[id]/edit',
-    '/events/[id]/edit'
-  ];
+  // const hideNavbarRoutes = [
+  //   '/blogs/[id]',
+  //   '/events/[id]',
+  //   '/blogs/[id]/edit',
+  //   '/events/[id]/edit'
+  // ];
   
-  // Check if current route should hide navbar
-  const shouldHideNavbar = hideNavbarRoutes.some(route => {
-    // Convert route pattern to regex
-    const routeRegex = new RegExp('^' + route.replace(/\[.*?\]/g, '[^/]+') + '$');
-    return routeRegex.test(router.pathname);
-  });
+  // // Check if current route should hide navbar
+  // const shouldHideNavbar = hideNavbarRoutes.some(route => {
+  //   // Convert route pattern to regex
+  //   const routeRegex = new RegExp('^' + route.replace(/\[.*?\]/g, '[^/]+') + '$');
+  //   return routeRegex.test(router.pathname);
+  // });
 
   return (
     <div className={styles.layout}>
-      {!shouldHideNavbar && <Header />}
+      {/* {!shouldHideNavbar && <Header />} */}
+      <Header />
       <main className={styles.main}>{children}</main>
       <Footer />
     </div>

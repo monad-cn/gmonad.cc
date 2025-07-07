@@ -158,13 +158,19 @@ export default function DashboardPage() {
                         {blog.title}
                       </Link>
                       {blog.publish_status === 1 && (
-                        <Tag color="orange" style={{ marginLeft: 8 }}>待审核</Tag>
+                        <Tag color="orange" style={{ marginLeft: 8 }}>
+                          待审核
+                        </Tag>
                       )}
                       {blog.publish_status === 2 && (
-                        <Tag color="green" style={{ marginLeft: 8 }}>已发布</Tag>
+                        <Tag color="green" style={{ marginLeft: 8 }}>
+                          已发布
+                        </Tag>
                       )}
                       {blog.publish_status === 3 && (
-                        <Tag color="red" style={{ marginLeft: 8 }}>未通过</Tag>
+                        <Tag color="red" style={{ marginLeft: 8 }}>
+                          未通过
+                        </Tag>
                       )}
                     </div>
                     <Text type="secondary" className={styles.itemDesc}>
@@ -197,7 +203,6 @@ export default function DashboardPage() {
               showTotal={(total, range) =>
                 `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
               }
-
             />
           </div>
         </Card>
@@ -238,13 +243,19 @@ export default function DashboardPage() {
                         {tutorial.title}
                       </Link>
                       {tutorial.publish_status === 1 && (
-                        <Tag color="orange" style={{ marginLeft: 8 }}>待审核</Tag>
+                        <Tag color="orange" style={{ marginLeft: 8 }}>
+                          待审核
+                        </Tag>
                       )}
                       {tutorial.publish_status === 2 && (
-                        <Tag color="green" style={{ marginLeft: 8 }}>已发布</Tag>
+                        <Tag color="green" style={{ marginLeft: 8 }}>
+                          已发布
+                        </Tag>
                       )}
                       {tutorial.publish_status === 3 && (
-                        <Tag color="red" style={{ marginLeft: 8 }}>未通过</Tag>
+                        <Tag color="red" style={{ marginLeft: 8 }}>
+                          未通过
+                        </Tag>
                       )}
                     </div>
                     <Text type="secondary" className={styles.itemDesc}>
@@ -262,11 +273,11 @@ export default function DashboardPage() {
                             {tag}
                           </Tag>
                         ))} */}
-                        <Clock size={14}  className={styles.itemClock} />
+                        <Clock size={14} className={styles.itemClock} />
                         <span>
-                          {dayjs(tutorial.publish_time || tutorial.CreatedAt).format(
-                            'YYYY-MM-DD HH:MM'
-                          )}
+                          {dayjs(
+                            tutorial.publish_time || tutorial.CreatedAt
+                          ).format('YYYY-MM-DD HH:MM')}
                         </span>
                       </Space>
                     </div>
@@ -288,7 +299,6 @@ export default function DashboardPage() {
             }
           /> */}
 
-
           <div className={styles.bottomPagination}>
             <Pagination
               current={tutorialsPagination.current}
@@ -302,7 +312,6 @@ export default function DashboardPage() {
               }
             />
           </div>
-
         </Card>
       );
     }

@@ -276,7 +276,7 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && permissions.includes("event:review")) {
+    if (status === 'authenticated' && permissions.includes('event:review')) {
       setPublishStatus(0);
     } else if (status === 'unauthenticated') {
       setPublishStatus(2);
@@ -290,10 +290,20 @@ export default function EventsPage() {
       loadEventDrafts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKeyword, selectedTag, sortOrder, currentPage, pageSize, statusFilter, locationKeyword, eventModeFilter, publishStatus]);
+  }, [
+    searchKeyword,
+    selectedTag,
+    sortOrder,
+    currentPage,
+    pageSize,
+    statusFilter,
+    locationKeyword,
+    eventModeFilter,
+    publishStatus,
+  ]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Title Section */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
@@ -340,7 +350,7 @@ export default function EventsPage() {
               </button>
             </div>
             {status === 'authenticated' &&
-              permissions.includes('event:write') ? (
+            permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -350,22 +360,30 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {status === 'authenticated' && permissions.includes('event:write') && eventDrafts.length > 0 &&
-        <div className={styles.draftTableSection}>
-          <EventDraftTable styles={styles} status={status} permissions={permissions}
-            data={eventDrafts} loading={loadingDraft}
-            pagination={{
-              current: currentPageDraft,
-              pageSize: pageSizeDraft,
-              total: totalDraft,
-              onChange: (page: number, pageSize?: number) => {
-                setCurrentPageDraft(page);
-                if (pageSize) {
-                  loadEventDrafts({ page, page_size: pageSize });
-                }
-              },
-            }} />
-        </div>}
+      {status === 'authenticated' &&
+        permissions.includes('event:write') &&
+        eventDrafts.length > 0 && (
+          <div className={styles.draftTableSection}>
+            <EventDraftTable
+              styles={styles}
+              status={status}
+              permissions={permissions}
+              data={eventDrafts}
+              loading={loadingDraft}
+              pagination={{
+                current: currentPageDraft,
+                pageSize: pageSizeDraft,
+                total: totalDraft,
+                onChange: (page: number, pageSize?: number) => {
+                  setCurrentPageDraft(page);
+                  if (pageSize) {
+                    loadEventDrafts({ page, page_size: pageSize });
+                  }
+                },
+              }}
+            />
+          </div>
+        )}
 
       {/* Search and Filter Bar */}
       <div className={styles.searchSection}>
@@ -483,10 +501,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-              selectedTag ||
-              statusFilter ||
-              locationKeyword ||
-              eventModeFilter
+            selectedTag ||
+            statusFilter ||
+            locationKeyword ||
+            eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -533,12 +551,12 @@ export default function EventsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                          permissions.includes('event:write') ? (
+                        permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
-                              e.preventDefault()
-                              router.push(`/events/${event.ID}/edit`)
+                              e.preventDefault();
+                              router.push(`/events/${event.ID}/edit`);
                             }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
@@ -548,8 +566,10 @@ export default function EventsPage() {
                           className={styles.actionIconButton}
                           onClick={(e) => {
                             e.preventDefault();
-                            navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
-                            message.success("链接已复制到剪贴板")
+                            navigator.clipboard.writeText(
+                              `${window.location.href}/${event.ID}`
+                            );
+                            message.success('链接已复制到剪贴板');
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享活动"
@@ -559,7 +579,7 @@ export default function EventsPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             if (event.twitter) {
-                              window.open(event.twitter, '_blank'); 
+                              window.open(event.twitter, '_blank');
                             }
                           }}
                           icon={<SiX className={styles.actionIcon} />}
@@ -569,7 +589,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-              // variant={false}
+                // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -594,12 +614,12 @@ export default function EventsPage() {
                         </>
                       )}
                     </div>
-                    {event.participants !== 0 &&
+                    {event.participants !== 0 && (
                       <div className={styles.metaItem}>
                         <Users className={styles.metaIcon} />
                         <span>{event.participants || ''}</span>
                       </div>
-                    }
+                    )}
                   </div>
                   {event.tags && event.tags.length > 0 && (
                     <div className={styles.cardTags}>
@@ -709,7 +729,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                      permissions.includes('event:write') ? (
+                    permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -723,14 +743,16 @@ export default function EventsPage() {
                       size="small"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
-                        message.success("链接已复制到剪贴板")
+                        navigator.clipboard.writeText(
+                          `${window.location.href}/${event.ID}`
+                        );
+                        message.success('链接已复制到剪贴板');
                       }}
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                      permissions.includes('event:delete') ? (
+                    permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"

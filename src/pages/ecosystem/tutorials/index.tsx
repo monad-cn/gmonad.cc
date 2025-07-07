@@ -70,7 +70,7 @@ export default function TutorialsPage() {
     }, [publishStatus, searchKeyword, selectedCategory, selectedDifficulty, currentPage, pageSize]);
 
     return (
-        <div className={styles.container}>
+     <div className={`${styles.container} nav-t-top`}>
             <div className={styles.header}>
                 <div className={styles.headerContent}>
                     <div className={styles.headerLeft}>

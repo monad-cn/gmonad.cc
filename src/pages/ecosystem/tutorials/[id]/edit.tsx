@@ -163,7 +163,7 @@ export default function EditTutorialPage() {
   }
 
   return (
-    <div className={styles.container}>
+   <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/ecosystem/tutorials" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />

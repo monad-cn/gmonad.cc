@@ -165,7 +165,7 @@ export default function EventDetailPage() {
   const endDateTime = formatDateTime(event.end_time);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>

@@ -6,11 +6,10 @@
 
 .main {
   flex: 1;
-  padding-top: 0px; /* 为固定的 header 留出空间 */
+  padding-top: 0; /* 为固定的 header 留出空间 */
 }
 
 /* 如果你的 header 不是固定定位，可以移除 padding-top */
 .main.noFixedHeader {
   padding-top: 0;
 }
-
