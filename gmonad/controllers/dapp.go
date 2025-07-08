@@ -79,6 +79,7 @@ func QueryDapps(c *gin.Context) {
 	tag := c.Query("tag")
 	category := c.Query("category")
 	order := c.DefaultQuery("order", "desc")
+	isFeature, _ := strconv.Atoi(c.DefaultQuery("feature", "0"))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -87,6 +88,7 @@ func QueryDapps(c *gin.Context) {
 		Keyword:   keyword,
 		Tag:       tag,
 		Category:  category,
+		IsFeature: uint(isFeature),
 		OrderDesc: order == "desc",
 		Page:      page,
 		PageSize:  pageSize,

@@ -16,6 +16,7 @@ export interface GetDappsParams {
   keyword?: string;
   tag?: string;
   category?: string;
+  is_feature?: number;
   order?: 'asc' | 'desc';
   page?: number;
   page_size?: number;
@@ -96,6 +97,8 @@ export const getDapps = async (
     if (params.keyword?.trim()) query.append('keyword', params.keyword.trim());
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
       if (params.category?.trim()) query.append('category',  params.category.trim());
+
+    query.append('is_feature', (params.is_feature ?? 0).toString());
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());
     query.append('page_size', (params.page_size ?? 6).toString());

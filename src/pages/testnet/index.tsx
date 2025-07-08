@@ -183,8 +183,9 @@ export default function TestnetPage() {
     const fetchDapps = async () => {
       try {
         const params: any = {
+          is_feature: 1,
           page: 1,
-          page_size: 20, // 你可以根据需要修改数量
+          page_size: 20, 
         };
         const result = await getDapps(params);
         if (result.success && result.data && Array.isArray(result.data.dapps)) {

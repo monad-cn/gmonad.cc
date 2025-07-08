@@ -76,6 +76,7 @@ export default function Home() {
     const fetchDapps = async () => {
       try {
         const params = {
+          is_feature: 1,
           page: 1,
           page_size: pageSize,
         };
