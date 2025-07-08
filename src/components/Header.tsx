@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
 import { useState, useMemo } from 'react';
+import { SiWechat, SiX } from 'react-icons/si';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // 使用 useMemo 确保 Auth 组件只创建一次，避免重复渲染
   const authComponent = useMemo(() => <Auth />, []);
-  
+
   // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -40,17 +41,17 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                   { key: 'projects', label: <Link href="/ecosystem/dapps">生态 Dapp</Link> },
-                  { key: 'projects', label: <Link href="/ecosystem/community">社区项目</Link> },
-                  { key: 'tools', label: <Link href="/ecosystem/tutorials">交互教程</Link> },
-                  { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com" target='_blank'>区块浏览器</Link> },
+                  { key: 'monad', label: <Link href="/monad">了解 Monad </Link> },
+                  { key: 'testnet', label: <Link href="/testnet">了解测试网</Link> },
+                  { key: 'dapps', label: <Link href="/ecosystem/dapps"> Dapps 列表 </Link> },
+                  { key: 'tutorials', label: <Link href="/ecosystem/tutorials"> 交互教程 </Link> },
                 ],
               }}
               placement="bottom"
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>生态系统</span>
+                <span>生态与教程</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
@@ -73,9 +74,28 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'blog', label: <Link href="/blogs">博客</Link> },
-                  { key: 'events', label: <Link href="/events">活动</Link> },
-                  { key: 'faq', label: <Link href="/">常见问题</Link> },
+                  { key: 'meetup', label: <Link href="/events?type=meetup">见面会</Link> },
+                  { key: 'ama', label: <Link href="/events?type=ama">AMA</Link> },
+                  { key: 'hackathon', label: <Link href="/events?type=hackathon">黑客松</Link> },
+                  { key: 'workshop', label: <Link href="/events?type=workshop"> Workshop </Link> },
+                ],
+              }}
+              placement="bottom"
+              trigger={['hover']}
+            >
+              <div className={styles.navItem}>
+                <span>社区活动</span>
+                <ChevronDown className={styles.navIcon} />
+              </div>
+            </Dropdown>
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'x', label: <Link href="https://x.com/monad_zw" target='_blank'><SiX className={styles.iconAlign} />中文区X（推特）</Link> },
+                  { key: 'wechat', label: <Link href=""><SiWechat className={styles.iconAlign} /> 微信公众号 </Link> },
+                  { key: 'blog', label: <Link href="/blogs">博客文章</Link> },
+                  { key: 'faucet', label: <Link href="/testnet#faucetSection"> 水龙头 </Link> },
+                  { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com/" target='_blank'> 区块浏览器 </Link> },
                 ],
               }}
               placement="bottom"
@@ -86,14 +106,13 @@ export default function Header() {
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
-
             {authComponent}
           </nav>
-          
+
           {/* 移动端导航 */}
           <div className={styles.mobileNav}>
             {authComponent}
-            <button 
+            <button
               className={styles.mobileMenuButton}
               onClick={() => setMobileMenuOpen(true)}
             >
@@ -102,11 +121,11 @@ export default function Header() {
           </div>
         </div>
       </div>
-      
+
       {/* 移动端菜单抽屉 */}
       <Drawer
         title={
-          <div style={{ 
+          <div style={{
             background: 'linear-gradient(135deg, #1f2937, #6E54FF)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
@@ -144,7 +163,7 @@ export default function Header() {
               </Link>
             </div>
           </div>
-          
+
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>开发者</h3>
             <div className={styles.mobileMenuLinks}>
@@ -162,7 +181,7 @@ export default function Header() {
               </Link>
             </div>
           </div>
-          
+
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>资源</h3>
             <div className={styles.mobileMenuLinks}>

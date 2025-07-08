@@ -111,6 +111,11 @@
   transform: translateY(-1px);
 }
 
+.iconAlign {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
 .logo {
   border-radius: 4px;
 }
