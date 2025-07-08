@@ -79,7 +79,7 @@ func QueryDapps(c *gin.Context) {
 	tag := c.Query("tag")
 	category := c.Query("category")
 	order := c.DefaultQuery("order", "desc")
-	isFeature, _ := strconv.Atoi(c.DefaultQuery("feature", "0"))
+	isFeature, _ := strconv.Atoi(c.DefaultQuery("is_feature", "0"))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
