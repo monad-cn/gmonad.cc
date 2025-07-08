@@ -29,8 +29,8 @@ import {
 import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { getEvents, deleteEvent, getEventDrafts } from '../api/event';
-import router from 'next/router';
+import { getEvents, deleteEvent } from '../api/event';
+import { useRouter } from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
 import EventDraftTable from '@/components/event/EventDraftTable';
 
@@ -43,25 +43,24 @@ export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD');
 }
 
+const allowedEventTypes = ['meetup', 'ama', 'hackathon', 'workshop']
+
+
 export default function EventsPage() {
   const { message } = AntdApp.useApp();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentPageDraft, setCurrentPageDraft] = useState(1);
   const [pageSize, setPageSize] = useState(6);
-  const [pageSizeDraft, setPageSizeDraft] = useState(6);
   const [events, setEvents] = useState<any[]>([]);
-  const [eventDrafts, setEventDrafts] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
-  const [totalDraft, setTotalDraft] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [loadingDraft, setLoadingDraft] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
 
+   const router = useRouter();
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
@@ -71,6 +70,7 @@ export default function EventsPage() {
   const [statusFilter, setStatusFilter] = useState('3');
   const [locationKeyword, setLocationKeyword] = useState('');
   const [eventModeFilter, setEventModeFilter] = useState('');
+  const [eventTypeFilter, setEventTypeFilter] = useState('');
 
   // 加载事件列表
   const loadEvents = async (params?: {
@@ -82,6 +82,7 @@ export default function EventsPage() {
     status?: string | number;
     location?: string;
     event_mode?: string;
+    event_type?: string;
     publish_status?: number;
   }) => {
     try {
@@ -96,6 +97,7 @@ export default function EventsPage() {
         status: params?.status || statusFilter,
         location: params?.location || locationKeyword,
         event_mode: params?.event_mode || eventModeFilter,
+        event_type: params?.event_type || eventTypeFilter,
         publish_status: params?.publish_status || publishStatus,
       };
 
@@ -127,47 +129,6 @@ export default function EventsPage() {
       setTotal(0);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // 加载草稿列表
-  const loadEventDrafts = async (params?: {
-    page?: number;
-    page_size?: number;
-  }) => {
-    try {
-      setLoadingDraft(true);
-      const queryParams = {
-        page: params?.page || currentPage,
-        page_size: params?.page_size || pageSize,
-      };
-      const result = await getEventDrafts(queryParams);
-      if (result.success && result.data) {
-        // 处理后端返回的数据结构
-        if (result.data.events && Array.isArray(result.data.events)) {
-          setEventDrafts(result.data.events);
-          setCurrentPageDraft(result.data.page || 1);
-          setPageSizeDraft(result.data.page_size || 6);
-          setTotalDraft(result.data.total || result.data.events.length);
-        } else if (Array.isArray(result.data)) {
-          setEventDrafts(result.data);
-          setTotalDraft(result.data.length);
-        } else {
-          console.warn('API 返回的数据格式不符合预期:', result.data);
-          setEventDrafts([]);
-          setTotalDraft(0);
-        }
-      } else {
-        console.error('获取事件列表失败:', result.message);
-        setEventDrafts([]);
-        setTotalDraft(0);
-      }
-    } catch (error) {
-      console.error('加载事件列表异常:', error);
-      setEventDrafts([]);
-      setTotalDraft(0);
-    } finally {
-      setLoadingDraft(false);
     }
   };
 
@@ -207,13 +168,17 @@ export default function EventsPage() {
     setCurrentPage(1);
   };
 
+  const handleEventTypeFilter = async (event_type: string) => {
+    setEventTypeFilter(event_type);
+    setCurrentPage(1);
+  };
+
   // 分页处理
   const handlePageChange = async (page: number, size?: number) => {
     setCurrentPage(page);
     if (size && size !== pageSize) {
       setPageSize(size);
     }
-    await loadEvents({ page, page_size: size || pageSize });
   };
 
   // 清除筛选
@@ -224,6 +189,7 @@ export default function EventsPage() {
     setStatusFilter('3');
     setLocationKeyword('');
     setEventModeFilter('');
+    setEventTypeFilter('');
     setCurrentPage(1);
   };
 
@@ -235,11 +201,6 @@ export default function EventsPage() {
 
   // 获取事件状态显示文本
   const getStatusText = (event: any) => {
-    // const now = dayjs()
-    // const startTime = dayjs(event.start_time)
-    // const endTime = event.end_time ? dayjs(event.end_time) : null
-
-    // if (endTime && now.isAfter(endTime)) {
     if (event.status === 0) {
       return '未开始';
     } else if (event.status === 1) {
@@ -276,6 +237,18 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
+
+    const queryEventType = router.query.type as string;
+
+    if (queryEventType && allowedEventTypes.includes(queryEventType)) {
+      setEventTypeFilter(queryEventType);
+    } else {
+      setEventTypeFilter('');
+    }
+  }, [router.isReady, router.query.type]);
+
+  useEffect(() => {
     if (status === 'authenticated' && permissions.includes('event:review')) {
       setPublishStatus(0);
     } else if (status === 'unauthenticated') {
@@ -287,7 +260,7 @@ export default function EventsPage() {
     // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
     loadEvents();
     if (status === 'authenticated' && permissions.includes('event:write')) {
-      loadEventDrafts();
+      loadEvents();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -299,6 +272,7 @@ export default function EventsPage() {
     statusFilter,
     locationKeyword,
     eventModeFilter,
+    eventTypeFilter,
     publishStatus,
   ]);
 
@@ -350,7 +324,7 @@ export default function EventsPage() {
               </button>
             </div>
             {status === 'authenticated' &&
-            permissions.includes('event:write') ? (
+              permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -359,31 +333,6 @@ export default function EventsPage() {
           </div>
         </div>
       </div>
-
-      {status === 'authenticated' &&
-        permissions.includes('event:write') &&
-        eventDrafts.length > 0 && (
-          <div className={styles.draftTableSection}>
-            <EventDraftTable
-              styles={styles}
-              status={status}
-              permissions={permissions}
-              data={eventDrafts}
-              loading={loadingDraft}
-              pagination={{
-                current: currentPageDraft,
-                pageSize: pageSizeDraft,
-                total: totalDraft,
-                onChange: (page: number, pageSize?: number) => {
-                  setCurrentPageDraft(page);
-                  if (pageSize) {
-                    loadEventDrafts({ page, page_size: pageSize });
-                  }
-                },
-              }}
-            />
-          </div>
-        )}
 
       {/* Search and Filter Bar */}
       <div className={styles.searchSection}>
@@ -401,20 +350,20 @@ export default function EventsPage() {
           />
         </div>
         <div className={styles.filterButtons}>
-          {/* <Select
-            size="small"
-            placeholder="选择标签"
+          <Select
+            size="large"
+            placeholder="活动类型"
             allowClear
             style={{ width: 120 }}
-            value={selectedTag || undefined}
-            onChange={handleTagFilter}
+            value={eventTypeFilter}
+            onChange={handleEventTypeFilter}
           >
             <Option value="">所有</Option>
-            <Option value="技术分享">技术分享</Option>
-            <Option value="工作坊">工作坊</Option>
-            <Option value="AMA问答">AMA问答</Option>
-            <Option value="社区活动">社区活动</Option>
-          </Select> */}
+            <Option value="meetup">见面会</Option>
+            <Option value="ama">AMA</Option>
+            <Option value="hackathon">黑客松</Option>
+            <Option value="workshop">Workshop</Option>
+          </Select>
           <Select
             size="large"
             value={sortOrder}
@@ -501,10 +450,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-            selectedTag ||
-            statusFilter ||
-            locationKeyword ||
-            eventModeFilter
+              selectedTag ||
+              statusFilter ||
+              locationKeyword ||
+              eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -551,7 +500,7 @@ export default function EventsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                        permissions.includes('event:write') ? (
+                          permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -589,7 +538,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-                // variant={false}
+              // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -729,7 +678,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                    permissions.includes('event:write') ? (
+                      permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -752,7 +701,7 @@ export default function EventsPage() {
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                    permissions.includes('event:delete') ? (
+                      permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"

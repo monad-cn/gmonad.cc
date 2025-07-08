@@ -16,8 +16,8 @@ type Event struct {
 	EventType            string         `json:"event_type"`
 	Location             string         `json:"location"`
 	Link                 string         `json:"link"`
-	RequiresRegistration bool           `json:"requires_registration"`
-	RegistrationUrl      string         `json:"registration_url"`
+	RegistrationDeadline *time.Time     `json:"registration_deadline"`
+	RegistrationLink     string         `json:"registration_link"`
 	StartTime            time.Time      `json:"start_time"`
 	EndTime              time.Time      `json:"end_time"`
 	CoverImg             string         `json:"cover_img"`
@@ -58,6 +58,7 @@ type EventFilter struct {
 	Tag           string // 包含某个 tag
 	Location      string
 	EventMode     string
+	EventType     string
 	OrderDesc     bool // 是否按创建时间倒序
 	Page          int  // 当前页码，从 1 开始
 	PageSize      int  // 每页数量，建议默认 10
@@ -82,6 +83,10 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	if filter.EventMode != "" {
 		query = query.Where("event_mode = ?", filter.EventMode)
+	}
+
+	if filter.EventType != "" {
+		query = query.Where("event_type = ?", filter.EventType)
 	}
 
 	if filter.Status != 3 {

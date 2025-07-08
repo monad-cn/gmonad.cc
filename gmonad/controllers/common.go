@@ -9,16 +9,19 @@ import (
 
 // event
 type CreateEventRequest struct {
-	Title     string   `json:"title" binding:"required"`
-	Desc      string   `json:"desc" binding:"required"`
-	EventMode string   `json:"event_mode" binding:"required"`
-	Location  string   `json:"location"`
-	Link      string   `json:"link"`
-	StartTime string   `json:"start_time" binding:"required"`
-	EndTime   string   `json:"end_time" binding:"required"`
-	CoverImg  string   `json:"cover_img" binding:"required"`
-	Tags      []string `json:"tags"`
-	Twitter   string   `json:"twitter" binding:"required"`
+	Title                string   `json:"title" binding:"required"`
+	Desc                 string   `json:"desc" binding:"required"`
+	EventMode            string   `json:"event_mode" binding:"required"`
+	EventType            string   `json:"event_type" binding:"required"`
+	Location             string   `json:"location"`
+	Link                 string   `json:"link"`
+	RegistrationLink     string   `json:"registration_link"`
+	RegistrationDeadline string   `json:"registration_deadline"`
+	StartTime            string   `json:"start_time" binding:"required"`
+	EndTime              string   `json:"end_time" binding:"required"`
+	CoverImg             string   `json:"cover_img" binding:"required"`
+	Tags                 []string `json:"tags"`
+	Twitter              string   `json:"twitter" binding:"required"`
 }
 
 type QueryEventsResponse struct {
@@ -29,16 +32,19 @@ type QueryEventsResponse struct {
 }
 
 type UpdateEventRequest struct {
-	Title     string   `json:"title" binding:"required"`
-	Desc      string   `json:"desc" binding:"required"`
-	EventMode string   `json:"event_mode" binding:"required"`
-	Location  string   `json:"location"`
-	Link      string   `json:"link"`
-	StartTime string   `json:"start_time" binding:"required"`
-	EndTime   string   `json:"end_time" binding:"required"`
-	CoverImg  string   `json:"cover_img" binding:"required"`
-	Tags      []string `json:"tags"`
-	Twitter   string   `json:"twitter" binding:"required"`
+	Title                string   `json:"title" binding:"required"`
+	Desc                 string   `json:"desc" binding:"required"`
+	EventMode            string   `json:"event_mode" binding:"required"`
+	EventType            string   `json:"event_type" binding:"required"`
+	Location             string   `json:"location"`
+	Link                 string   `json:"link"`
+	StartTime            string   `json:"start_time" binding:"required"`
+	EndTime              string   `json:"end_time" binding:"required"`
+	CoverImg             string   `json:"cover_img" binding:"required"`
+	Tags                 []string `json:"tags"`
+	Twitter              string   `json:"twitter" binding:"required"`
+	RegistrationLink     string   `json:"registration_link"`
+	RegistrationDeadline string   `json:"registration_deadline"`
 }
 
 type UpdateEventPublishStatusRequest struct {

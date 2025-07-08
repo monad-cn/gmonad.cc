@@ -7,26 +7,6 @@ import dayjs from 'dayjs';
 import { Tag } from 'antd';
 import { useAuth } from '@/contexts/AuthContext';
 
-
-const activities = [
-    {
-        title: 'Web3 开发者工作坊',
-        description: '探索 Solidity 和链上交互的实践技巧。',
-        status: '即将开始',
-        participants: '25人已报名',
-        date: '2025年6月25日',
-        location: '线上 Zoom',
-    },
-    {
-        title: '社区AMA：以太坊未来发展',
-        description: '与核心开发者畅聊 Ethereum 的未来。',
-        status: '已结束',
-        participants: '78人参与',
-        date: '2025年5月15日',
-        location: 'Twitter Space',
-    },
-];
-
 export function formatTime(isoTime: string): string {
     return dayjs(isoTime).format('YYYY年M月D日');
 }
@@ -59,6 +39,7 @@ export default function EventSection() {
                 status: 3,
                 location: '',
                 event_mode: '',
+                evnet_type: '',
                 publish_status: 2,
             }
 
