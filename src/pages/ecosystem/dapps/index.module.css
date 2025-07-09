@@ -423,3 +423,96 @@
     transform: rotate(360deg);
   }
 }
+
+/* 分页 */
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Category Dropdown */
+.categoryDropdown {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px 0;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.categoryDropdownItem {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.categoryDropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+.categoryDropdownCheckbox {
+  margin-right: 8px;
+}
+
+.categoryDropdownText {
+  font-size: 14px;
+  color: #333;
+  font-weight: 400;
+}
+
+.categoryDropdownDivider {
+  height: 1px;
+  background-color: #e8e8e8;
+  margin: 8px 0;
+}
+
+.categoryDropdownClear {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.categoryDropdownClear:hover {
+  background-color: #f5f5f5;
+}
+
+.categoryDropdownClearText {
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: 400;
+}
+
+.categoryDropdownTrigger {
+  min-width: 200px;
+  padding: 4px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+}
+
+.categoryDropdownTriggerText {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.categoryDropdownTriggerText.placeholder {
+  color: #bfbfbf;
+}
+
+.categoryDropdownTriggerText.selected {
+  color: #000;
+}
+
+.categoryDropdownArrow {
+  color: #bfbfbf;
+}
