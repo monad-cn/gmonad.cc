@@ -24,8 +24,15 @@ import Link from "next/link"
 
 export default function MonadIntro() {
   const [activeFeature, setActiveFeature] = useState(0)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
   const [scrollY, setScrollY] = useState(0)
+
+  const handlePlay = () => {
+    setIsVideoPlaying(true);
+  };
+
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -257,6 +264,42 @@ export default function MonadIntro() {
         </div> */}
       </section>
 
+      {/* 视频介绍 Section */}
+      {/* 视频介绍 Section */}
+      <section className={styles.videoSection}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionvideoTitle}>观看视频，快速了解 Monad</h2>
+          </div>
+          {isVideoPlaying ? (
+            <div className={styles.videoWrapper}>
+              <iframe
+                width="100%"
+                height="500"
+                src="https://www.youtube.com/embed/1kmpncaeaxE?autoplay=1"
+                title="Monad Intro Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                onLoad={() => setIframeLoaded(true)}
+                className={`${styles.iframeVideo} ${iframeLoaded ? styles.fadeIn : ""}`}
+              />
+            </div>
+          ) : (
+            <div className={styles.videoThumbnail}>
+              <img
+                src="/monadintro.jpg"
+                alt="Monad Video Thumbnail"
+                className={styles.videoCoverImage}
+              />
+              <button className={styles.playButton} onClick={handlePlay}>
+                <Play className={styles.playIcon} />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* 团队与创始人 */}
       <section className={styles.founders}>
         <div className={styles.sectionContainer}>
@@ -413,10 +456,10 @@ export default function MonadIntro() {
             {getStartedSteps.map((step, index) => (
               <div key={index} className={styles.stepCard}>
                 <Link href={step.href || '/'}>
-                <div className={styles.stepNumber}>{index + 1}</div>
-                <div className={styles.stepIcon}>{step.icon}</div>
-                <h3 className={styles.stepTitle}>{step.title}</h3>
-                <p className={styles.stepDescription}>{step.description}</p>
+                  <div className={styles.stepNumber}>{index + 1}</div>
+                  <div className={styles.stepIcon}>{step.icon}</div>
+                  <h3 className={styles.stepTitle}>{step.title}</h3>
+                  <p className={styles.stepDescription}>{step.description}</p>
                 </Link>
               </div>
             ))}
@@ -431,7 +474,7 @@ export default function MonadIntro() {
             <h2 className={styles.ctaTitle}>准备好体验测试网了吗？</h2>
             <p className={styles.ctaDescription}>立即开始使用 Monad，体验前所未有的区块链性能</p>
             <div className={styles.ctaActions}>
-              <Link  href="/testnet" className={styles.ctaPrimary}>
+              <Link href="/testnet" className={styles.ctaPrimary}>
                 体验测试网
                 <ArrowRight className={styles.buttonIcon} />
               </Link>
