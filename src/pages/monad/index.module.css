@@ -289,6 +289,76 @@
     animation: bounce 2s infinite;
 }
 
+.videoSection {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.sectionvideoTitle {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.videoWrapper,
+.videoThumbnail {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    /* 确保圆角生效 */
+}
+
+.iframeVideo {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.fadeIn {
+    opacity: 1;
+}
+
+.videoCoverImage {
+    width: 100%;
+    height: 500px;
+    /* 与 iframe 高度保持一致 */
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    padding: 20px;
+    transition: background 0.3s;
+}
+
+.playButton:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.playIcon {
+    color: white;
+    width: 48px;
+    height: 48px;
+}
+
+.sectionHeader {
+    margin-bottom: 32px;
+}
+
+.sectionTitle {
+    font-size: 32px;
+    font-weight: 700;
+}
+
 /* Features Section */
 .features {
     padding: 8rem 0;
@@ -671,6 +741,23 @@
     line-height: 1.6;
 }
 
+.communityImageWrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.communityImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+
 /* 如何开始 */
 .getStarted {
     padding: 8rem 0;
@@ -817,6 +904,8 @@
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
+
+
 
 /* 动画 */
 @keyframes float {
