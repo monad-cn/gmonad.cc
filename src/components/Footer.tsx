@@ -20,22 +20,22 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>生态系统</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  DeFi协议
+                <a href="/ecosystem/dapps?category_2=DeFi" className={styles.footerLink}>
+                  DeFi 协议
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  NFT市场
+                <a href="/ecosystem/dapps?category_2=NFT" className={styles.footerLink}>
+                  NFT 市场
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?category_2=Gaming" className={styles.footerLink}>
                   游戏应用
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?category_1=Infra" className={styles.footerLink}>
                   基础设施
                 </a>
               </li>
@@ -51,16 +51,16 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#" className={styles.footerLink}>
-                  API参考
+                  API 参考
                 </a>
               </li>
               <li>
                 <a href="#" className={styles.footerLink}>
-                  SDK工具
+                  SDK 工具
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <a href="/testnet" className={styles.footerLink}>
                   测试网络
                 </a>
               </li>
@@ -69,9 +69,8 @@ export default function Footer() {
             <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>社区</h3>
             <ul className={styles.footerLinks}>
-              <li><a href="/events" className={styles.footerLink}>活动</a></li>
-              <li><a href="/blogs" className={styles.footerLink}>博客</a></li>
-              <li><a href="#" className={styles.footerLink}>FAQ</a></li>
+              <li><a href="/events" className={styles.footerLink}>社区活动</a></li>
+              <li><a href="#" className={styles.footerLink}>反馈与建议</a></li>
             </ul>
           </div>
           <div className={styles.footerSection}>
