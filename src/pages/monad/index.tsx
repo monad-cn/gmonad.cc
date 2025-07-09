@@ -373,7 +373,7 @@ export default function MonadIntro() {
       </section>
 
       {/* 性能指标速览 */}
-      <section className={styles.performance}>
+      {/* <section className={styles.performance}>
         <div className={styles.sectionContainer}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>性能指标速览</h2>
@@ -389,7 +389,7 @@ export default function MonadIntro() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Monad 的生态与计划 */}
       <section className={styles.ecosystem}>
@@ -427,7 +427,7 @@ export default function MonadIntro() {
       </section>
 
       {/* 为什么选择 Monad */}
-      <section className={styles.whyChoose}>
+      {/* <section className={styles.whyChoose}>
         <div className={styles.sectionContainer}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>为什么选择 Monad？</h2>
@@ -441,6 +441,22 @@ export default function MonadIntro() {
                 <p className={styles.reasonDescription}>{reason.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section> */}
+
+      <section className={styles.community}>
+        <div className={styles.sectionContainer}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Monad 社区</h2>
+            <p className={styles.sectionDescription}>全球开发者、构建者和用户共同参与，活跃且充满活力的社区</p>
+          </div>
+          <div className={styles.communityImageWrapper}>
+            <img
+              src="/community.png"
+              alt="Monad Community"
+              className={styles.communityImage}
+            />
           </div>
         </div>
       </section>

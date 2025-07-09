@@ -741,6 +741,23 @@
     line-height: 1.6;
 }
 
+.communityImageWrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.communityImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+
 /* 如何开始 */
 .getStarted {
     padding: 8rem 0;
