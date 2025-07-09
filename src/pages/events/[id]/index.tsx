@@ -175,7 +175,7 @@ export default function EventDetailPage() {
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&
-            permissions.includes('event:write') ? (
+              permissions.includes('event:write') ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -185,8 +185,8 @@ export default function EventDetailPage() {
               </Button>
             ) : null}
             {event.publish_status === 1 &&
-            status === 'authenticated' &&
-            permissions.includes('event:review') ? (
+              status === 'authenticated' &&
+              permissions.includes('event:review') ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -344,49 +344,51 @@ export default function EventDetailPage() {
           {/* Right Column */}
           <div className={styles.rightColumn}>
             {/* Registration Card */}
-            {event.status === 3 && (
+            {event.status === 1 && (
               <div className={styles.registrationCard}>
                 <div className={styles.cardHeader}>
                   <h3 className={styles.cardTitle}>参与活动</h3>
                   <div className={styles.price}>免费</div>
                 </div>
                 <div className={styles.cardContent}>
-                  <div className={styles.participantCount}>
-                    <Users size={20} />
-                    <span>
-                      {event.participants} 人已报名
-                      {event.max_participants &&
-                        ` / ${event.max_participants} 人`}
-                    </span>
-                  </div>
-                  {event.registration_deadline && (
-                    <div className={styles.deadline}>
-                      <Clock size={16} />
-                      报名截止：
-                      {formatDateTime(event.registration_deadline).date}
-                    </div>
+                  {event.event_mode === '线下活动' && event.registration_link && (
+                    <>
+                      <div className={styles.participantCount}>
+                        <Users size={20} />
+                        <span>
+                          {event.participants} 人已报名
+                          {/* {event.max_participants &&
+                        ` / ${event.max_participants} 人`} */}
+                        </span>
+                      </div>
+                      {event.registration_deadline && (
+                        <div className={styles.deadline}>
+                          <Clock size={16} />
+                          报名截止：
+                          {formatDateTime(event.registration_deadline).date}
+                        </div>
+                      )}
+                      <Button
+                        type="primary"
+                        size="large"
+                        className={styles.registerButton}
+                        onClick={() => {
+                          window.open(event.registration_link, '_blank');
+                        }}
+                      >
+
+                        立即报名
+                      </Button>
+                    </>
                   )}
-                  <Button
-                    type="primary"
-                    size="large"
-                    className={`${styles.registerButton} ${isRegistered ? styles.registered : ''}`}
-                    onClick={handleRegister}
-                    disabled={eventStatus.type === 'ended'}
-                  >
-                    {eventStatus.type === 'ended'
-                      ? '活动已结束'
-                      : isRegistered
-                        ? '取消报名'
-                        : '立即报名'}
-                  </Button>
-                  {event.categary === 'online' && event.link && (
+                  {event.event_mode === '线上活动' && event.link && (
                     <Button
                       icon={<ExternalLink size={16} />}
                       className={styles.joinButton}
                       onClick={() => window.open(event.link, '_blank')}
-                      disabled={eventStatus.type !== 'ongoing'}
+                    // disabled={eventStatus.type !== 'ongoing'}
                     >
-                      {eventStatus.type === 'ongoing' ? '加入会议' : '会议链接'}
+                      加入会议
                     </Button>
                   )}
                 </div>
@@ -430,7 +432,7 @@ export default function EventDetailPage() {
                           className={styles.contactLink}
                           title="Twitter"
                         >
-                          <Twitter size={16} />
+                          <SiX size={16} />
                         </a>
                       )}
                     </div>
@@ -461,51 +463,6 @@ export default function EventDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* Share Modal */}
-      <Modal
-        title="分享活动"
-        open={shareModalVisible}
-        onCancel={() => setShareModalVisible(false)}
-        footer={null}
-        className={styles.shareModal}
-      >
-        <div className={styles.shareModalContent}>
-          <div className={styles.sharePreview}>
-            <Image
-              src={event.cover_img || '/placeholder.svg'}
-              alt={event.title}
-              width={300}
-              height={150}
-            />
-            <h4>{event.title}</h4>
-            <p>{startDateTime.date}</p>
-          </div>
-          <div className={styles.shareOptions}>
-            <Button
-              icon={<Copy size={16} />}
-              onClick={() => handleShare('copy')}
-              className={styles.shareOptionButton}
-            >
-              复制链接
-            </Button>
-            <Button
-              icon={<SiX size={16} />}
-              onClick={() => handleShare('twitter')}
-              className={styles.shareOptionButton}
-            >
-              分享到 Twitter
-            </Button>
-            <Button
-              icon={<Download size={16} />}
-              className={styles.shareOptionButton}
-              onClick={() => message.info('下载功能开发中')}
-            >
-              下载海报
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
