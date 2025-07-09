@@ -344,7 +344,7 @@ export default function EventDetailPage() {
           {/* Right Column */}
           <div className={styles.rightColumn}>
             {/* Registration Card */}
-            {event.status === 1 && (
+            {event.status !== 2 && (
               <div className={styles.registrationCard}>
                 <div className={styles.cardHeader}>
                   <h3 className={styles.cardTitle}>参与活动</h3>
