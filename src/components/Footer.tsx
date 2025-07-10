@@ -20,22 +20,22 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>生态系统</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="/ecosystem/dapps?category_2=DeFi" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?main_category=App&sub_category=DeFi" className={styles.footerLink}>
                   DeFi 协议
                 </a>
               </li>
               <li>
-                <a href="/ecosystem/dapps?category_2=NFT" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?main_category=App&sub_category=NFT" className={styles.footerLink}>
                   NFT 市场
                 </a>
               </li>
               <li>
-                <a href="/ecosystem/dapps?category_2=Gaming" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?main_category=App&sub_category=Gaming" className={styles.footerLink}>
                   游戏应用
                 </a>
               </li>
               <li>
-                <a href="/ecosystem/dapps?category_1=Infra" className={styles.footerLink}>
+                <a href="/ecosystem/dapps?main_category=Infra" className={styles.footerLink}>
                   基础设施
                 </a>
               </li>

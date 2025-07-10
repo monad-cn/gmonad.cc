@@ -15,8 +15,9 @@ export interface CreateDappParams {
 export interface GetDappsParams {
   keyword?: string;
   tag?: string;
-  category?: string;
   is_feature?: number;
+  main_category?: string;
+  sub_category?: string;
   order?: 'asc' | 'desc';
   page?: number;
   page_size?: number;
@@ -96,7 +97,10 @@ export const getDapps = async (
 
     if (params.keyword?.trim()) query.append('keyword', params.keyword.trim());
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
-      if (params.category?.trim()) query.append('category',  params.category.trim());
+    if (params.main_category?.trim())
+      query.append('main_category', params.main_category.trim());
+    if (params.sub_category?.trim())
+      query.append('sub_category', params.sub_category.trim());
 
     query.append('is_feature', (params.is_feature ?? 0).toString());
     query.append('order', params.order ?? 'desc');
@@ -116,7 +120,7 @@ export const getDapps = async (
       };
     }
 
-    return { success: false, message: response.message ?? '获取Dapp列表失败'};
+    return { success: false, message: response.message ?? '获取Dapp列表失败' };
   } catch (error: any) {
     return {
       success: false,
@@ -220,6 +224,7 @@ export interface PaginatedCategoryData {
 }
 
 export interface Category {
+  ID: number;
   name: string;
   desc: string;
   full_name: string;
@@ -233,7 +238,8 @@ export const getCategories = async (
   try {
     const query = new URLSearchParams();
     if (params.keyword?.trim()) query.append('keyword', params.keyword.trim());
-    if (params.parent_id) query.append('parent_id', params.parent_id.toString());
+    if (params.parent_id)
+      query.append('parent_id', params.parent_id.toString());
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());
     query.append('page_size', (params.page_size ?? 12).toString());
@@ -251,7 +257,7 @@ export const getCategories = async (
       };
     }
 
-    return { success: false, message: response.message ?? '获取分类出错'};
+    return { success: false, message: response.message ?? '获取分类出错' };
   } catch (error: any) {
     return {
       success: false,

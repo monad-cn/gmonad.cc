@@ -47,13 +47,14 @@ func (d *Dapp) Delete() error {
 }
 
 type DappFilter struct {
-	Keyword   string
-	Tag       string
-	Category  string
-	IsFeature uint
-	OrderDesc bool // 是否按创建时间倒序
-	Page      int  // 当前页码，从 1 开始
-	PageSize  int  // 每页数量，建议默认 10
+	Keyword        string
+	Tag            string
+	MainCategories []uint
+	SubCategories  []uint
+	IsFeature      uint
+	OrderDesc      bool // 是否按创建时间倒序
+	Page           int  // 当前页码，从 1 开始
+	PageSize       int  // 每页数量，建议默认 10
 }
 
 func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
@@ -62,6 +63,15 @@ func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 
 	query := db.Preload("Tutorials").Preload("Category").Model(&Dapp{})
 
+	if len(filter.MainCategories) > 0 {
+		query = query.Joins("JOIN categories ON categories.id = dapps.category_id").
+			Where("categories.parent_id IN ?", filter.MainCategories)
+	}
+
+	if len(filter.SubCategories) > 0 {
+		query = query.Where("dapps.category_id IN ?", filter.SubCategories)
+	}
+
 	if filter.Keyword != "" {
 		likePattern := "%" + filter.Keyword + "%"
 		query = query.Where("name LIKE ? OR description LIKE ?", likePattern, likePattern)
@@ -69,10 +79,6 @@ func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 
 	if filter.Tag != "" {
 		query = query.Where("? = ANY (tags)", filter.Tag)
-	}
-
-	if filter.Category != "" {
-		query = query.Where("category = ?", filter.Category)
 	}
 
 	if filter.IsFeature != 0 {

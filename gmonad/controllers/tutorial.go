@@ -37,12 +37,14 @@ func CreateTutorial(c *gin.Context) {
 	tutorial.PublisherId = uint(userId)
 
 	var dapp models.Dapp
-	dapp.ID = req.DappId
-	if err := dapp.GetByID(); err != nil {
-		utils.ErrorResponse(c, http.StatusBadRequest, "dapp not exist", nil)
+	if req.DappId != 0 {
+		dapp.ID = req.DappId
+		if err := dapp.GetByID(); err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "dapp not exist", nil)
+			return
+		}
+		tutorial.DappId = dapp.ID
 	}
-
-	tutorial.DappId = dapp.ID
 
 	// 创建数据库记录
 	if err := tutorial.Create(); err != nil {
