@@ -97,7 +97,7 @@ export default function EcosystemPage() {
       const params: any = {
         page: currentPage,
         page_size: pageSize,
-        is_feature: isOnlyMonad ? 1 : 0,
+        is_only_monad: isOnlyMonad ? 1 : 0,
       };
       if (searchQuery) {
         params.keyword = searchQuery;
@@ -136,6 +136,18 @@ export default function EcosystemPage() {
     router.replace(router.pathname, undefined, { shallow: true });
   };
 
+
+  const handleOnlyMonad = (p0: boolean) => {
+    setSelectedMainCategory(null);
+    setSelectedSubCategories([]);
+    setSearchQuery('');
+    setCurrentPage(1);
+    setIsOnlyMonad(p0);
+     router.replace(router.pathname, undefined, { shallow: true });
+  };
+
+
+
   useEffect(() => {
     fetchDapps();
   }, [searchQuery, isOnlyMonad, selectedMainCategory, selectedSubCategories, currentPage, pageSize]);
@@ -147,6 +159,7 @@ export default function EcosystemPage() {
   };
 
   const handleMainCategorySelect = (category: Category) => {
+    setIsOnlyMonad(false);
     if (selectedMainCategory?.ID === category.ID) {
       setSelectedMainCategory(null);
       setSelectedSubCategories([]);
@@ -226,7 +239,7 @@ export default function EcosystemPage() {
             <Button
               size="large"
               type={isOnlyMonad ? 'primary' : 'default'}
-              onClick={() => setIsOnlyMonad(true)}
+              onClick={() => handleOnlyMonad(!isOnlyMonad)}
             >
               仅在 Monad 上构建
             </Button>

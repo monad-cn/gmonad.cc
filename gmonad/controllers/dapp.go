@@ -80,6 +80,7 @@ func QueryDapps(c *gin.Context) {
 	tag := c.Query("tag")
 	order := c.DefaultQuery("order", "desc")
 	isFeature, _ := strconv.Atoi(c.DefaultQuery("is_feature", "0"))
+	isOnlyMonad, _ := strconv.Atoi(c.DefaultQuery("is_only_monad", "0"))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -96,6 +97,7 @@ func QueryDapps(c *gin.Context) {
 		MainCategories: mainCategories,
 		SubCategories:  subCategories,
 		IsFeature:      uint(isFeature),
+		IsOnlyMonad:    uint(isOnlyMonad),
 		OrderDesc:      order == "desc",
 		Page:           page,
 		PageSize:       pageSize,

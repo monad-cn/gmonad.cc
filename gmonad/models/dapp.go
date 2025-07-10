@@ -21,7 +21,8 @@ type Dapp struct {
 	UserId      uint           `json:"user_id"`
 	User        *User          `gorm:"foreignKey:UserId"`
 	Tutorials   []Tutorial     `gorm:"foreignKey:DappId" json:"tutorials"`
-	IsFeature   uint           `gorm:"default:2" json:"is_feature"` // 0: all 1: 是 2:不是
+	IsFeature   uint           `gorm:"default:2" json:"is_feature"`    // 0: all 1: 是 2:不是
+	IsOnlyMonad uint           `gorm:"default:2" json:"is_only_monad"` // 0: all 1: 是 2:不是
 }
 
 func (d *Dapp) Create() error {
@@ -52,6 +53,7 @@ type DappFilter struct {
 	MainCategories []uint
 	SubCategories  []uint
 	IsFeature      uint
+	IsOnlyMonad    uint
 	OrderDesc      bool // 是否按创建时间倒序
 	Page           int  // 当前页码，从 1 开始
 	PageSize       int  // 每页数量，建议默认 10
@@ -83,6 +85,10 @@ func QueryDapps(filter DappFilter) ([]Dapp, int64, error) {
 
 	if filter.IsFeature != 0 {
 		query = query.Where("is_feature = ?", filter.IsFeature)
+	}
+
+	if filter.IsOnlyMonad != 0 {
+		query = query.Where("is_only_monad = ?", filter.IsOnlyMonad)
 	}
 
 	// 统计总数（不加 limit 和 offset）
