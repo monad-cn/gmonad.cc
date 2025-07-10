@@ -41,15 +41,13 @@ interface DApp {
 }
 
 export default function EcosystemPage() {
-  const [initialMainCategoryName, setInitialMainCategoryName] = useState<string | null>(null);
-  const [initialSubCategoryNames, setInitialSubCategoryNames] = useState<string[] | null>(null);
   const [mainCategories, setMainCategories] = useState<Category[]>([]);
-  const [isOnlyMonad, setIsOnlyMonad] = useState<Boolean>(false);
+  const [isOnlyMonad, setIsOnlyMonad] = useState<boolean>(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState<Category | null>(null);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [dapps, setDapps] = useState<any[]>([]);
+  const [dapps, setDapps] = useState<DApp[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,31 +72,41 @@ export default function EcosystemPage() {
   }, []);
 
   useEffect(() => {
+    if (mainCategories.length === 0) return;
+
     const { main_category, sub_category } = router.query;
-    if (main_category || sub_category) {
-      setIsOnlyMonad(false);
-    }
+
+    // 进入 URL 时默认关闭 onlyMonad
+    setIsOnlyMonad(false);
+
+    let foundMain: Category | null = null;
 
     if (main_category) {
-      setInitialMainCategoryName(main_category as string);
-    }
-
-    if (sub_category) {
-      const subNames = (sub_category as string).split(',');
-      setInitialSubCategoryNames(subNames);
-    }
-  }, [router.query]);
-
-  useEffect(() => {
-    if (initialMainCategoryName && mainCategories.length > 0) {
-      const foundMain = mainCategories.find((c) => c.name === initialMainCategoryName);
+      foundMain = mainCategories.find((c) => c.name === main_category) || null;
       if (foundMain) {
         setSelectedMainCategory(foundMain);
         setSubCategories(foundMain.children);
+
+        // ⚡ 这里先清空二级分类
+        setSelectedSubCategories([]);
+
+        if (sub_category) {
+          const subNames = (sub_category as string).split(',');
+          const ids = foundMain.children
+            .filter((sub) => subNames.includes(sub.name))
+            .map((sub) => sub.ID);
+          setSelectedSubCategories(ids);
+        }
       }
-      setInitialMainCategoryName(null); // 清理
+    } else {
+      // 没有 main_category，全部清空
+      setSelectedMainCategory(null);
+      setSelectedSubCategories([]);
+      setSubCategories([]);
     }
-  }, [initialMainCategoryName, mainCategories]);
+
+  }, [router.query, mainCategories]);
+
 
   // 获取 DApps
   const fetchDapps = async () => {
@@ -136,6 +144,7 @@ export default function EcosystemPage() {
     }
   };
 
+  // 点击时清除 URL 参数
   const handleResetFilters = () => {
     setSelectedMainCategory(null);
     setSelectedSubCategories([]);
@@ -146,17 +155,15 @@ export default function EcosystemPage() {
     router.replace(router.pathname, undefined, { shallow: true });
   };
 
-
-  const handleOnlyMonad = (p0: boolean) => {
+  const handleOnlyMonad = (val: boolean) => {
     setSelectedMainCategory(null);
     setSelectedSubCategories([]);
     setSearchQuery('');
     setCurrentPage(1);
-    setIsOnlyMonad(p0);
+    setIsOnlyMonad(val);
+
     router.replace(router.pathname, undefined, { shallow: true });
   };
-
-
 
   useEffect(() => {
     fetchDapps();
@@ -179,6 +186,8 @@ export default function EcosystemPage() {
       setSubCategories(category.children);
       setCurrentPage(1);
     }
+
+    router.replace(router.pathname, undefined, { shallow: true });
   };
 
   return (
