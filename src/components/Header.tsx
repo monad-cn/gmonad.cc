@@ -4,7 +4,7 @@ import styles from '../styles/Header.module.css';
 import Link from 'next/link';
 import { Dropdown, Menu } from 'antd';
 import Auth from './Auth';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SiWechat, SiX } from 'react-icons/si';
 
 export default function Header() {
@@ -12,6 +12,48 @@ export default function Header() {
 
   // 使用 useMemo 确保 Auth 组件只创建一次，避免重复渲染
   const authComponent = useMemo(() => <Auth />, []);
+
+  // 控制页面滚动锁定
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // 保存当前滚动位置
+      const scrollY = window.scrollY;
+      
+      // 锁定背景滚动
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      // 防止触摸滚动穿透，但允许菜单内滚动
+      const preventTouchMove = (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+        // 检查是否在抽屉内部
+        const drawerBody = document.querySelector('.ant-drawer-body');
+        if (drawerBody && !drawerBody.contains(target)) {
+          e.preventDefault();
+        }
+      };
+      
+      document.addEventListener('touchmove', preventTouchMove, { passive: false });
+      
+      return () => {
+        document.removeEventListener('touchmove', preventTouchMove);
+      };
+    } else {
+      // 恢复背景滚动
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      
+      // 恢复滚动位置
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+  }, [mobileMenuOpen]);
 
   // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {
@@ -147,19 +189,23 @@ export default function Header() {
       >
         <div className={styles.mobileMenuContent}>
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>生态系统</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>生态与教程</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/community" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/monad" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🚀</span>
+                <span>了解 Monad</span>
+              </Link>
+              <Link href="/testnet" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🧪</span>
+                <span>了解测试网</span>
+              </Link>
+              <Link href="/ecosystem/dapps" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🏗️</span>
-                <span>社区项目</span>
+                <span>Dapps 列表</span>
               </Link>
-              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🛠️</span>
-                <span>开发工具</span>
-              </Link>
-              <Link href="https://testnet.monadexplorer.com" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🔍</span>
-                <span>区块浏览器</span>
+              <Link href="/ecosystem/tutorials" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>📚</span>
+                <span>交互教程</span>
               </Link>
             </div>
           </div>
@@ -183,19 +229,49 @@ export default function Header() {
           </div>
 
           <div className={styles.mobileMenuSection}>
+            <h3 className={styles.mobileMenuSectionTitle}>社区活动</h3>
+            <div className={styles.mobileMenuLinks}>
+              <Link href="/events?type=meetup" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🤝</span>
+                <span>见面会</span>
+              </Link>
+              <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>💬</span>
+                <span>AMA</span>
+              </Link>
+              <Link href="/events?type=hackathon" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🏆</span>
+                <span>黑客松</span>
+              </Link>
+              <Link href="/events?type=workshop" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🎯</span>
+                <span>Workshop</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>资源</h3>
             <div className={styles.mobileMenuLinks}>
+              <Link href="https://x.com/monad_zw" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span><SiX className={styles.iconAlign} /></span>
+                <span>中文区X（推特）</span>
+              </Link>
+              <Link href="https://mp.weixin.qq.com/s/t-_1fLa_MHTPtykMsp0Q_w" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span><SiWechat className={styles.iconAlign} /></span>
+                <span>微信公众号</span>
+              </Link>
               <Link href="/blogs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📝</span>
-                <span>博客</span>
+                <span>博客文章</span>
               </Link>
-              <Link href="/events" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🎉</span>
-                <span>活动</span>
+              <Link href="/testnet#faucetSection" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🚰</span>
+                <span>水龙头</span>
               </Link>
-              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>❓</span>
-                <span>常见问题</span>
+              <Link href="https://testnet.monadexplorer.com/" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🔍</span>
+                <span>区块浏览器</span>
               </Link>
             </div>
           </div>

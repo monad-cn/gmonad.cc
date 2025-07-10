@@ -1019,7 +1019,7 @@
 /* Features Section */
 .features {
   padding: 5rem 1rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  background: #f8fafc;
 }
 
 .featuresGrid {
@@ -1030,54 +1030,55 @@
 
 .featureCard {
   position: relative;
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
 }
 
 .featureCardGlow {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.2),
-      rgba(59, 130, 246, 0.2));
+      rgba(110, 84, 255, 0.08),
+      rgba(99, 102, 241, 0.06));
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease;
   border-radius: 1rem;
   filter: blur(20px);
 }
 
 .featureCard:hover .featureCardGlow {
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 .featureCardContent {
   position: relative;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(229, 231, 235, 0.8);
+  border: 1px solid rgba(229, 231, 235, 0.6);
   border-radius: 1rem;
   padding: 2rem;
   text-align: center;
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
 }
 
 .featureCard:hover .featureCardContent {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border-color: rgba(110, 84, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgba(110, 84, 255, 0.15);
 }
 
 .featureIconWrapper {
   display: inline-flex;
   padding: 1rem;
   border-radius: 50%;
-  background: #f8fafc;
-  color: #374151;
+  background: linear-gradient(135deg, rgba(110, 84, 255, 0.1), rgba(99, 102, 241, 0.08));
+  color: #6E54FF;
   margin-bottom: 1rem;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .featureCard:hover .featureIconWrapper {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  background: linear-gradient(135deg, rgba(110, 84, 255, 0.15), rgba(99, 102, 241, 0.12));
 }
 
 .featureIcon {
@@ -1511,8 +1512,7 @@
 /* Resources Section */
 .resources {
   padding: 5rem 1rem;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  background: #f8fafc;
 }
 
 .resourcesGrid {
@@ -1523,12 +1523,12 @@
 
 .resourceCard {
   position: relative;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(229, 231, 235, 0.8);
+  border: 1px solid rgba(229, 231, 235, 0.6);
   border-radius: 1rem;
   padding: 1.5rem;
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
@@ -1536,22 +1536,22 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.2),
-      rgba(59, 130, 246, 0.2));
+      rgba(110, 84, 255, 0.08),
+      rgba(99, 102, 241, 0.06));
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease;
   border-radius: 1rem;
   filter: blur(20px);
 }
 
 .resourceCard:hover .resourceCardGlow {
-  opacity: 0.2;
+  opacity: 0.15;
 }
 
 .resourceCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border-color: rgba(110, 84, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgba(110, 84, 255, 0.15);
 }
 
 .resourceCardHeader {
@@ -1563,14 +1563,15 @@
   display: inline-flex;
   padding: 1rem;
   border-radius: 50%;
-  background: #f8fafc;
-  color: #374151;
+  background: linear-gradient(135deg, rgba(110, 84, 255, 0.1), rgba(99, 102, 241, 0.08));
+  color: #6E54FF;
   margin-bottom: 1rem;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .resourceCard:hover .resourceIconWrapper {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  background: linear-gradient(135deg, rgba(110, 84, 255, 0.15), rgba(99, 102, 241, 0.12));
 }
 
 .resourceIcon {
@@ -1596,7 +1597,7 @@
 
 .resourceButton {
   width: 100%;
-  background: #374151;
+  background: linear-gradient(135deg, #6E54FF, #6366F1);
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -1607,8 +1608,9 @@
 }
 
 .resourceButton:hover {
-  background: #374151;
+  background: linear-gradient(135deg, #5b47d1, #4f46e5);
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(110, 84, 255, 0.2);
 }
 
 /* Members Section */
@@ -2212,11 +2214,12 @@
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
 }
 
 .viewMoreButton:hover {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5b47d1 0%, #6E54FF 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(110, 84, 255, 0.3);
+  transform: translateY(-1px);
 }
