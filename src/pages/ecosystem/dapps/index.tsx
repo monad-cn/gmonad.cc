@@ -41,6 +41,8 @@ interface DApp {
 }
 
 export default function EcosystemPage() {
+  const [initialMainCategoryName, setInitialMainCategoryName] = useState<string | null>(null);
+  const [initialSubCategoryNames, setInitialSubCategoryNames] = useState<string[] | null>(null);
   const [mainCategories, setMainCategories] = useState<Category[]>([]);
   const [isOnlyMonad, setIsOnlyMonad] = useState<Boolean>(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState<Category | null>(null);
@@ -71,24 +73,32 @@ export default function EcosystemPage() {
     fetchMainCategories();
   }, []);
 
-  // 从路由参数初始化
   useEffect(() => {
     const { main_category, sub_category } = router.query;
+    if (main_category || sub_category) {
+      setIsOnlyMonad(false);
+    }
 
-    if (main_category && mainCategories.length > 0) {
-      const foundMain = mainCategories.find((c) => c.name === main_category);
+    if (main_category) {
+      setInitialMainCategoryName(main_category as string);
+    }
+
+    if (sub_category) {
+      const subNames = (sub_category as string).split(',');
+      setInitialSubCategoryNames(subNames);
+    }
+  }, [router.query]);
+
+  useEffect(() => {
+    if (initialMainCategoryName && mainCategories.length > 0) {
+      const foundMain = mainCategories.find((c) => c.name === initialMainCategoryName);
       if (foundMain) {
         setSelectedMainCategory(foundMain);
         setSubCategories(foundMain.children);
       }
+      setInitialMainCategoryName(null); // 清理
     }
-
-    if (sub_category && subCategories.length > 0) {
-      const subNames = (sub_category as string).split(',');
-      const ids = subCategories.filter((sub) => subNames.includes(sub.name)).map((sub) => sub.ID);
-      setSelectedSubCategories(ids);
-    }
-  }, [router.query, mainCategories, subCategories]);
+  }, [initialMainCategoryName, mainCategories]);
 
   // 获取 DApps
   const fetchDapps = async () => {
@@ -143,7 +153,7 @@ export default function EcosystemPage() {
     setSearchQuery('');
     setCurrentPage(1);
     setIsOnlyMonad(p0);
-     router.replace(router.pathname, undefined, { shallow: true });
+    router.replace(router.pathname, undefined, { shallow: true });
   };
 
 
