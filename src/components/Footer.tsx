@@ -20,24 +20,24 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>生态系统</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="/ecosystem/dapps?main_category=App&sub_category=DeFi" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=DeFi" className={styles.footerLink}>
                   DeFi 协议
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/ecosystem/dapps?main_category=App&sub_category=NFT" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=NFT" className={styles.footerLink}>
                   NFT 市场
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/ecosystem/dapps?main_category=App&sub_category=Gaming" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=Gaming" className={styles.footerLink}>
                   游戏应用
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/ecosystem/dapps?main_category=Infra" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=Infra" className={styles.footerLink}>
                   基础设施
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -69,8 +69,8 @@ export default function Footer() {
             <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>社区</h3>
             <ul className={styles.footerLinks}>
-              <li><a href="/events" className={styles.footerLink}>社区活动</a></li>
-              <li><a href="#" className={styles.footerLink}>反馈与建议</a></li>
+              <li><Link href="/events" className={styles.footerLink}>社区活动</Link></li>
+              <li><Link href="#" className={styles.footerLink}>反馈与建议</Link></li>
             </ul>
           </div>
           <div className={styles.footerSection}>
