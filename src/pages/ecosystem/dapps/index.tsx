@@ -47,7 +47,7 @@ export default function EcosystemPage() {
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [dapps, setDapps] = useState<DApp[]>([]);
+  const [dapps, setDapps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,6 +57,7 @@ export default function EcosystemPage() {
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
   const router = useRouter();
+  const [didInitFromUrl, setDidInitFromUrl] = useState(false);
 
   // 获取一级分类
   useEffect(() => {
@@ -72,41 +73,39 @@ export default function EcosystemPage() {
   }, []);
 
   useEffect(() => {
-    if (mainCategories.length === 0) return;
-
     const { main_category, sub_category } = router.query;
-
-    // 进入 URL 时默认关闭 onlyMonad
-    setIsOnlyMonad(false);
-
-    let foundMain: Category | null = null;
+    if (main_category || sub_category) {
+      setIsOnlyMonad(false)
+    }
 
     if (main_category) {
-      foundMain = mainCategories.find((c) => c.name === main_category) || null;
+      const foundMain = mainCategories.find((c) => c.name === main_category) || null;
       if (foundMain) {
         setSelectedMainCategory(foundMain);
         setSubCategories(foundMain.children);
 
-        // ⚡ 这里先清空二级分类
-        setSelectedSubCategories([]);
-
+        // 子分类处理
         if (sub_category) {
           const subNames = (sub_category as string).split(',');
           const ids = foundMain.children
             .filter((sub) => subNames.includes(sub.name))
             .map((sub) => sub.ID);
           setSelectedSubCategories(ids);
+        } else {
+          setSelectedSubCategories([]);
         }
+      } else {
+        setSelectedMainCategory(null);
+        setSubCategories([]);
+        setSelectedSubCategories([]);
       }
     } else {
-      // 没有 main_category，全部清空
       setSelectedMainCategory(null);
-      setSelectedSubCategories([]);
       setSubCategories([]);
+      setSelectedSubCategories([]);
     }
 
   }, [router.query, mainCategories]);
-
 
   // 获取 DApps
   const fetchDapps = async () => {

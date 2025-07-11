@@ -106,7 +106,7 @@ func InitCategories() {
 	// Infra 的子分类
 	infraSubCategories := []string{
 		"Account Abstraction", "Analytics", "Cross-Chain", "Dev Tooling", "Gaming Infra",
-		"Identity", "Indexer", "Onramp", "Oracle", "Other Infra", "Privacy", "RPC", "Stablecoin", "Wallet",
+		"Identity", "Indexer", "Onramp", "Oracle", "Other Infra", "Privacy", "RPC", "Stablecoin", "Wallet", "Zero-Knowledge",
 	}
 
 	// 检查并创建 App

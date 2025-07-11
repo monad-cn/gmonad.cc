@@ -244,7 +244,7 @@ export const getCategories = async (
       query.append('parent_id', params.parent_id.toString());
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());
-    query.append('page_size', (params.page_size ?? 12).toString());
+    query.append('page_size', (params.page_size ?? 15).toString());
 
     const response = await apiRequest<CategoryListResult>(
       `/dapps/categories?${query.toString()}`,
