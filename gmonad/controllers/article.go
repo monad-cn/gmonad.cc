@@ -187,6 +187,8 @@ func UpdateArticle(c *gin.Context) {
 	article.Tags = req.Tags
 	article.Author = req.Author
 
+	article.PublishStatus = 1 // 更新后需要重新审核
+
 	if err := article.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update article", nil)
 		return
