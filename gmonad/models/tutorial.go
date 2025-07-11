@@ -84,7 +84,7 @@ func QueryTutorials(filter TutorialFilter) ([]Tutorial, int64, error) {
 	}
 
 	if filter.PublisherId != 0 {
-		query = query.Where("publish_id = ?", filter.PublisherId)
+		query = query.Where("publisher_id = ?", filter.PublisherId)
 	}
 
 	if filter.PublishStatus != 0 {
