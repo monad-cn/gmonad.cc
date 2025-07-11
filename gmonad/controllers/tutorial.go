@@ -43,7 +43,7 @@ func CreateTutorial(c *gin.Context) {
 			utils.ErrorResponse(c, http.StatusBadRequest, "dapp not exist", nil)
 			return
 		}
-		tutorial.DappId = dapp.ID
+		tutorial.DappId = &dapp.ID
 	}
 
 	// 创建数据库记录
@@ -180,13 +180,23 @@ func UpdateTutorial(c *gin.Context) {
 		return
 	}
 
+	var dapp models.Dapp
+	if req.DappId != 0 {
+		dapp.ID = req.DappId
+		if err := dapp.GetByID(); err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "dapp not exist", nil)
+			return
+		}
+		tutorial.DappId = &dapp.ID
+	}
+
 	tutorial.Title = req.Title
 	tutorial.Description = req.Desc
 	tutorial.Content = req.Content
 	tutorial.SourceLink = req.SourceLink
 	tutorial.CoverImg = req.CoverImg
 	tutorial.Tags = req.Tags
-	tutorial.DappId = req.DappId
+	tutorial.PublishStatus = 1 // 编辑更新后需要重新审核
 
 	if err := tutorial.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update tutorial", nil)

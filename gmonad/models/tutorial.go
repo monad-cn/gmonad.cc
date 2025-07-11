@@ -20,7 +20,7 @@ type Tutorial struct {
 	Publisher     *User          `gorm:"foreignKey:PublisherId" json:"publisher"`
 	PublishTime   *time.Time     `json:"publish_time"`
 	PublishStatus uint           `gorm:"default:1" json:"publish_status"` // 0:全部 1:待审核 2:已发布
-	DappId        uint           `json:"dapp_id"`
+	DappId        *uint          `json:"dapp_id"`
 	Dapp          *Dapp          `gorm:"foreignKey:DappId" json:"dapp"`
 	ViewCount     uint           `gorm:"default:0" json:"view_count"`
 }
