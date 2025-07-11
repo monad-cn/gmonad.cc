@@ -72,37 +72,38 @@ export default function EcosystemPage() {
     fetchMainCategories();
   }, []);
 
-  useEffect(() => {
+  function parseUrlParams() {
     const { main_category, sub_category } = router.query;
-    if (main_category || sub_category) {
-      setIsOnlyMonad(false)
-    }
+    let mainCat: Category | null = null;
+    let subIds: number[] = [];
 
     if (main_category) {
-      const foundMain = mainCategories.find((c) => c.name === main_category) || null;
-      if (foundMain) {
-        setSelectedMainCategory(foundMain);
-        setSubCategories(foundMain.children);
-
-        // 子分类处理
+      mainCat = mainCategories.find((c) => c.name === main_category) || null;
+      if (mainCat) {
         if (sub_category) {
           const subNames = (sub_category as string).split(',');
-          const ids = foundMain.children
+          subIds = mainCat.children
             .filter((sub) => subNames.includes(sub.name))
             .map((sub) => sub.ID);
-          setSelectedSubCategories(ids);
-        } else {
-          setSelectedSubCategories([]);
         }
-      } else {
-        setSelectedMainCategory(null);
-        setSubCategories([]);
-        setSelectedSubCategories([]);
       }
-    } else {
-      setSelectedMainCategory(null);
-      setSubCategories([]);
-      setSelectedSubCategories([]);
+    }
+
+    return { mainCat, subIds };
+  }
+
+  useEffect(() => {
+    if (mainCategories.length === 0) return;
+
+    const { mainCat, subIds } = parseUrlParams();
+
+    if (mainCat) {
+      setSelectedMainCategory(mainCat);
+      setSubCategories(mainCat.children);
+      setSelectedSubCategories(subIds);
+      setIsOnlyMonad(false);
+
+      router.replace(router.pathname, undefined, { shallow: true });
     }
 
   }, [router.query, mainCategories]);
@@ -179,13 +180,13 @@ export default function EcosystemPage() {
     if (selectedMainCategory?.ID === category.ID) {
       setSelectedMainCategory(null);
       setSelectedSubCategories([]);
+      setSubCategories([]);
     } else {
       setSelectedMainCategory(category);
       setSelectedSubCategories([]);
       setSubCategories(category.children);
       setCurrentPage(1);
     }
-
     router.replace(router.pathname, undefined, { shallow: true });
   };
 
