@@ -46,6 +46,7 @@ export default function DashboardPage() {
   const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
       setBlogsLoading(true);
+      
       const result = await getBlogs({
         page,
         page_size: pageSize,
@@ -95,9 +96,11 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    loadBlogs();
-    loadTutorials();
-  }, []);
+    if (session?.user?.uid) {
+      loadBlogs();
+      loadTutorials();
+    }
+  }, [session]);
 
   const profileData = {
     name: session?.user?.username || '',
