@@ -154,7 +154,7 @@ export default function NewDAppPage() {
            <div className={`${styles.container} nav-t-top`}>
             <div className={styles.header}>
                 <div className={styles.headerContent}>
-                    <Link href="/ecosystem" className={styles.backButton}>
+                    <Link href="/ecosystem/dapps" className={styles.backButton}>
                         <ArrowLeft className={styles.backIcon} />
                         返回生态系统
                     </Link>
