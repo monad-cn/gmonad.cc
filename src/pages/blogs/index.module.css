@@ -14,7 +14,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
- 
 }
 
 .titleSection {
@@ -66,7 +65,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -100,7 +99,7 @@
 
 .settingsButton:hover {
   background-color: #f9fafb;
-  border-color: #6366F1;
+  border-color: #6366f1;
   transform: translateY(-1px);
 }
 
@@ -214,7 +213,7 @@
 }
 
 .viewModeButton.active {
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: white;
 }
 
@@ -421,26 +420,11 @@
 }
 
 .categoryTag {
-  background: linear-gradient(to right, #c084fc, #6366F1);
+  background: linear-gradient(to right, #c084fc, #6366f1);
   color: white;
   border-radius: 8px;
   padding: 2px 10px;
   font-size: 12px;
-}
-
-.cardCoverWrapper {
-  width: 100%;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f4f4f5;
-}
-
-.coverImageNew {
-  max-width: 80%;
-  max-height: 80%;
-  object-fit: contain;
 }
 
 .blogTitleNew {
@@ -606,7 +590,7 @@
 }
 
 .actionIconButton:hover .actionIcon {
-  color: #6366F1;
+  color: #6366f1;
 }
 
 /* Card Cover */
@@ -618,10 +602,38 @@
 }
 
 .coverImage {
-  width: auto !important;
-  height: 200px !important;
+  width: 100% !important;
+  height: 100% !important;
   object-fit: cover !important;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: block !important;
+}
+
+/* 强化覆盖 Ant Design Image 组件的所有可能元素 */
+.coverImage img,
+.coverImage :global(.ant-image),
+.coverImage :global(.ant-image-img),
+.coverImage :global(.ant-image-preview-img) {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
+/* 确保容器内的任何图片元素都完全填充 */
+.cardCover img {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
 }
 
 .coverOverlay {
@@ -634,6 +646,11 @@
   justify-content: flex-end;
   align-items: flex-start;
   z-index: 2;
+}
+
+.blogCard:hover .coverImage {
+  transform: scale(1.08) !important;
+  transition: all 0.6s;
 }
 
 .statusTag {
@@ -808,7 +825,7 @@
 /* Action Buttons */
 .primaryAction {
   flex: 1 !important;
-  background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
+  background: linear-gradient(135deg, #6366f1 0%, #6e54ff 100%) !important;
   border: none !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
@@ -818,7 +835,7 @@
 }
 
 .primaryAction:hover {
-  background: linear-gradient(135deg, #6E54FF 0%, #4338CA 100%) !important;
+  background: linear-gradient(135deg, #6e54ff 0%, #4338ca 100%) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3) !important;
   color: white !important;
@@ -838,8 +855,8 @@
 
 .secondaryAction:hover {
   background: #f8fafc !important;
-  border-color: #6366F1 !important;
-  color: #6366F1 !important;
+  border-color: #6366f1 !important;
+  color: #6366f1 !important;
   transform: translateY(-1px) !important;
 }
 
@@ -908,14 +925,14 @@
 .listLink {
   display: block;
   padding: 0.75rem 1rem;
-  color: #6366F1;
+  color: #6366f1;
   text-decoration: none;
   border-left: 3px solid transparent;
   transition: all 0.2s ease;
 }
 
 .listLink:hover {
-  color: #6366F1;
+  color: #6366f1;
   font-weight: bold;
 }
 
@@ -1251,7 +1268,7 @@
 .statIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #6366F1;
+  color: #6366f1;
 }
 
 .statInfo {
@@ -1401,7 +1418,7 @@
   .container {
     padding-top: 4rem; /* 小屏幕调整 */
   }
-  
+
   .cardBody {
     padding: 1rem !important;
   }
@@ -1477,13 +1494,15 @@
 .socialButton:hover {
   background-color: #f7f7f7;
   /* Lighter hover */
-  border-color: #6366F1;
-  color: #6366F1;
+  border-color: #6366f1;
+  color: #6366f1;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
 .socialIcon {
+  width: 16px;
+  height: 16px;
 }
 
 .socialButtonText {
@@ -1543,8 +1562,6 @@
     width: 100%;
     flex-wrap: wrap;
   }
-
- 
 
   .subtitle {
     margin-left: auto;

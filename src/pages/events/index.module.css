@@ -530,11 +530,40 @@
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: block !important;
+}
+
+/* 强化覆盖 Ant Design Image 组件的所有可能元素 */
+.coverImage img,
+.coverImage :global(.ant-image),
+.coverImage :global(.ant-image-img),
+.coverImage :global(.ant-image-preview-img) {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
+/* 确保容器内的任何图片元素都完全填充 */
+.cardCover img {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
 }
 
 .eventCard:hover .coverImage {
   transform: scale(1.08) !important;
+  transition: all 0.6s;
 }
 
 .coverOverlay {
