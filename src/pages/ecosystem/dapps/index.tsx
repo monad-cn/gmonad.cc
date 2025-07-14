@@ -14,6 +14,7 @@ import styles from './index.module.css';
 import { getCategories, getDapps } from '@/pages/api/dapp';
 import { SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTutorials } from '@/pages/api/tutorial';
 
 interface Tutorial {
   ID: string;
@@ -50,6 +51,7 @@ export default function EcosystemPage() {
   const [dapps, setDapps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [tutorialTotal, setTutorialTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -57,7 +59,6 @@ export default function EcosystemPage() {
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
   const router = useRouter();
-  const [didInitFromUrl, setDidInitFromUrl] = useState(false);
 
   // 获取一级分类
   useEffect(() => {
@@ -144,6 +145,26 @@ export default function EcosystemPage() {
     }
   };
 
+   const fetchTutorials = async () => {
+    try {
+      setLoading(true);
+      const params: any = {
+        page: 1,
+        page_size: 100,
+      };
+
+      const result = await getTutorials(params);
+      if (result.success && result.data && Array.isArray(result.data.total)) {
+        setTutorialTotal(result.data.total);
+      }
+    } catch (error) {
+      setTutorialTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   // 点击时清除 URL 参数
   const handleResetFilters = () => {
     setSelectedMainCategory(null);
@@ -167,11 +188,12 @@ export default function EcosystemPage() {
 
   useEffect(() => {
     fetchDapps();
+    fetchTutorials();
   }, [searchQuery, isOnlyMonad, selectedMainCategory, selectedSubCategories, currentPage, pageSize]);
 
   const stats = {
     totalDapps: total,
-    totalTutorials: dapps.reduce((acc, dapp) => acc + (dapp.tutorials?.length || 0), 0),
+    totalTutorials: tutorialTotal,
     categories: mainCategories.reduce((acc, cat) => acc + (cat.children?.length || 0), 0),
   };
 

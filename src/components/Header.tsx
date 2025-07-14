@@ -135,7 +135,7 @@ export default function Header() {
                 items: [
                   { key: 'x', label: <Link href="https://x.com/monad_zw" target='_blank'><SiX className={styles.iconAlign} />中文区X（推特）</Link> },
                   { key: 'wechat', label: <Link href="https://mp.weixin.qq.com/s/t-_1fLa_MHTPtykMsp0Q_w" target='_blank'><SiWechat className={styles.iconAlign} />微信公众号 </Link> },
-                  { key: 'blog', label: <Link href="/blogs">博客文章</Link> },
+                  { key: 'blog', label: <Link href="/blogs">博客</Link> },
                   { key: 'faucet', label: <Link href="/testnet#faucetSection"> 水龙头 </Link> },
                   { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com/" target='_blank'> 区块浏览器 </Link> },
                 ],
@@ -263,7 +263,7 @@ export default function Header() {
               </Link>
               <Link href="/blogs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📝</span>
-                <span>博客文章</span>
+                <span>博客</span>
               </Link>
               <Link href="/testnet#faucetSection" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🚰</span>
