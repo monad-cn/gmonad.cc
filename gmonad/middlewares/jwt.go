@@ -48,11 +48,13 @@ func JWT(permission string) gin.HandlerFunc {
 		}
 
 		// TODO: check in controller handle?
-		permSet := utils.ToSet(claims.Permissions)
-		if _, ok := permSet[permission]; !ok {
-			utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized permission", nil)
-			c.Abort()
-			return
+		if permission != "" {
+			permSet := utils.ToSet(claims.Permissions)
+			if _, ok := permSet[permission]; !ok {
+				utils.ErrorResponse(c, http.StatusForbidden, "Unauthorized permission", nil)
+				c.Abort()
+				return
+			}
 		}
 
 		c.Set("uid", claims.Uid)

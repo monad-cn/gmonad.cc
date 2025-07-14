@@ -231,3 +231,17 @@ type UpdateTutorialRequest struct {
 type UpdateTutorialPublishStatusRequest struct {
 	PublishStatus uint `json:"publish_status" binding:"required"`
 }
+
+// feedback
+type CreateFeedbackRequest struct {
+	Content string `json:"content" binding:"required"`
+	Url     string `json:"url"`
+	Email   string `json:"email"`
+}
+
+type QueryFeedbackResponse struct {
+	Feedbacks []models.Feedback `json:"feedbacks"`
+	Page      int               `json:"page"`
+	PageSize  int               `json:"page_size"`
+	Total     int64             `json:"total"`
+}

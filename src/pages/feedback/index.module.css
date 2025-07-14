@@ -1,0 +1,344 @@
+.container {
+    min-height: 100vh;
+    background-color: #fafafa;
+}
+
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 100px 0 60px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="20" cy="80" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.heroContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.heroMain {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+@media (max-width: 968px) {
+    .heroMain {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+}
+
+.heroText {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.heroTitle {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: 36px;
+    }
+}
+
+.heroDescription {
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.heroFeatures {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (max-width: 968px) {
+    .heroFeatures {
+        align-items: center;
+    }
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.featureIcon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.9;
+}
+
+.heroImage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.mascotImage {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.mascotImage:hover {
+    transform: scale(1.02);
+}
+
+.imageCaption {
+    font-size: 14px;
+    opacity: 0.8;
+    text-align: center;
+    font-style: italic;
+    max-width: 300px;
+}
+
+.mainSection {
+    padding: 80px 0;
+    background: white;
+}
+
+.sectionContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.loginNotice {
+  padding: 24px;
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+}
+
+.formCard {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.formHeader {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 32px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.formTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 8px;
+}
+
+.formSubtitle {
+    font-size: 16px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.formContent {
+    padding: 40px 32px;
+}
+
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.formLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.requiredMark {
+    color: #ef4444;
+}
+
+.optionalMark {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.formInput {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    transition: all 0.3s ease;
+}
+
+.formInput:hover {
+    border-color: #9ca3af;
+}
+
+.formInput:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.formTextarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 120px;
+}
+
+.formTextarea:hover {
+    border-color: #9ca3af;
+}
+
+.formTextarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submitButton {
+    width: 100%;
+    height: 48px;
+    background: #6E54FF !important;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submitButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+.submitButton:active {
+    transform: translateY(0);
+}
+
+.submitButton:disabled {
+    background: #6E54FF !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.innerContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submitIcon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.loadingIcon {
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.helpText {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.successMessage {
+    background: #f0f9ff;
+    border: 1px solid #6E54FF;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.successIcon {
+    width: 20px;
+    height: 20px;
+    color: #6E54FF;
+    flex-shrink: 0;
+}
+
+.successText {
+    color: #0c4a6e;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .formContent {
+        padding: 32px 24px;
+    }
+
+    .formHeader {
+        padding: 24px;
+    }
+
+    .mainSection {
+        padding: 60px 0;
+    }
+}

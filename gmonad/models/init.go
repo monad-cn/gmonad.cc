@@ -18,6 +18,7 @@ func init() {
 	db.AutoMigrate(&Category{})
 	db.AutoMigrate(&Dapp{})
 	db.AutoMigrate(&Tutorial{})
+	db.AutoMigrate(&Feedback{})
 
 	InitRolesAndPermissions()
 	InitCategories()

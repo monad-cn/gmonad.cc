@@ -47,5 +47,11 @@ func SetupRouter(r *gin.Engine) {
 		tutorial.GET("", controllers.QueryTutorials)
 		tutorial.PUT("/:id/status", middlewares.JWT("tutorial:review"), controllers.UpdateTutorialPublishStatus)
 	}
+	feedback := r.Group("/v1/feedbacks")
+	{
+		feedback.POST("", middlewares.JWT(""), controllers.CreateFeedback)
+		feedback.GET("", controllers.QueryFeedbacks)
+	}
+
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

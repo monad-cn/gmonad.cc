@@ -70,7 +70,7 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>社区</h3>
             <ul className={styles.footerLinks}>
               <li><Link href="/events" className={styles.footerLink}>社区活动</Link></li>
-              <li><Link href="#" className={styles.footerLink}>反馈与建议</Link></li>
+              <li><Link href="/feedback" className={styles.footerLink}>反馈与建议</Link></li>
             </ul>
           </div>
           <div className={styles.footerSection}>
