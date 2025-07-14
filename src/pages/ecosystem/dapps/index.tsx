@@ -145,7 +145,7 @@ export default function EcosystemPage() {
     }
   };
 
-   const fetchTutorials = async () => {
+  const fetchTutorials = async () => {
     try {
       setLoading(true);
       const params: any = {
@@ -154,7 +154,7 @@ export default function EcosystemPage() {
       };
 
       const result = await getTutorials(params);
-      if (result.success && result.data && Array.isArray(result.data.total)) {
+      if (result.success && result.data) {
         setTutorialTotal(result.data.total);
       }
     } catch (error) {
