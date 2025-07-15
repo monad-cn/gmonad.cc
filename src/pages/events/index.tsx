@@ -257,11 +257,7 @@ export default function EventsPage() {
   });
 
   useEffect(() => {
-    // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
-    loadEvents();
-    if (status === 'authenticated' && permissions.includes('event:write')) {
       loadEvents();
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     searchKeyword,

@@ -116,9 +116,9 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'meetup', label: <Link href="/events?type=meetup">见面会</Link> },
                   { key: 'ama', label: <Link href="/events?type=ama">AMA</Link> },
                   { key: 'hackathon', label: <Link href="/events?type=hackathon">黑客松</Link> },
+                  { key: 'meetup', label: <Link href="/events?type=meetup">社区聚会</Link> },
                   { key: 'workshop', label: <Link href="/events?type=workshop"> Workshop </Link> },
                 ],
               }}
@@ -231,10 +231,6 @@ export default function Header() {
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>社区活动</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/events?type=meetup" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🤝</span>
-                <span>见面会</span>
-              </Link>
               <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>💬</span>
                 <span>AMA</span>
@@ -242,6 +238,10 @@ export default function Header() {
               <Link href="/events?type=hackathon" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🏆</span>
                 <span>黑客松</span>
+              </Link>
+               <Link href="/events?type=meetup" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🤝</span>
+                <span>社区聚会</span>
               </Link>
               <Link href="/events?type=workshop" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🎯</span>
