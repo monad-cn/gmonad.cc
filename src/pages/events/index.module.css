@@ -19,8 +19,8 @@
 
 .titleSection {
   max-width: 1200px;
-  margin: 0 auto;
   margin-bottom: 2rem;
+  text-align: left;
 }
 
 .titleHeader {
@@ -54,7 +54,7 @@
   font-size: 1.125rem;
   color: #6b7280;
   max-width: 32rem;
-  margin: 0 auto;
+  margin: 0;
   line-height: 1.6;
 }
 
@@ -1531,12 +1531,11 @@
   }
 
   .titleSection {
-    text-align: center;
+    text-align: left;
   }
 
   .subtitle {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
   }
 
   .createButton {
