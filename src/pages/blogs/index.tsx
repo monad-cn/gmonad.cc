@@ -151,6 +151,12 @@ export default function BlogsPage() {
     }
   };
 
+  const handleSwitchViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    setCurrentPage(1);
+  };
+
+
   useEffect(() => {
     if (status === 'loading') return; // 等待认证状态确定
     const newPublishStatus =
@@ -201,14 +207,14 @@ export default function BlogsPage() {
         <div className={styles.viewModeToggle}>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'grid' ? styles.active : ''}`}
-            onClick={() => setViewMode('grid')}
+            onClick={() => handleSwitchViewMode('grid')}
           >
             <LayoutGrid className={styles.viewModeIcon} />
             卡片视图
           </button>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'list' ? styles.active : ''}`}
-            onClick={() => setViewMode('list')}
+            onClick={() => handleSwitchViewMode('list')}
           >
             <List className={styles.viewModeIcon} />
             列表视图
@@ -268,7 +274,7 @@ export default function BlogsPage() {
                       <div className={styles.cardActions}>
                         {/* 只有博客作者才可以编辑 */}
                         {status === 'authenticated' &&
-                        blog.publisher_id.toString() === session?.user?.uid ? (
+                          blog.publisher_id.toString() === session?.user?.uid ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -403,7 +409,7 @@ export default function BlogsPage() {
                   <div className={styles.listActions}>
                     {/* 只有博客发布者才可以编辑 */}
                     {status === 'authenticated' &&
-                    blog.publisher_id.toString() === session?.user?.uid ? (
+                      blog.publisher_id.toString() === session?.user?.uid ? (
                       <Button
                         type="text"
                         size="small"
@@ -427,7 +433,7 @@ export default function BlogsPage() {
                     />
                     {/* 只有博客发布者才可以删除*/}
                     {status === 'authenticated' &&
-                    blog.publisher_id?.toString() === session?.user?.uid ? (
+                      blog.publisher_id?.toString() === session?.user?.uid ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
@@ -459,7 +465,7 @@ export default function BlogsPage() {
             total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
-            showQuickJumper={true}
+            // showQuickJumper={true}
             showTotal={(total, range) =>
               `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
             }

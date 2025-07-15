@@ -194,6 +194,11 @@ export default function EventsPage() {
     setCurrentPage(1);
   };
 
+  const handleSwitchViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    setCurrentPage(1);
+  };
+
   // 计算当前显示的事件
   const startIndex = (currentPage - 1) * pageSize + 1;
   const endIndex = Math.min(currentPage * pageSize, total);
@@ -437,14 +442,14 @@ export default function EventsPage() {
         <div className={styles.viewModeToggle}>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'grid' ? styles.active : ''}`}
-            onClick={() => setViewMode('grid')}
+            onClick={() => handleSwitchViewMode('grid')}
           >
             <LayoutGrid className={styles.viewModeIcon} />
             卡片视图
           </button>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'list' ? styles.active : ''}`}
-            onClick={() => setViewMode('list')}
+            onClick={() => handleSwitchViewMode('list')}
           >
             <List className={styles.viewModeIcon} />
             列表视图
@@ -749,7 +754,7 @@ export default function EventsPage() {
             total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
-            showQuickJumper={true}
+            // showQuickJumper={true}
             showTotal={(total, range) =>
               `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
             }
