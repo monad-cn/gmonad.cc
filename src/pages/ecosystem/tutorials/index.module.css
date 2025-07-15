@@ -280,6 +280,20 @@
   color: #6b7280;
 }
 
+.paginationContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 2rem 0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .title {
@@ -373,4 +387,75 @@
 .ant-select-focused .ant-select-selector {
   border-color: #6366f1 !important;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* 分页器样式 */
+.ant-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ant-pagination-item {
+  border-radius: 8px !important;
+  border: 2px solid #e5e7eb !important;
+  transition: all 0.3s ease;
+}
+
+.ant-pagination-item:hover {
+  border-color: #6366f1 !important;
+}
+
+.ant-pagination-item-active {
+  background-color: #6366f1 !important;
+  border-color: #6366f1 !important;
+}
+
+.ant-pagination-item-active a {
+  color: white !important;
+}
+
+.ant-pagination-prev,
+.ant-pagination-next {
+  border-radius: 8px !important;
+  border: 2px solid #e5e7eb !important;
+  transition: all 0.3s ease;
+}
+
+.ant-pagination-prev:hover,
+.ant-pagination-next:hover {
+  border-color: #6366f1 !important;
+}
+
+.ant-pagination-total-text {
+  margin-right: 1rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next {
+  border-radius: 8px !important;
+}
+
+/* 响应式分页器 */
+@media (max-width: 768px) {
+  .paginationContainer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    justify-content: center;
+  }
+  
+  .ant-pagination {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .ant-pagination-total-text {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-align: center;
+  }
 }
