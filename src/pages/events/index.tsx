@@ -59,8 +59,9 @@ export default function EventsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
+  const [initialized, setInitialized] = useState(false);
 
-   const router = useRouter();
+  const router = useRouter();
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
@@ -241,24 +242,42 @@ export default function EventsPage() {
 
     const queryEventType = router.query.type as string;
 
-    if (queryEventType && allowedEventTypes.includes(queryEventType)) {
+    if (
+      queryEventType &&
+      allowedEventTypes.includes(queryEventType) &&
+      queryEventType !== eventTypeFilter
+    ) {
+      // 更新筛选条件
       setEventTypeFilter(queryEventType);
-    } else {
-      setEventTypeFilter('');
+      setCurrentPage(1);
+
+      // 加载一次
+      loadEvents({ event_type: queryEventType, page: 1 });
+
+      // 清空 URL 参数
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: {},
+        },
+        undefined,
+        { shallow: true }
+      );
     }
   }, [router.isReady, router.query.type]);
 
+  // 根据登录状态更新 publishStatus
   useEffect(() => {
     if (status === 'authenticated' && permissions.includes('event:review')) {
       setPublishStatus(0);
     } else if (status === 'unauthenticated') {
       setPublishStatus(2);
     }
-  });
+  }, [status, permissions]);
 
   useEffect(() => {
-      loadEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!router.isReady) return;
+    loadEvents();
   }, [
     searchKeyword,
     selectedTag,
@@ -271,6 +290,7 @@ export default function EventsPage() {
     eventTypeFilter,
     publishStatus,
   ]);
+
 
   return (
     <div className={`${styles.container} nav-t-top`}>
@@ -355,9 +375,9 @@ export default function EventsPage() {
             onChange={handleEventTypeFilter}
           >
             <Option value="">所有</Option>
-            <Option value="meetup">见面会</Option>
             <Option value="ama">AMA</Option>
             <Option value="hackathon">黑客松</Option>
+            <Option value="meetup">社区聚会</Option>
             <Option value="workshop">Workshop</Option>
           </Select>
           <Select

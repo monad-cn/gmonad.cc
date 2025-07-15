@@ -164,6 +164,11 @@ export default function EcosystemPage() {
     }
   };
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); 
+  };
+
 
   // 点击时清除 URL 参数
   const handleResetFilters = () => {
@@ -313,7 +318,7 @@ export default function EcosystemPage() {
             placeholder="搜索 DApps..."
             value={searchQuery}
             size="large"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchInputChange}
             prefix={<Search size={16} />}
             style={{ width: '300px' }}
             allowClear

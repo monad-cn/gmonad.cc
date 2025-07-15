@@ -213,9 +213,9 @@ export default function NewEventPage() {
                   <Select
                     placeholder="请选择活动类型"
                     options={[
-                      { label: '见面会', value: 'meetup' },
                       { label: 'AMA', value: 'ama' },
                       { label: '黑客松', value: 'hackathon' },
+                      { label: '社区聚会', value: 'meetup' },
                       { label: 'Workshop', value: 'workshop' },
                     ]}
                   />
