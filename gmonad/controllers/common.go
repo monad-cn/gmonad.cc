@@ -205,6 +205,7 @@ type CreateTutorialRequest struct {
 	Title      string   `json:"title" binding:"required"`
 	Desc       string   `json:"desc" binding:"required"`
 	Content    string   `json:"content" binding:"required"`
+	Author     string   `json:"author" binding:"required"`
 	DappId     uint     `json:"dapp_id"`
 	SourceLink string   `json:"source_link"`
 	CoverImg   string   `json:"cover_img" binding:"required"`
@@ -222,6 +223,7 @@ type UpdateTutorialRequest struct {
 	Title      string   `json:"title" binding:"required"`
 	Desc       string   `json:"desc" binding:"required"`
 	Content    string   `json:"content" binding:"required"`
+	Author     string   `json:"author" binding:"required"`
 	DappId     uint     `json:"dapp_id"`
 	SourceLink string   `json:"source_link"`
 	CoverImg   string   `json:"cover_img" binding:"required"`

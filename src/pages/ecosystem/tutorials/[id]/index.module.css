@@ -1,11 +1,10 @@
 .container {
   min-height: 100vh;
-  background-color: #fff;
+  background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
 }
 
 /* Header */
 .header {
-  background: #fff;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem 0;
   position: sticky;

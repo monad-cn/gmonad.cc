@@ -5,13 +5,14 @@
 
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 140px 0 40px; /* 增加顶部padding为导航栏留出空间 */
+  padding: 140px 0 40px;
+  /* 增加顶部padding为导航栏留出空间 */
   margin-bottom: 24px;
 }
 
 .profileSection {
   max-width: 1200px;
-   min-width: 1200px;
+  min-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -144,6 +145,36 @@
   margin-bottom: 0;
 }
 
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 300px;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.emptyState p {
+  font-size: 14px;
+  color: #6E54FF;
+  border-color: #6E54FF;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.emptyImage {
+  margin-top: 200px;
+  width: 160px;
+  height: auto;
+  border-radius: 12px;
+  display: flex;
+}
+
 .cardTitle {
   color: #262626 !important;
   font-size: 20px !important;
@@ -246,9 +277,21 @@
   gap: 4px;
 }
 
-.itemMeta svg {
-  width: 16px;
-  height: 16px;
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaIcon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.metaBtn {
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
 
 .itemTag {
@@ -300,9 +343,10 @@
 
 @media (max-width: 768px) {
   .header {
-    padding: 120px 0 40px; /* 移动端调整 */
+    padding: 120px 0 40px;
+    /* 移动端调整 */
   }
-  
+
   .content {
     flex-direction: column;
   }
@@ -326,6 +370,7 @@
 
 @media (max-width: 480px) {
   .header {
-    padding: 110px 0 40px; /* 小屏幕调整 */
+    padding: 110px 0 40px;
+    /* 小屏幕调整 */
   }
 }

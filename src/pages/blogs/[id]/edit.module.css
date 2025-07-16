@@ -1,12 +1,13 @@
 .container {
   min-height: 100vh;
-  background-color: #f9fafb;
   padding: 0rem 1rem;
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
 .header {
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -595,6 +596,7 @@
   justify-content: flex-end;
   gap: 1rem;
   padding-top: 2rem;
+  padding-bottom: 2rem;
   border-top: 1px solid #e5e7eb;
 }
 

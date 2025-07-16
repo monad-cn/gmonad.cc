@@ -89,14 +89,15 @@ export default function EditTutorialPage() {
         tags: tags,
         source_link: values.source || '',
         dapp_id: values.dappId || undefined,
+        author: values.author,
       };
 
       const result = await updateTutorial(tutorial.ID.toString(), updateTutorialRequest);
       if (result.success) {
-        message.success(result.message || '教程更新成功');
+        message.success('教程更新成功，请到个人页面查看！');
         router.push('/ecosystem/tutorials');
       } else {
-        message.error(result.message || '更新教程失败');
+        message.error('更新教程出错！');
       }
     } catch (error) {
       console.error('更新教程失败:', error);
@@ -131,6 +132,7 @@ export default function EditTutorialPage() {
             title: response.data.title,
             description: response.data.description,
             content: response.data.content,
+            author: response.data.author,
             source: response.data.source_link,
             dappId: response.data.dapp_id,
           });
@@ -163,7 +165,7 @@ export default function EditTutorialPage() {
   }
 
   return (
-   <div className={`${styles.container} nav-t-top`}>
+    <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/ecosystem/tutorials" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
@@ -244,8 +246,14 @@ export default function EditTutorialPage() {
               />
             </Card>
 
-            {/* 关联 DApp */}
             <Card className={styles.section}>
+              <Form.Item
+                label="作者"
+                name="author"
+                rules={[{ required: true, message: '请输入作者' }]}
+              >
+                <Input placeholder="请输入参考链接" />
+              </Form.Item>
               <Form.Item label="关联 DApp（可选）" name="dappId">
                 <Select allowClear placeholder="请选择关联 DApp">
                   {dappList.map((dapp) => (

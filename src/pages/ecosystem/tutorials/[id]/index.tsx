@@ -90,7 +90,7 @@ export default function TutorialDetailPage() {
   }
 
   return (
-     <div className={`${styles.container} nav-t-top`}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
@@ -100,7 +100,7 @@ export default function TutorialDetailPage() {
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&
-            tutorial.publisher_id?.toString() === session?.user?.uid ? (
+              tutorial.publisher_id?.toString() === session?.user?.uid ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -110,8 +110,8 @@ export default function TutorialDetailPage() {
               </Button>
             ) : null}
             {tutorial.publish_status === 1 &&
-            status === 'authenticated' &&
-            canReview ? (
+              status === 'authenticated' &&
+              canReview ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -145,6 +145,12 @@ export default function TutorialDetailPage() {
                 <Calendar className={styles.metaIcon} />
                 <div className={styles.metaText}>
                   发布时间：{formatTime(tutorial.publish_time || tutorial.CreatedAt)}
+                </div>
+              </div>
+              <div className={styles.metaItem}>
+                <User className={styles.metaIcon} />
+                <div className={styles.metaText}>
+                  作者：{tutorial?.author || tutorial.publisher?.username}
                 </div>
               </div>
               <div className={styles.metaItem}>

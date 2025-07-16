@@ -1,6 +1,6 @@
 .container {
     min-height: 100vh;
-    /* background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%); */
+    background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
     position: relative;
 }
 
@@ -11,7 +11,7 @@
     left: 0;
     right: 0;
     height: 600px;
-    /* background: linear-gradient(135deg, #6366F1 0%, #6E54FF 50%, #4338CA 100%); */
+    background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
     opacity: 0.03;
     z-index: 0;
 }
@@ -356,8 +356,8 @@
 }
 
 .blockexplorerLink {
-  vertical-align: middle;
-  margin-left: 4px; 
+    vertical-align: middle;
+    margin-left: 4px;
 }
 
 .configRow {

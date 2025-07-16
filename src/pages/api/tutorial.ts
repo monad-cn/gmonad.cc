@@ -5,6 +5,7 @@ export interface CreateTutorialParams {
   title: string;
   description: string;
   content: string;
+  author: string;
   source_link: string;
   cover_img: string;
   tags: string[];
@@ -17,6 +18,7 @@ export interface UpdateTutorialParams {
   content: string;
   source_link: string;
   cover_img: string;
+  author: string;
   tags: string[];
   dapp_id: number;
 }
@@ -58,6 +60,7 @@ export interface Tutorial {
   description: string;
   content: string;
   source_link: string;
+  author: string;
   cover_img: string;
   tags: string[];
   publisher_id?: number;
@@ -100,7 +103,8 @@ export const createTutorial = async (
     const body = {
       title: params.title.trim(),
       desc: params.description.trim(),
-      content: params.content,
+      content: params.content.trim(),
+      author: params.author.trim(),
       source_link: params.source_link,
       cover_img: params.cover_img,
       tags: params.tags ?? [],
@@ -140,7 +144,8 @@ export const updateTutorial = async (
     const body = {
       title: params.title.trim(),
       desc: params.description.trim(),
-      content: params.content,
+      content: params.content.trim(),
+      author: params.author.trim(),
       source_link: params.source_link,
       cover_img: params.cover_img,
       tags: params.tags ?? [],

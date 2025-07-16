@@ -16,6 +16,7 @@ type Tutorial struct {
 	SourceLink    string         `json:"source_link"`
 	CoverImg      string         `json:"cover_img"`
 	Tags          pq.StringArray `gorm:"type:text[]" json:"tags"`
+	Author        string         `json:"author"`
 	PublisherId   uint           `json:"publisher_id"`
 	Publisher     *User          `gorm:"foreignKey:PublisherId" json:"publisher"`
 	PublishTime   *time.Time     `json:"publish_time"`

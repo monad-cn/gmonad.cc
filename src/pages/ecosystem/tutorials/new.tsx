@@ -56,7 +56,6 @@ export default function NewTutorialPage() {
             }
         } catch (error) {
             console.error('获取 Dapp 列表失败:', error);
-            message.error('获取 Dapp 列表失败');
         }
     };
 
@@ -82,6 +81,7 @@ export default function NewTutorialPage() {
                 content: values.content || '',
                 cover_img: cloudinaryImg?.secure_url || '',
                 tags: tags,
+                author: values.author,
                 source_link: values.source || '',
             };
 
@@ -91,7 +91,7 @@ export default function NewTutorialPage() {
 
             const result = await createTutorial(createTutorialRequest);
             if (result.success) {
-                message.success(result.message || '教程创建成功');
+                message.success('教程创建成功，请到个人页面查看！');
                 router.push('/ecosystem/tutorials');
             } else {
                 message.error(result.message || '创建教程失败');
@@ -124,7 +124,7 @@ export default function NewTutorialPage() {
     }, [dappId])
 
     return (
-       <div className={`${styles.container} nav-t-top`}>
+        <div className={`${styles.container} nav-t-top`}>
             <div className={styles.header}>
                 <Link href="/ecosystem/tutorials" className={styles.backButton}>
                     <ArrowLeft className={styles.backIcon} />
@@ -181,7 +181,7 @@ export default function NewTutorialPage() {
                                 rules={[{ required: true, message: '请输入教程内容' }]}
                             >
                                 <QuillEditor
-                                    minHeight={400}
+                                    minHeight={480}
                                     value={form.getFieldValue('content')}
                                     onChange={handleQuillEditorChange}
                                 />
@@ -210,9 +210,19 @@ export default function NewTutorialPage() {
                                 />
                             </Form.Item>
                         </Card>
-
-                        {/* 关联 DApp */}
                         <Card className={styles.section}>
+                            <Form.Item
+                                label="作者"
+                                name="author"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入作者',
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="请输入作者" />
+                            </Form.Item>
                             <Form.Item
                                 label="关联 DApp（可选）"
                                 name="dappId"
@@ -228,7 +238,6 @@ export default function NewTutorialPage() {
                                     ))}
                                 </Select>
                             </Form.Item>
-
                             <Form.Item
                                 label="参考链接（可选）"
                                 name="source"

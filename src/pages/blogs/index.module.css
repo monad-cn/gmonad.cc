@@ -1,24 +1,26 @@
 .container {
   min-height: 100vh;
-  background-color: #f9fafb;
-  padding: 0rem 1rem;
-  padding-top: 6.5rem; /* 为固定导航栏自然留出空间 */
+  padding: 1rem 1rem;
+  padding-top: 6.5rem;
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
 .header {
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 3rem auto 3rem;
 }
 
 .headerContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .titleSection {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-bottom: 2rem;
+  text-align: left;
 }
 
 .titleHeader {
@@ -387,13 +389,13 @@
 }
 
 /* 为单个卡片设置最大宽度，避免过宽 */
-.grid > * {
+.grid>* {
   max-width: 600px;
   margin: 0 auto;
 }
 
 /* 当有多个卡片时，移除最大宽度限制 */
-.grid:has(> :nth-child(2)) > * {
+.grid:has(> :nth-child(2))>* {
   max-width: none;
   margin: 0;
 }
@@ -890,7 +892,7 @@
 /* Pagination */
 .pagination {
   max-width: 1200px;
-  margin: 3rem auto 0;
+  margin-top: 3rem;
   display: flex;
   justify-content: center;
 }
@@ -1290,6 +1292,7 @@
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
+
   .listHeader,
   .listRow {
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1316,7 +1319,8 @@
 @media (max-width: 768px) {
   .container {
     padding: 2rem 1rem;
-    padding-top: 4.5rem; /* 移动端调整 */
+    padding-top: 4.5rem;
+    /* 移动端调整 */
   }
 
   .titleHeader {
@@ -1416,7 +1420,8 @@
 
 @media (max-width: 480px) {
   .container {
-    padding-top: 4rem; /* 小屏幕调整 */
+    padding-top: 4rem;
+    /* 小屏幕调整 */
   }
 
   .cardBody {

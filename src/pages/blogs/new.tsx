@@ -284,7 +284,7 @@ export default function NewBlogPage() {
             </Card>
 
             {/* 其他设置 */}
-            <Card className={styles.section}>
+            {/* <Card className={styles.section}>
               <h2 className={styles.sectionTitle}>其他设置</h2>
               <Form.Item
                 name="publishImmediately"
@@ -293,7 +293,7 @@ export default function NewBlogPage() {
               >
                 <Checkbox className={styles.checkbox}>立即发布博客</Checkbox>
               </Form.Item>
-            </Card>
+            </Card> */}
           </div>
         </div>
 

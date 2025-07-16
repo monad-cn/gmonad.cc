@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: #ffffff;
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
 /* Header Section */
