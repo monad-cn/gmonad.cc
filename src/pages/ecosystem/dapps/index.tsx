@@ -166,7 +166,7 @@ export default function EcosystemPage() {
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
 
@@ -287,7 +287,7 @@ export default function EcosystemPage() {
               type={isOnlyMonad ? 'primary' : 'default'}
               onClick={() => handleOnlyMonad(!isOnlyMonad)}
             >
-              仅在 Monad 上构建
+              Monad 原生项目
             </Button>
             <Button
               size="large"
@@ -358,19 +358,18 @@ export default function EcosystemPage() {
             </div>
           )}
 
-          {total > pageSize && (
-            <div className={styles.paginationWrapper}>
-              <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={total}
-                onChange={(page, size) => {
-                  setCurrentPage(page);
-                  setPageSize(size!);
-                }}
-              />
-            </div>
-          )}
+
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={total}
+              onChange={(page, size) => {
+                setCurrentPage(page);
+                setPageSize(size!);
+              }}
+            />
+          </div>
         </div>
       </section>
     </div>
