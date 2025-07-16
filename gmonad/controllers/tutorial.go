@@ -22,6 +22,7 @@ func CreateTutorial(c *gin.Context) {
 		Title:       req.Title,
 		Description: req.Desc,
 		Content:     req.Content,
+		Author:      req.Author,
 		CoverImg:    req.CoverImg,
 		Tags:        req.Tags,
 		SourceLink:  req.SourceLink,
@@ -193,6 +194,7 @@ func UpdateTutorial(c *gin.Context) {
 	tutorial.Title = req.Title
 	tutorial.Description = req.Desc
 	tutorial.Content = req.Content
+	tutorial.Author = req.Author
 	tutorial.SourceLink = req.SourceLink
 	tutorial.CoverImg = req.CoverImg
 	tutorial.Tags = req.Tags

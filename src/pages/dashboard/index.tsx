@@ -12,13 +12,15 @@ import {
   Image,
   Pagination,
   Button,
+  Popconfirm,
+  App as AntdApp
 } from 'antd';
-import { BookOpen, FileText, Eye, Clock, User, TrendingUp } from 'lucide-react';
+import { BookOpen, FileText, Eye, Clock, Edit, TrendingUp, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import styles from './index.module.css';
-import { getBlogs } from '../api/blog';
-import { getTutorials } from '../api/tutorial';
+import { deleteBlog, getBlogs } from '../api/blog';
+import { deleteTutorial, getTutorials } from '../api/tutorial';
 import { useAuth } from '@/contexts/AuthContext';
 
 const { Title, Text } = Typography;
@@ -26,6 +28,7 @@ const { Title, Text } = Typography;
 type ActiveTab = 'blogs' | 'tutorials';
 
 export default function DashboardPage() {
+  const { message } = AntdApp.useApp();
   const [activeTab, setActiveTab] = useState<ActiveTab>('blogs');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [tutorials, setTutorials] = useState<any[]>([]);
@@ -46,7 +49,7 @@ export default function DashboardPage() {
   const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
       setBlogsLoading(true);
-      
+
       const result = await getBlogs({
         page,
         page_size: pageSize,
@@ -126,6 +129,49 @@ export default function DashboardPage() {
     setActiveTab(key as ActiveTab);
   };
 
+
+  const handleDeleteTutorial = async (id: number) => {
+    try {
+      const result = await deleteTutorial(id);
+      if (result.success) {
+        message.success("教程删除成功！");
+        loadTutorials();
+      } else {
+        message.error('删除出错');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  };
+
+
+  const handleDeleteBlog = async (id: number) => {
+    try {
+      const result = await deleteBlog(id);
+      if (result.success) {
+        message.success("博客删除成功！");
+        loadBlogs();
+      } else {
+        message.error('删除出错');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  };
+
+  if (!session) {
+    return (
+      <div className={styles.emptyState}>
+        <img
+          src="/meme1.gif"
+          className={styles.emptyImage}
+        />
+        <p>请先登录以查看个人中心</p>
+      </div>
+    );
+  }
+
+
   const renderContent = () => {
     if (activeTab === 'blogs') {
       return (
@@ -145,10 +191,24 @@ export default function DashboardPage() {
                 key={blog.ID}
                 className={styles.listItem}
                 actions={[
-                  <Space key="meta" className={styles.itemMeta}>
-                    <Eye size={16} />
-                    <span>{blog.view_count || 0}</span>
-                  </Space>,
+                  <div className={styles.itemMeta}>
+                    <Link href={`/blogs/${blog.ID}/edit`}><Edit size={16} className={styles.metaIcon} /></Link>
+                    <Popconfirm
+                      title="删除博客"
+                      description="你确定删除这个博客吗？"
+                      okText="是"
+                      cancelText="否"
+                      onConfirm={() => handleDeleteBlog(blog.ID)}
+                    >
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        icon={<Trash2 size={16} />}
+                        title="删除博客"
+                      />
+                    </Popconfirm>
+                  </div>
                 ]}
               >
                 <div className={styles.itemContent}>
@@ -188,14 +248,17 @@ export default function DashboardPage() {
                             'YYYY-MM-DD HH:MM'
                           )}
                         </span>
+                        <Eye size={14} className={styles.itemClock} />
+                        <span>{blog.view_count || 0}</span>
                       </Space>
                     </div>
                   </div>
                 </div>
-              </List.Item>
-            )}
+              </List.Item >
+            )
+            }
           />
-          <div className={styles.bottomPagination}>
+          < div className={styles.bottomPagination} >
             <Pagination
               current={blogsPagination.current}
               total={blogsPagination.total}
@@ -207,8 +270,8 @@ export default function DashboardPage() {
                 `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
               }
             />
-          </div>
-        </Card>
+          </div >
+        </Card >
       );
     }
 
@@ -230,10 +293,27 @@ export default function DashboardPage() {
                 key={tutorial.ID}
                 className={styles.listItem}
                 actions={[
-                  <Space key="meta" className={styles.itemMeta}>
-                    <TrendingUp size={16} />
-                    <span>热门</span>
-                  </Space>,
+                  <div className={styles.itemMeta}>
+                    <Link href={`/ecosystem/tutorials/${tutorial.ID}/edit`}>
+                      <Edit size={16} className={styles.metaIcon} />
+                    </Link>
+                    <Popconfirm
+                      title="删除教程"
+                      description="你确定删除这个教程吗？"
+                      okText="是"
+                      cancelText="否"
+                      onConfirm={() => handleDeleteTutorial(tutorial.ID)}
+                    >
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        icon={<Trash2 size={16} />}
+                        title="删除教程"
+                        className={styles.metaBtn}
+                      />
+                    </Popconfirm>
+                  </div>
                 ]}
               >
                 <div className={styles.itemContent}>
@@ -282,6 +362,8 @@ export default function DashboardPage() {
                             tutorial.publish_time || tutorial.CreatedAt
                           ).format('YYYY-MM-DD HH:MM')}
                         </span>
+                        <Eye size={16} className={styles.itemClock} />
+                        <span>{tutorial.view_count || 0}</span>
                       </Space>
                     </div>
                   </div>
