@@ -100,9 +100,9 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'docs', label: <Link href="/">开发文档</Link> },
-                  { key: 'examples', label: <Link href="/">示例代码</Link> },
-                  { key: 'sdk', label: <Link href="/">SDK 工具</Link> },
+                  { key: 'docs', label: <Link href="https://docs.monad.xyz/" target="_blank">开发文档</Link> },
+                  { key: 'guides', label: <Link href="https://developers.monad.xyz/#quick-start" target="_blank">开发指南</Link> },
+                  { key: 'codes', label: <Link href="https://docs.monad.xyz/guides/"  target="_blank">示例代码</Link> },
                 ],
               }}
               placement="bottom"
@@ -213,17 +213,17 @@ export default function Header() {
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>开发者</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="https://docs.monad.xyz/"  target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📖</span>
                 <span>开发文档</span>
               </Link>
-              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="https://developers.monad.xyz/#quick-start"  target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>⚙️</span>
+                <span>开发指南</span>
+              </Link>
+              <Link href="https://docs.monad.xyz/guides/" target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>💻</span>
                 <span>示例代码</span>
-              </Link>
-              <Link href="/" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>⚙️</span>
-                <span>SDK 工具</span>
               </Link>
             </div>
           </div>

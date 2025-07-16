@@ -45,24 +45,24 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>开发者</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <Link href="https://docs.monad.xyz/" target="_blank" className={styles.footerLink}>
                   开发文档
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  API 参考
-                </a>
+                <Link href="https://developers.monad.xyz/#quick-start" target="_blank" className={styles.footerLink}>
+                  开发指南
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  SDK 工具
-                </a>
+                <Link href="https://docs.monad.xyz/guides/" target="_blank" className={styles.footerLink}>
+                  示例代码
+                </Link>
               </li>
               <li>
-                <a href="/testnet" className={styles.footerLink}>
+                <Link href="/testnet" className={styles.footerLink}>
                   测试网络
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

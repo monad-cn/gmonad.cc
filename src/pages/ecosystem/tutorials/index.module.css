@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  /* background: linear-gradient(to bottom right, #faf5ff, #e1dbfe); */
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
   padding: 2rem 1rem;
 }
 
