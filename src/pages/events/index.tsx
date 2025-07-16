@@ -43,8 +43,7 @@ export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD');
 }
 
-const allowedEventTypes = ['meetup', 'ama', 'hackathon', 'workshop']
-
+const allowedEventTypes = ['meetup', 'ama', 'hackathon', 'workshop'];
 
 export default function EventsPage() {
   const { message } = AntdApp.useApp();
@@ -256,7 +255,6 @@ export default function EventsPage() {
       setEventTypeFilter(queryEventType);
       setCurrentPage(1);
 
-      // 加载一次
       loadEvents({ event_type: queryEventType, page: 1 });
 
       // 清空 URL 参数
@@ -282,7 +280,10 @@ export default function EventsPage() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    loadEvents();
+
+    if (!router.query.type) {
+      loadEvents();
+    }
   }, [
     searchKeyword,
     selectedTag,
@@ -295,7 +296,6 @@ export default function EventsPage() {
     eventTypeFilter,
     publishStatus,
   ]);
-
 
   return (
     <div className={`${styles.container} nav-t-top`}>
@@ -345,7 +345,7 @@ export default function EventsPage() {
               </button>
             </div>
             {status === 'authenticated' &&
-              permissions.includes('event:write') ? (
+            permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -471,10 +471,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-              selectedTag ||
-              statusFilter ||
-              locationKeyword ||
-              eventModeFilter
+            selectedTag ||
+            statusFilter ||
+            locationKeyword ||
+            eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -521,7 +521,7 @@ export default function EventsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                          permissions.includes('event:write') ? (
+                        permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -559,7 +559,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-              // variant={false}
+                // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -699,7 +699,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                      permissions.includes('event:write') ? (
+                    permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -722,7 +722,7 @@ export default function EventsPage() {
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                      permissions.includes('event:delete') ? (
+                    permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"
