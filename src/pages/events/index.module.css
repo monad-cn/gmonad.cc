@@ -1,13 +1,13 @@
 .container {
   min-height: 100vh;
-  background-color: #f9fafb;
   padding: 0rem 1rem;
-  padding-top: 6.5rem; /* 为固定导航栏自然留出空间 */
+  padding-top: 6.5rem; 
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
 .header {
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 3rem auto 3rem;
 }
 
 .headerContent {

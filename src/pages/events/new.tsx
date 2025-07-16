@@ -97,10 +97,10 @@ export default function NewEventPage() {
       const result = await createEvent(createEventRequest);
 
       if (result.success) {
-        message.success(result.message);
+        message.success("活动创建成功！");
         router.push('/events');
       } else {
-        message.error(result.message || '创建活动失败');
+        message.error('活动创建出错');
       }
     } catch (error) {
       console.error('创建活动失败:', error);
