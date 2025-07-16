@@ -917,12 +917,10 @@
 
 .listBottomControls {
   max-width: 1200px;
-  margin: 0 auto;
-  margin-bottom: 2rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 1rem 0.5rem 0 0.5rem;
+  padding: 1rem 0.5rem 2rem 0.5rem;
   border-top: 1px solid #f3f4f6;
 }
 
