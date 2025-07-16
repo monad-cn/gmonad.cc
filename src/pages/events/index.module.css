@@ -920,6 +920,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin: 0 auto 2rem;
   padding: 1rem 0.5rem 2rem 0.5rem;
   border-top: 1px solid #f3f4f6;
 }
