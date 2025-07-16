@@ -14,7 +14,7 @@ export default function TutorialsPage() {
     // const [selectedDifficulty, setSelectedDifficulty] = useState('all');
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(8);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
