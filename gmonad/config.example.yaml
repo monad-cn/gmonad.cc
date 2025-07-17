@@ -24,6 +24,7 @@ oauth:
   getUser: 
 
 timer:
+  sse: 3
   validatorIntervalSeconds: 
   testnetIntervalSeconds: 
 
