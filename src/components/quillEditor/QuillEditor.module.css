@@ -1,0 +1,118 @@
+/* QuillEditor 全屏功能样式 */
+.editorContainer {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* 自适应高度容器 */
+.autoHeightContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 高度控制编辑器 */
+.heightControlledEditor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.heightControlledEditor :global(.ql-container) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.heightControlledEditor :global(.ql-editor) {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.fullscreenContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreenEditor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.fullscreenEditor :global(.ql-container) {
+  flex: 1;
+  font-size: 16px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreenEditor :global(.ql-editor) {
+  min-height: auto;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 全屏按钮组样式 - 通过内联样式处理，避免CSS模块问题 */
+
+/* 全屏按钮样式 */
+.fullscreenButton {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+  color: #666 !important;
+}
+
+.fullscreenButton:hover {
+  background: #f0f0f0 !important;
+  color: #333 !important;
+}
+
+.fullscreenButton:active {
+  background: #e0e0e0 !important;
+}
+
+.iconContainer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 全屏模式下的工具栏调整 */
+.fullscreenContainer :global(.ql-toolbar) {
+  background: #fafafa !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  padding: 12px 20px !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .fullscreenEditor :global(.ql-editor) {
+    padding: 15px !important;
+    font-size: 14px !important;
+  }
+
+  .fullscreenContainer :global(.ql-toolbar) {
+    padding: 10px 15px !important;
+  }
+}

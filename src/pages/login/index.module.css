@@ -1,0 +1,62 @@
+.loginPage {
+  height: 100vh;
+  margin: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #f3e8ff, #e0eaff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+.container {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+  width: 23.5rem;
+}
+
+.title {
+  text-align: center;
+  background: linear-gradient(90deg, #6E54FF, #e45fcb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.link {
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.link a {
+  color: #6E54FF;
+  text-decoration: none;
+}
+
+.loginButton {
+  width: 100%;
+  background: linear-gradient(to right, #6E54FF, #e45fcb);
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+  background: linear-gradient(to right, #6E54FF, #e45fcb) !important;
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.googleLoginButton:hover {
+  border-color: #6E54FF !important;
+  color: #6E54FF !important;
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

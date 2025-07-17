@@ -1,0 +1,30 @@
+.auth {
+  display: flex;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.userInfo :global(.ant-avatar) {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.userInfo :global(.ant-avatar img) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.navButton {
+  margin-left: auto;
+}

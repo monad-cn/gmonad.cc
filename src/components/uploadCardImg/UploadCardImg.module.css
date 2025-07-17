@@ -1,0 +1,269 @@
+/* 覆盖 Ant Design Upload 样式 */
+.imageUpload {
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  transition: all 0.2s !important;
+}
+
+.imageUpload:hover {
+  border-color: #6366F1 !important;
+  background-color: #faf5ff !important;
+}
+
+.imageUpload .ant-upload-drag-container {
+  padding: 2rem 1rem !important;
+}
+
+.uploadIcon {
+  margin-bottom: 1rem !important;
+}
+
+.uploadIconSvg {
+  width: 3rem;
+  height: 3rem;
+  color: #6366F1;
+}
+
+.uploadText {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.uploadHint {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  margin: 0 !important;
+}
+
+/* 覆盖 Ant Design Upload 的默认样式 */
+.imageUpload .ant-upload-list {
+  margin-top: 1rem !important;
+}
+
+.imageUpload .ant-upload-list-item {
+  border-radius: 0.5rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.imageUpload .ant-upload-list-item-thumbnail img {
+  border-radius: 0.25rem !important;
+}
+
+/* 图片预览容器样式 */
+.imagePreviewContainer {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: #f9fafb;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.imagePreviewContainer:hover {
+  border-color: #6366F1;
+}
+
+.previewImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.imagePreviewContainer:hover .imageOverlay {
+  opacity: 1;
+}
+
+.imageActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.imageActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageActionButton:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.imageActionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.imageActionButton:disabled:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  transform: none;
+}
+
+.imageActionButton.removeButton:hover {
+  background-color: rgba(239, 68, 68, 0.9);
+}
+
+.imageActionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+}
+
+.imageActionButton.removeButton:hover .imageActionIcon {
+  color: #ef4444;
+}
+
+.imageLoadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 0.5rem;
+}
+
+.imageIcon {
+  width: 2rem;
+  height: 2rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.imageText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+}
+
+.imageHint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+  line-height: 1.4;
+}
+
+.loadingSpinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #6366F1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+.loadingText {
+  color: #6366F1;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.imageInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 1rem 0.75rem 0.75rem 0.75rem;
+  color: white;
+}
+
+.imageName {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imageSize {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.imagePreview {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 200px !important;
+  /* border: 2px dashed #d1d5db !important; */
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  padding: 1rem !important;
+}
+
+.imagePreview:hover {
+  border-color: #6366F1 !important;
+  background-color: #faf5ff !important;
+}
+
+.imagePreview .ant-upload-drag-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+.imageIcon {
+  width: 2rem;
+  height: 2rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.uploadLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
