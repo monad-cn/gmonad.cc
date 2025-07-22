@@ -247,3 +247,25 @@ type QueryFeedbackResponse struct {
 	PageSize  int               `json:"page_size"`
 	Total     int64             `json:"total"`
 }
+
+// Post
+type CreatePostRequest struct {
+	Title       string   `json:"title" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	Tags        []string `json:"tags"`
+	Twitter     string   `json:"twitter" binding:"required"`
+}
+
+type UpdatePostRequest struct {
+	Title       string   `json:"title" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	Tags        []string `json:"tags"`
+	Twitter     string   `json:"twitter" binding:"required"`
+}
+
+type QueryPostsResponse struct {
+	Posts    []models.Post `json:"posts"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+	Total    int64         `json:"total"`
+}

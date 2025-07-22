@@ -52,6 +52,13 @@ func SetupRouter(r *gin.Engine) {
 		feedback.POST("", middlewares.JWT(""), controllers.CreateFeedback)
 		feedback.GET("", controllers.QueryFeedbacks)
 	}
+	post := r.Group("/v1/posts")
+	{
+		post.POST("", middlewares.JWT("blog:write"), controllers.CreatePost)
+		post.DELETE("/:id", middlewares.JWT("blog:delete"), controllers.DeletePost)
+		post.GET("/:id", controllers.GetPost)
+		post.GET("", controllers.QueryPosts)
+	}
 
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }
