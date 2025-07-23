@@ -1,11 +1,10 @@
-"use client"
-
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
 import { Input, Select, Card, Empty, Button, Modal, Form, message, Spin } from "antd"
 import { Search, Star, Plus, User, ExternalLink, Clock, X } from "lucide-react"
 import styles from "./index.module.css"
 import { getPosts, createPost, Post as PostType } from "../api/post"
+import Image from 'next/image'
 
 const { TextArea } = Input
 const { Option } = Select
@@ -146,7 +145,13 @@ export default function PostsList() {
                                 <Card key={post.ID} className={styles.postCard}>
                                     <div className={styles.postContent}>
                                         <div className={styles.avatarSection}>
-                                            <img src={post.user?.avatar || "/placeholder.svg"} alt={post.user?.username} className={styles.avatar} />
+                                            <Image
+                                                src={post.user?.avatar || "/placeholder.svg"}
+                                                alt={post.user?.username || "avatar"}
+                                                width={40}
+                                                height={40}
+                                                className={styles.avatar}
+                                            />
                                         </div>
                                         <div className={styles.contentSection}>
                                             <div className={styles.postHeader}>
