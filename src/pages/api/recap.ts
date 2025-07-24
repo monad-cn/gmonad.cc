@@ -112,7 +112,7 @@ export const updateRecap = async (
 
 // 根据活动 ID 获取回顾
 export const getRecapByEventId = async (
-  eventId: number
+  eventId: string
 ): Promise<RecapResult> => {
   try {
     const response = await apiRequest<RecapResult>(

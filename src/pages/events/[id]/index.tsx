@@ -25,7 +25,7 @@ import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { getEventById, updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
-import { getRecapByEventId } from '@/pages/api/post';
+import { getRecapByEventId } from '@/pages/api/recap';
 
 export default function EventDetailPage() {
   const { message } = AntdApp.useApp();
@@ -72,7 +72,7 @@ export default function EventDetailPage() {
         setEvent(eventRes?.data ?? null);
 
         // 获取活动回顾
-        const recapRes = await getRecapByEventId(Number(rId));
+        const recapRes = await getRecapByEventId(rId);
         console.log('获取活动回顾:', recapRes);
 
         if (recapRes.success && recapRes.data) {
