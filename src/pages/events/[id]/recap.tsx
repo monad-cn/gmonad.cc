@@ -4,9 +4,9 @@ import { Button, Input, Form, message } from "antd"
 import { ArrowLeft, Calendar, MapPin, Users, Video, Mic, Save } from "lucide-react"
 import styles from "./recap.module.css"
 import { SiX } from "react-icons/si"
-import { createRecap } from "@/pages/api/post"
-import { getEventById } from "@/pages/api/event"
 import dynamic from "next/dynamic"
+import { getEventById } from "@/pages/api/event"
+import { createRecap } from "@/pages/api/recap"
 
 const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
 
