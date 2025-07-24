@@ -43,9 +43,9 @@ export const createRecap = async (
   try {
     const body = {
       content: params.content.trim(),
-      video: params.video.trim(),
-      recording: params.recording.trim(),
-      twitter: params.twitter.trim(),
+      video: (params.video ?? '').trim(),
+      recording: (params.recording ?? '').trim(),
+      twitter: (params.twitter ?? '').trim(),
       event_id: params.event_id,
     };
 
