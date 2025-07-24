@@ -25,6 +25,7 @@ import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { getEventById, updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
+import { getRecapByEventId } from '@/pages/api/post';
 
 export default function EventDetailPage() {
   const { message } = AntdApp.useApp();
@@ -33,10 +34,13 @@ export default function EventDetailPage() {
   const rId = Array.isArray(id) ? id[0] : id;
 
   const [event, setEvent] = useState<any>(null);
+  const [recap, setRecap] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<'intro' | 'recap'>('intro');
+
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
@@ -62,19 +66,31 @@ export default function EventDetailPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await getEventById(rId);
-        console.log('获取活动详情:', response);
-        setEvent(response?.data);
+        // 获取活动详情
+        const eventRes = await getEventById(rId);
+        console.log('获取活动详情:', eventRes);
+        setEvent(eventRes?.data ?? null);
+
+        // 获取活动回顾
+        const recapRes = await getRecapByEventId(Number(rId));
+        console.log('获取活动回顾:', recapRes);
+
+        if (recapRes.success && recapRes.data) {
+          setRecap(recapRes.data);
+        } else {
+          setRecap(null); // 没有数据也清空
+        }
       } catch (error) {
         message.error('加载失败');
         setEvent(null);
+        setRecap(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [router.isReady, id]);
+  }, [router.isReady, rId]);
 
   const handleRegister = () => {
     if (isRegistered) {
@@ -282,11 +298,40 @@ export default function EventDetailPage() {
           <div className={styles.leftColumn}>
             {/* Description */}
             <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>活动介绍</h2>
-              <div
-                className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: event.description }}
-              />
+              <div className={styles.titleTabRow}>
+                <div className={styles.sectionTabs}>
+                  <Button
+                    type="text"
+                    className={`${styles.sectionTab} ${activeTab === 'intro' ? styles.activeTab : ''}`}
+                    onClick={() => setActiveTab('intro')}
+                  >
+                    活动介绍
+                  </Button>
+                  <Button
+                    type="text"
+                    className={`${styles.sectionTab} ${activeTab === 'recap' ? styles.activeTab : ''}`}
+                    onClick={() => setActiveTab('recap')}
+                  >
+                    活动回顾
+                  </Button>
+                </div>
+              </div>
+
+              {activeTab === 'intro' ? (
+                <div
+                  className={styles.richText}
+                  dangerouslySetInnerHTML={{ __html: event.description }}
+                />
+              ) : (
+                recap?.content ? (
+                  <div
+                    className={styles.richText}
+                    dangerouslySetInnerHTML={{ __html: recap.content }}
+                  />
+                ) : (
+                  <div className={styles.richText}>暂无活动回顾内容</div>
+                )
+              )}
             </section>
 
             {/* Agenda */}
@@ -340,6 +385,7 @@ export default function EventDetailPage() {
               )}
             </div>
           </div>
+
 
           {/* Right Column */}
           <div className={styles.rightColumn}>
@@ -460,6 +506,22 @@ export default function EventDetailPage() {
                 </Button>
               </div>
             </div>
+            {status === 'authenticated' &&
+              permissions.includes('blog:write') && !recap && event.status === 2 && // 用户默认拥有博客创作权限，默认用户都可以添加活动回顾
+              <div className={styles.recapCard}>
+                <h3 className={styles.cardTitle}>活动回顾</h3>
+                <p className={styles.description}>你可以为本次活动添加活动回顾。</p>
+                <Button
+                  type="primary"
+                  className={styles.actionButton}
+                  onClick={() => {
+                    router.push(`/events/${event.ID}/recap`);
+                  }}
+                >
+                  添加活动回顾
+                </Button>
+              </div>
+            }
           </div>
         </div>
       </div>

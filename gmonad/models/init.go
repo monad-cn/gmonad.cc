@@ -7,12 +7,13 @@ import (
 var db = config.DB
 
 func init() {
-	db.AutoMigrate(&Event{})
-	db.AutoMigrate(&Article{})
-	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Role{})
 	db.AutoMigrate(&Permission{})
 	db.AutoMigrate(&PermissionGroup{})
+	db.AutoMigrate(&Role{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Event{})
+	db.AutoMigrate(&Recap{})
+	db.AutoMigrate(&Article{})
 	db.AutoMigrate(&Testnet{})
 	db.AutoMigrate(&Validator{})
 	db.AutoMigrate(&Category{})

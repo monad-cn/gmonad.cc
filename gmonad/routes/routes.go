@@ -20,6 +20,12 @@ func SetupRouter(r *gin.Engine) {
 		event.GET("", controllers.QueryEvents)
 		event.GET("/:id", controllers.GetEvent)
 		event.PUT("/:id/status", middlewares.JWT("event:review"), controllers.UpdateEventPublishStatus)
+
+		// 发布博客是用户默认权限， 这里任何用户都可以添加recap
+		event.POST("/recap", middlewares.JWT("blog:write"), controllers.CreateReacp)
+		event.DELETE("/recap/:id", middlewares.JWT("blog:delete"), controllers.DeleteRecap)
+		event.PUT("/recap/:id", middlewares.JWT("blog:write"), controllers.UpdateRecap)
+		event.GET("/recap", controllers.GetRecap)
 	}
 	blog := r.Group("/v1/blogs")
 	{
@@ -59,6 +65,5 @@ func SetupRouter(r *gin.Engine) {
 		post.GET("/:id", controllers.GetPost)
 		post.GET("", controllers.QueryPosts)
 	}
-
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }
