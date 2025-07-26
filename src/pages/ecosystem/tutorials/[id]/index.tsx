@@ -12,8 +12,12 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTutorialById, updateTutorialPublishStatus } from '@/pages/api/tutorial';
+import {
+  getTutorialById,
+  updateTutorialPublishStatus,
+} from '@/pages/api/tutorial';
 import dayjs from 'dayjs';
+import { sanitizeMarkdown } from '@/lib/markdown';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
@@ -29,6 +33,17 @@ export default function TutorialDetailPage() {
   const [loading, setLoading] = useState(true);
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
+
+  // parseMarkdown将返回的markdown转为html展示
+  const [tutorialContent, setTutorialContent] = useState<string>('');
+
+  useEffect(() => {
+    if (tutorial?.content) {
+      sanitizeMarkdown(tutorial.content).then((htmlContent) => {
+        setTutorialContent(htmlContent);
+      });
+    }
+  }, [tutorial?.content]);
 
   const handleUpdatePublishStatus = async () => {
     try {
@@ -100,18 +115,20 @@ export default function TutorialDetailPage() {
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&
-              tutorial.publisher_id?.toString() === session?.user?.uid ? (
+            tutorial.publisher_id?.toString() === session?.user?.uid ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
-                onClick={() => router.push(`/ecosystem/tutorials/${tutorial.ID}/edit`)}
+                onClick={() =>
+                  router.push(`/ecosystem/tutorials/${tutorial.ID}/edit`)
+                }
               >
                 编辑
               </Button>
             ) : null}
             {tutorial.publish_status === 1 &&
-              status === 'authenticated' &&
-              canReview ? (
+            status === 'authenticated' &&
+            canReview ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -144,7 +161,8 @@ export default function TutorialDetailPage() {
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
                 <div className={styles.metaText}>
-                  发布时间：{formatTime(tutorial.publish_time || tutorial.CreatedAt)}
+                  发布时间：
+                  {formatTime(tutorial.publish_time || tutorial.CreatedAt)}
                 </div>
               </div>
               <div className={styles.metaItem}>
@@ -162,7 +180,9 @@ export default function TutorialDetailPage() {
               {tutorial.dapp && (
                 <div className={styles.metaItem}>
                   <User className={styles.metaIcon} />
-                  <div className={styles.metaText}>DApp：{tutorial.dapp.name}</div>
+                  <div className={styles.metaText}>
+                    DApp：{tutorial.dapp.name}
+                  </div>
                 </div>
               )}
               <div className={styles.metaItem}>
@@ -198,16 +218,12 @@ export default function TutorialDetailPage() {
 
       {/* Main Content */}
       <div className={styles.main}>
-        <div className={styles.content}>
-          <div className={styles.leftColumn}>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>{tutorial.title}</h2>
-              <div
-                className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: tutorial.content }}
-              />
-            </section>
-          </div>
+        <div className="marked-paper">
+          <h2 className={styles.sectionTitle}>{tutorial.title}</h2>
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: tutorialContent }}
+          />
         </div>
       </div>
     </div>

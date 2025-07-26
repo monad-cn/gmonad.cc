@@ -35,7 +35,7 @@ import { createEvent } from '../api/event';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 import dynamic from 'next/dynamic';
 
-const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+const VditorEditor = dynamic(() => import('@/components/vditorEditor/VditorEditor'), { ssr: false });
 
 export default function NewEventPage() {
   const { message } = AntdApp.useApp();
@@ -64,7 +64,7 @@ export default function NewEventPage() {
   };
 
   // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('description', value);
     },
@@ -172,10 +172,10 @@ export default function NewEventPage() {
                 name="description"
                 rules={[{ required: true, message: '请输入活动描述' }]}
               >
-                <QuillEditor
-                  minHeight={400}
+                <VditorEditor
+                  height={400}
                   value={form.getFieldValue('description')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
             </Card>

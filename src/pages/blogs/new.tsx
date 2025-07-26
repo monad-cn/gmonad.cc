@@ -24,7 +24,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
@@ -56,7 +56,7 @@ export default function NewBlogPage() {
   };
 
   // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('content', value);
     },
@@ -171,9 +171,9 @@ export default function NewBlogPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入博客内容' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('content')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
               <Form.Item

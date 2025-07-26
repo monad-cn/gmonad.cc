@@ -34,13 +34,15 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './edit.module.css';
-// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getEventById, updateEvent, updateEventDraft } from '@/pages/api/event';
 import dynamic from 'next/dynamic';
 
-const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+const VditorEditor = dynamic(
+  () => import('@/components/vditorEditor/VditorEditor'),
+  { ssr: false }
+);
 
 type EventMode = '线上活动' | '线下活动';
 
@@ -113,7 +115,7 @@ export default function EditEventPage() {
   };
 
   // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('description', value);
     },
@@ -133,7 +135,7 @@ export default function EditEventPage() {
         link: eventMode === '线上活动' ? values.location || '' : '',
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
-        cover_img: cloudinaryImg?.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url || previewUrl, // 当用户未修改封面则使用详情返回的previewUrl
         tags: tags,
         twitter: values.twitter,
         registration_link: values.registrationLink,
@@ -195,7 +197,8 @@ export default function EditEventPage() {
             eventMode: data?.event_mode,
             eventType: data?.event_type,
             // 根据活动形式来填充 location 字段
-            location: data?.event_mode === '线上活动' ? data?.link : data?.location,
+            location:
+              data?.event_mode === '线上活动' ? data?.link : data?.location,
             cover: data?.cover_img,
             startDate: dayjs(data?.start_time),
             startTime: dayjs(data?.start_time),
@@ -256,10 +259,10 @@ export default function EditEventPage() {
         layout="vertical"
         onFinish={handleSubmit}
         className={styles.form}
-      // initialValues={{
-      //     eventMode: '线上活动',
-      //     publishImmediately: true,
-      // }}
+        // initialValues={{
+        //     eventMode: '线上活动',
+        //     publishImmediately: true,
+        // }}
       >
         <div className={styles.formGrid}>
           {/* 左侧表单 */}
@@ -284,9 +287,9 @@ export default function EditEventPage() {
                 name="description"
                 rules={[{ required: true, message: '请输入活动描述' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('description')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
             </Card>
@@ -484,10 +487,7 @@ export default function EditEventPage() {
                 />
               </Form.Item>
 
-              <Form.Item
-                label="报名截止时间"
-                name="registrationDeadline"
-              >
+              <Form.Item label="报名截止时间" name="registrationDeadline">
                 <DatePicker
                   showTime
                   placeholder="请选择报名截止时间（可选）"
@@ -495,7 +495,6 @@ export default function EditEventPage() {
                 />
               </Form.Item>
             </Card>
-
           </div>
         </div>
 

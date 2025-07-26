@@ -1,3 +1,6 @@
+/* marked解析markdown文档，外包裹器样式 */
+@import url(./markedContainer.css); 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -57,8 +60,12 @@ a {
   min-height: 1em;
 }
 
+/* 处理vditor编辑器全屏被应用header头遮挡 */
+.vditor--fullscreen {
+  z-index: 109 !important;
+}
+
 /* 配合浮动导航栏加一个上内边距样式类 */
 .nav-t-top {
-  padding-top: 6rem!important;
+  padding-top: 6rem !important;
 }
- 

@@ -210,18 +210,6 @@
   padding: 3rem 1rem;
 }
 
-.content {
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 3rem;
-}
-
-.leftColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
 .richText {
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -245,6 +233,7 @@
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width:  1200px;
 }
 
 .sectionTitle {

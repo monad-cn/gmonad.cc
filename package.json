@@ -22,8 +22,8 @@
     "react-countup": "^6.5.3",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-quill-new": "^3.4.6",
-    "sanitize-html": "^2.17.0"
+    "sanitize-html": "^2.17.0",
+    "vditor": "^3.11.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -26,6 +26,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getEventById, updateEventPublishStatus } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
 import { getRecapByEventId } from '@/pages/api/recap';
+import { sanitizeMarkdown } from '@/lib/markdown';
 
 export default function EventDetailPage() {
   const { message } = AntdApp.useApp();
@@ -45,6 +46,26 @@ export default function EventDetailPage() {
   const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
+
+  // parseMarkdown将返回的markdown转为html展示
+  const [eventContent, setEventContent] = useState<string>('');
+  const [recapContent, setRecapContent] = useState<string>('');
+
+  useEffect(() => {
+    if (event?.description) {
+      sanitizeMarkdown(event.description).then((htmlContent) => {
+        setEventContent(htmlContent);
+      });
+    }
+  }, [event?.description]);
+
+  useEffect(() => {
+    if (recap?.content) {
+      sanitizeMarkdown(recap.content).then((htmlContent) => {
+        setRecapContent(htmlContent);
+      });
+    }
+  }, [recap?.content]);
 
   const handleUpdatePublishStatus = async () => {
     try {
@@ -319,14 +340,14 @@ export default function EventDetailPage() {
 
               {activeTab === 'intro' ? (
                 <div
-                  className={styles.richText}
-                  dangerouslySetInnerHTML={{ __html: event.description }}
+                  className={`${styles.richText} prose`}
+                  dangerouslySetInnerHTML={{ __html: eventContent }}
                 />
               ) : (
                 recap?.content ? (
                   <div
-                    className={styles.richText}
-                    dangerouslySetInnerHTML={{ __html: recap.content }}
+                    className={`${styles.richText} prose`}
+                    dangerouslySetInnerHTML={{ __html: recapContent }}
                   />
                 ) : (
                   <div className={styles.richText}>暂无活动回顾内容</div>

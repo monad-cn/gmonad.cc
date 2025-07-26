@@ -8,7 +8,7 @@ import dynamic from "next/dynamic"
 import { getEventById } from "@/pages/api/event"
 import { createRecap } from "@/pages/api/recap"
 
-const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+const VditorEditor = dynamic(() => import('@/components/vditorEditor/VditorEditor'), { ssr: false });
 
 interface Event {
     ID: string
@@ -98,7 +98,7 @@ export default function EventRecap() {
 
 
     // 富文本处理
-    const handleQuillEditorChange = useCallback(
+    const handleVditorEditorChange = useCallback(
         (value: string) => {
             form.setFieldValue('content', value);
         },
@@ -176,10 +176,10 @@ export default function EventRecap() {
                                     { min: 10, message: "回顾内容至少需要10个字符" },
                                 ]}
                             >
-                                <QuillEditor
-                                    minHeight={500}
+                                <VditorEditor
+                                    height={500}
                                     value={form.getFieldValue('content')}
-                                    onChange={handleQuillEditorChange}
+                                    onChange={handleVditorEditorChange}
                                 />
                             </Form.Item>
                         </div>
