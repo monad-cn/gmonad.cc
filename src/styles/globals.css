@@ -1,3 +1,6 @@
+/* marked解析markdown文档，外包裹器样式 */
+@import url(./markedContainer.css); 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

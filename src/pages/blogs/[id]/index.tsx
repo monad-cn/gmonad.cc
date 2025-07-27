@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
+import { Button, Tag, App as AntdApp, Image } from 'antd';
 import {
   ArrowLeft,
   Calendar,
@@ -12,10 +12,9 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { updateEventPublishStatus } from '@/pages/api/event';
-import { SiX } from 'react-icons/si';
 import { getBlogById, updateBlogPublishStatus } from '@/pages/api/blog';
 import dayjs from 'dayjs';
+import { sanitizeMarkdown } from '@/lib/markdown';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
@@ -29,13 +28,21 @@ export default function BlogDetailPage() {
 
   const [blog, setBlog] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [shareModalVisible, setShareModalVisible] = useState(false);
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
+
+  // parseMarkdown将返回的markdown转为html展示
+  const [blogContent, setBlogContent] = useState<string>('');
+
+  useEffect(() => {
+    if (blog?.content) {
+      sanitizeMarkdown(blog.content).then((htmlContent) => {
+        setBlogContent(htmlContent);
+      });
+    }
+  }, [blog?.content]);
 
   const handleUpdatePublishStatus = async () => {
     try {
@@ -58,7 +65,6 @@ export default function BlogDetailPage() {
       setLoading(true);
       try {
         const response = await getBlogById(rId);
-        console.log('获取活动详情:', response);
         setBlog(response?.data);
       } catch (error) {
         message.error('加载失败');
@@ -70,20 +76,6 @@ export default function BlogDetailPage() {
 
     fetchData();
   }, [router.isReady, id]);
-
-  const handleShare = (platform?: string) => {
-    if (platform === 'copy') {
-      navigator.clipboard.writeText(window.location.href);
-      message.success('链接已复制到剪贴板');
-    } else if (platform === 'twitter') {
-      const text = `${blog.title} - ${window.location.href}`;
-      window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
-      );
-    } else {
-      setShareModalVisible(true);
-    }
-  };
 
   if (loading) {
     return (
@@ -110,24 +102,8 @@ export default function BlogDetailPage() {
     );
   }
 
-  const formatDateTime = (dateTime: string) => {
-    const date = new Date(dateTime);
-    return {
-      date: date.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long',
-      }),
-      time: date.toLocaleTimeString('zh-CN', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
-  };
-
   return (
-     <div className={`${styles.container} nav-t-top`}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
@@ -227,41 +203,14 @@ export default function BlogDetailPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className={styles.main}>
-        <div className={styles.content}>
-          {/* Left Column */}
-          <div className={styles.leftColumn}>
-            {/* Description */}
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>{blog.title}</h2>
-              <div
-                className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: blog.content }}
-              />
-            </section>
-          </div>
+        <div className="marked-paper">
+          <h2 className={styles.sectionTitle}>{blog.title}</h2>
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: blogContent }}
+          />
         </div>
-
-        {/* <div className={styles.shareCard}>
-          <h3 className={styles.cardTitle}>分享活动</h3>
-          <div className={styles.shareButtons}>
-            <Button
-              icon={<Copy size={16} />}
-              className={styles.shareButton}
-              onClick={() => handleShare('copy')}
-            >
-              复制链接
-            </Button>
-            <Button
-              icon={<SiX size={16} />}
-              className={styles.shareButton}
-              onClick={() => handleShare('twitter')}
-            >
-              分享到 X
-            </Button>
-          </div> */}
-        {/* </div> */}
       </div>
     </div>
   );
