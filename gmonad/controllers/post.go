@@ -5,6 +5,7 @@ import (
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -148,12 +149,25 @@ func QueryPosts(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
 
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
+
 	filter := models.PostFilter{
 		Keyword:   keyword,
 		UserId:    uint(userId),
 		OrderDesc: order == "desc",
 		Page:      page,
 		PageSize:  pageSize,
+	}
+
+	var start, end time.Time
+	start, _ = time.Parse("2006-01-02", startDate)
+	end, _ = time.Parse("2006-01-02", endDate)
+
+	if !start.IsZero() && !end.IsZero() {
+		newEnd := end.AddDate(0, 0, 1)
+		filter.StartDate = &start
+		filter.EndDate = &newEnd
 	}
 
 	posts, total, err := models.QueryPosts(filter)
@@ -170,4 +184,13 @@ func QueryPosts(c *gin.Context) {
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "query success", response)
+}
+
+func PostsStats(c *gin.Context) {
+	stats, err := models.GetPostStats(6)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "query success", stats)
 }
