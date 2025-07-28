@@ -537,6 +537,31 @@
     font-weight: 600;
 }
 
+.listBottomControls {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 0.5rem 0 0.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.bottomPagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.resultsInfo {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.compactPagination {
+  font-size: 12px;
+}
 
 
 
