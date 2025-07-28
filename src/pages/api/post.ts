@@ -9,6 +9,7 @@ export interface User {
 
 // 帖子主模型
 export interface Post {
+  twitter: string | undefined;
   ID: number;
   title: string;
   description: string;
@@ -42,6 +43,8 @@ export interface GetPostsParams {
   page?: number;
   page_size?: number;
   user_id?: number;
+  start_date?: string;
+  end_date?: string;
 }
 
 // 分页返回数据结构
@@ -145,8 +148,12 @@ export const getPosts = async (
 
     if (params.keyword?.trim()) query.append('keyword', params.keyword.trim());
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
+    if (params.start_date?.trim()) query.append('start_date', params.start_date.trim());
+    if (params.end_date?.trim()) query.append('end_date', params.end_date.trim());
+
     if (params.user_id != null)
       query.append('user_id', params.user_id.toString());
+
 
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+	"time"
 	"gmonad/models"
 	"gmonad/utils"
 	"net/http"
@@ -148,6 +150,9 @@ func QueryPosts(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
 
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
+
 	filter := models.PostFilter{
 		Keyword:   keyword,
 		UserId:    uint(userId),
@@ -155,6 +160,18 @@ func QueryPosts(c *gin.Context) {
 		Page:      page,
 		PageSize:  pageSize,
 	}
+
+	var start, end time.Time
+	start, _ = time.Parse("2006-01-02", startDate)
+	end, _ = time.Parse("2006-01-02", endDate)
+
+	fmt.Println(start)
+	
+	if !start.IsZero() && !end.IsZero() {
+		filter.StartDate = &start
+		filter.EndDate = &end
+	}
+
 
 	posts, total, err := models.QueryPosts(filter)
 	if err != nil {

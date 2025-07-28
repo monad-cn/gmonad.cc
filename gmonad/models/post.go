@@ -1,6 +1,7 @@
 package models
 
 import (
+	"time"
 	"errors"
 	"strings"
 
@@ -47,6 +48,8 @@ func (p *Post) Delete() error {
 type PostFilter struct {
 	Keyword   string
 	UserId    uint
+	StartDate *time.Time
+	EndDate   *time.Time
 	OrderDesc bool
 	Page      int
 	PageSize  int
@@ -69,6 +72,10 @@ func QueryPosts(filter PostFilter) ([]Post, int64, error) {
 
 	if filter.UserId != 0 {
 		query = query.Where("user_id = ?", filter.UserId)
+	}
+
+	if filter.StartDate != nil {
+		query = query.Where("posts.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
 	}
 
 	// 统计总数（不加 limit 和 offset）

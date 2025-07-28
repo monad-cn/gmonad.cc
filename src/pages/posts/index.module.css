@@ -120,6 +120,17 @@
     color: #8b5cf6;
 }
 
+.mainLayout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.postsSection {
+  min-width: 0;
+}
+
 .postsContainer {
     display: flex;
     flex-direction: column;
@@ -199,8 +210,10 @@
 }
 
 .xLink {
-    color: #8b5cf6;
+    color: #7c3aed;
     transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
 .xLink:hover {
@@ -264,6 +277,216 @@
     padding: 4rem 2rem;
     text-align: center;
     color: #6b7280;
+}
+
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.sidebarCard {
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebarHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sidebarIcon {
+    color: #8b5cf6;
+    width: 18px;
+    height: 18px;
+}
+
+.sidebarTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+/* 热门帖子 */
+.hotPosts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.hotPostItem {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.hotPostItem:hover {
+    background-color: #faf5ff;
+}
+
+.hotPostRank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.hotPostContent {
+    flex: 1;
+    min-width: 0;
+}
+
+.hotPostTitle {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hotPostMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.hotPostAuthor {
+    color: #8b5cf6;
+}
+
+.hotPostViews {
+    color: #6b7280;
+}
+
+/* 热门标签 */
+.hotTags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.hotTagItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.hotTagItem:hover {
+    background-color: #faf5ff;
+}
+
+.hotTagName {
+    font-size: 0.85rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+.hotTagCount {
+    font-size: 0.75rem;
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+/* 活跃用户 */
+.activeUsers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.activeUserItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.activeUserItem:hover {
+    background-color: #faf5ff;
+}
+
+.activeUserAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #8b5cf6;
+    object-fit: cover;
+}
+
+.activeUserInfo {
+    flex: 1;
+}
+
+.activeUserName {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.activeUserStats {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* 社区统计 */
+.communityStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.statItem {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.statNumber {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .createModal {
@@ -374,6 +597,16 @@
 @media (max-width: 1024px) {
     .content {
         max-width: 800px;
+    }
+
+    .mainLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        order: -1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
