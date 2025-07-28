@@ -125,11 +125,7 @@ func GetPostStats(limit int) (*PostStats, error) {
 	var stats PostStats
 	var err error
 
-	// 获取时间范围：本周起始时间
-	startOfWeek := time.Now().Truncate(24 * time.Hour)
-	for startOfWeek.Weekday() != time.Monday {
-		startOfWeek = startOfWeek.AddDate(0, 0, -1)
-	}
+	startOfWeek := time.Now().Truncate(24*time.Hour).AddDate(0, 0, -6)
 
 	// 合并查询：总帖子数、本周帖子数、活跃用户数
 	type result struct {
