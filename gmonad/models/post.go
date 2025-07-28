@@ -1,9 +1,9 @@
 package models
 
 import (
-	"time"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -102,4 +102,87 @@ func QueryPosts(filter PostFilter) ([]Post, int64, error) {
 
 	err := query.Find(&posts).Error
 	return posts, total, err
+}
+
+type PostStats struct {
+	TotalPosts      int64            `json:"total_posts"`
+	ActiveUserCount int64            `json:"active_user_count"`
+	WeeklyPostCount int64            `json:"weekly_post_count"`
+	WeeklyHotPosts  []Post           `json:"weekly_hot_posts"`
+	AllTimeHotPosts []Post           `json:"all_time_hot_posts"`
+	TopActiveUsers  []ActiveUserStat `json:"top_active_users"`
+}
+
+type ActiveUserStat struct {
+	ID        uint   `json:"id"`
+	Email     string `json:"email"`
+	Username  string `json:"username"`
+	Avatar    string `json:"avatar"`
+	PostCount int64  `json:"post_count"`
+}
+
+func GetPostStats(limit int) (*PostStats, error) {
+	var stats PostStats
+	var err error
+
+	// 获取时间范围：本周起始时间
+	startOfWeek := time.Now().Truncate(24 * time.Hour)
+	for startOfWeek.Weekday() != time.Monday {
+		startOfWeek = startOfWeek.AddDate(0, 0, -1)
+	}
+
+	// 合并查询：总帖子数、本周帖子数、活跃用户数
+	type result struct {
+		TotalPosts  int64
+		WeeklyPosts int64
+		ActiveUsers int64
+	}
+
+	var res result
+	err = db.Raw(`
+			SELECT 
+				(SELECT COUNT(*) FROM posts) AS total_posts,
+				(SELECT COUNT(*) FROM posts WHERE created_at >= ?) AS weekly_posts,
+				(SELECT COUNT(DISTINCT user_id) FROM posts) AS active_users
+		`, startOfWeek).Scan(&res).Error
+	if err != nil {
+		return nil, err
+	}
+
+	stats.TotalPosts = res.TotalPosts
+	stats.WeeklyPostCount = res.WeeklyPosts
+	stats.ActiveUserCount = res.ActiveUsers
+
+	// 获取本周热门帖子
+	err = db.Preload("User").
+		Where("created_at >= ?", startOfWeek).
+		Order("view_count desc").
+		Limit(limit).
+		Find(&stats.WeeklyHotPosts).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 获取总热门帖子
+	err = db.Preload("User").
+		Order("view_count desc").
+		Limit(limit).
+		Find(&stats.AllTimeHotPosts).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 获取发帖最多的用户列表（活跃用户）
+	err = db.Model(&User{}).
+		Select("users.id, users.email, users.username, users.avatar, COUNT(posts.id) AS post_count").
+		Joins("JOIN posts ON posts.user_id = users.id").
+		Group("users.id").
+		Order("post_count DESC").
+		Limit(limit).
+		Scan(&stats.TopActiveUsers).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &stats, nil
 }

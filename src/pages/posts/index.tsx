@@ -1,18 +1,18 @@
 import type React from "react"
 import { useState, useMemo, useEffect, useCallback } from "react"
-import { Input, Select, Card, Empty, Button, Modal, Form, message, Spin, Tag, DatePicker } from "antd"
+import { Input, Select, Card, Empty, Button, Modal, Form, message, Spin, Tag, DatePicker, App as AntdApp } from "antd"
 import { Search, Star, Plus, User, ExternalLink, Clock, X, TrendingUp, Users, MessageCircle, Calendar } from "lucide-react"
 import styles from "./index.module.css"
-import { getPosts, createPost, Post as PostType } from "../api/post"
+import { getPosts, createPost, Post as PostType, getPostsStats, PostsStats } from "../api/post"
 import Image from 'next/image'
 import dayjs from "dayjs"
-import { start } from "repl"
 
 const { TextArea } = Input
 const { Option } = Select
 const { RangePicker } = DatePicker
 
 export default function PostsList() {
+    const { message } = AntdApp.useApp();
     const [posts, setPosts] = useState<PostType[]>([])
     const [searchTerm, setSearchTerm] = useState("")
     const [sortBy, setSortBy] = useState("desc")
@@ -23,25 +23,25 @@ export default function PostsList() {
     const [inputValue, setInputValue] = useState("")
     const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>(() => {
         const endOfToday = dayjs().endOf('day');
-        const startOfWeekAgo = dayjs().subtract(6   , 'day').startOf('day');
+        const startOfWeekAgo = dayjs().subtract(6, 'day').startOf('day');
         return [startOfWeekAgo, endOfToday];
     });
+    const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
 
     const [startDate, setStartDate] = useState(dateRange[0].format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState(dateRange[1].format('YYYY-MM-DD'));
 
 
     const [loading, setLoading] = useState(false)
-
-    const fetchPosts = useCallback(async (start: string, end: string) => {
+    const fetchPosts = useCallback(async () => {
         setLoading(true);
         const res = await getPosts({
             keyword: searchTerm,
             order: sortBy as 'asc' | 'desc',
             page: 1,
             page_size: 100,
-            start_date: start,
-            end_date: end,
+            start_date: startDate,
+            end_date: endDate,
         });
         if (res.success && res.data) {
             setPosts(res.data.posts);
@@ -49,16 +49,34 @@ export default function PostsList() {
             message.error(res.message || '获取帖子失败');
         }
         setLoading(false);
-    }, [searchTerm, sortBy]);
+    }, [searchTerm, sortBy, startDate, endDate]);
+
+    const fetchPostsStats = async () => {
+        try {
+            const res = await getPostsStats();
+            if (res.success && res.data) {
+                setPostsStats(res.data);
+            } else {
+                message.error(res.message || "获取社区统计失败");
+            }
+        } catch (error) {
+            console.error("获取社区统计异常:", error);
+            message.error("获取社区统计异常");
+        }
+    }
 
     useEffect(() => {
         if (!dateRange?.[0] || !dateRange?.[1]) return;
+
         const newStartDate = dateRange[0].format('YYYY-MM-DD');
         const newEndDate = dateRange[1].format('YYYY-MM-DD');
+
         setStartDate(newStartDate);
         setEndDate(newEndDate);
-        fetchPosts(newStartDate, newEndDate);
-    }, [dateRange, fetchPosts]);
+
+        fetchPosts();
+        fetchPostsStats();
+    }, [searchTerm, sortBy, dateRange, fetchPosts]);
 
     const getStarCount = (viewCount: number) => {
         if (viewCount >= 2000) return 5
@@ -80,7 +98,8 @@ export default function PostsList() {
                 message.success("帖子发布成功！")
                 setIsCreateModalVisible(false)
                 form.resetFields()
-                fetchPosts(startDate, endDate)
+                fetchPosts()
+                fetchPostsStats()
             } else {
                 message.error(res.message || "发布失败")
             }
@@ -110,14 +129,6 @@ export default function PostsList() {
         }
     }
 
-
-    const activeUsers = [
-        { name: "Alice Chen", avatar: "/placeholder.svg?height=32&width=32", posts: 23, reputation: 1250 },
-        { name: "Bob Wilson", avatar: "/placeholder.svg?height=32&width=32", posts: 19, reputation: 980 },
-        { name: "Carol Davis", avatar: "/placeholder.svg?height=32&width=32", posts: 17, reputation: 890 },
-        { name: "David Kim", avatar: "/placeholder.svg?height=32&width=32", posts: 15, reputation: 750 },
-        { name: "Eva Martinez", avatar: "/placeholder.svg?height=32&width=32", posts: 12, reputation: 680 },
-    ]
     const handleDateRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
         if (!dates || !dates[0] || !dates[1]) return;
         setDateRange([dates[0], dates[1]]);
@@ -251,7 +262,7 @@ export default function PostsList() {
                                     <h3 className={styles.sidebarTitle}>热门帖子</h3>
                                 </div>
                                 <div className={styles.hotPosts}>
-                                    {posts.map((post, index) => (
+                                    {(postsStats?.weekly_hot_posts ?? []).map((post, index) => (
                                         <div key={post.ID} className={styles.hotPostItem}>
                                             <div className={styles.hotPostRank}>{index + 1}</div>
                                             <div className={styles.hotPostContent}>
@@ -263,6 +274,9 @@ export default function PostsList() {
                                             </div>
                                         </div>
                                     ))}
+                                    {(postsStats?.weekly_hot_posts?.length ?? 0) === 0 && (
+                                        <Empty description="暂无热门帖子" />
+                                    )}
                                 </div>
                             </Card>
 
@@ -272,20 +286,27 @@ export default function PostsList() {
                             <Card className={styles.sidebarCard}>
                                 <div className={styles.sidebarHeader}>
                                     <Users className={styles.sidebarIcon} />
-                                    <h3 className={styles.sidebarTitle}>活跃用户</h3>
+                                    <h3 className={styles.sidebarTitle}>活跃作者</h3>
                                 </div>
                                 <div className={styles.activeUsers}>
-                                    {activeUsers.map((user) => (
-                                        <div key={user.name} className={styles.activeUserItem}>
-                                            <img src={user.avatar || "/placeholder.svg"} alt={user.name} className={styles.activeUserAvatar} />
+                                    {(postsStats?.top_active_users ?? []).map((user) => (
+                                        <div key={user.Id} className={styles.activeUserItem}>
+                                            <Image
+                                                width={40} // 你可以根据实际样式调整宽度
+                                                height={40}
+                                                src={user.avatar || "/placeholder.svg"}
+                                                alt={user.username}
+                                                className={styles.activeUserAvatar}
+                                            />
                                             <div className={styles.activeUserInfo}>
-                                                <div className={styles.activeUserName}>{user.name}</div>
-                                                <div className={styles.activeUserStats}>
-                                                    {user.posts} 帖子 · {user.reputation} 声誉
-                                                </div>
+                                                <div className={styles.activeUserName}>{user.username}</div>
+                                                <div className={styles.activeUserPosts}>帖子数: {user.post_count}</div>
                                             </div>
                                         </div>
                                     ))}
+                                    {(postsStats?.top_active_users?.length ?? 0) === 0 && (
+                                        <Empty description="暂无活跃用户" />
+                                    )}
                                 </div>
                             </Card>
 
@@ -297,16 +318,22 @@ export default function PostsList() {
                                 </div>
                                 <div className={styles.communityStats}>
                                     <div className={styles.statItem}>
-                                        <div className={styles.statNumber}>1,234</div>
+                                        <div className={styles.statNumber}>
+                                            {postsStats?.total_posts?.toLocaleString() ?? '0'}
+                                        </div>
                                         <div className={styles.statLabel}>总帖子数</div>
                                     </div>
                                     <div className={styles.statItem}>
-                                        <div className={styles.statNumber}>567</div>
+                                        <div className={styles.statNumber}>
+                                            {postsStats?.active_user_count?.toLocaleString() ?? '0'}
+                                        </div>
                                         <div className={styles.statLabel}>活跃用户</div>
                                     </div>
                                     <div className={styles.statItem}>
-                                        <div className={styles.statNumber}>89</div>
-                                        <div className={styles.statLabel}>今日新帖</div>
+                                        <div className={styles.statNumber}>
+                                            {postsStats?.weekly_post_count?.toLocaleString() ?? '0'}
+                                        </div>
+                                        <div className={styles.statLabel}>本周帖子</div>
                                     </div>
                                 </div>
                             </Card>

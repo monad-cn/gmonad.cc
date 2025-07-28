@@ -64,6 +64,7 @@ func SetupRouter(r *gin.Engine) {
 		post.DELETE("/:id", middlewares.JWT("blog:delete"), controllers.DeletePost)
 		post.GET("/:id", controllers.GetPost)
 		post.GET("", controllers.QueryPosts)
+		post.GET("/stats", controllers.PostsStats)
 	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 }

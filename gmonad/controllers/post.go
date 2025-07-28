@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"fmt"
-	"time"
 	"gmonad/models"
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -165,13 +164,11 @@ func QueryPosts(c *gin.Context) {
 	start, _ = time.Parse("2006-01-02", startDate)
 	end, _ = time.Parse("2006-01-02", endDate)
 
-	fmt.Println(start)
-	
 	if !start.IsZero() && !end.IsZero() {
+		newEnd := end.AddDate(0, 0, 1)
 		filter.StartDate = &start
-		filter.EndDate = &end
+		filter.EndDate = &newEnd
 	}
-
 
 	posts, total, err := models.QueryPosts(filter)
 	if err != nil {
@@ -187,4 +184,13 @@ func QueryPosts(c *gin.Context) {
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "query success", response)
+}
+
+func PostsStats(c *gin.Context) {
+	stats, err := models.GetPostStats(6)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "query success", stats)
 }
