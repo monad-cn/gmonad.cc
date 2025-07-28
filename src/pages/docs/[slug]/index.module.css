@@ -1,54 +1,38 @@
 .container {
-  min-height: 100vh;
   background-color: #f9fafb;
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 250px 1fr 250px;
-  gap: 1.5rem;
+  display: block;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 0.5rem;
-  align-items: start;
+  padding: 1rem 0.5rem;
+  padding-left: 270px;
+  padding-right: 270px;
 }
 
-.leftSidebar,
-.rightSidebar {
-  position: sticky;
-  top: calc(6rem + 2rem);
-  max-height: calc(100vh - 6rem - 4rem);
+.leftSidebar {
+  position: fixed;
+  left: calc(50% - 600px);
+  top: 7rem;
+  width: 250px;
+  max-height: calc(100vh - 8rem);
   overflow-y: auto;
+  z-index: 10;
+}
+
+.rightSidebar {
+  position: fixed;
+  right: calc(50% - 600px);
+  top: 7rem;
+  width: 250px;
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  z-index: 10;
 }
 
 .mainContent {
   min-width: 0;
-  max-height: calc(100vh - 6rem - 4rem);
-  overflow-y: auto;
-}
-
-/* 滚动条样式美化 */
-.mainContent::-webkit-scrollbar {
-  width: 6px;
-}
-
-.mainContent::-webkit-scrollbar-track {
-  background: #f8fafc;
-  border-radius: 3px;
-}
-
-.mainContent::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.mainContent::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Firefox 滚动条样式 */
-.mainContent {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f8fafc;
 }
 
 /* 面包屑导航样式 */
@@ -435,14 +419,16 @@
 /* 响应式设计 */
 @media (max-width: 1024px) {
   .layout {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
   
   .leftSidebar,
   .rightSidebar {
     position: static;
+    width: auto;
     max-height: none;
+    margin-bottom: 1.5rem;
   }
   
   .leftSidebar {
