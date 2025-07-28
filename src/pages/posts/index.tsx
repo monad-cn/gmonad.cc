@@ -23,7 +23,7 @@ export default function PostsList() {
     const [inputValue, setInputValue] = useState("")
     const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>(() => {
         const endOfToday = dayjs().endOf('day');
-        const startOfWeekAgo = dayjs().subtract(6, 'day').startOf('day');
+        const startOfWeekAgo = dayjs().subtract(6   , 'day').startOf('day');
         return [startOfWeekAgo, endOfToday];
     });
 
