@@ -186,7 +186,6 @@ export default function PostsList() {
     setIsPostDetailVisible(true)
   }
 
-  // 🔥 修改7：新增关闭帖子详情modal
   const handleClosePostDetail = () => {
     setIsPostDetailVisible(false)
     setSelectedPost(null)
@@ -357,7 +356,7 @@ export default function PostsList() {
                 </div>
                 <div className={styles.hotPosts}>
                   {(postsStats?.weekly_hot_posts ?? []).map((post, index) => (
-                    <div key={post.ID} className={styles.hotPostItem}>
+                    <div key={post.ID} className={styles.hotPostItem} onClick={() => handlePostClick(post)}>
                       <div className={styles.hotPostRank}>{index + 1}</div>
                       <div className={styles.hotPostContent}>
                         <h4 className={styles.hotPostTitle}>{post.title}</h4>
