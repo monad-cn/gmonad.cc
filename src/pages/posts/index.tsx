@@ -40,13 +40,43 @@ import {
   PostsStats,
   Post,
 } from '../api/post';
-import { SiX } from "react-icons/si"
+import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+/**
+ * 日期范围选择器的"今天"快捷按钮组件
+ * @param props - 组件属性
+ * @param props.dateRange - 当前选中的日期范围
+ * @param props.handleDateRangeChange - 日期范围变化处理函数
+ */
+function DateNowButton(props: {
+  dateRange: [dayjs.Dayjs, dayjs.Dayjs];
+  handleDateRangeChange: (
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  ) => void;
+}) {
+  const handleNow = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation();
+
+    props.handleDateRangeChange([dayjs(), dayjs()]);
+  };
+
+  return (
+    <Button
+      size="small"
+      variant="filled"
+      color="primary"
+      onClick={(e) => handleNow(e)}
+    >
+      今天
+    </Button>
+  );
+}
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();
@@ -67,8 +97,8 @@ export default function PostsList() {
     return [startOfWeekAgo, endOfToday];
   });
   const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
-  const [isPostDetailVisible, setIsPostDetailVisible] = useState(false)
-  const [selectedPost, setSelectedPost] = useState<PostType | null>(null)
+  const [isPostDetailVisible, setIsPostDetailVisible] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [startDate, setStartDate] = useState(dateRange[0].format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(dateRange[1].format('YYYY-MM-DD'));
 
@@ -182,15 +212,14 @@ export default function PostsList() {
   };
 
   const handlePostClick = (post: Post) => {
-    setSelectedPost(post)
-    setIsPostDetailVisible(true)
-  }
+    setSelectedPost(post);
+    setIsPostDetailVisible(true);
+  };
 
   const handleClosePostDetail = () => {
-    setIsPostDetailVisible(false)
-    setSelectedPost(null)
-  }
-
+    setIsPostDetailVisible(false);
+    setSelectedPost(null);
+  };
 
   const handleDateRangeChange = (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
@@ -247,6 +276,7 @@ export default function PostsList() {
             </div>
             <div className={styles.dateContainer}>
               <RangePicker
+                prefix={DateNowButton({ dateRange, handleDateRangeChange })}
                 placeholder={['开始日期', '结束日期']}
                 value={dateRange}
                 onChange={handleDateRangeChange}
@@ -282,7 +312,11 @@ export default function PostsList() {
                   <Empty description="暂无帖子" className={styles.empty} />
                 ) : (
                   posts.map((post) => (
-                    <Card key={post.ID} className={styles.postCard} onClick={() => handlePostClick(post)}>
+                    <Card
+                      key={post.ID}
+                      className={styles.postCard}
+                      onClick={() => handlePostClick(post)}
+                    >
                       <div className={styles.postContent}>
                         <div className={styles.avatarSection}>
                           <Image
@@ -301,10 +335,18 @@ export default function PostsList() {
                                 {post.user?.username}
                               </span>
                               <span className={styles.postDate}>
-                                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
+                                {dayjs(post.CreatedAt).format(
+                                  'YYYY-MM-DD HH:mm'
+                                )}
                               </span>
                               {post.twitter && (
-                                <a href={post.twitter} target="_blank" rel="noopener noreferrer" className={styles.xLink} onClick={(e) => e.stopPropagation()}>
+                                <a
+                                  href={post.twitter}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={styles.xLink}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
                                   <SiX size={16} />
                                   <span className={styles.xText}>查看推文</span>
                                 </a>
@@ -356,7 +398,11 @@ export default function PostsList() {
                 </div>
                 <div className={styles.hotPosts}>
                   {(postsStats?.weekly_hot_posts ?? []).map((post, index) => (
-                    <div key={post.ID} className={styles.hotPostItem} onClick={() => handlePostClick(post)}>
+                    <div
+                      key={post.ID}
+                      className={styles.hotPostItem}
+                      onClick={() => handlePostClick(post)}
+                    >
                       <div className={styles.hotPostRank}>{index + 1}</div>
                       <div className={styles.hotPostContent}>
                         <h4 className={styles.hotPostTitle}>{post.title}</h4>
@@ -470,7 +516,7 @@ export default function PostsList() {
               <div className={styles.postDetailHeader}>
                 <div className={styles.postDetailAuthor}>
                   <Image
-                    src={selectedPost.user?.avatar || "/placeholder.svg"}
+                    src={selectedPost.user?.avatar || '/placeholder.svg'}
                     width={40}
                     height={40}
                     alt={selectedPost.user?.username as string}
@@ -484,13 +530,19 @@ export default function PostsList() {
                     <div className={styles.postDetailMeta}>
                       <div className={styles.postDetailTime}>
                         <Clock size={16} />
-                        <span>{dayjs(selectedPost.CreatedAt).format('YYYY-MM-DD HH:mm')}</span>
+                        <span>
+                          {dayjs(selectedPost.CreatedAt).format(
+                            'YYYY-MM-DD HH:mm'
+                          )}
+                        </span>
                       </div>
 
                       {selectedPost.view_count !== 0 && (
                         <div className={styles.postDetailStat}>
                           <Eye size={16} />
-                          <span>{selectedPost.view_count?.toLocaleString()} 浏览</span>
+                          <span>
+                            {selectedPost.view_count?.toLocaleString()} 浏览
+                          </span>
                         </div>
                       )}
                       <div className={styles.postDetailTags}>
@@ -501,7 +553,6 @@ export default function PostsList() {
                         ))}
                       </div>
                     </div>
-
                   </div>
                 </div>
                 {selectedPost.twitter && (
@@ -524,46 +575,50 @@ export default function PostsList() {
               <div className={styles.postDetailBody}>
                 {selectedPost.description ? (
                   <div className={styles.postDetailMarkdown}>
-                    {selectedPost.description.split("\n").map((line, index) => {
-                      if (line.startsWith("# ")) {
+                    {selectedPost.description.split('\n').map((line, index) => {
+                      if (line.startsWith('# ')) {
                         return (
                           <h1 key={index} className={styles.mdH1}>
                             {line.substring(2)}
                           </h1>
-                        )
-                      } else if (line.startsWith("## ")) {
+                        );
+                      } else if (line.startsWith('## ')) {
                         return (
                           <h2 key={index} className={styles.mdH2}>
                             {line.substring(3)}
                           </h2>
-                        )
-                      } else if (line.startsWith("### ")) {
+                        );
+                      } else if (line.startsWith('### ')) {
                         return (
                           <h3 key={index} className={styles.mdH3}>
                             {line.substring(4)}
                           </h3>
-                        )
-                      } else if (line.startsWith("- ")) {
+                        );
+                      } else if (line.startsWith('- ')) {
                         return (
                           <li key={index} className={styles.mdLi}>
                             {line.substring(2)}
                           </li>
-                        )
-                      } else if (line.startsWith("```")) {
-                        return <div key={index} className={styles.mdCode}></div>
-                      } else if (line.trim() === "") {
-                        return <br key={index} />
+                        );
+                      } else if (line.startsWith('```')) {
+                        return (
+                          <div key={index} className={styles.mdCode}></div>
+                        );
+                      } else if (line.trim() === '') {
+                        return <br key={index} />;
                       } else {
                         return (
                           <p key={index} className={styles.mdP}>
                             {line}
                           </p>
-                        )
+                        );
                       }
                     })}
                   </div>
                 ) : (
-                  <p className={styles.postDetailDescription}>{selectedPost.description}</p>
+                  <p className={styles.postDetailDescription}>
+                    {selectedPost.description}
+                  </p>
                 )}
               </div>
 
