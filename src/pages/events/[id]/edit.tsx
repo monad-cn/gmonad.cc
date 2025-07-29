@@ -133,7 +133,7 @@ export default function EditEventPage() {
         link: eventMode === '线上活动' ? values.location || '' : '',
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
-        cover_img: cloudinaryImg?.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url || previewUrl, // 当用户未修改封面则使用详情返回的
         tags: tags,
         twitter: values.twitter,
         registration_link: values.registrationLink,

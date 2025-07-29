@@ -1,15 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  Form,
-  Input,
-  Checkbox,
-  Upload,
-  Button,
-  Card,
-  Tag,
-  App as AntdApp,
-} from 'antd';
-import type { UploadProps, UploadFile } from 'antd';
+import { Form, Input, Upload, Button, Card, Tag, App as AntdApp } from 'antd';
 import {
   ArrowLeft,
   Users,
@@ -17,21 +7,17 @@ import {
   ImageIcon,
   Save,
   Plus,
-  X,
-  RotateCcw,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
 import { createBlog } from '../api/blog';
 import router from 'next/router';
 
-const { Dragger } = Upload;
 const { TextArea } = Input;
 
 export default function NewBlogPage() {
@@ -41,22 +27,12 @@ export default function NewBlogPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
 
-  // 格式化时间为字符串
-  const formatDateTime = (date: any, time: any) => {
-    if (!date || !time) return '';
-
-    const dateStr = date.format('YYYY-MM-DD');
-    const timeStr = time.format('HH:mm:ss');
-    return `${dateStr} ${timeStr}`;
-  };
-
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  // 编辑器处理
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('content', value);
     },
@@ -111,7 +87,7 @@ export default function NewBlogPage() {
   };
 
   return (
-     <div className={`${styles.container} nav-t-top`}>
+    <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
@@ -171,9 +147,13 @@ export default function NewBlogPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入博客内容' }]}
               >
-                <QuillEditor
+                {/* <QuillEditor
                   value={form.getFieldValue('content')}
                   onChange={handleQuillEditorChange}
+                /> */}
+                <VditorEditor
+                  value={form.getFieldValue('content')}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
               <Form.Item
@@ -282,18 +262,6 @@ export default function NewBlogPage() {
                 )}
               </div>
             </Card>
-
-            {/* 其他设置 */}
-            {/* <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>其他设置</h2>
-              <Form.Item
-                name="publishImmediately"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>立即发布博客</Checkbox>
-              </Form.Item>
-            </Card> */}
           </div>
         </div>
 
