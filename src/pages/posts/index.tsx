@@ -39,6 +39,7 @@ import {
   getPostsStats,
   PostsStats,
   Post,
+  getPostById,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
@@ -234,14 +235,27 @@ export default function PostsList() {
     }
   };
 
-  const handlePostClick = (post: Post) => {
-    setSelectedPost(post);
-    setIsPostDetailVisible(true);
+  const handlePostClick = async (post: Post) => {
+    try {
+      setIsPostDetailVisible(true);
+
+      const res = await getPostById(post.ID.toString());
+      if (res.success && res.data) {
+        setSelectedPost(res.data);
+      } else {
+        console.error('获取帖子失败:', res.message);
+      }
+    } catch (error) {
+      console.error('获取帖子详情异常:', error);
+    }
   };
+
 
   const handleClosePostDetail = () => {
     setIsPostDetailVisible(false);
-    setSelectedPost(null);
+    setSelectedPost(null);  
+    fetchPosts();
+    fetchPostsStats();
   };
 
   const handleDateRangeChange = (
@@ -289,7 +303,7 @@ export default function PostsList() {
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
               <Input
-                placeholder="搜索帖子、作者或标签..."
+                placeholder="搜索帖子、作者..."
                 prefix={<Search className={styles.searchIcon} />}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
