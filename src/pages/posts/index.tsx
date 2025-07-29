@@ -27,6 +27,9 @@ import {
   Users,
   MessageCircle,
   Calendar,
+  ThumbsUp,
+  Share2,
+  Eye,
 } from 'lucide-react';
 import styles from './index.module.css';
 import {
@@ -35,7 +38,9 @@ import {
   Post as PostType,
   getPostsStats,
   PostsStats,
+  Post,
 } from '../api/post';
+import { SiX } from "react-icons/si"
 import Image from 'next/image';
 import dayjs from 'dayjs';
 
@@ -46,7 +51,7 @@ const { RangePicker } = DatePicker;
 export default function PostsList() {
   const { message } = AntdApp.useApp();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -62,7 +67,8 @@ export default function PostsList() {
     return [startOfWeekAgo, endOfToday];
   });
   const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
-
+  const [isPostDetailVisible, setIsPostDetailVisible] = useState(false)
+  const [selectedPost, setSelectedPost] = useState<PostType | null>(null)
   const [startDate, setStartDate] = useState(dateRange[0].format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(dateRange[1].format('YYYY-MM-DD'));
 
@@ -175,6 +181,18 @@ export default function PostsList() {
     }
   };
 
+  const handlePostClick = (post: Post) => {
+    setSelectedPost(post)
+    setIsPostDetailVisible(true)
+  }
+
+  // 🔥 修改7：新增关闭帖子详情modal
+  const handleClosePostDetail = () => {
+    setIsPostDetailVisible(false)
+    setSelectedPost(null)
+  }
+
+
   const handleDateRangeChange = (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
@@ -251,9 +269,9 @@ export default function PostsList() {
                 <Option value="asc">最早发布</Option>
               </Select>
             </div>
-            <div className={styles.resultsInfo}>
+            {/* <div className={styles.resultsInfo}>
               显示 {startIndex}-{endIndex} 项，共 {total} 项
-            </div>
+            </div> */}
           </div>
         </Card>
 
@@ -265,7 +283,7 @@ export default function PostsList() {
                   <Empty description="暂无帖子" className={styles.empty} />
                 ) : (
                   posts.map((post) => (
-                    <Card key={post.ID} className={styles.postCard}>
+                    <Card key={post.ID} className={styles.postCard} onClick={() => handlePostClick(post)}>
                       <div className={styles.postContent}>
                         <div className={styles.avatarSection}>
                           <Image
@@ -284,17 +302,12 @@ export default function PostsList() {
                                 {post.user?.username}
                               </span>
                               <span className={styles.postDate}>
-                                {post.CreatedAt.slice(0, 10)}
+                                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
                               </span>
                               {post.twitter && (
-                                <a
-                                  href={post.twitter}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={styles.xLink}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <ExternalLink size={14} />
+                                <a href={post.twitter} target="_blank" rel="noopener noreferrer" className={styles.xLink}>
+                                  <SiX size={16} />
+                                  <span className={styles.xText}>查看推文</span>
                                 </a>
                               )}
                             </div>
@@ -445,6 +458,151 @@ export default function PostsList() {
         </Spin>
 
         <Modal
+          title={null}
+          open={isPostDetailVisible}
+          onCancel={handleClosePostDetail}
+          footer={null}
+          width={800}
+          className={styles.postDetailModal}
+        >
+          {selectedPost && (
+            <div className={styles.postDetailContent}>
+              {/* 帖子头部 */}
+              <div className={styles.postDetailHeader}>
+                <div className={styles.postDetailAuthor}>
+                  <Image
+                    src={selectedPost.user?.avatar || "/placeholder.svg"}
+                    width={40}
+                    height={40}
+                    alt={selectedPost.user?.username as string}
+                    className={styles.postDetailAvatar}
+                  />
+                  <div className={styles.postDetailAuthorInfo}>
+                    <h4 className={styles.postDetailAuthorName}>
+                      {selectedPost.user?.username}
+                    </h4>
+
+                    <div className={styles.postDetailMeta}>
+                      <div className={styles.postDetailTime}>
+                        <Clock size={16} />
+                        <span>{dayjs(selectedPost.CreatedAt).format('YYYY-MM-DD HH:mm')}</span>
+                      </div>
+
+                      {selectedPost.view_count !== 0 && (
+                        <div className={styles.postDetailStat}>
+                          <Eye size={16} />
+                          <span>{selectedPost.view_count?.toLocaleString()} 浏览</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {selectedPost.twitter && (
+                  <a
+                    href={selectedPost.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.postDetailXLink}
+                  >
+                    <SiX size={18} />
+                    <span>查看原推文</span>
+                  </a>
+                )}
+              </div>
+
+              {/* 帖子标题 */}
+              <h1 className={styles.postDetailTitle}>{selectedPost.title}</h1>
+
+              {/* 帖子标签 */}
+              <div className={styles.postDetailTags}>
+                {selectedPost.tags.map((tag, index) => (
+                  <span key={index} className={styles.postDetailTag}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* 帖子内容 */}
+              <div className={styles.postDetailBody}>
+                {selectedPost.description ? (
+                  <div className={styles.postDetailMarkdown}>
+                    {selectedPost.description.split("\n").map((line, index) => {
+                      if (line.startsWith("# ")) {
+                        return (
+                          <h1 key={index} className={styles.mdH1}>
+                            {line.substring(2)}
+                          </h1>
+                        )
+                      } else if (line.startsWith("## ")) {
+                        return (
+                          <h2 key={index} className={styles.mdH2}>
+                            {line.substring(3)}
+                          </h2>
+                        )
+                      } else if (line.startsWith("### ")) {
+                        return (
+                          <h3 key={index} className={styles.mdH3}>
+                            {line.substring(4)}
+                          </h3>
+                        )
+                      } else if (line.startsWith("- ")) {
+                        return (
+                          <li key={index} className={styles.mdLi}>
+                            {line.substring(2)}
+                          </li>
+                        )
+                      } else if (line.startsWith("```")) {
+                        return <div key={index} className={styles.mdCode}></div>
+                      } else if (line.trim() === "") {
+                        return <br key={index} />
+                      } else {
+                        return (
+                          <p key={index} className={styles.mdP}>
+                            {line}
+                          </p>
+                        )
+                      }
+                    })}
+                  </div>
+                ) : (
+                  <p className={styles.postDetailDescription}>{selectedPost.description}</p>
+                )}
+              </div>
+
+              {/* 帖子统计和操作 */}
+              <div className={styles.postDetailFooter}>
+                {/* <div className={styles.postDetailStats}> */}
+                {/* {selectedPost.view_count !== 0 && <div className={styles.postDetailStat}>
+                    <Eye size={16} />
+                    <span>{selectedPost.view_count?.toLocaleString()} 浏览</span>
+                  </div>
+                  } */}
+                {/* <div className={styles.postDetailStat}>
+                    <ThumbsUp size={16} />
+                    <span>{selectedPost.likes || 0} 点赞</span>
+                  </div>
+                  <div className={styles.postDetailStat}>
+                    <MessageCircle size={16} />
+                    <span>12 评论</span>
+                  </div> */}
+                {/* </div> */}
+                {/* <div className={styles.postDetailActions}>
+                  <Button icon={<ThumbsUp size={16} />} className={styles.postDetailActionBtn}>
+                    点赞
+                  </Button>
+                  <Button icon={<MessageCircle size={16} />} className={styles.postDetailActionBtn}>
+                    评论
+                  </Button>
+                  <Button icon={<Share2 size={16} />} className={styles.postDetailActionBtn}>
+                    分享
+                  </Button>
+                </div> */}
+              </div>
+            </div>
+          )}
+        </Modal>
+
+        <Modal
           title="发布新帖子"
           open={isCreateModalVisible}
           onCancel={() => {
@@ -493,7 +651,6 @@ export default function PostsList() {
               name="twitter"
               label="推文链接"
               rules={[
-                { required: true, message: '请输入推文链接' },
                 {
                   type: 'url',
                   message: '请输入有效的 URL 链接',

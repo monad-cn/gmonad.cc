@@ -253,7 +253,7 @@ type CreatePostRequest struct {
 	Title       string   `json:"title" binding:"required"`
 	Description string   `json:"description" binding:"required"`
 	Tags        []string `json:"tags"`
-	Twitter     string   `json:"twitter" binding:"required"`
+	Twitter     string   `json:"twitter"`
 }
 
 type UpdatePostRequest struct {
