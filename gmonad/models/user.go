@@ -15,6 +15,7 @@ type User struct {
 	Role     *Role     `gorm:"foreignKey:RoleID" json:"-"`
 	Events   []Event   `gorm:"foreignKey:UserId" json:"events"`
 	Articles []Article `gorm:"foreignKey:PublisherId"  json:"articles"`
+	Posts    []Post    `gorm:"foreignKey:UserId" json:"posts"`
 }
 
 func GetUserByUid(uid uint) (*User, error) {

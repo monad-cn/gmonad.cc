@@ -43,11 +43,8 @@ export default function DocsPage({ content, slug, docsCategories, currentDocTitl
         setHtmlContent(htmlWithAnchors);
         setToc(tocData);
         
-        // 重置主内容滚动位置到顶部
-        const mainContent = document.querySelector(`.${styles.mainContent}`) as HTMLElement;
-        if (mainContent) {
-          mainContent.scrollTop = 0;
-        }
+        // 重置页面滚动位置到顶部
+        window.scrollTo(0, 0);
       } catch (error) {
         console.error('Failed to parse markdown:', error);
         setHtmlContent('<p>Error loading content</p>');
@@ -70,9 +67,8 @@ export default function DocsPage({ content, slug, docsCategories, currentDocTitl
 
   const handleTocClick = (id: string) => {
     const element = document.getElementById(id);
-    const mainContent = document.querySelector(`.${styles.mainContent}`) as HTMLElement;
     
-    if (element && mainContent) {
+    if (element) {
       // 获取目标元素在文档中的位置
       const elementOffsetTop = element.offsetTop;
       
@@ -81,7 +77,7 @@ export default function DocsPage({ content, slug, docsCategories, currentDocTitl
       const navPadding = 110;
       const extraOffset = 20;
       
-      mainContent.scrollTo({
+      window.scrollTo({
         top: elementOffsetTop - navPadding - extraOffset,
         behavior: 'smooth'
       });

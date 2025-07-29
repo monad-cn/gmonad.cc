@@ -11,7 +11,7 @@ export default function Footer() {
         <div className={styles.footerContent}>
           <div className={styles.footerSection}>
             <div className={styles.footerLogo}>
-                <Image preview={false} width={24} src="/logo.png" className={styles.logo} />
+              <Image preview={false} width={24} src="/logo.png" className={styles.logo} />
               <span className={styles.footerLogoTitle}>Monad 中文社区</span>
             </div>
             <p className={styles.footerDescription}>Monad 中文社区是连接生态参与者的桥梁，在这里，与 Nads 一起交流、分享、 建设 Monad。</p>
@@ -66,10 +66,11 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-            <div className={styles.footerSection}>
+          <div className={styles.footerSection}>
             <h3 className={styles.footerSectionTitle}>社区</h3>
             <ul className={styles.footerLinks}>
               <li><Link href="/events" className={styles.footerLink}>社区活动</Link></li>
+              <li><Link href="/posts" className={styles.footerLink}>社区帖子</Link></li>
               <li><Link href="/feedback" className={styles.footerLink}>反馈与建议</Link></li>
             </ul>
           </div>

@@ -100,7 +100,7 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'docs', label: <Link href="https://docs.monad.xyz/" target="_blank">开发文档</Link> },
+                  { key: 'docs', label: <Link href="/docs">开发文档</Link> },
                   { key: 'guides', label: <Link href="https://developers.monad.xyz/#quick-start" target="_blank">开发指南</Link> },
                   { key: 'codes', label: <Link href="https://docs.monad.xyz/guides/"  target="_blank">示例代码</Link> },
                 ],
@@ -116,17 +116,15 @@ export default function Header() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'ama', label: <Link href="/events?type=ama">AMA</Link> },
-                  { key: 'hackathon', label: <Link href="/events?type=hackathon">黑客松</Link> },
-                  { key: 'meetup', label: <Link href="/events?type=meetup">社区聚会</Link> },
-                  { key: 'workshop', label: <Link href="/events?type=workshop"> Workshop </Link> },
+                  { key: 'events', label: <Link href="/events">活动</Link> },
+                  { key: 'posts', label: <Link href="/posts">帖子</Link> },
                 ],
               }}
               placement="bottom"
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>社区活动</span>
+                <span>社区</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
@@ -213,7 +211,7 @@ export default function Header() {
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>开发者</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="https://docs.monad.xyz/"  target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/docs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📖</span>
                 <span>开发文档</span>
               </Link>
@@ -229,9 +227,15 @@ export default function Header() {
           </div>
 
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>社区活动</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>社区</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/events" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>活动</span>
+              </Link>
+              <Link href="/posts" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>帖子</span>
+              </Link>
+              {/* <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>💬</span>
                 <span>AMA</span>
               </Link>
@@ -246,7 +250,7 @@ export default function Header() {
               <Link href="/events?type=workshop" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🎯</span>
                 <span>Workshop</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
 
