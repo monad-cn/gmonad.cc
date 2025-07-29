@@ -552,7 +552,9 @@
 }
 
 .postDetailTime,
-.postDetailStat {
+.postDetailStat,
+.postDetailTags
+{
   display: flex;
   align-items: center;
   gap: 4px; 
@@ -630,20 +632,14 @@
   line-height: 1.3;
 }
 
-.postDetailTags {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
 .postDetailTag {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 24px;
-  font-size: 0.875rem;
+  color: #8b5cf6;
+  padding: 2px 6px;      
+  border-radius: 12px;    
+  font-size: 0.75rem;    
   font-weight: 500;
+  border: 1px solid #8b5cf6;
+  line-height: 1;        
 }
 
 .postDetailBody {

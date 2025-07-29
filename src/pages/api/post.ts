@@ -78,7 +78,7 @@ export const createPost = async (
       title: params.title.trim(),
       description: params.description.trim(),
       tags: params.tags ?? [],
-      twitter: params.twitter.trim(),
+      twitter: params.twitter?.trim(),
     };
 
     const response = await apiRequest<PostResult>(

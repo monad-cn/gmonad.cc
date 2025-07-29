@@ -304,7 +304,7 @@ export default function PostsList() {
                                 {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
                               </span>
                               {post.twitter && (
-                                <a href={post.twitter} target="_blank" rel="noopener noreferrer" className={styles.xLink}>
+                                <a href={post.twitter} target="_blank" rel="noopener noreferrer" className={styles.xLink} onClick={(e) => e.stopPropagation()}>
                                   <SiX size={16} />
                                   <span className={styles.xText}>查看推文</span>
                                 </a>
@@ -493,7 +493,15 @@ export default function PostsList() {
                           <span>{selectedPost.view_count?.toLocaleString()} 浏览</span>
                         </div>
                       )}
+                      <div className={styles.postDetailTags}>
+                        {selectedPost.tags.map((tag, index) => (
+                          <span key={index} className={styles.postDetailTag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
+
                   </div>
                 </div>
                 {selectedPost.twitter && (
@@ -504,22 +512,13 @@ export default function PostsList() {
                     className={styles.postDetailXLink}
                   >
                     <SiX size={18} />
-                    <span>查看原推文</span>
+                    <span>查看推文</span>
                   </a>
                 )}
               </div>
 
               {/* 帖子标题 */}
               <h1 className={styles.postDetailTitle}>{selectedPost.title}</h1>
-
-              {/* 帖子标签 */}
-              <div className={styles.postDetailTags}>
-                {selectedPost.tags.map((tag, index) => (
-                  <span key={index} className={styles.postDetailTag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
 
               {/* 帖子内容 */}
               <div className={styles.postDetailBody}>
