@@ -58,10 +58,11 @@ const { RangePicker } = DatePicker;
  * @param props.handleDateRangeChange - 日期范围变化处理函数
  */
 function DateNowButton(props: {
-  dateRange: [dayjs.Dayjs, dayjs.Dayjs];
+  dateRange: [dayjs.Dayjs | null, dayjs.Dayjs | null];
   handleDateRangeChange: (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => void;
+  loading: boolean;
 }) {
   const handleNow = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.stopPropagation();
@@ -71,6 +72,7 @@ function DateNowButton(props: {
 
   return (
     <Button
+      loading={props.loading}
       size="small"
       variant="filled"
       color="primary"
@@ -94,7 +96,9 @@ export default function PostsList() {
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>(() => {
+  const [dateRange, setDateRange] = useState<
+    [dayjs.Dayjs | null, dayjs.Dayjs | null]
+  >(() => {
     const endOfToday = dayjs().endOf('day');
     const startOfWeekAgo = dayjs().subtract(6, 'day').startOf('day');
     return [startOfWeekAgo, endOfToday];
@@ -102,8 +106,10 @@ export default function PostsList() {
   const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
   const [isPostDetailVisible, setIsPostDetailVisible] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
-  const [startDate, setStartDate] = useState(dateRange[0].format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(dateRange[1].format('YYYY-MM-DD'));
+  const [startDate, setStartDate] = useState(
+    dateRange[0]?.format('YYYY-MM-DD')
+  );
+  const [endDate, setEndDate] = useState(dateRange[1]?.format('YYYY-MM-DD'));
 
   const [loading, setLoading] = useState(false);
 
@@ -163,10 +169,15 @@ export default function PostsList() {
   };
 
   useEffect(() => {
-    if (!dateRange?.[0] || !dateRange?.[1]) return;
-
-    const newStartDate = dateRange[0].format('YYYY-MM-DD');
-    const newEndDate = dateRange[1].format('YYYY-MM-DD');
+    let newStartDate = undefined;
+    let newEndDate = undefined;
+    if (!dateRange?.[0] || !dateRange?.[1]) {
+      newStartDate = undefined;
+      newEndDate = undefined;
+    } else {
+      newStartDate = dateRange[0].format('YYYY-MM-DD');
+      newEndDate = dateRange[1].format('YYYY-MM-DD');
+    }
 
     setStartDate(newStartDate);
     setEndDate(newEndDate);
@@ -261,8 +272,12 @@ export default function PostsList() {
   const handleDateRangeChange = (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
-    if (!dates || !dates[0] || !dates[1]) return;
-    setDateRange([dates[0], dates[1]]);
+    if (!dates || !dates[0] || !dates[1]) {
+      console.log(111);
+      setDateRange([null, null]);
+    } else {
+      setDateRange([dates[0], dates[1]]);
+    }
   };
 
   // pagenation
@@ -313,7 +328,11 @@ export default function PostsList() {
             </div>
             <div className={styles.dateContainer}>
               <RangePicker
-                prefix={DateNowButton({ dateRange, handleDateRangeChange })}
+                prefix={DateNowButton({
+                  dateRange,
+                  handleDateRangeChange,
+                  loading,
+                })}
                 placeholder={['开始日期', '结束日期']}
                 value={dateRange}
                 onChange={handleDateRangeChange}

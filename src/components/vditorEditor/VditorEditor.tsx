@@ -260,7 +260,11 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
 
     return (
       <div className={styles.container}>
-        <div id="vditor" className={`vditor ${styles.editor}`} />
+        <div
+          id="vditor"
+          style={{ opacity: isLoading ? 0 : 1 }}
+          className={`vditor ${styles.editor}`}
+        />
         {isLoading && (
           <div className={styles.loading}>
             <div className={styles.loadingContent}>
