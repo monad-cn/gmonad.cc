@@ -38,6 +38,7 @@ export default function NewBlogPage() {
     },
     [form]
   );
+  
   const handleSubmit = async (values: any) => {
     try {
       console.log(values);

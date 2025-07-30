@@ -39,10 +39,13 @@ import {
   getPostsStats,
   PostsStats,
   Post,
+  getPostById,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
+import VditorEditor from '@/components/vditorEditor';
+import { sanitizeMarkdown } from '@/lib/markdown';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -109,6 +112,18 @@ export default function PostsList() {
   const [endDate, setEndDate] = useState(dateRange[1]?.format('YYYY-MM-DD'));
 
   const [loading, setLoading] = useState(false);
+
+  // parseMarkdown将返回的markdown转为html展示
+  const [postContent, setPostContent] = useState<string>('');
+
+  useEffect(() => {
+    if (selectedPost?.description) {
+      sanitizeMarkdown(selectedPost.description).then((htmlContent) => {
+        setPostContent(htmlContent);
+      });
+    }
+  }, [selectedPost?.description]);
+
   const fetchPosts = useCallback(
     async (params?: {
       keyword?: string;
@@ -201,6 +216,15 @@ export default function PostsList() {
     }
   };
 
+  // 编辑器处理
+  const handleVditorEditorChange = useCallback(
+    (value: string) => {
+      form.setFieldValue('description', value);
+    },
+    [form]
+  );
+
+
   const handleAddTag = () => {
     if (inputValue && !tags.includes(inputValue)) {
       const newTags = [...tags, inputValue];
@@ -222,14 +246,27 @@ export default function PostsList() {
     }
   };
 
-  const handlePostClick = (post: Post) => {
-    setSelectedPost(post);
-    setIsPostDetailVisible(true);
+  const handlePostClick = async (post: Post) => {
+    try {
+      setIsPostDetailVisible(true);
+
+      const res = await getPostById(post.ID.toString());
+      if (res.success && res.data) {
+        setSelectedPost(res.data);
+      } else {
+        console.error('获取帖子失败:', res.message);
+      }
+    } catch (error) {
+      console.error('获取帖子详情异常:', error);
+    }
   };
+
 
   const handleClosePostDetail = () => {
     setIsPostDetailVisible(false);
-    setSelectedPost(null);
+    setSelectedPost(null);  
+    fetchPosts();
+    fetchPostsStats();
   };
 
   const handleDateRangeChange = (
@@ -281,7 +318,7 @@ export default function PostsList() {
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
               <Input
-                placeholder="搜索帖子、作者或标签..."
+                placeholder="搜索帖子、作者..."
                 prefix={<Search className={styles.searchIcon} />}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -592,53 +629,10 @@ export default function PostsList() {
 
               {/* 帖子内容 */}
               <div className={styles.postDetailBody}>
-                {selectedPost.description ? (
-                  <div className={styles.postDetailMarkdown}>
-                    {selectedPost.description.split('\n').map((line, index) => {
-                      if (line.startsWith('# ')) {
-                        return (
-                          <h1 key={index} className={styles.mdH1}>
-                            {line.substring(2)}
-                          </h1>
-                        );
-                      } else if (line.startsWith('## ')) {
-                        return (
-                          <h2 key={index} className={styles.mdH2}>
-                            {line.substring(3)}
-                          </h2>
-                        );
-                      } else if (line.startsWith('### ')) {
-                        return (
-                          <h3 key={index} className={styles.mdH3}>
-                            {line.substring(4)}
-                          </h3>
-                        );
-                      } else if (line.startsWith('- ')) {
-                        return (
-                          <li key={index} className={styles.mdLi}>
-                            {line.substring(2)}
-                          </li>
-                        );
-                      } else if (line.startsWith('```')) {
-                        return (
-                          <div key={index} className={styles.mdCode}></div>
-                        );
-                      } else if (line.trim() === '') {
-                        return <br key={index} />;
-                      } else {
-                        return (
-                          <p key={index} className={styles.mdP}>
-                            {line}
-                          </p>
-                        );
-                      }
-                    })}
-                  </div>
-                ) : (
-                  <p className={styles.postDetailDescription}>
-                    {selectedPost.description}
-                  </p>
-                )}
+                <div
+                  className="prose"
+                  dangerouslySetInnerHTML={{ __html: postContent }}
+                />
               </div>
 
               {/* 帖子统计和操作 */}
@@ -711,12 +705,9 @@ export default function PostsList() {
                 { max: 2000, message: '内容不能超过2000个字符' },
               ]}
             >
-              <TextArea
-                placeholder="详细描述你的帖子内容..."
-                rows={8}
-                size="large"
-                maxLength={2000}
-                showCount
+              <VditorEditor
+                value={form.getFieldValue('description')}
+                onChange={handleVditorEditorChange}
               />
             </Form.Item>
             <Form.Item
