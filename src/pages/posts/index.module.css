@@ -972,3 +972,17 @@
         min-width: auto;
     }
 }
+
+.editButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  color: #1677ff;
+}
