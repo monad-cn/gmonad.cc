@@ -14,6 +14,7 @@ import {
   Tag,
   DatePicker,
   App as AntdApp,
+  Popconfirm,
 } from 'antd';
 import {
   Search,
@@ -31,6 +32,7 @@ import {
   Share2,
   Eye,
   Edit,
+  Trash2,
 } from 'lucide-react';
 import styles from './index.module.css';
 import {
@@ -42,6 +44,7 @@ import {
   Post,
   getPostById,
   updatePost,
+  deletePost,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
@@ -256,6 +259,20 @@ export default function PostsList() {
     setTags(post.tags || []);
   };
 
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const res = await deletePost(postId); 
+      if (res.success) {
+        message.success('帖子删除成功');
+        fetchPosts();
+        fetchPostsStats();
+      } else {
+        message.error(res.message || '删除失败');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  };
 
   // 编辑器处理
   const handleVditorEditorChange = useCallback(
@@ -418,14 +435,36 @@ export default function PostsList() {
                     >
                       <div className={styles.postContent}>
                         {status === 'authenticated' && session?.user?.uid == post.user?.ID && (
-                          <Button
-                            icon={<Edit size={16} />}
-                            className={styles.editButton}
-                            onClick={(e) => {
-                              e.stopPropagation(); 
-                              handleEditPost(post);
-                            }}
-                          />
+                          <div className={styles.actionButtons}>
+                            {/* 编辑按钮 */}
+                            <Button
+                              icon={<Edit size={16} />}
+                              className={styles.editButton}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditPost(post);
+                              }}
+                            />
+
+                            <Popconfirm
+                              title="确认删除该帖子吗？"
+                              description="删除后将无法恢复"
+                              okText="删除"
+                              cancelText="取消"
+                              okButtonProps={{ danger: true }}
+                              onConfirm={(e) => {
+                                e?.stopPropagation();
+                                handleDeletePost(post.ID);
+                              }}
+                              onCancel={(e) => e?.stopPropagation()}
+                            >
+                              <Button
+                                icon={<Trash2 size={16} />}
+                                className={styles.deleteButton}
+                                onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                              />
+                            </Popconfirm>
+                          </div>
                         )}
                         <div className={styles.avatarSection}>
                           <Image
