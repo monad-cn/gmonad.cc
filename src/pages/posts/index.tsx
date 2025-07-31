@@ -48,46 +48,15 @@ import {
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
+import DateButton from '@/components/base/DateButton';
+
 import dayjs from 'dayjs';
 import VditorEditor from '@/components/vditorEditor';
 import { sanitizeMarkdown } from '@/lib/markdown';
 import { useAuth } from '@/contexts/AuthContext';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
-/**
- * 日期范围选择器的"今天"快捷按钮组件
- * @param props - 组件属性
- * @param props.dateRange - 当前选中的日期范围
- * @param props.handleDateRangeChange - 日期范围变化处理函数
- */
-function DateNowButton(props: {
-  dateRange: [dayjs.Dayjs | null, dayjs.Dayjs | null];
-  handleDateRangeChange: (
-    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
-  ) => void;
-  loading: boolean;
-}) {
-  const handleNow = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    e.stopPropagation();
-
-    props.handleDateRangeChange([dayjs(), dayjs()]);
-  };
-
-  return (
-    <Button
-      loading={props.loading}
-      size="small"
-      variant="filled"
-      color="primary"
-      onClick={(e) => handleNow(e)}
-    >
-      今天
-    </Button>
-  );
-}
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();
@@ -261,7 +230,7 @@ export default function PostsList() {
 
   const handleDeletePost = async (postId: number) => {
     try {
-      const res = await deletePost(postId); 
+      const res = await deletePost(postId);
       if (res.success) {
         message.success('帖子删除成功');
         fetchPosts();
@@ -281,7 +250,6 @@ export default function PostsList() {
     },
     [form]
   );
-
 
   const handleAddTag = () => {
     if (inputValue && !tags.includes(inputValue)) {
@@ -319,7 +287,6 @@ export default function PostsList() {
     }
   };
 
-
   const handleClosePostDetail = () => {
     setIsPostDetailVisible(false);
     setSelectedPost(null);
@@ -331,7 +298,6 @@ export default function PostsList() {
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
     if (!dates || !dates[0] || !dates[1]) {
-      console.log(111);
       setDateRange([null, null]);
     } else {
       setDateRange([dates[0], dates[1]]);
@@ -362,17 +328,16 @@ export default function PostsList() {
             </h1>
             <p className={styles.subtitle}>分享见解，交流经验，共建社区</p>
           </div>
-          {status === 'authenticated' &&
-            permissions.includes('blog:write') && (
-              <Button
-                type="primary"
-                icon={<Plus size={16} />}
-                className={styles.createButton}
-                onClick={() => setIsCreateModalVisible(true)}
-              >
-                发布帖子
-              </Button>
-            )}
+          {status === 'authenticated' && permissions.includes('blog:write') && (
+            <Button
+              type="primary"
+              icon={<Plus size={16} />}
+              className={styles.createButton}
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              发布帖子
+            </Button>
+          )}
         </div>
         <Card className={styles.filtersCard}>
           <div className={styles.filters}>
@@ -388,11 +353,31 @@ export default function PostsList() {
             </div>
             <div className={styles.dateContainer}>
               <RangePicker
-                prefix={DateNowButton({
-                  dateRange,
-                  handleDateRangeChange,
-                  loading,
-                })}
+                prefix={
+                  <>
+                    <DateButton
+                      style={{ marginRight: '4px' }}
+                      size="small"
+                      color="primary"
+                      variant="filled"
+                      dateRange={dateRange}
+                      handleDateRangeChange={handleDateRangeChange}
+                      loading={loading}
+                      label="今天"
+                      dates={[dayjs(), dayjs()]}
+                    />
+                    <DateButton
+                      size="small"
+                      color="primary"
+                      variant="filled"
+                      dateRange={dateRange}
+                      handleDateRangeChange={handleDateRangeChange}
+                      loading={loading}
+                      label="本周"
+                      dates={[dayjs().subtract(1, 'week'), dayjs()]}
+                    />
+                  </>
+                }
                 placeholder={['开始日期', '结束日期']}
                 value={dateRange}
                 onChange={handleDateRangeChange}
@@ -434,38 +419,39 @@ export default function PostsList() {
                       onClick={() => handlePostClick(post)}
                     >
                       <div className={styles.postContent}>
-                        {status === 'authenticated' && session?.user?.uid == post.user?.ID && (
-                          <div className={styles.actionButtons}>
-                            {/* 编辑按钮 */}
-                            <Button
-                              icon={<Edit size={16} />}
-                              className={styles.editButton}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditPost(post);
-                              }}
-                            />
-
-                            <Popconfirm
-                              title="确认删除该帖子吗？"
-                              description="删除后将无法恢复"
-                              okText="删除"
-                              cancelText="取消"
-                              okButtonProps={{ danger: true }}
-                              onConfirm={(e) => {
-                                e?.stopPropagation();
-                                handleDeletePost(post.ID);
-                              }}
-                              onCancel={(e) => e?.stopPropagation()}
-                            >
+                        {status === 'authenticated' &&
+                          session?.user?.uid == post.user?.ID && (
+                            <div className={styles.actionButtons}>
+                              {/* 编辑按钮 */}
                               <Button
-                                icon={<Trash2 size={16} />}
-                                className={styles.deleteButton}
-                                onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                                icon={<Edit size={16} />}
+                                className={styles.editButton}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditPost(post);
+                                }}
                               />
-                            </Popconfirm>
-                          </div>
-                        )}
+
+                              <Popconfirm
+                                title="确认删除该帖子吗？"
+                                description="删除后将无法恢复"
+                                okText="删除"
+                                cancelText="取消"
+                                okButtonProps={{ danger: true }}
+                                onConfirm={(e) => {
+                                  e?.stopPropagation();
+                                  handleDeletePost(post.ID);
+                                }}
+                                onCancel={(e) => e?.stopPropagation()}
+                              >
+                                <Button
+                                  icon={<Trash2 size={16} />}
+                                  className={styles.deleteButton}
+                                  onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                                />
+                              </Popconfirm>
+                            </div>
+                          )}
                         <div className={styles.avatarSection}>
                           <Image
                             src={post.user?.avatar || '/placeholder.svg'}
