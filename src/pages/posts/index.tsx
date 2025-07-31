@@ -43,45 +43,14 @@ import {
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
+import DateButton from '@/components/base/DateButton';
+
 import dayjs from 'dayjs';
 import VditorEditor from '@/components/vditorEditor';
 import { sanitizeMarkdown } from '@/lib/markdown';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
-/**
- * 日期范围选择器的"今天"快捷按钮组件
- * @param props - 组件属性
- * @param props.dateRange - 当前选中的日期范围
- * @param props.handleDateRangeChange - 日期范围变化处理函数
- */
-function DateNowButton(props: {
-  dateRange: [dayjs.Dayjs | null, dayjs.Dayjs | null];
-  handleDateRangeChange: (
-    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
-  ) => void;
-  loading: boolean;
-}) {
-  const handleNow = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    e.stopPropagation();
-
-    props.handleDateRangeChange([dayjs(), dayjs()]);
-  };
-
-  return (
-    <Button
-      loading={props.loading}
-      size="small"
-      variant="filled"
-      color="primary"
-      onClick={(e) => handleNow(e)}
-    >
-      今天
-    </Button>
-  );
-}
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();
@@ -224,7 +193,6 @@ export default function PostsList() {
     [form]
   );
 
-
   const handleAddTag = () => {
     if (inputValue && !tags.includes(inputValue)) {
       const newTags = [...tags, inputValue];
@@ -261,10 +229,9 @@ export default function PostsList() {
     }
   };
 
-
   const handleClosePostDetail = () => {
     setIsPostDetailVisible(false);
-    setSelectedPost(null);  
+    setSelectedPost(null);
     fetchPosts();
     fetchPostsStats();
   };
@@ -328,11 +295,18 @@ export default function PostsList() {
             </div>
             <div className={styles.dateContainer}>
               <RangePicker
-                prefix={DateNowButton({
-                  dateRange,
-                  handleDateRangeChange,
-                  loading,
-                })}
+                prefix={
+                  <DateButton
+                    size="small"
+                    color="primary"
+                    variant="filled"
+                    dateRange={dateRange}
+                    handleDateRangeChange={handleDateRangeChange}
+                    loading={loading}
+                    label="今天"
+                    dates={[dayjs(), dayjs()]}
+                  />
+                }
                 placeholder={['开始日期', '结束日期']}
                 value={dateRange}
                 onChange={handleDateRangeChange}
