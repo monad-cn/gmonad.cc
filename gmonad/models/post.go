@@ -172,6 +172,7 @@ func GetPostStats(limit int) (*PostStats, error) {
 	err = db.Model(&User{}).
 		Select("users.id, users.email, users.username, users.avatar, COUNT(posts.id) AS post_count").
 		Joins("JOIN posts ON posts.user_id = users.id").
+		Where("posts.deleted_at IS NULL").
 		Group("users.id").
 		Order("post_count DESC").
 		Limit(limit).
