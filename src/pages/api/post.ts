@@ -2,7 +2,7 @@ import { apiRequest } from './api';
 
 // 用户信息
 export interface User {
-  Id: number;
+  ID: number;
   username: string;
   avatar: string;
   post_count: number;
@@ -34,6 +34,7 @@ export interface UpdatePostParams {
   title: string;
   description: string;
   tags: string[];
+  twitter: string;
 }
 
 // 获取帖子列表参数

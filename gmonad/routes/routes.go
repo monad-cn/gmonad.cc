@@ -63,6 +63,7 @@ func SetupRouter(r *gin.Engine) {
 		post.POST("", middlewares.JWT("blog:write"), controllers.CreatePost)
 		post.DELETE("/:id", middlewares.JWT("blog:delete"), controllers.DeletePost)
 		post.GET("/:id", controllers.GetPost)
+		post.PUT("/:id", middlewares.JWT("blog:write"), controllers.UpdatePost)
 		post.GET("", controllers.QueryPosts)
 		post.GET("/stats", controllers.PostsStats)
 	}

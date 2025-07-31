@@ -14,6 +14,7 @@ import {
   Tag,
   DatePicker,
   App as AntdApp,
+  Popconfirm,
 } from 'antd';
 import {
   Search,
@@ -30,6 +31,8 @@ import {
   ThumbsUp,
   Share2,
   Eye,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 import styles from './index.module.css';
 import {
@@ -40,6 +43,8 @@ import {
   PostsStats,
   Post,
   getPostById,
+  updatePost,
+  deletePost,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
@@ -48,6 +53,7 @@ import DateButton from '@/components/base/DateButton';
 import dayjs from 'dayjs';
 import VditorEditor from '@/components/vditorEditor';
 import { sanitizeMarkdown } from '@/lib/markdown';
+import { useAuth } from '@/contexts/AuthContext';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -61,6 +67,9 @@ export default function PostsList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('desc');
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingPost, setEditingPost] = useState<PostType | null>(null);
+
   const [form] = Form.useForm();
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
@@ -81,6 +90,9 @@ export default function PostsList() {
   const [endDate, setEndDate] = useState(dateRange[1]?.format('YYYY-MM-DD'));
 
   const [loading, setLoading] = useState(false);
+
+  const { session, status } = useAuth();
+  const permissions = session?.user?.permissions || [];
 
   // parseMarkdown将返回的markdown转为html展示
   const [postContent, setPostContent] = useState<string>('');
@@ -163,25 +175,71 @@ export default function PostsList() {
     return 1;
   };
 
-  const handleCreatePost = async (values: any) => {
+  const handleCallPost = async (values: any) => {
     try {
-      const res = await createPost({
-        title: values.title,
-        description: values.description,
-        tags,
-        twitter: values.twitter,
-      });
+      if (isEditMode && editingPost) {
+        const res = await updatePost(editingPost.ID.toString(), {
+          title: values.title,
+          description: values.description,
+          tags,
+          twitter: values.twitter,
+        });
+        if (res.success) {
+          message.success('帖子更新成功！');
+        } else {
+          message.error(res.message || '更新失败');
+        }
+      } else {
+        const res = await createPost({
+          title: values.title,
+          description: values.description,
+          tags,
+          twitter: values.twitter,
+        });
+        if (res.success) {
+          message.success('帖子发布成功！');
+        } else {
+          message.error(res.message || '发布失败');
+        }
+      }
+
+      setIsCreateModalVisible(false);
+      setIsEditMode(false);
+      setEditingPost(null);
+      form.resetFields();
+      fetchPosts();
+      fetchPostsStats();
+    } catch (error) {
+      message.error('操作失败，请重试');
+    }
+  };
+
+  const handleEditPost = (post: PostType) => {
+    setIsEditMode(true);
+    setEditingPost(post);
+    setIsCreateModalVisible(true);
+
+    // 填充表单
+    form.setFieldsValue({
+      title: post.title,
+      description: post.description,
+      twitter: post.twitter || '',
+    });
+    setTags(post.tags || []);
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const res = await deletePost(postId); 
       if (res.success) {
-        message.success('帖子发布成功！');
-        setIsCreateModalVisible(false);
-        form.resetFields();
+        message.success('帖子删除成功');
         fetchPosts();
         fetchPostsStats();
       } else {
-        message.error(res.message || '发布失败');
+        message.error(res.message || '删除失败');
       }
     } catch (error) {
-      message.error('发布失败，请重试');
+      message.error('删除失败，请重试');
     }
   };
 
@@ -271,16 +329,18 @@ export default function PostsList() {
             </h1>
             <p className={styles.subtitle}>分享见解，交流经验，共建社区</p>
           </div>
-          <Button
-            type="primary"
-            icon={<Plus size={16} />}
-            className={styles.createButton}
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            发布帖子
-          </Button>
+          {status === 'authenticated' &&
+            permissions.includes('blog:write') && (
+              <Button
+                type="primary"
+                icon={<Plus size={16} />}
+                className={styles.createButton}
+                onClick={() => setIsCreateModalVisible(true)}
+              >
+                发布帖子
+              </Button>
+            )}
         </div>
-
         <Card className={styles.filtersCard}>
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
@@ -348,6 +408,38 @@ export default function PostsList() {
                       onClick={() => handlePostClick(post)}
                     >
                       <div className={styles.postContent}>
+                        {status === 'authenticated' && session?.user?.uid == post.user?.ID && (
+                          <div className={styles.actionButtons}>
+                            {/* 编辑按钮 */}
+                            <Button
+                              icon={<Edit size={16} />}
+                              className={styles.editButton}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditPost(post);
+                              }}
+                            />
+
+                            <Popconfirm
+                              title="确认删除该帖子吗？"
+                              description="删除后将无法恢复"
+                              okText="删除"
+                              cancelText="取消"
+                              okButtonProps={{ danger: true }}
+                              onConfirm={(e) => {
+                                e?.stopPropagation();
+                                handleDeletePost(post.ID);
+                              }}
+                              onCancel={(e) => e?.stopPropagation()}
+                            >
+                              <Button
+                                icon={<Trash2 size={16} />}
+                                className={styles.deleteButton}
+                                onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                              />
+                            </Popconfirm>
+                          </div>
+                        )}
                         <div className={styles.avatarSection}>
                           <Image
                             src={post.user?.avatar || '/placeholder.svg'}
@@ -461,7 +553,7 @@ export default function PostsList() {
                 </div>
                 <div className={styles.activeUsers}>
                   {(postsStats?.top_active_users ?? []).map((user) => (
-                    <div key={user.Id} className={styles.activeUserItem}>
+                    <div key={user.ID} className={styles.activeUserItem}>
                       <Image
                         width={40} // 你可以根据实际样式调整宽度
                         height={40}
@@ -643,10 +735,12 @@ export default function PostsList() {
         </Modal>
 
         <Modal
-          title="发布新帖子"
+          title={isEditMode ? '编辑帖子' : '发布新帖子'}
           open={isCreateModalVisible}
           onCancel={() => {
             setIsCreateModalVisible(false);
+            setIsEditMode(false);
+            setEditingPost(null);
             form.resetFields();
           }}
           footer={null}
@@ -656,7 +750,7 @@ export default function PostsList() {
           <Form
             form={form}
             layout="vertical"
-            onFinish={handleCreatePost}
+            onFinish={handleCallPost}
             className={styles.createForm}
           >
             <Form.Item
@@ -748,7 +842,7 @@ export default function PostsList() {
                   htmlType="submit"
                   className={styles.submitButton}
                 >
-                  发布帖子
+                  {isEditMode ? '更新帖子' : '发布帖子'}
                 </Button>
               </div>
             </Form.Item>
