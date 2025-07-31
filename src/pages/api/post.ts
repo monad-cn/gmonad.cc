@@ -1,3 +1,4 @@
+import Twitter from 'next-auth/providers/twitter';
 import { apiRequest } from './api';
 
 // 用户信息
@@ -116,6 +117,7 @@ export const updatePost = async (
       title: params.title.trim(),
       description: params.description.trim(),
       tags: params.tags ?? [],
+      twitter: params.twitter?.trim(),
     };
 
     const response = await apiRequest<PostResult>(
