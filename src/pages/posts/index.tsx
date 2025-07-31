@@ -230,7 +230,7 @@ export default function PostsList() {
 
   const handleDeletePost = async (postId: number) => {
     try {
-      const res = await deletePost(postId); 
+      const res = await deletePost(postId);
       if (res.success) {
         message.success('帖子删除成功');
         fetchPosts();
@@ -298,7 +298,6 @@ export default function PostsList() {
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
     if (!dates || !dates[0] || !dates[1]) {
-      console.log(111);
       setDateRange([null, null]);
     } else {
       setDateRange([dates[0], dates[1]]);
@@ -329,17 +328,16 @@ export default function PostsList() {
             </h1>
             <p className={styles.subtitle}>分享见解，交流经验，共建社区</p>
           </div>
-          {status === 'authenticated' &&
-            permissions.includes('blog:write') && (
-              <Button
-                type="primary"
-                icon={<Plus size={16} />}
-                className={styles.createButton}
-                onClick={() => setIsCreateModalVisible(true)}
-              >
-                发布帖子
-              </Button>
-            )}
+          {status === 'authenticated' && permissions.includes('blog:write') && (
+            <Button
+              type="primary"
+              icon={<Plus size={16} />}
+              className={styles.createButton}
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              发布帖子
+            </Button>
+          )}
         </div>
         <Card className={styles.filtersCard}>
           <div className={styles.filters}>
@@ -356,16 +354,29 @@ export default function PostsList() {
             <div className={styles.dateContainer}>
               <RangePicker
                 prefix={
-                  <DateButton
-                    size="small"
-                    color="primary"
-                    variant="filled"
-                    dateRange={dateRange}
-                    handleDateRangeChange={handleDateRangeChange}
-                    loading={loading}
-                    label="今天"
-                    dates={[dayjs(), dayjs()]}
-                  />
+                  <>
+                    <DateButton
+                      style={{ marginRight: '4px' }}
+                      size="small"
+                      color="primary"
+                      variant="filled"
+                      dateRange={dateRange}
+                      handleDateRangeChange={handleDateRangeChange}
+                      loading={loading}
+                      label="今天"
+                      dates={[dayjs(), dayjs()]}
+                    />
+                    <DateButton
+                      size="small"
+                      color="primary"
+                      variant="filled"
+                      dateRange={dateRange}
+                      handleDateRangeChange={handleDateRangeChange}
+                      loading={loading}
+                      label="本周"
+                      dates={[dayjs().subtract(1, 'week'), dayjs()]}
+                    />
+                  </>
                 }
                 placeholder={['开始日期', '结束日期']}
                 value={dateRange}
@@ -408,38 +419,39 @@ export default function PostsList() {
                       onClick={() => handlePostClick(post)}
                     >
                       <div className={styles.postContent}>
-                        {status === 'authenticated' && session?.user?.uid == post.user?.ID && (
-                          <div className={styles.actionButtons}>
-                            {/* 编辑按钮 */}
-                            <Button
-                              icon={<Edit size={16} />}
-                              className={styles.editButton}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditPost(post);
-                              }}
-                            />
-
-                            <Popconfirm
-                              title="确认删除该帖子吗？"
-                              description="删除后将无法恢复"
-                              okText="删除"
-                              cancelText="取消"
-                              okButtonProps={{ danger: true }}
-                              onConfirm={(e) => {
-                                e?.stopPropagation();
-                                handleDeletePost(post.ID);
-                              }}
-                              onCancel={(e) => e?.stopPropagation()}
-                            >
+                        {status === 'authenticated' &&
+                          session?.user?.uid == post.user?.ID && (
+                            <div className={styles.actionButtons}>
+                              {/* 编辑按钮 */}
                               <Button
-                                icon={<Trash2 size={16} />}
-                                className={styles.deleteButton}
-                                onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                                icon={<Edit size={16} />}
+                                className={styles.editButton}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditPost(post);
+                                }}
                               />
-                            </Popconfirm>
-                          </div>
-                        )}
+
+                              <Popconfirm
+                                title="确认删除该帖子吗？"
+                                description="删除后将无法恢复"
+                                okText="删除"
+                                cancelText="取消"
+                                okButtonProps={{ danger: true }}
+                                onConfirm={(e) => {
+                                  e?.stopPropagation();
+                                  handleDeletePost(post.ID);
+                                }}
+                                onCancel={(e) => e?.stopPropagation()}
+                              >
+                                <Button
+                                  icon={<Trash2 size={16} />}
+                                  className={styles.deleteButton}
+                                  onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
+                                />
+                              </Popconfirm>
+                            </div>
+                          )}
                         <div className={styles.avatarSection}>
                           <Image
                             src={post.user?.avatar || '/placeholder.svg'}
