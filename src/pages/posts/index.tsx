@@ -90,6 +90,7 @@ export default function PostsList() {
   const [endDate, setEndDate] = useState(dateRange[1]?.format('YYYY-MM-DD'));
 
   const [loading, setLoading] = useState(false);
+  const [detailLoading, setdetailLoading] = useState(false);
 
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
@@ -130,6 +131,7 @@ export default function PostsList() {
       } else {
         message.error(res.message || '获取帖子失败');
       }
+
       setLoading(false);
     },
     [searchTerm, sortBy, startDate, endDate]
@@ -275,6 +277,7 @@ export default function PostsList() {
   const handlePostClick = async (post: Post) => {
     try {
       setIsPostDetailVisible(true);
+      setdetailLoading(true);
 
       const res = await getPostById(post.ID.toString());
       if (res.success && res.data) {
@@ -284,6 +287,8 @@ export default function PostsList() {
       }
     } catch (error) {
       console.error('获取帖子详情异常:', error);
+    } finally {
+      setdetailLoading(false);
     }
   };
 
@@ -362,9 +367,14 @@ export default function PostsList() {
                       variant="filled"
                       dateRange={dateRange}
                       handleDateRangeChange={handleDateRangeChange}
-                      loading={loading}
                       label="今天"
                       dates={[dayjs(), dayjs()]}
+                      active={
+                        dateRange[0]?.format('YYYY-MM-DD') ===
+                          dayjs().format('YYYY-MM-DD') &&
+                        dateRange[1]?.format('YYYY-MM-DD') ===
+                          dayjs().format('YYYY-MM-DD')
+                      }
                     />
                     <DateButton
                       size="small"
@@ -372,9 +382,14 @@ export default function PostsList() {
                       variant="filled"
                       dateRange={dateRange}
                       handleDateRangeChange={handleDateRangeChange}
-                      loading={loading}
-                      label="本周"
+                      label="近一周"
                       dates={[dayjs().subtract(1, 'week'), dayjs()]}
+                      active={
+                        dateRange[0]?.format('YYYY-MM-DD') ===
+                          dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
+                        dateRange[1]?.format('YYYY-MM-DD') ===
+                          dayjs().format('YYYY-MM-DD')
+                      }
                     />
                   </>
                 }
@@ -637,6 +652,7 @@ export default function PostsList() {
         </Spin>
 
         <Modal
+          loading={detailLoading}
           title={null}
           open={isPostDetailVisible}
           onCancel={handleClosePostDetail}
