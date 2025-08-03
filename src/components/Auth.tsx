@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Avatar, Dropdown, Button, message } from 'antd';
+import { Dropdown, Button, message } from 'antd';
 import type { MenuProps } from 'antd';
 import { useRouter } from 'next/router';
 import { signIn, signOut } from 'next-auth/react';
@@ -7,6 +7,7 @@ import styles from '../styles/Auth.module.css';
 import Image from 'next/image';
 import AuthManager from '@/lib/authManager';
 import { useAuth } from '@/contexts/AuthContext';
+import Settings from './Settings';
 
 const Auth: React.FC = () => {
   // 使用简化的认证上下文，利用 NextAuth 内置缓存机制
@@ -14,6 +15,7 @@ const Auth: React.FC = () => {
   const router = useRouter();
   const { code } = router.query;
   const [loading, setLoading] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const hasTriedLogin = useRef(false); // 防止重复登录
 
   // 页面初次加载时检测 query 中的 code 并尝试登录
@@ -77,8 +79,8 @@ const Auth: React.FC = () => {
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     if (key === 'logout') handleLogout();
-
     if (key === 'profile') router.push('/dashboard');
+    if (key === 'settings') setSettingsVisible(true);
   };
 
   const items: MenuProps['items'] = [
@@ -92,6 +94,10 @@ const Auth: React.FC = () => {
       label: '个人页面',
     },
     {
+      key: 'settings',
+      label: '个人设置',
+    },
+    {
       key: 'logout',
       label: '退出登录',
     },
@@ -100,17 +106,23 @@ const Auth: React.FC = () => {
   return (
     <div className={styles.auth}>
       {session?.user ? (
-        <Dropdown menu={{ items, onClick }} trigger={['hover']}>
-          <div className={styles.userInfo}>
-            <Image
-              src={session.user.avatar as string}
-              alt="avatar"
-              width={40}
-              height={40}
-              className={styles.avatarImage}
-            />
-          </div>
-        </Dropdown>
+        <>
+          <Dropdown menu={{ items, onClick }} trigger={['hover']}>
+            <div className={styles.userInfo}>
+              <Image
+                src={session.user.avatar as string}
+                alt="avatar"
+                width={40}
+                height={40}
+                className={styles.avatarImage}
+              />
+            </div>
+          </Dropdown>
+          <Settings 
+            visible={settingsVisible} 
+            onClose={() => setSettingsVisible(false)} 
+          />
+        </>
       ) : (
         <Button
           type="primary"
