@@ -9,19 +9,20 @@ import {
   Typography,
   Space,
   Menu,
-  Image,
   Pagination,
   Button,
   Popconfirm,
   App as AntdApp
 } from 'antd';
-import { BookOpen, FileText, Eye, Clock, Edit, TrendingUp, Trash2 } from 'lucide-react';
+import { BookOpen, FileText, Eye, Clock, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import styles from './index.module.css';
 import { deleteBlog, getBlogs } from '../api/blog';
 import { deleteTutorial, getTutorials } from '../api/tutorial';
 import { useAuth } from '@/contexts/AuthContext';
+import AvatarEdit from '@/components/settings/AvatarEdit';
+import NicknameEdit from '@/components/settings/NicknameEdit';
 
 const { Title, Text } = Typography;
 
@@ -127,6 +128,22 @@ export default function DashboardPage() {
 
   const handleMenuClick = (key: string) => {
     setActiveTab(key as ActiveTab);
+  };
+
+  const handleAvatarSave = async (avatarUrl: string) => {
+ 
+     // TODO: 调用更新头像的API
+    // await updateUserAvatar(avatarUrl);
+    console.log('保存头像:', avatarUrl);
+
+    // 未成功
+    return Promise.reject('上传失败')
+  };
+
+  const handleNicknameSave = async (nickname: string) => {
+    // TODO: 调用更新昵称的API
+    // await updateUserNickname(nickname);
+    console.log('保存昵称:', nickname);
   };
 
 
@@ -407,29 +424,16 @@ export default function DashboardPage() {
       <div className={styles.header}>
         <div className={styles.profileSection}>
           <div className={styles.profileInfo}>
-            {profileData.avatar ? (
-              <Image
-                src={profileData.avatar}
-                alt={profileData.name}
-                width={80}
-                height={80}
-                preview={false}
-                className={styles.avatar}
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className={`${styles.avatar} ${styles.avatarFallback}`}>
-                <span className={styles.avatarText}>
-                  {profileData.name
-                    ? profileData.name.charAt(0).toUpperCase()
-                    : 'U'}
-                </span>
-              </div>
-            )}
+            <AvatarEdit 
+              currentAvatar={session?.user?.avatar}
+              userName={session?.user?.name||''}
+              onSave={handleAvatarSave}
+            />
             <div className={styles.profileDetails}>
-              <Title level={2} className={styles.name}>
-                {profileData.name}
-              </Title>
+              <NicknameEdit 
+                currentNickname={profileData.name}
+                onSave={handleNicknameSave}
+              />
               <Text className={styles.subtitle}>
                 Email: {profileData.email}
               </Text>
