@@ -44,7 +44,7 @@ export interface DocCategory {
 export const docsCategories: DocCategory[] = [
   {
     id: 'introduction',
-    title: '介绍',
+    title: '介绍 Monad',
     collapsed: false,
     docs: [
         { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
