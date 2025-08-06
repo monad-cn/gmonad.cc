@@ -42,7 +42,7 @@ export default function Footer() {
             </ul>
           </div>
           <div className={styles.footerSection}>
-            <h3 className={styles.footerSectionTitle}>开发者</h3>
+            <h3 className={styles.footerSectionTitle}>开发者支持</h3>
             <ul className={styles.footerLinks}>
               <li>
                 <Link href="https://docs.monad.xyz/" target="_blank" className={styles.footerLink}>
