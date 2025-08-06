@@ -152,6 +152,9 @@ export default function PostsList() {
   };
 
   useEffect(() => {
+    // 请求参数发生变更，分页参数重制为1
+    setCurrentPage(1);
+
     let newStartDate = undefined;
     let newEndDate = undefined;
     if (!dateRange?.[0] || !dateRange?.[1]) {
@@ -293,10 +296,11 @@ export default function PostsList() {
   };
 
   const handleClosePostDetail = () => {
+    setPostContent('')
     setIsPostDetailVisible(false);
     setSelectedPost(null);
-    fetchPosts();
-    fetchPostsStats();
+    // fetchPosts();
+    // fetchPostsStats();
   };
 
   const handleDateRangeChange = (
