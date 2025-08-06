@@ -12,6 +12,11 @@ func SetupRouter(r *gin.Engine) {
 
 	r.POST("/v1/login", controllers.HandleLogin)
 
+	user := r.Group("v1/users")
+	{
+		user.PUT("/:id", middlewares.JWT(""), controllers.UpdateUser)
+	}
+
 	event := r.Group("/v1/events")
 	{
 		event.POST("", middlewares.JWT("event:write"), controllers.CreateEvent)

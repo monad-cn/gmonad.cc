@@ -10,6 +10,7 @@ type User struct {
 	Username string    `json:"username"`
 	Avatar   string    `json:"avatar"`
 	Github   string    `json:"github"`
+	Twitter  string    `json:"twitter"`
 	Uid      uint      `json:"-"` // OAUTH
 	RoleID   uint      `json:"-"`
 	Role     *Role     `gorm:"foreignKey:RoleID" json:"-"`
@@ -21,6 +22,14 @@ type User struct {
 func GetUserByUid(uid uint) (*User, error) {
 	var u User
 	if err := db.Where("uid = ?", uid).First(&u).Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+func GetUserById(id uint) (*User, error) {
+	var u User
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
 		return nil, err
 	}
 	return &u, nil

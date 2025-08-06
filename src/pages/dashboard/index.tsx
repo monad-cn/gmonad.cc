@@ -23,6 +23,8 @@ import { deleteTutorial, getTutorials } from '../api/tutorial';
 import { useAuth } from '@/contexts/AuthContext';
 import AvatarEdit from '@/components/settings/AvatarEdit';
 import NicknameEdit from '@/components/settings/NicknameEdit';
+import { updateUser, User } from '../api/user';
+
 
 const { Title, Text } = Typography;
 
@@ -131,19 +133,44 @@ export default function DashboardPage() {
   };
 
   const handleAvatarSave = async (avatarUrl: string) => {
- 
-     // TODO: 调用更新头像的API
-    // await updateUserAvatar(avatarUrl);
-    console.log('保存头像:', avatarUrl);
+    try {
+      const result = await updateUser(session?.user?.uid as unknown as number, {
+        email: session?.user?.email ?? '',
+        avatar: avatarUrl,
+        github: session?.user?.github ?? '',
+        username: session?.user?.username ?? ''
+      });
 
-    // 未成功
-    return Promise.reject('上传失败')
+      if (result.success) {
+        message.success("头像新成功")
+        console.log('头像更新成功:', avatarUrl);
+      } else {
+        console.error('头像更新失败:', result.message);
+        return Promise.reject(result.message);
+      }
+    } catch (error: any) {
+      console.error('头像更新异常:', error);
+    }
   };
 
   const handleNicknameSave = async (nickname: string) => {
-    // TODO: 调用更新昵称的API
-    // await updateUserNickname(nickname);
-    console.log('保存昵称:', nickname);
+    try {
+      const result = await updateUser(session?.user?.uid as unknown as number, {
+        email: session?.user?.email ?? '',
+        avatar: session?.user?.avatar ?? '',
+        github: session?.user?.github ?? '',
+        username: nickname
+      });
+
+      if (result.success) {
+        message.success("用户名更新成功")
+        console.log('用户名更新成功:', nickname);
+      } else {
+        console.error('用户名更新失败:', result.message);
+      }
+    } catch (error: any) {
+      console.error('头像更新异常:', error);
+    }
   };
 
 
@@ -424,13 +451,13 @@ export default function DashboardPage() {
       <div className={styles.header}>
         <div className={styles.profileSection}>
           <div className={styles.profileInfo}>
-            <AvatarEdit 
+            <AvatarEdit
               currentAvatar={session?.user?.avatar}
-              userName={session?.user?.name||''}
+              userName={session?.user?.name || ''}
               onSave={handleAvatarSave}
             />
             <div className={styles.profileDetails}>
-              <NicknameEdit 
+              <NicknameEdit
                 currentNickname={profileData.name}
                 onSave={handleNicknameSave}
               />

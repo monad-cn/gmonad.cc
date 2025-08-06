@@ -285,3 +285,10 @@ type UpdateRecapRequest struct {
 	Recording string `json:"recording"`
 	Twitter   string `json:"twitter"`
 }
+
+type UpdateUserRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Avatar   string `json:"avatar" binding:"required"`
+	Github   string `json:"github" binding:"required"`
+}
