@@ -87,7 +87,8 @@ export default NextAuth({
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // 首次登录时保存用户信息到token
       if (user) {
         token.uid = (user as any).id;
         token.username = (user as any).username;
@@ -97,6 +98,15 @@ export default NextAuth({
         token.permissions = (user as any).permissions;
         token.token = (user as any).token;
       }
+      
+      // 当触发update()时，更新token中的用户信息
+      if (trigger === 'update' && session?.user) {
+        token.username = session.user.username || token.username;
+        token.avatar = session.user.avatar || token.avatar;
+        token.email = session.user.email || token.email;
+        token.github = session.user.github || token.github;
+      }
+      
       return token;
     },
 
