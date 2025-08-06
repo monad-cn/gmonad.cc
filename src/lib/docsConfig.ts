@@ -56,7 +56,7 @@ export const docsCategories: DocCategory[] = [
   },
   {
     id: 'getting-started',
-    title: '快速开始',
+    title: '快速入门',
     collapsed: false,
     groups: [
       {
