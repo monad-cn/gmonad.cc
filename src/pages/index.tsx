@@ -251,6 +251,11 @@ export default function Home() {
       avatar: "harvey.jpg",
     },
     {
+      name: 'Michael',
+      twitter: 'https://x.com/michael_lwy',
+      avatar: "michael.jpg",
+    },
+    {
       name: 'Box',
       twitter: 'https://x.com/BoxMrChen',
       avatar: "box.jpg",
