@@ -18,13 +18,13 @@ export default function Header() {
     if (mobileMenuOpen) {
       // 保存当前滚动位置
       const scrollY = window.scrollY;
-      
+
       // 锁定背景滚动
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
-      
+
       // 防止触摸滚动穿透，但允许菜单内滚动
       const preventTouchMove = (e: TouchEvent) => {
         const target = e.target as HTMLElement;
@@ -34,9 +34,9 @@ export default function Header() {
           e.preventDefault();
         }
       };
-      
+
       document.addEventListener('touchmove', preventTouchMove, { passive: false });
-      
+
       return () => {
         document.removeEventListener('touchmove', preventTouchMove);
       };
@@ -47,7 +47,7 @@ export default function Header() {
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
-      
+
       // 恢复滚动位置
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
@@ -93,7 +93,7 @@ export default function Header() {
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>生态与教程</span>
+                <span>生态系统</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
@@ -102,47 +102,46 @@ export default function Header() {
                 items: [
                   { key: 'docs', label: <Link href="/docs">开发文档</Link> },
                   { key: 'guides', label: <Link href="https://developers.monad.xyz/#quick-start" target="_blank">开发指南</Link> },
-                  { key: 'codes', label: <Link href="https://docs.monad.xyz/guides/"  target="_blank">示例代码</Link> },
+                  { key: 'codes', label: <Link href="https://docs.monad.xyz/guides/" target="_blank">示例代码</Link> },
                 ],
               }}
               placement="bottom"
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>开发者</span>
+                <span>开发者支持</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
             <Dropdown
               menu={{
                 items: [
-                  { key: 'events', label: <Link href="/events">活动</Link> },
-                  { key: 'posts', label: <Link href="/posts">帖子</Link> },
+                  { key: 'hackathon', label: <Link href="/events?type=hackathon">黑客松</Link> },
+                  { key: 'workshop', label: <Link href="/events?type=workshop">Workshop</Link> },
+                  { key: 'ama', label: <Link href="/events?type=ama">AMA</Link> },
+                  { key: 'meetup', label: <Link href="/events?type=meetup">社区聚会</Link> },
+                  { key: 'posts', label: <Link href="/posts">社区帖子</Link> },
                 ],
               }}
               placement="bottom"
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>社区</span>
+                <span>社区活动</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
             <Dropdown
               menu={{
                 items: [
-                  { key: 'x', label: <Link href="https://x.com/monad_zw" target='_blank'><SiX className={styles.iconAlign} />中文区X（推特）</Link> },
-                  { key: 'wechat', label: <Link href="https://mp.weixin.qq.com/s/t-_1fLa_MHTPtykMsp0Q_w" target='_blank'><SiWechat className={styles.iconAlign} />微信公众号 </Link> },
                   { key: 'blog', label: <Link href="/blogs">博客</Link> },
-                  { key: 'faucet', label: <Link href="/testnet#faucetSection"> 水龙头 </Link> },
-                  { key: 'explorer', label: <Link href="https://testnet.monadexplorer.com/" target='_blank'> 区块浏览器 </Link> },
                 ],
               }}
               placement="bottom"
               trigger={['hover']}
             >
               <div className={styles.navItem}>
-                <span>资源</span>
+                <span>官方资源</span>
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
@@ -187,7 +186,7 @@ export default function Header() {
       >
         <div className={styles.mobileMenuContent}>
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>生态与教程</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>生态系统</h3>
             <div className={styles.mobileMenuLinks}>
               <Link href="/monad" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🚀</span>
@@ -209,13 +208,13 @@ export default function Header() {
           </div>
 
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>开发者</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>开发者支持</h3>
             <div className={styles.mobileMenuLinks}>
               <Link href="/docs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📖</span>
                 <span>开发文档</span>
               </Link>
-              <Link href="https://developers.monad.xyz/#quick-start"  target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="https://developers.monad.xyz/#quick-start" target="_blank" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>⚙️</span>
                 <span>开发指南</span>
               </Link>
@@ -227,55 +226,37 @@ export default function Header() {
           </div>
 
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>社区</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>社区活动</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/events" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>活动</span>
-              </Link>
-              <Link href="/posts" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>帖子</span>
-              </Link>
-              {/* <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>💬</span>
-                <span>AMA</span>
-              </Link>
               <Link href="/events?type=hackathon" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🏆</span>
                 <span>黑客松</span>
               </Link>
-               <Link href="/events?type=meetup" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🤝</span>
-                <span>社区聚会</span>
-              </Link>
               <Link href="/events?type=workshop" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>🎯</span>
                 <span>Workshop</span>
-              </Link> */}
+              </Link>
+              <Link href="/events?type=ama" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>💬</span>
+                <span>AMA</span>
+              </Link>
+
+              <Link href="/events?type=meetup" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>🤝</span>
+                <span>社区聚会</span>
+              </Link>
+              <Link href="/posts" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>社区帖子</span>
+              </Link>
             </div>
           </div>
 
           <div className={styles.mobileMenuSection}>
-            <h3 className={styles.mobileMenuSectionTitle}>资源</h3>
+            <h3 className={styles.mobileMenuSectionTitle}>官方资源</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="https://x.com/monad_zw" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span><SiX className={styles.iconAlign} /></span>
-                <span>中文区X（推特）</span>
-              </Link>
-              <Link href="https://mp.weixin.qq.com/s/t-_1fLa_MHTPtykMsp0Q_w" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span><SiWechat className={styles.iconAlign} /></span>
-                <span>微信公众号</span>
-              </Link>
               <Link href="/blogs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
                 <span>📝</span>
                 <span>博客</span>
-              </Link>
-              <Link href="/testnet#faucetSection" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🚰</span>
-                <span>水龙头</span>
-              </Link>
-              <Link href="https://testnet.monadexplorer.com/" target='_blank' className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>🔍</span>
-                <span>区块浏览器</span>
               </Link>
             </div>
           </div>

@@ -173,7 +173,7 @@ export default function BlogsPage() {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.titleSection}>
-            <h1 className={styles.title}>社区博客</h1>
+            <h1 className={styles.title}>博客</h1>
             <p className={styles.subtitle}>写下所思所感，遇见共鸣之人</p>
           </div>
           {status === 'authenticated' && permissions.includes('blog:write') ? (
