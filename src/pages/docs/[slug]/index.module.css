@@ -2,30 +2,25 @@
   background-color: #f9fafb;
 }
 .layout {
-  display: block;
+  display: grid;
+  grid-template-columns: 250px 1fr 250px;
+  gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem 0.5rem;
-  padding-left: 270px;
-  padding-right: 270px;
+  align-items: start;
 }
 .leftSidebar {
-  position: fixed;
-  left: calc(50% - 600px);
+  position: sticky;
   top: 7rem;
-  width: 250px;
-  max-height: calc(100vh - 8rem);
+  max-height: calc(100vh - 6rem);
   overflow-y: auto;
-  z-index: 10;
 }
 .rightSidebar {
-  position: fixed;
-  right: calc(50% - 600px);
-  top: 7rem;
-  width: 250px;
-  max-height: calc(100vh - 8rem);
+  position: sticky;
+  top: 7rem; 
+  max-height: calc(100vh - 6rem);
   overflow-y: auto;
-  z-index: 10;
 }
 .mainContent {
   min-width: 0;
@@ -82,27 +77,26 @@
 /* 左右侧边栏滚动条样式 */
 .leftSidebar::-webkit-scrollbar,
 .rightSidebar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 .leftSidebar::-webkit-scrollbar-track,
 .rightSidebar::-webkit-scrollbar-track {
-  background: #f8fafc;
-  border-radius: 3px;
+  background: transparent;
 }
 .leftSidebar::-webkit-scrollbar-thumb,
 .rightSidebar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: #e2e8f0;
+  border-radius: 2px;
 }
 .leftSidebar::-webkit-scrollbar-thumb:hover,
 .rightSidebar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #cbd5e1;
 }
 /* Firefox 左右侧边栏滚动条样式 */
 .leftSidebar,
 .rightSidebar {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f8fafc;
+  scrollbar-color: #e2e8f0 transparent;
 }
 .paper {
   background-color: white;
@@ -330,6 +324,24 @@
   transition: color 0.2s;
   font-size: 0.875rem;
 }
+
+.tocLink[data-level="2"] {
+  padding-left: 0;
+  font-weight: 500;
+}
+
+.tocLink[data-level="3"] {
+  padding-left: 1rem;
+  font-weight: 400;
+  font-size: 0.8125rem;
+}
+
+.tocLink[data-level="4"] {
+  padding-left: 2rem;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
 .tocLink:hover {
   color: #8b5cf6;
 }
@@ -358,37 +370,20 @@
 @media (min-width: 1800px) {
   .layout {
     max-width: 1500px;
-    padding-left: 340px;
-    padding-right: 340px;
-  }
-  .leftSidebar {
-    left: calc(50% - 750px);
-    width: 320px;
-  }
-  .rightSidebar {
-    right: calc(50% - 750px);
-    width: 320px;
+    grid-template-columns: 320px 1fr 320px;
   }
 }
 /* 1920x1080分辨率适配 */
 @media (min-width: 1920px) {
   .layout {
     max-width: 1600px;
-    padding-left: 360px;
-    padding-right: 360px;
-  }
-  .leftSidebar {
-    left: calc(50% - 800px);
-    width: 340px;
-  }
-  .rightSidebar {
-    right: calc(50% - 800px);
-    width: 340px;
+    grid-template-columns: 340px 1fr 340px;
   }
 }
 /* 响应式设计 */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .layout {
+    display: block;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
@@ -398,12 +393,6 @@
     width: auto;
     max-height: none;
     margin-bottom: 1.5rem;
-  }
-  .leftSidebar {
-    order: -1;
-  }
-  .rightSidebar {
-    order: 1;
   }
   .sidebarContent {
     padding: 1rem;
