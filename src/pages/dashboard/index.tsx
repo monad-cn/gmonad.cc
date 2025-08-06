@@ -24,6 +24,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import AvatarEdit from '@/components/settings/AvatarEdit';
 import NicknameEdit from '@/components/settings/NicknameEdit';
 import { updateUser, User } from '../api/user';
+import { useSession } from 'next-auth/react';
 
 
 const { Title, Text } = Typography;
@@ -48,6 +49,7 @@ export default function DashboardPage() {
     total: 0,
   });
   const { session } = useAuth();
+  const { update } = useSession();
 
   const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
@@ -142,8 +144,17 @@ export default function DashboardPage() {
       });
 
       if (result.success) {
-        message.success("头像新成功")
+        message.success("头像更新成功")
         console.log('头像更新成功:', avatarUrl);
+        
+        // 刷新session，更新用户信息
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            avatar: avatarUrl
+          }
+        });
       } else {
         console.error('头像更新失败:', result.message);
         return Promise.reject(result.message);
@@ -165,11 +176,21 @@ export default function DashboardPage() {
       if (result.success) {
         message.success("用户名更新成功")
         console.log('用户名更新成功:', nickname);
+        
+        // 刷新session，更新用户信息
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            username: nickname,
+            name: nickname  // 同时更新name字段
+          }
+        });
       } else {
         console.error('用户名更新失败:', result.message);
       }
     } catch (error: any) {
-      console.error('头像更新异常:', error);
+      console.error('用户名更新异常:', error);
     }
   };
 
