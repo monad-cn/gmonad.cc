@@ -12,7 +12,7 @@ export default function DocsIndexPage() {
     
     if (docsCategories.length > 0) {
       const firstCategory = docsCategories[0];
-      if (firstCategory.docs.length > 0) {
+      if (firstCategory.docs && firstCategory.docs.length > 0) {
         const firstDoc = firstCategory.docs[0];
         router.replace(`/docs/${firstDoc.slug}`);
       }
