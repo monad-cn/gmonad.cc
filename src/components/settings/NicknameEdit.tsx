@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Input, Button, message } from 'antd';
+import { Modal, Input, Button, App as AntdApp } from 'antd';
 import { Edit3 } from 'lucide-react';
 
 interface NicknameEditProps {
@@ -7,10 +7,14 @@ interface NicknameEditProps {
   onSave: (nickname: string) => Promise<void>;
 }
 
-export default function NicknameEdit({ currentNickname, onSave }: NicknameEditProps) {
+export default function NicknameEdit({
+  currentNickname,
+  onSave,
+}: NicknameEditProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [nickname, setNickname] = useState(currentNickname || '');
   const [saving, setSaving] = useState(false);
+  const { message } = AntdApp.useApp();
 
   const handleSave = async () => {
     if (!nickname.trim()) {
@@ -32,7 +36,7 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
       setSaving(true);
       // TODO: 在这里调用更新昵称的接口
       await onSave(nickname.trim());
-      
+
       message.success('昵称修改成功');
       setIsModalVisible(false);
     } catch (error) {
@@ -54,7 +58,7 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
 
   return (
     <>
-      <div 
+      <div
         onClick={handleOpenModal}
         style={{
           display: 'inline-flex',
@@ -73,12 +77,14 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
         }}
       >
-        <span style={{
-          color: 'white',
-          fontSize: '32px',
-          fontWeight: 600,
-          lineHeight: 1,
-        }}>
+        <span
+          style={{
+            color: 'white',
+            fontSize: '32px',
+            fontWeight: 600,
+            lineHeight: 1,
+          }}
+        >
           {currentNickname || '未设置昵称'}
         </span>
         <Edit3 size={16} color="rgba(255, 255, 255, 0.8)" />
@@ -92,9 +98,9 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
           <Button key="cancel" onClick={handleCancel}>
             取消
           </Button>,
-          <Button 
-            key="save" 
-            type="primary" 
+          <Button
+            key="save"
+            type="primary"
             loading={saving}
             onClick={handleSave}
           >
@@ -105,12 +111,14 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
       >
         <div style={{ padding: '20px 0' }}>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: 8,
-              fontWeight: 500,
-              color: '#262626'
-            }}>
+            <label
+              style={{
+                display: 'block',
+                marginBottom: 8,
+                fontWeight: 500,
+                color: '#262626',
+              }}
+            >
               新昵称
             </label>
             <Input
@@ -123,12 +131,14 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
               onPressEnter={handleSave}
             />
           </div>
-          
-          <div style={{ 
-            fontSize: '12px', 
-            color: '#999',
-            lineHeight: 1.5 
-          }}>
+
+          <div
+            style={{
+              fontSize: '12px',
+              color: '#999',
+              lineHeight: 1.5,
+            }}
+          >
             <div>• 昵称长度：2-20个字符</div>
             <div>• 支持中文、英文、数字和常用符号</div>
           </div>

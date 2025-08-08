@@ -281,6 +281,13 @@ export default function PostsList() {
     try {
       setIsPostDetailVisible(true);
       setdetailLoading(true);
+      // 直接从列表拿数据
+      // const currentPost = posts.find((item: Post) => item.ID === post.ID);
+      // if (currentPost) {
+      //   setSelectedPost(currentPost);
+      // } else {
+      //   console.error('获取帖子失败:');
+      // }
 
       const res = await getPostById(post.ID.toString());
       if (res.success && res.data) {
@@ -296,7 +303,7 @@ export default function PostsList() {
   };
 
   const handleClosePostDetail = () => {
-    setPostContent('')
+    setPostContent('');
     setIsPostDetailVisible(false);
     setSelectedPost(null);
     // fetchPosts();
@@ -776,7 +783,7 @@ export default function PostsList() {
             form.resetFields();
           }}
           footer={null}
-          width={600}
+          width={800}
           className={styles.createModal}
         >
           <Form
