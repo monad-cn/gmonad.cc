@@ -73,4 +73,5 @@ func SetupRouter(r *gin.Engine) {
 		post.GET("/stats", controllers.PostsStats)
 	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
+	r.GET("/v1/stats", controllers.StatsOverview)
 }
