@@ -53,7 +53,7 @@ interface TimeSeriesData {
 
 interface StatsResponse {
     overview: StatsOverview | null
-    trend: TimeSeriesData[]
+    trend: TimeSeriesData[] | null
 }
 
 
@@ -113,7 +113,7 @@ function TrendChart({ data }: TrendChartProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
-        if (!canvasRef.current || !data.length) return
+           if (!canvasRef.current || !data || !data.length) return
 
         const canvas = canvasRef.current
         const ctx = canvas.getContext('2d')
@@ -470,7 +470,7 @@ export default function StatsIndex() {
                 const statsResult = await getStatsOverview()
                 if (statsResult.success && statsResult.data) {
                     setData(statsResult.data)
-                } 
+                }
                 // 设置默认日期范围（本周）
                 const now = new Date()
                 const startDate = new Date(now)
@@ -614,9 +614,15 @@ export default function StatsIndex() {
                 </div>
 
                 {/* 趋势图表 */}
-                <div className={styles.chartSection}>
-                    <TrendChart data={data.trend} />
-                </div>
+                {Array.isArray(data.trend) && data.trend.length > 0 ? (
+                    <div className={styles.chartSection}>
+                        <TrendChart data={data.trend} />
+                    </div>
+                ) : (
+                    <div className={styles.chartSection}>
+                        <p className={styles.emptyText}>暂无趋势数据</p>
+                    </div>
+                )}
             </div>
         </div>
     )

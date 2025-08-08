@@ -11,7 +11,7 @@ func StartScheduler() {
 	c := cron.New()
 
 	// 每天凌晨 00:10 执行（避免并发、写入未完成）
-	_, err := c.AddFunc("25 10 * * *", func() {
+	_, err := c.AddFunc("10 0 * * *", func() {
 		log.Println("Running daily stats task...")
 		err := models.CollectDailyStats()
 		if err != nil {
