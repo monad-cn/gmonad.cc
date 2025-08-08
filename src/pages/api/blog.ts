@@ -288,7 +288,7 @@ export const updateBlogPublishStatus = async (
       publish_status: publishStatus,
     };
 
-    const response = await apiRequest<EventResult>(
+    const response = await apiRequest<BlogResult>(
       `/blogs/${blogId}/status`,
       'PUT',
       body
