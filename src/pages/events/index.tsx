@@ -380,10 +380,10 @@ export default function EventsPage() {
             onChange={handleEventTypeFilter}
           >
             <Option value="">所有</Option>
-            <Option value="ama">AMA</Option>
             <Option value="hackathon">黑客松</Option>
-            <Option value="meetup">社区聚会</Option>
             <Option value="workshop">Workshop</Option>
+            <Option value="ama">AMA</Option>
+            <Option value="meetup">社区聚会</Option>
           </Select>
           <Select
             size="large"

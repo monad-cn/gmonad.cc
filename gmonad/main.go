@@ -5,6 +5,7 @@ import (
 	"gmonad/logger"
 	"gmonad/middlewares"
 	"gmonad/routes"
+	"gmonad/scheduler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -17,6 +18,7 @@ func main() {
 	logger.Init(logFile, logLevel)
 
 	jobs.HandleTask()
+	scheduler.StartScheduler()
 
 	r := gin.Default()
 	r.Use(middlewares.Cors())
