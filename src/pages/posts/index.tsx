@@ -722,11 +722,16 @@ export default function PostsList() {
                         </div>
                       )}
                       <div className={styles.postDetailTags}>
-                        {selectedPost.tags.map((tag, index) => (
+                        {selectedPost.tags.slice(0, 3).map((tag, index) => (
                           <span key={index} className={styles.postDetailTag}>
                             {tag}
                           </span>
                         ))}
+                        {selectedPost.tags.length > 3 && (
+                          <span className={styles.postDetailTag}>
+                            +{selectedPost.tags.length - 3}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
