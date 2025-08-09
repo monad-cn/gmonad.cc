@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Dropdown, Button, message } from 'antd';
+import { Dropdown, Button, App as AntdApp } from 'antd';
 import type { MenuProps } from 'antd';
 import { useRouter } from 'next/router';
 import { signIn, signOut } from 'next-auth/react';
@@ -9,6 +9,7 @@ import AuthManager from '@/lib/authManager';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Auth: React.FC = () => {
+    const { message } = AntdApp.useApp();
   // 使用简化的认证上下文，利用 NextAuth 内置缓存机制
   const { session } = useAuth();
   const router = useRouter();

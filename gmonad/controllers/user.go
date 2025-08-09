@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"gmonad/logger"
 	"gmonad/models"
 	"gmonad/utils"
@@ -50,9 +49,8 @@ func UpdateUser(c *gin.Context) {
 	user.Github = req.Github
 
 	if err := models.UpdateUser(user); err != nil {
-		utils.ErrorResponse(c, http.StatusUnauthorized, "success fail", nil)
+		utils.ErrorResponse(c, http.StatusUnauthorized, "update fail", nil)
 		return
 	}
-	fmt.Println(user)
 	utils.SuccessResponse(c, http.StatusOK, "success update", user)
 }
