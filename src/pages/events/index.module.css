@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   padding: 0rem 1rem;
-  padding-top: 6.5rem; 
+  padding-top: 6.5rem;
   background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
@@ -648,6 +648,9 @@
   overflow: hidden !important;
   flex: 1;
   margin-right: 0.75rem;
+  /* 固定高度确保统一 */
+  height: 3.5rem; /* 1.25rem * 1.4 * 2 = 3.5rem (两行高度) */
+  min-height: 3.5rem;
 }
 
 .menuButton {
