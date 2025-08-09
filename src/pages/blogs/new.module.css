@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding: 0rem 1rem;
+  padding: 0 1rem;
   background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
@@ -55,6 +55,7 @@
   grid-template-columns: 1fr 400px;
   gap: 2rem;
   margin-bottom: 2rem;
+  align-items: stretch;
 }
 
 .leftColumn,
@@ -62,6 +63,10 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.leftColumn .section {
+  flex: 1;
 }
 
 /* 覆盖 Ant Design Card 样式 */
@@ -122,6 +127,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+.rightColumn .section .formRow {
+  display: block;
 }
 
 /* 覆盖 Ant Design Input 样式 */
