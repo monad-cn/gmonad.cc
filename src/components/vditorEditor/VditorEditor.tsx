@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { uploadImgToCloud } from '@/lib/cloudinary';
+import { emoji } from './emoji';
 
 import styles from './VditorEditor.module.css';
 import 'vditor/dist/index.css';
@@ -60,6 +61,9 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
             cache: {
               enable: false, // 禁用缓存避免冲突
             },
+            hint: {
+              emoji,
+            },
             preview: {
               delay: 500,
               mode: 'both',
@@ -71,6 +75,7 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               },
             },
             toolbar: [
+              'emoji',
               'headings',
               'bold',
               'italic',
@@ -123,7 +128,7 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               accept: 'image/*',
               max: 5 * 1024 * 1024, // 5MB
               handler: async (files: File[]) => {
-                console.log('开始上传图片，文件数量:', files.length);
+                console.log('开始上传图片，文件数量', files.length);
 
                 try {
                   const uploadPromises = files.map(async (file, index) => {
@@ -147,11 +152,11 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
                     // 上传到 Cloudinary
                     console.log('正在上传到 Cloudinary...');
                     const result = await uploadImgToCloud(file);
-                    console.log('Cloudinary上传结果:', result);
+                    console.log('Cloudinary上传结果', result);
 
                     if (result && result.secure_url) {
                       const imageUrl = result.secure_url;
-                      console.log('图片上传成功，URL:', imageUrl);
+                      console.log('图片上传成功，URL', imageUrl);
                       return imageUrl;
                     } else {
                       throw new Error('图片上传失败：未获取到URL');
@@ -208,7 +213,7 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
             },
           });
         } catch (error) {
-          console.error('Vditor 初始化失败:', error);
+          console.error('Vditor 初始化失败', error);
           setError('编辑器加载失败，请刷新页面重试');
           setIsLoading(false);
         }

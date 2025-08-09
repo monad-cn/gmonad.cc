@@ -1,4 +1,5 @@
 import type React from 'react';
+import debounce from 'lodash/debounce';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Pagination,
@@ -52,7 +53,7 @@ import DateButton from '@/components/base/DateButton';
 
 import dayjs from 'dayjs';
 import VditorEditor from '@/components/vditorEditor';
-import { sanitizeMarkdown } from '@/lib/markdown';
+import { sanitizeMarkdown,parseMarkdown } from '@/lib/markdown';
 import { useAuth } from '@/contexts/AuthContext';
 
 const { Option } = Select;
@@ -90,6 +91,7 @@ export default function PostsList() {
   const [endDate, setEndDate] = useState(dateRange[1]?.format('YYYY-MM-DD'));
 
   const [loading, setLoading] = useState(false);
+  const [btnLoading, setbtnLoading] = useState(false);
   const [detailLoading, setdetailLoading] = useState(false);
 
   const { session, status } = useAuth();
@@ -100,7 +102,9 @@ export default function PostsList() {
 
   useEffect(() => {
     if (selectedPost?.description) {
-      sanitizeMarkdown(selectedPost.description).then((htmlContent) => {
+      parseMarkdown(selectedPost.description).then((htmlContent) => {
+        console.log(htmlContent);
+        
         setPostContent(htmlContent);
       });
     }
@@ -152,22 +156,33 @@ export default function PostsList() {
   };
 
   useEffect(() => {
-    let newStartDate = undefined;
-    let newEndDate = undefined;
-    if (!dateRange?.[0] || !dateRange?.[1]) {
-      newStartDate = undefined;
-      newEndDate = undefined;
-    } else {
-      newStartDate = dateRange[0].format('YYYY-MM-DD');
-      newEndDate = dateRange[1].format('YYYY-MM-DD');
-    }
-
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
-
+  // 防抖
+  const debouncedFetch = debounce(() => {
     fetchPosts();
     fetchPostsStats();
-  }, [searchTerm, sortBy, dateRange, fetchPosts]);
+  }, 300);
+
+  setCurrentPage(1);
+
+  let newStartDate = undefined;
+  let newEndDate = undefined;
+  if (!dateRange?.[0] || !dateRange?.[1]) {
+    newStartDate = undefined;
+    newEndDate = undefined;
+  } else {
+    newStartDate = dateRange[0].format('YYYY-MM-DD');
+    newEndDate = dateRange[1].format('YYYY-MM-DD');
+  }
+
+  setStartDate(newStartDate);
+  setEndDate(newEndDate);
+
+  debouncedFetch();
+
+  return () => {
+    debouncedFetch.cancel();
+  };
+}, [searchTerm, sortBy, dateRange, fetchPosts]);
 
   const getStarCount = (viewCount: number) => {
     if (viewCount >= 2000) return 5;
@@ -179,6 +194,7 @@ export default function PostsList() {
 
   const handleCallPost = async (values: any) => {
     try {
+       setbtnLoading(true)
       if (isEditMode && editingPost) {
         const res = await updatePost(editingPost.ID.toString(), {
           title: values.title,
@@ -213,6 +229,8 @@ export default function PostsList() {
       fetchPostsStats();
     } catch (error) {
       message.error('操作失败，请重试');
+    } finally{
+      setbtnLoading(false)
     }
   };
 
@@ -278,6 +296,13 @@ export default function PostsList() {
     try {
       setIsPostDetailVisible(true);
       setdetailLoading(true);
+      // 直接从列表拿数据
+      // const currentPost = posts.find((item: Post) => item.ID === post.ID);
+      // if (currentPost) {
+      //   setSelectedPost(currentPost);
+      // } else {
+      //   console.error('获取帖子失败:');
+      // }
 
       const res = await getPostById(post.ID.toString());
       if (res.success && res.data) {
@@ -293,10 +318,11 @@ export default function PostsList() {
   };
 
   const handleClosePostDetail = () => {
+    setPostContent('');
     setIsPostDetailVisible(false);
     setSelectedPost(null);
-    fetchPosts();
-    fetchPostsStats();
+    // fetchPosts();
+    // fetchPostsStats();
   };
 
   const handleDateRangeChange = (
@@ -772,7 +798,7 @@ export default function PostsList() {
             form.resetFields();
           }}
           footer={null}
-          width={600}
+          width={800}
           className={styles.createModal}
         >
           <Form
@@ -865,7 +891,8 @@ export default function PostsList() {
                 >
                   取消
                 </Button>
-                <Button
+                <Button 
+                  loading={btnLoading}
                   type="primary"
                   htmlType="submit"
                   className={styles.submitButton}

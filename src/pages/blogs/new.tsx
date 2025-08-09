@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Form, Input, Upload, Button, Card, Tag, App as AntdApp } from 'antd';
+import { Form, Input, Button, Card, Tag, App as AntdApp } from 'antd';
 import {
   ArrowLeft,
   Users,
@@ -7,6 +7,7 @@ import {
   ImageIcon,
   Save,
   Plus,
+  Link as LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './new.module.css';
@@ -38,7 +39,7 @@ export default function NewBlogPage() {
     },
     [form]
   );
-  
+
   const handleSubmit = async (values: any) => {
     try {
       console.log(values);
@@ -155,48 +156,9 @@ export default function NewBlogPage() {
                 <VditorEditor
                   value={form.getFieldValue('content')}
                   onChange={handleVditorEditorChange}
+                  height={700}
                 />
               </Form.Item>
-              <Form.Item
-                label="原文链接"
-                name="source"
-                rules={[
-                  {
-                    type: 'url',
-                    message: '请输入有效的链接地址',
-                  },
-                ]}
-              >
-                <Input placeholder="请输入原文链接" className={styles.input} />
-              </Form.Item>
-            </Card>
-
-            {/* 参与人员 */}
-            <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>
-                <Users className={styles.sectionIcon} />
-                作者与协作者
-              </h2>
-
-              <div className={styles.formRow}>
-                <Form.Item
-                  label="作者"
-                  name="author"
-                  rules={[{ required: true, message: '请输入作者姓名' }]}
-                >
-                  <Input placeholder="请输入作者" maxLength={10} showCount />
-                </Form.Item>
-              </div>
-
-              <div className={styles.formRow}>
-                <Form.Item label="翻译" name="translator">
-                  <Input
-                    placeholder="请输入翻译人员（可选）"
-                    maxLength={10}
-                    showCount
-                  />
-                </Form.Item>
-              </div>
             </Card>
           </div>
 
@@ -261,6 +223,54 @@ export default function NewBlogPage() {
                     添加标签
                   </button>
                 )}
+              </div>
+            </Card>
+
+            {/* 原文链接 */}
+            <Card className={styles.section}>
+                  <h2 className={styles.sectionTitle}>
+                      <LinkIcon className={styles.sectionIcon} />
+                      原文链接
+                  </h2>
+                  <Form.Item
+                      label="原文链接"
+                      name="source"
+                      rules={[
+                          {
+                              type: 'url',
+                              message: '请输入有效的链接地址',
+                          },
+                      ]}
+                  >
+                      <Input placeholder="请输入原文链接" className={styles.input} />
+                  </Form.Item>
+              </Card>
+
+            {/* 参与人员 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Users className={styles.sectionIcon} />
+                作者与协作者
+              </h2>
+
+              <div className={styles.formRow}>
+                <Form.Item
+                  label="作者"
+                  name="author"
+                  rules={[{ required: true, message: '请输入作者姓名' }]}
+                >
+                  <Input placeholder="请输入作者" maxLength={10} showCount />
+                </Form.Item>
+              </div>
+
+              <div className={styles.formRow}>
+                <Form.Item label="翻译" name="translator">
+                  <Input
+                    placeholder="请输入翻译人员（可选）"
+                    maxLength={10}
+                    showCount
+                  />
+                </Form.Item>
               </div>
             </Card>
           </div>
