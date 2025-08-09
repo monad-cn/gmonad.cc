@@ -1,5 +1,13 @@
 import { marked } from 'marked';
 
+interface MarkedToken {
+  type: string;
+  text?: string;
+  depth?: number;
+  items?: MarkedToken[];
+  [key: string]: unknown;
+}
+
 export interface MarkdownParseOptions {
   breaks?: boolean;
   gfm?: boolean;
@@ -14,7 +22,7 @@ export interface MarkdownParseOptions {
 }
 
 export const defaultOptions: MarkdownParseOptions = {
-  breaks: true,
+  breaks: false,
   gfm: true,
   headerIds: true,
   mangle: false,
@@ -34,8 +42,8 @@ export async function parseMarkdown(content: string, options: MarkdownParseOptio
   return await marked(content);
 }
 
-export function parseMarkdownToTokens(content: string): any[] {
-  return marked.lexer(content);
+export function parseMarkdownToTokens(content: string): MarkedToken[] {
+  return marked.lexer(content) as MarkedToken[];
 }
 
 export function extractHeadings(content: string): Array<{ level: number; text: string; id?: string }> {
@@ -44,15 +52,32 @@ export function extractHeadings(content: string): Array<{ level: number; text: s
   const idCounts = new Map<string, number>();
   
   tokens.forEach(token => {
-    if (token.type === 'heading') {
-      let baseId = token.text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+    if (token.type === 'heading' && token.text && token.depth) {
+      // 清理标题文本中的 HTML 标签和 markdown 语法
+      let cleanText = token.text.replace(/<[^>]*>/g, '').trim();
+      // 移除 markdown 粗体/斜体语法
+      cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '$1'); // **粗体**
+      cleanText = cleanText.replace(/\*(.*?)\*/g, '$1');     // *斜体*
+      cleanText = cleanText.replace(/__(.*?)__/g, '$1');     // __粗体__
+      cleanText = cleanText.replace(/_(.*?)_/g, '$1');       // _斜体_
+      // 移除代码块语法
+      cleanText = cleanText.replace(/`(.*?)`/g, '$1');       // `代码`
+      // 移除其他可能的特殊字符
+      cleanText = cleanText.replace(/&#x20;/g, ' ').trim();  // HTML 实体
+      
+      // 使用与 marked 相同的 ID 生成逻辑
+      let baseId = cleanText
+        .toLowerCase()
+        .trim()
+        .replace(/[\s]+/g, '-')        // 空格替换为连字符
+        .replace(/[^\w\-\u4e00-\u9fa5]/g, ''); // 只保留字母、数字、连字符和中文字符
       
       // 处理空 ID
       if (!baseId) {
         baseId = 'heading';
       }
       
-      // 处理重复 ID
+      // 处理重复 ID (marked 的方式)
       const count = idCounts.get(baseId) || 0;
       idCounts.set(baseId, count + 1);
       
@@ -60,7 +85,7 @@ export function extractHeadings(content: string): Array<{ level: number; text: s
       
       headings.push({
         level: token.depth,
-        text: token.text,
+        text: cleanText,
         id: finalId
       });
     }
@@ -73,43 +98,43 @@ export function extractText(content: string): string {
   const tokens = parseMarkdownToTokens(content);
   let text = '';
   
-  const extractTokenText = (token: any): string => {
+  const extractTokenText = (token: MarkedToken): string => {
     let result = '';
     
     switch (token.type) {
       case 'text':
-        result = token.text;
+        result = token.text || '';
         break;
       case 'paragraph':
-        result = token.text;
+        result = token.text || '';
         break;
       case 'heading':
-        result = token.text;
+        result = token.text || '';
         break;
       case 'code':
-        result = token.text;
+        result = token.text || '';
         break;
       case 'codespan':
-        result = token.text;
+        result = token.text || '';
         break;
       case 'list':
-        if ('items' in token) {
-          result = token.items.map((item: any) => extractTokenText(item)).join(' ');
+        if ('items' in token && token.items) {
+          result = token.items.map((item: MarkedToken) => extractTokenText(item)).join(' ');
         }
         break;
       case 'list_item':
         if ('text' in token) {
-          result = token.text;
+          result = token.text || '';
         }
         break;
       case 'blockquote':
         if ('text' in token) {
-          result = token.text;
+          result = token.text || '';
         }
         break;
       default:
         if ('text' in token) {
-          result = token.text;
+          result = token.text || '';
         }
     }
     
@@ -128,8 +153,8 @@ export function getTableOfContents(content: string): Array<{ level: number; text
   const toc: Array<{ level: number; text: string; id: string }> = [];
   
   headings.forEach(heading => {
-    // 只处理 2 级标题
-    if (heading.level === 2) {
+    // 处理 2-4 级标题
+    if (heading.level >= 2 && heading.level <= 4) {
       toc.push({
         level: heading.level,
         text: heading.text,

@@ -19,7 +19,6 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
 }
 
 body {
@@ -62,7 +61,7 @@ a {
 
 /* 处理vditor编辑器全屏层级低于header头 */
 .vditor--fullscreen{
-  z-index: 110!important; 
+  z-index: 1110!important; 
 }
 
 /* 配合浮动导航栏加一个上内边距样式类 */

@@ -88,9 +88,9 @@ func HandleLogin(c *gin.Context) {
 	user, err = models.GetUserByUid(userId)
 	if err == nil {
 		user.Uid = resp.Data.Uid
-		user.Avatar = resp.Data.Avatar
+		// user.Avatar = resp.Data.Avatar  // 在gmonadcc修改
+		// user.Username = resp.Data.UserName
 		user.Email = resp.Data.Email
-		user.Username = resp.Data.UserName
 		user.Github = resp.Data.Github
 		err = models.UpdateUser(user)
 	} else {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Upload, Button, message, Image } from 'antd';
+import { Modal, Upload, Button,  App as AntdApp, Image } from 'antd';
 import { Camera, Upload as UploadIcon } from 'lucide-react';
 import type { UploadFile, UploadProps } from 'antd';
 import { uploadImgToCloud } from '@/lib/cloudinary';
@@ -15,6 +15,7 @@ export default function AvatarEdit({
   userName,
   onSave,
 }: AvatarEditProps) {
+     const { message } = AntdApp.useApp();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>(currentAvatar || '');
   const [uploading, setUploading] = useState(false);

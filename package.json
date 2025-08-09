@@ -14,6 +14,7 @@
     "cloudinary": "^2.6.1",
     "dayjs": "^1.11.13",
     "gray-matter": "^4.0.3",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.513.0",
     "marked": "^16.0.0",
     "next": "15.3.3",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/global-agent": "^3.0.0",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
