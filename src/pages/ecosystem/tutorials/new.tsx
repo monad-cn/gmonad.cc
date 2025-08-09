@@ -6,7 +6,6 @@ import {
     Button,
     Card,
     Tag,
-    Select,
     App as AntdApp,
 } from 'antd';
 import type { UploadFile } from 'antd';
@@ -23,12 +22,11 @@ import styles from './new.module.css';
 
 import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
+import { DAppSelect } from '@/components/dappSelect';
 
 import { createTutorial } from '@/pages/api/tutorial';
-import { getDapps } from '@/pages/api/dapp';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 export default function NewTutorialPage() {
     const { message } = AntdApp.useApp();
@@ -43,25 +41,6 @@ export default function NewTutorialPage() {
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [cloudinaryImg, setCloudinaryImg] = useState<any>();
-    const [dappList, setDappList] = useState<any[]>([]);
-
-    // 获取 Dapp 列表
-    const fetchDapps = async () => {
-        try {
-            const result = await getDapps({ page: 1, page_size: 20 });
-            if (result.success && result.data) {
-                setDappList(result.data.dapps || []);
-            } else {
-                message.warning(result.message || '获取 Dapp 列表失败');
-            }
-        } catch (error) {
-            console.error('获取 Dapp 列表失败:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchDapps();
-    }, []);
 
     // 富文本处理
     const handleQuillEditorChange = useCallback(
@@ -227,16 +206,7 @@ export default function NewTutorialPage() {
                                 label="关联 DApp（可选）"
                                 name="dappId"
                             >
-                                <Select
-                                    allowClear
-                                    placeholder="请选择关联 DApp"
-                                >
-                                    {dappList.map((dapp) => (
-                                        <Option key={dapp.ID} value={dapp.ID}>
-                                            {dapp.name}
-                                        </Option>
-                                    ))}
-                                </Select>
+                                <DAppSelect placeholder="请选择关联 DApp" />
                             </Form.Item>
                             <Form.Item
                                 label="参考链接（可选）"

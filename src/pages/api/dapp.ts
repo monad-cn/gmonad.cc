@@ -25,6 +25,7 @@ export interface GetDappsParams {
 }
 
 export interface Dapp {
+  ID: number;
   name: string;
   description: string;
   category: string;
