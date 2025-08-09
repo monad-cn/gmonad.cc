@@ -146,7 +146,7 @@ export default function DashboardPage() {
       if (result.success) {
         message.success("头像更新成功")
         console.log('头像更新成功:', avatarUrl);
-        
+
         // 刷新session，更新用户信息
         await update({
           ...session,
@@ -174,9 +174,8 @@ export default function DashboardPage() {
       });
 
       if (result.success) {
-        message.success("用户名更新成功")
-        console.log('用户名更新成功:', nickname);
-        
+        message.success("昵称修改成功")
+
         // 刷新session，更新用户信息
         await update({
           ...session,
@@ -187,10 +186,12 @@ export default function DashboardPage() {
           }
         });
       } else {
-        console.error('用户名更新失败:', result.message);
+        message.error('昵称修改失败');
+        console.error('昵称修改失败:', result.message);
       }
     } catch (error: any) {
-      console.error('用户名更新异常:', error);
+      message.error('昵称修改异常');
+      console.error('昵称修改异常:', error);
     }
   };
 
@@ -436,7 +437,7 @@ export default function DashboardPage() {
               </List.Item>
             )}
           />
-          {/* 
+          {/*
           <Pagination
             current={tutorialsPagination.current}
             total={tutorialsPagination.total}

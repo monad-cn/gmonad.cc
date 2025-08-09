@@ -34,13 +34,11 @@ export default function NicknameEdit({
 
     try {
       setSaving(true);
-      // TODO: 在这里调用更新昵称的接口
       await onSave(nickname.trim());
 
-      message.success('昵称修改成功');
       setIsModalVisible(false);
     } catch (error) {
-      message.error('昵称修改失败');
+      console.error('昵称修改失败');
     } finally {
       setSaving(false);
     }
@@ -119,6 +117,7 @@ export default function NicknameEdit({
                 color: '#262626',
               }}
             >
+
               新昵称
             </label>
             <Input
