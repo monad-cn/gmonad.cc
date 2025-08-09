@@ -30,10 +30,7 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
 
     try {
       setSaving(true);
-      // TODO: 在这里调用更新昵称的接口
       await onSave(nickname.trim());
-      
-      message.success('昵称修改成功');
       setIsModalVisible(false);
     } catch (error) {
       message.error('昵称修改失败');
@@ -54,7 +51,7 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
 
   return (
     <>
-      <div 
+      <div
         onClick={handleOpenModal}
         style={{
           display: 'inline-flex',
@@ -92,9 +89,9 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
           <Button key="cancel" onClick={handleCancel}>
             取消
           </Button>,
-          <Button 
-            key="save" 
-            type="primary" 
+          <Button
+            key="save"
+            type="primary"
             loading={saving}
             onClick={handleSave}
           >
@@ -105,8 +102,8 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
       >
         <div style={{ padding: '20px 0' }}>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ 
-              display: 'block', 
+            <label style={{
+              display: 'block',
               marginBottom: 8,
               fontWeight: 500,
               color: '#262626'
@@ -123,11 +120,11 @@ export default function NicknameEdit({ currentNickname, onSave }: NicknameEditPr
               onPressEnter={handleSave}
             />
           </div>
-          
-          <div style={{ 
-            fontSize: '12px', 
+
+          <div style={{
+            fontSize: '12px',
             color: '#999',
-            lineHeight: 1.5 
+            lineHeight: 1.5
           }}>
             <div>• 昵称长度：2-20个字符</div>
             <div>• 支持中文、英文、数字和常用符号</div>
