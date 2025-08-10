@@ -81,7 +81,7 @@ export default function TutorialsPage() {
                 : 2;
 
         setPublishStatus(newPublishStatus);
-    }, [status, permissions]);
+    }, [status, permissions.length]);
 
     useEffect(() => {
         fetchTutorials({ publish_status: publishStatus });
