@@ -19,7 +19,8 @@ import {
 import Link from 'next/link';
 import styles from './edit.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getTutorialById, updateTutorial } from '@/pages/api/tutorial';
@@ -221,7 +222,7 @@ export default function EditTutorialPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入教程内容' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('content')}
                   onChange={handleQuillEditorChange}
                 />
