@@ -198,33 +198,44 @@ export default function PostsList() {
   }, [message]);
 
   useEffect(() => {
-  // 防抖
-  const debouncedFetch = debounce(() => {
-    fetchPosts();
-    fetchPostsStats();
-  }, 300);
+    // 当搜索/排序/时间范围变化时：
+    // 1) 重置到第 1 页
+    // 2) 计算新的起止日期
+    // 3) 显式传参触发列表与统计请求（避免闭包拿到旧状态）
+    const debouncedFetch = debounce(() => {
+      let computedStartDate: string | undefined;
+      let computedEndDate: string | undefined;
+      if (!dateRange?.[0] || !dateRange?.[1]) {
+        computedStartDate = undefined;
+        computedEndDate = undefined;
+      } else {
+        computedStartDate = dateRange[0].format('YYYY-MM-DD');
+        computedEndDate = dateRange[1].format('YYYY-MM-DD');
+      }
 
-  setCurrentPage(1);
+      setStartDate(computedStartDate);
+      setEndDate(computedEndDate);
 
-  let newStartDate = undefined;
-  let newEndDate = undefined;
-  if (!dateRange?.[0] || !dateRange?.[1]) {
-    newStartDate = undefined;
-    newEndDate = undefined;
-  } else {
-    newStartDate = dateRange[0].format('YYYY-MM-DD');
-    newEndDate = dateRange[1].format('YYYY-MM-DD');
-  }
+      // 显式传参，确保使用最新筛选条件与分页
+      fetchPosts({
+        keyword: searchTerm,
+        order: sortBy as 'asc' | 'desc',
+        page: 1,
+        page_size: pageSize,
+        start_date: computedStartDate,
+        end_date: computedEndDate,
+      });
+      fetchPostsStats();
+    }, 300);
 
-  setStartDate(newStartDate);
-  setEndDate(newEndDate);
-
-  debouncedFetch();
-
-  return () => {
-    debouncedFetch.cancel();
-  };
-}, [searchTerm, sortBy, dateRange, fetchPosts, fetchPostsStats]);
+    setCurrentPage(1);
+    debouncedFetch();
+    return () => {
+      debouncedFetch.cancel();
+    };
+    // 这里刻意不把 fetchPosts/fetchPostsStats 放进依赖，避免其引用变化导致误触发并重置分页
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, sortBy, dateRange, pageSize]);
 
   // 点赞/收藏后端交互（使用 ../api/post 封装）
   const toggleLikeOnServer = async (postId: number, like: boolean) => {
