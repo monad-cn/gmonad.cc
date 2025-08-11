@@ -1,6 +1,6 @@
 import type React from 'react';
 import debounce from 'lodash/debounce';
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Pagination,
   Input,
@@ -10,30 +10,27 @@ import {
   Button,
   Modal,
   Form,
-  message,
   Spin,
-  Tag,
   DatePicker,
   App as AntdApp,
   Popconfirm,
+  Tooltip,
 } from 'antd';
 import {
   Search,
-  Star,
   Plus,
   User,
-  ExternalLink,
   Clock,
   X,
   TrendingUp,
   Users,
   MessageCircle,
   Calendar,
-  ThumbsUp,
-  Share2,
   Eye,
   Edit,
   Trash2,
+  Heart,
+  Bookmark,
 } from 'lucide-react';
 import styles from './index.module.css';
 import {
@@ -42,10 +39,14 @@ import {
   Post as PostType,
   getPostsStats,
   PostsStats,
-  Post,
   getPostById,
   updatePost,
   deletePost,
+  getPostsReactions,
+  likePost,
+  unlikePost,
+  bookmarkPost,
+  unbookmarkPost,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
@@ -53,8 +54,9 @@ import DateButton from '@/components/base/DateButton';
 
 import dayjs from 'dayjs';
 import VditorEditor from '@/components/vditorEditor';
-import { sanitizeMarkdown,parseMarkdown } from '@/lib/markdown';
+import { parseMarkdown } from '@/lib/markdown';
 import { useAuth } from '@/contexts/AuthContext';
+// 接口请求已封装在 ../api/post
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -94,6 +96,11 @@ export default function PostsList() {
   const [btnLoading, setbtnLoading] = useState(false);
   const [detailLoading, setdetailLoading] = useState(false);
 
+  // 帖子列表的点赞收藏状态 - 使用Map存储每个帖子的状态
+  const [postLikeStates, setPostLikeStates] = useState<Map<number, boolean>>(new Map());
+  const [postBookmarkStates, setPostBookmarkStates] = useState<Map<number, boolean>>(new Map());
+  const [postLikeCounts, setPostLikeCounts] = useState<Map<number, number>>(new Map());
+
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
 
@@ -104,7 +111,7 @@ export default function PostsList() {
     if (selectedPost?.description) {
       parseMarkdown(selectedPost.description).then((htmlContent) => {
         console.log(htmlContent);
-        
+
         setPostContent(htmlContent);
       });
     }
@@ -132,16 +139,51 @@ export default function PostsList() {
       if (res.success && res.data) {
         setPosts(res.data.posts);
         setTotal(res.data.total || res.data.posts.length);
+
+        // 初始化点赞/收藏状态
+        try {
+          if (status === 'authenticated') {
+            const ids = res.data.posts.map((p) => p.ID);
+            if (ids.length > 0) {
+              const reactionsRes = await getPostsReactions(ids);
+
+              const likeMap = new Map<number, boolean>();
+              const bookmarkMap = new Map<number, boolean>();
+
+              if (reactionsRes.success && reactionsRes.data?.reactions) {
+                reactionsRes.data.reactions.forEach((r) => {
+                  if (r.liked) likeMap.set(r.post_id, true);
+                  if (r.bookmarked) bookmarkMap.set(r.post_id, true);
+                });
+              } else {
+                // 兜底：如果列表返回带有 liked/bookmarked 字段，也同步进去（向后兼容）
+                res.data.posts.forEach((p: PostType & { liked?: boolean; bookmarked?: boolean }) => {
+                  if (typeof p.liked === 'boolean') likeMap.set(p.ID, p.liked);
+                  if (typeof p.bookmarked === 'boolean') bookmarkMap.set(p.ID, p.bookmarked);
+                });
+              }
+
+              setPostLikeStates(likeMap);
+              setPostBookmarkStates(bookmarkMap);
+            }
+          } else {
+            // 未登录状态，清空本地映射，确保 UI 不残留上一次状态
+            setPostLikeStates(new Map());
+            setPostBookmarkStates(new Map());
+          }
+        } catch {
+          // 静默失败，使用默认空状态
+        }
       } else {
         message.error(res.message || '获取帖子失败');
       }
 
       setLoading(false);
     },
-    [searchTerm, sortBy, startDate, endDate]
+    [searchTerm, sortBy, startDate, endDate, status, currentPage, pageSize, message]
   );
 
-  const fetchPostsStats = async () => {
+  const fetchPostsStats = useCallback(async () => {
     try {
       const res = await getPostsStats();
       if (res.success && res.data) {
@@ -153,7 +195,7 @@ export default function PostsList() {
       console.error('获取社区统计异常:', error);
       message.error('获取社区统计异常');
     }
-  };
+  }, [message]);
 
   useEffect(() => {
   // 防抖
@@ -182,17 +224,18 @@ export default function PostsList() {
   return () => {
     debouncedFetch.cancel();
   };
-}, [searchTerm, sortBy, dateRange, fetchPosts]);
+}, [searchTerm, sortBy, dateRange, fetchPosts, fetchPostsStats]);
 
-  const getStarCount = (viewCount: number) => {
-    if (viewCount >= 2000) return 5;
-    if (viewCount >= 1500) return 4;
-    if (viewCount >= 1000) return 3;
-    if (viewCount >= 500) return 2;
-    return 1;
+  // 点赞/收藏后端交互（使用 ../api/post 封装）
+  const toggleLikeOnServer = async (postId: number, like: boolean) => {
+    return like ? (await likePost(postId)).success : (await unlikePost(postId)).success;
   };
 
-  const handleCallPost = async (values: any) => {
+  const toggleBookmarkOnServer = async (postId: number, bookmark: boolean) => {
+    return bookmark ? (await bookmarkPost(postId)).success : (await unbookmarkPost(postId)).success;
+  };
+
+  const handleCallPost = async (values: { title: string; description: string; twitter?: string }) => {
     try {
        setbtnLoading(true)
       if (isEditMode && editingPost) {
@@ -200,7 +243,7 @@ export default function PostsList() {
           title: values.title,
           description: values.description,
           tags,
-          twitter: values.twitter,
+          twitter: values.twitter || '',
         });
         if (res.success) {
           message.success('帖子更新成功！');
@@ -212,7 +255,7 @@ export default function PostsList() {
           title: values.title,
           description: values.description,
           tags,
-          twitter: values.twitter,
+          twitter: values.twitter || '',
         });
         if (res.success) {
           message.success('帖子发布成功！');
@@ -227,7 +270,7 @@ export default function PostsList() {
       form.resetFields();
       fetchPosts();
       fetchPostsStats();
-    } catch (error) {
+    } catch {
       message.error('操作失败，请重试');
     } finally{
       setbtnLoading(false)
@@ -258,7 +301,7 @@ export default function PostsList() {
       } else {
         message.error(res.message || '删除失败');
       }
-    } catch (error) {
+    } catch {
       message.error('删除失败，请重试');
     }
   };
@@ -292,7 +335,7 @@ export default function PostsList() {
     }
   };
 
-  const handlePostClick = async (post: Post) => {
+  const handlePostClick = async (post: PostType) => {
     try {
       setIsPostDetailVisible(true);
       setdetailLoading(true);
@@ -323,6 +366,95 @@ export default function PostsList() {
     setSelectedPost(null);
     // fetchPosts();
     // fetchPostsStats();
+  };
+
+  // 列表卡片点赞处理函数
+  const handleCardLike = async (postId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // 检查用户是否已登录
+    if (status !== 'authenticated') {
+      message.warning('请先登录后再进行点赞操作');
+      return;
+    }
+
+    try {
+      const currentLiked = postLikeStates.get(postId) || false;
+      const currentCount = postLikeCounts.get(postId) || 0;
+
+      // 乐观更新
+      const nextLiked = !currentLiked;
+      setPostLikeStates(prev => {
+        const newMap = new Map(prev);
+        newMap.set(postId, nextLiked);
+        return newMap;
+      });
+
+      setPostLikeCounts(prev => {
+        const newMap = new Map(prev);
+        newMap.set(postId, nextLiked ? currentCount + 1 : Math.max(0, currentCount - 1));
+        return newMap;
+      });
+
+      const ok = await toggleLikeOnServer(postId, nextLiked);
+      if (!ok) {
+        // 回滚
+        setPostLikeStates(prev => {
+          const newMap = new Map(prev);
+          newMap.set(postId, currentLiked);
+          return newMap;
+        });
+        setPostLikeCounts(prev => {
+          const newMap = new Map(prev);
+          newMap.set(postId, currentCount);
+          return newMap;
+        });
+        message.error('操作失败，请重试');
+        return;
+      }
+
+      message.success(nextLiked ? '点赞成功' : '取消点赞成功');
+    } catch {
+      message.error('操作失败，请重试');
+    }
+  };
+
+  // 列表卡片收藏处理函数
+  const handleCardBookmark = async (postId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // 阻止事件冒泡
+
+    // 检查用户是否已登录
+    if (status !== 'authenticated') {
+      message.warning('请先登录后再进行收藏操作');
+      return;
+    }
+
+    try {
+      const currentBookmarked = postBookmarkStates.get(postId) || false;
+      const nextBookmarked = !currentBookmarked;
+      // 乐观更新
+      setPostBookmarkStates(prev => {
+        const newMap = new Map(prev);
+        newMap.set(postId, nextBookmarked);
+        return newMap;
+      });
+
+      const ok = await toggleBookmarkOnServer(postId, nextBookmarked);
+      if (!ok) {
+        // 回滚
+        setPostBookmarkStates(prev => {
+          const newMap = new Map(prev);
+          newMap.set(postId, currentBookmarked);
+          return newMap;
+        });
+        message.error('操作失败，请重试');
+        return;
+      }
+
+      message.success(nextBookmarked ? '收藏成功' : '取消收藏成功');
+    } catch {
+      message.error('操作失败，请重试');
+    }
   };
 
   const handleDateRangeChange = (
@@ -460,101 +592,157 @@ export default function PostsList() {
                       onClick={() => handlePostClick(post)}
                     >
                       <div className={styles.postContent}>
-                        {status === 'authenticated' &&
-                          session?.user?.uid == post.user?.ID && (
-                            <div className={styles.actionButtons}>
-                              {/* 编辑按钮 */}
-                              <Button
-                                icon={<Edit size={16} />}
-                                className={styles.editButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditPost(post);
-                                }}
-                              />
-
-                              <Popconfirm
-                                title="确认删除该帖子吗？"
-                                description="删除后将无法恢复"
-                                okText="删除"
-                                cancelText="取消"
-                                okButtonProps={{ danger: true }}
-                                onConfirm={(e) => {
-                                  e?.stopPropagation();
-                                  handleDeletePost(post.ID);
-                                }}
-                                onCancel={(e) => e?.stopPropagation()}
-                              >
-                                <Button
-                                  icon={<Trash2 size={16} />}
-                                  className={styles.deleteButton}
-                                  onClick={(e) => e.stopPropagation()} // 避免触发卡片点击
-                                />
-                              </Popconfirm>
-                            </div>
-                          )}
-                        <div className={styles.avatarSection}>
-                          <Image
-                            src={post.user?.avatar || '/placeholder.svg'}
-                            alt={post.user?.username || 'avatar'}
-                            width={40}
-                            height={40}
-                            className={styles.avatar}
-                          />
-                        </div>
-                        <div className={styles.contentSection}>
-                          <div className={styles.postHeader}>
-                            <h3 className={styles.postTitle}>{post.title}</h3>
-                            <div className={styles.postMeta}>
+                        {/* 帖子头部：作者信息和操作按钮 */}
+                        <div className={styles.postHeader}>
+                          <div className={styles.authorSection}>
+                            <Image
+                              src={post.user?.avatar || '/placeholder.svg'}
+                              alt={post.user?.username || 'avatar'}
+                              width={36}
+                              height={36}
+                              className={styles.avatar}
+                            />
+                            <div className={styles.authorInfo}>
                               <span className={styles.authorName}>
                                 {post.user?.username}
                               </span>
                               <span className={styles.postDate}>
-                                {dayjs(post.CreatedAt).format(
-                                  'YYYY-MM-DD HH:mm'
-                                )}
+                                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
                               </span>
-                              {post.twitter && (
-                                <a
-                                  href={post.twitter}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={styles.xLink}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <SiX size={16} />
-                                  <span className={styles.xText}>查看推文</span>
-                                </a>
-                              )}
                             </div>
                           </div>
-                          <p className={styles.postDescription}>
-                            {post.description}
-                          </p>
-                          <div className={styles.postFooter}>
-                            <div className={styles.popularity}>
-                              {Array.from({
-                                length: getStarCount(post.view_count || 0),
-                              }).map((_, index) => (
-                                <Star
-                                  key={index}
-                                  className={styles.starIcon}
-                                  fill="currentColor"
-                                />
-                              ))}
-                              {post.view_count !== 0 && (
-                                <span className={styles.viewCount}>
-                                  {post.view_count?.toLocaleString()} 次浏览
-                                </span>
+
+                          {/* 右侧操作按钮 */}
+                          <div className={styles.headerActions}>
+                            {post.twitter && (
+                              <a
+                                href={post.twitter}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.twitterLink}
+                                onClick={(e) => e.stopPropagation()}
+                                title="查看推文"
+                              >
+                                <SiX size={14} />
+                                <span className={styles.twitterText}>查看推文</span>
+                              </a>
+                            )}
+
+                            {status === 'authenticated' &&
+                              session?.user?.uid == post.user?.ID && (
+                                <div className={styles.ownerActions}>
+                                  <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<Edit size={14} />}
+                                    className={styles.editButton}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditPost(post);
+                                    }}
+                                  />
+                                  <Popconfirm
+                                    title="确认删除该帖子吗？"
+                                    description="删除后将无法恢复"
+                                    okText="删除"
+                                    cancelText="取消"
+                                    okButtonProps={{ danger: true }}
+                                    onConfirm={(e) => {
+                                      e?.stopPropagation();
+                                      handleDeletePost(post.ID);
+                                    }}
+                                    onCancel={(e) => e?.stopPropagation()}
+                                  >
+                                    <Button
+                                      type="text"
+                                      size="small"
+                                      icon={<Trash2 size={14} />}
+                                      className={styles.deleteButton}
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  </Popconfirm>
+                                </div>
                               )}
-                            </div>
-                            <div className={styles.tags}>
-                              {post.tags.map((tag, index) => (
-                                <span key={index} className={styles.tag}>
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
+                          </div>
+                        </div>
+
+                        {/* 帖子标题 */}
+                        <h3 className={styles.postTitle}>{post.title}</h3>
+
+                        {/* 帖子描述 */}
+                        <p className={styles.postDescription}>
+                          {post.description}
+                        </p>
+
+                        {/* 帖子底部：标签和互动数据 */}
+                        <div className={styles.postFooter}>
+                          <div className={styles.tagsSection}>
+                            {post.tags.slice(0, 3).map((tag, index) => (
+                              <span key={index} className={styles.tag}>
+                                {tag}
+                              </span>
+                            ))}
+                            {post.tags.length > 3 && (
+                              <span className={styles.moreTagsIndicator}>
+                                +{post.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className={styles.interactionSection}>
+                            {/* 浏览量 */}
+                            {post.view_count !== 0 && (
+                              <div className={styles.viewCount}>
+                                <Eye size={14} />
+                                <span>{post.view_count?.toLocaleString()}</span>
+                              </div>
+                            )}
+
+                            {/* 点赞按钮 */}
+                            <Tooltip
+                              title={status !== 'authenticated' ? '登录后可点赞' : '点赞'}
+                              placement="top"
+                            >
+                              <Button
+                                type="text"
+                                size="small"
+                                icon={
+                                  <Heart
+                                    size={14}
+                                    fill={postLikeStates.get(post.ID) ? 'currentColor' : 'none'}
+                                  />
+                                }
+                                className={`${styles.interactionBtn} ${
+                                  postLikeStates.get(post.ID) ? styles.liked : ''
+                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                onClick={(e) => handleCardLike(post.ID, e)}
+                              >
+                                {(postLikeCounts.get(post.ID) || 0) > 0 && (
+                                  <span>{postLikeCounts.get(post.ID)}</span>
+                                )}
+                              </Button>
+                            </Tooltip>
+
+                            {/* 收藏按钮 */}
+                            <Tooltip
+                              title={status !== 'authenticated' ? '登录后可收藏' : '收藏'}
+                              placement="top"
+                            >
+                              <Button
+                                type="text"
+                                size="small"
+                                icon={
+                                  <Bookmark
+                                    size={14}
+                                    fill={postBookmarkStates.get(post.ID) ? 'currentColor' : 'none'}
+                                  />
+                                }
+                                className={`${styles.interactionBtn} ${
+                                  postBookmarkStates.get(post.ID) ? styles.bookmarked : ''
+                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                onClick={(e) => handleCardBookmark(post.ID, e)}
+                              />
+                            </Tooltip>
                           </div>
                         </div>
                       </div>
@@ -668,7 +856,7 @@ export default function PostsList() {
                 pageSize={pageSize}
                 onChange={handlePageChange}
                 // showQuickJumper={true}
-                showTotal={(total, range) =>
+                showTotal={(total) =>
                   `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
                 }
                 className={styles.fullPagination}
@@ -736,6 +924,8 @@ export default function PostsList() {
                     </div>
                   </div>
                 </div>
+
+                {/* 推文链接 */}
                 {selectedPost.twitter && (
                   <a
                     href={selectedPost.twitter}
@@ -896,7 +1086,7 @@ export default function PostsList() {
                 >
                   取消
                 </Button>
-                <Button 
+                <Button
                   loading={btnLoading}
                   type="primary"
                   htmlType="submit"

@@ -1,4 +1,3 @@
-import Twitter from 'next-auth/providers/twitter';
 import { apiRequest } from './api';
 
 // 用户信息
@@ -278,5 +277,117 @@ export const getPostsStats = async (): Promise<PostsStatsResult> => {
       success: false,
       message: error?.message ?? '网络错误，请稍后重试',
     };
+  }
+};
+
+// =========================
+//  点赞 / 收藏 相关接口
+// =========================
+
+// 批量查询用户对多个帖子的点赞/收藏状态
+export interface PostReaction {
+  post_id: number;
+  liked: boolean;
+  bookmarked: boolean;
+}
+
+export interface PostReactionsData {
+  reactions: PostReaction[];
+}
+
+export interface PostReactionsResult {
+  success: boolean;
+  message: string;
+  data?: PostReactionsData;
+}
+
+// GET /posts/reactions?ids=1,2,3
+export const getPostsReactions = async (ids: number[]): Promise<PostReactionsResult> => {
+  try {
+    if (!ids || ids.length === 0) {
+      return { success: true, message: 'ok', data: { reactions: [] } };
+    }
+
+    const query = new URLSearchParams({ ids: ids.join(',') });
+    const response = await apiRequest<PostReactionsResult>(
+      `/posts/reactions?${query.toString()}`,
+      'GET'
+    );
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '获取帖子反应成功',
+        data: response.data as unknown as PostReactionsData,
+      };
+    }
+
+    return { success: false, message: response.message ?? '获取帖子反应失败' };
+  } catch (error: any) {
+    console.error('获取帖子反应异常:', error);
+    return {
+      success: false,
+      message: error?.message ?? '网络错误，请稍后重试',
+    };
+  }
+};
+
+// 通用返回（无 data）
+export interface CommonResult {
+  success: boolean;
+  message: string;
+}
+
+// 点赞 / 取消点赞
+export const likePost = async (postId: number): Promise<CommonResult> => {
+  try {
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/like`, 'POST');
+    if (response.code === 200) {
+      return { success: true, message: response.message ?? '点赞成功' };
+    }
+    return { success: false, message: response.message ?? '点赞失败' };
+  } catch (error: any) {
+    console.error('点赞异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
+export const unlikePost = async (postId: number): Promise<CommonResult> => {
+  try {
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/like`, 'DELETE');
+    if (response.code === 200) {
+      return { success: true, message: response.message ?? '取消点赞成功' };
+    }
+    return { success: false, message: response.message ?? '取消点赞失败' };
+  } catch (error: any) {
+    console.error('取消点赞异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
+// 收藏 / 取消收藏
+export const bookmarkPost = async (postId: number): Promise<CommonResult> => {
+  try {
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/bookmark`, 'POST');
+    if (response.code === 200) {
+      return { success: true, message: response.message ?? '收藏成功' };
+    }
+    return { success: false, message: response.message ?? '收藏失败' };
+  } catch (error: any) {
+    console.error('收藏异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
+  }
+};
+
+export const unbookmarkPost = async (postId: number): Promise<CommonResult> => {
+  try {
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/bookmark`, 'DELETE');
+    if (response.code === 200) {
+      return { success: true, message: response.message ?? '取消收藏成功' };
+    }
+    return { success: false, message: response.message ?? '取消收藏失败' };
+  } catch (error: any) {
+    console.error('取消收藏异常:', error);
+    return { success: false, message: error?.message ?? '网络错误，请稍后重试' };
   }
 };
