@@ -11,13 +11,15 @@ import (
 
 type Post struct {
 	gorm.Model
-	Title       string         `json:"title"`
-	Description string         `json:"description"`
-	Twitter     string         `json:"twitter"`
-	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
-	ViewCount   uint           `json:"view_count"`
-	UserId      uint           `json:"user_id"`
-	User        *User          `gorm:"foreignKey:UserId" json:"user"`
+	Title         string         `json:"title"`
+	Description   string         `json:"description"`
+	Twitter       string         `json:"twitter"`
+	Tags          pq.StringArray `gorm:"type:text[]" json:"tags"`
+	ViewCount     uint           `json:"view_count"`
+	UserId        uint           `json:"user_id"`
+	User          *User          `gorm:"foreignKey:UserId" json:"user"`
+	LikeCount     uint           `json:"like_count"`
+	FavoriteCount uint           `json:"favorite_count"`
 }
 
 func (p *Post) Create() error {
@@ -182,4 +184,197 @@ func GetPostStats(limit int) (*PostStats, error) {
 	}
 
 	return &stats, nil
+}
+
+type PostLike struct {
+	gorm.Model
+	PostID uint `gorm:"uniqueIndex:idx_user_post;not null"`
+	UserID uint `gorm:"uniqueIndex:idx_user_post;not null"`
+}
+
+type PostFavorite struct {
+	gorm.Model
+	PostID uint `gorm:"uniqueIndex:idx_user_post_favorite;not null"`
+	UserID uint `gorm:"uniqueIndex:idx_user_post_favorite;not null"`
+}
+
+// 点赞
+func LikePost(postID, userID uint) error {
+	tx := db.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var like PostLike
+	err := tx.Unscoped().
+		Where("post_id = ? AND user_id = ?", postID, userID).
+		First(&like).Error
+	if err == nil {
+		if like.DeletedAt.Valid {
+			// 恢复软删除记录
+			err = tx.Unscoped().Model(&like).Update("deleted_at", nil).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			err = tx.Model(&Post{}).
+				Where("id = ?", postID).
+				UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			return tx.Commit().Error
+		}
+
+		// 已点赞
+		tx.Rollback()
+		return errors.New("already liked")
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		tx.Rollback()
+		return err
+	}
+
+	// 新建点赞记录
+	like = PostLike{PostID: postID, UserID: userID}
+	err = tx.Create(&like).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Model(&Post{}).
+		Where("id = ?", postID).
+		UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
+
+// 取消点赞
+func UnlikePost(postID, userID uint) error {
+	res := db.Where("post_id = ? AND user_id = ?", postID, userID).Delete(&PostLike{})
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected > 0 {
+		if err := db.Model(&Post{}).
+			Where("id = ?", postID).
+			UpdateColumn("like_count", gorm.Expr("like_count - ?", 1)).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// 收藏
+func FavoritePost(postID, userID uint) error {
+	tx := db.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var fav PostFavorite
+	err := tx.Unscoped().
+		Where("post_id = ? AND user_id = ?", postID, userID).
+		First(&fav).Error
+	if err == nil {
+		if fav.DeletedAt.Valid {
+			err = tx.Unscoped().Model(&PostFavorite{}).
+				Where("id = ?", fav.ID).
+				Update("deleted_at", nil).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			err = tx.Model(&Post{}).
+				Where("id = ?", postID).
+				UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			return tx.Commit().Error
+		}
+
+		tx.Rollback()
+		return errors.New("already favorited")
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		tx.Rollback()
+		return err
+	}
+
+	fav = PostFavorite{PostID: postID, UserID: userID}
+	err = tx.Create(&fav).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Model(&Post{}).
+		Where("id = ?", postID).
+		UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
+
+// 取消收藏
+func UnfavoritePost(postID, userID uint) error {
+	res := db.Where("post_id = ? AND user_id = ?", postID, userID).
+		Delete(&PostFavorite{})
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected > 0 {
+		if err := db.Model(&Post{}).
+			Where("id = ?", postID).
+			UpdateColumn("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type PostStatus struct {
+	Liked     []uint
+	Favorited []uint
+}
+
+// 获取用户对一组帖子ID的点赞和收藏状态
+func GetUserPostStatuses(userID uint, postIDs []uint) (PostStatus, error) {
+	var likedPostIDs []uint
+	if err := db.Model(&PostLike{}).
+		Where("user_id = ? AND post_id IN ?", userID, postIDs).
+		Pluck("post_id", &likedPostIDs).Error; err != nil {
+		return PostStatus{}, err
+	}
+
+	var favoritedPostIDs []uint
+	if err := db.Model(&PostFavorite{}).
+		Where("user_id = ? AND post_id IN ?", userID, postIDs).
+		Pluck("post_id", &favoritedPostIDs).Error; err != nil {
+		return PostStatus{}, err
+	}
+
+	return PostStatus{
+		Liked:     likedPostIDs,
+		Favorited: favoritedPostIDs,
+	}, nil
 }
