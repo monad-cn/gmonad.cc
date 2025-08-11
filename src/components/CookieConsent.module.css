@@ -82,6 +82,7 @@
 @media (min-width: 640px) {
   .buttonGroup {
     flex-direction: row;
+    justify-content: flex-end;
     gap: 12px;
   }
 }
