@@ -109,7 +109,7 @@ export default function PostsList() {
 
   useEffect(() => {
     if (selectedPost?.description) {
-      parseMarkdown(selectedPost.description).then((htmlContent) => {
+      parseMarkdown(selectedPost.description, {breaks: true}).then((htmlContent) => {
         console.log(htmlContent);
 
         setPostContent(htmlContent);
