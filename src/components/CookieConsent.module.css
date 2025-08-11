@@ -1,0 +1,105 @@
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-top: 2px solid #e5e7eb;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  padding: 16px 24px;
+}
+
+@media (max-width: 640px) {
+  .banner {
+    padding: 16px;
+  }
+}
+
+.container {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.textContent {
+  flex: 1;
+}
+
+.description {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.additionalInfo {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.privacyLink {
+  color: #2563eb;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.privacyLink:hover {
+  color: #1d4ed8;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  padding: 4px;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  color: #4b5563;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .buttonGroup {
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
+.acceptButton {
+  order: 2;
+}
+
+.declineButton {
+  order: 1;
+}
+
+@media (min-width: 640px) {
+  .acceptButton {
+    order: 2;
+  }
+  
+  .declineButton {
+    order: 1;
+  }
+}
