@@ -46,6 +46,8 @@ a {
   }
 }
 
+
+
 .ql-container {
   min-height: 150px;
 }
@@ -68,4 +70,10 @@ a {
 .nav-t-top {
   padding-top: 6rem!important;
 }
+
+.nav-t-top > ._id__header__HaQyS{
+  border-bottom: none!important;
+}
+
+
  
