@@ -5,6 +5,24 @@ import crypto from 'crypto';
 // 这是一个服务端API端点，用于安全地调用Google Analytics Reporting API
 // 避免在前端暴露认证信息
 
+// 验证Google Analytics Property ID格式，防止SSRF攻击
+function validatePropertyId(propertyId: string): boolean {
+  if (!propertyId || typeof propertyId !== 'string') {
+    return false;
+  }
+  
+  // GA4 Property ID格式: 纯数字（如: "123456789"）
+  // GA Universal Analytics Property ID格式: "G-" + 字母数字（如: "G-XXXXXXXXX"）
+  // GA Universal Analytics View ID格式: 纯数字（如: "123456789"）
+  const ga4PropertyIdPattern = /^\d+$/;
+  const gaUniversalPropertyIdPattern = /^G-[A-Z0-9]{8,12}$/i;
+  const gaViewIdPattern = /^\d+$/;
+  
+  return ga4PropertyIdPattern.test(propertyId) || 
+         gaUniversalPropertyIdPattern.test(propertyId) || 
+         gaViewIdPattern.test(propertyId);
+}
+
 interface AnalyticsRequest {
   propertyId: string;
   startDate?: string;
@@ -71,6 +89,17 @@ export default async function handler(
 
     // 如果没有提供propertyId，尝试从环境变量获取
     let finalPropertyId = propertyId || process.env.NEXT_PUBLIC_GA_ID;
+    
+    // 验证propertyId格式，防止SSRF攻击
+    if (finalPropertyId && !validatePropertyId(finalPropertyId)) {
+      console.warn('Invalid property ID format detected, using mock data for security');
+      return res.status(200).json({
+        success: true,
+        data: generateMockData(),
+        source: 'mock',
+        error: 'Invalid property ID format'
+      });
+    }
     
     if (!finalPropertyId) {
       console.warn('No property ID provided and NEXT_PUBLIC_GA_ID not configured, using mock data');
