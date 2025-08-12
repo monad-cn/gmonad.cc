@@ -35,23 +35,6 @@ export default function App({
             <Layout>
               <Head>
                 <title>{appName}</title>
-                {process.env.NEXT_PUBLIC_GA_ID && (
-                  <script
-                    dangerouslySetInnerHTML={{
-                      __html: `
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('consent', 'default', {
-                          'analytics_storage': 'denied',
-                          'ad_storage': 'denied',
-                          'wait_for_update': 500,
-                        });
-                        gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-                      `,
-                    }}
-                  />
-                )}
               </Head>
               <Component {...pageProps} />
               {process.env.NEXT_PUBLIC_GA_ID && (

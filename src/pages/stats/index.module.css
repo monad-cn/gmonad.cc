@@ -238,10 +238,37 @@
   color: white;
 }
 
+/* 分区标题 */
+.sectionHeader {
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.sectionSubtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
 /* 统计卡片网格 */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* 运营数据网格 */
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -258,6 +285,33 @@
 
 .statsCard:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 运营数据卡片 */
+.analyticsCard {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.analyticsCard:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.analyticsCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--card-color, #3b82f6) 0%, transparent 100%);
 }
 
 .cardHeader {
@@ -454,6 +508,17 @@
   background-color: #7c3aed;
 }
 
+/* 空状态 */
+.emptyText {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
 /* 响应式设计 */
 @media (min-width: 640px) {
   .controls {
@@ -470,10 +535,18 @@
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  .analyticsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
   .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .analyticsGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -481,6 +554,16 @@
 @media (min-width: 1280px) {
   .statsGrid {
     grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .analyticsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1536px) {
+  .analyticsGrid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
