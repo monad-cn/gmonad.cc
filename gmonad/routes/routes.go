@@ -71,6 +71,11 @@ func SetupRouter(r *gin.Engine) {
 		post.PUT("/:id", middlewares.JWT("blog:write"), controllers.UpdatePost)
 		post.GET("", controllers.QueryPosts)
 		post.GET("/stats", controllers.PostsStats)
+		post.POST("/:id/like", middlewares.JWT(""), controllers.LikePost)
+		post.POST("/:id/unlike", middlewares.JWT(""), controllers.UnlikePost)
+		post.POST("/:id/favorite", middlewares.JWT(""), controllers.FavoritePost)
+		post.POST("/:id/unfavorite", middlewares.JWT(""), controllers.UnfavoritePost)
+		post.GET("/status", middlewares.JWT(""), controllers.GetPostStatus)
 	}
 	r.GET("/v1/statistics/stream", controllers.GetStatistics)
 	r.GET("/v1/stats", controllers.StatsOverview)

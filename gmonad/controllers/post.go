@@ -5,6 +5,7 @@ import (
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -193,4 +194,138 @@ func PostsStats(c *gin.Context) {
 		return
 	}
 	utils.SuccessResponse(c, http.StatusOK, "query success", stats)
+}
+
+// 点赞
+func LikePost(c *gin.Context) {
+	idParam := c.Param("id")
+	postId, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	userId := c.GetUint("uid")
+	if err := models.LikePost(uint(postId), userId); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "like success", nil)
+}
+
+// 取消点赞
+func UnlikePost(c *gin.Context) {
+	idParam := c.Param("id")
+	postId, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	userId := c.GetUint("uid")
+	if err := models.UnlikePost(uint(postId), userId); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "unlike success", nil)
+}
+
+// 收藏
+func FavoritePost(c *gin.Context) {
+	idParam := c.Param("id")
+	postId, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	userId := c.GetUint("uid")
+	if err := models.FavoritePost(uint(postId), userId); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "favorite success", nil)
+}
+
+// 取消收藏
+func UnfavoritePost(c *gin.Context) {
+	idParam := c.Param("id")
+	postId, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	userId := c.GetUint("uid")
+	if err := models.UnfavoritePost(uint(postId), userId); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "unfavorite success", nil)
+}
+
+type PostStatus struct {
+	PostID    uint `json:"post_id"`
+	Liked     bool `json:"liked"`
+	Favorited bool `json:"favorited"`
+}
+
+type PostStatusResponse struct {
+	Status []PostStatus `json:"status"`
+}
+
+func GetPostStatus(c *gin.Context) {
+	idsStr := c.Query("ids")
+	if idsStr == "" {
+		utils.ErrorResponse(c, http.StatusBadRequest, "ids parameter required", nil)
+		return
+	}
+
+	idStrs := strings.Split(idsStr, ",")
+	var postIDs []uint
+	for _, s := range idStrs {
+		id64, err := strconv.ParseUint(strings.TrimSpace(s), 10, 64)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "invalid id: "+s, nil)
+			return
+		}
+		postIDs = append(postIDs, uint(id64))
+	}
+
+	userID := c.GetUint("uid")
+
+	status, err := models.GetUserPostStatuses(userID, postIDs)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	likedSet := make(map[uint]bool, len(status.Liked))
+	for _, id := range status.Liked {
+		likedSet[id] = true
+	}
+
+	favoritedSet := make(map[uint]bool, len(status.Favorited))
+	for _, id := range status.Favorited {
+		favoritedSet[id] = true
+	}
+
+	var respStatus []PostStatus
+	for _, pid := range postIDs {
+		respStatus = append(respStatus, PostStatus{
+			PostID:    pid,
+			Liked:     likedSet[pid],
+			Favorited: favoritedSet[pid],
+		})
+	}
+
+	resp := PostStatusResponse{
+		Status: respStatus,
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "get success", resp)
 }
