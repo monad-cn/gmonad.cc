@@ -386,7 +386,7 @@
 
 .interactionBtn:hover {
     background: rgba(107, 114, 128, 0.1);
-    color: #374151;
+    color: inherit;
     transform: none;
 }
 
@@ -396,7 +396,7 @@
 
 .interactionBtn.liked:hover {
     background: rgba(139, 92, 246, 0.12);
-    color: #8b5cf6;
+    color: #8b5cf6 !important;
 }
 
 .interactionBtn.bookmarked {
@@ -405,7 +405,7 @@
 
 .interactionBtn.bookmarked:hover {
     background: rgba(139, 92, 246, 0.12);
-    color: #8b5cf6;
+    color: #8b5cf6 !important;
 }
 
 /* 游客状态按钮样式 */
