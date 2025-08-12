@@ -3,12 +3,10 @@ import Layout from '../components/Layout';
 import '../styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
-import { ConfigProvider, App as AntdApp } from 'antd';
-import { useRouter } from 'next/router';
+import { ConfigProvider, App as AntdApp } from 'antd'; 
 import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
 import { AuthProvider } from '@/contexts/AuthContext';
-import CookieConsent from '@/components/CookieConsent';
 
 const customTheme = {
   token: {
@@ -56,7 +54,6 @@ export default function App({
                 )}
               </Head>
               <Component {...pageProps} />
-              <CookieConsent />
               {process.env.NEXT_PUBLIC_GA_ID && (
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
               )}
