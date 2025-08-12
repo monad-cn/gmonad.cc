@@ -2,6 +2,7 @@ import { getSession, signOut } from 'next-auth/react';
 import { message } from 'antd';
  
 export interface ApiResponse<T> {
+  success: import("/Users/lucas/web3/monad/gmonad.cc/src/pages/api/post").PostsStatusResultRaw | undefined;
   code: number;
   message: string;
   data?: T;

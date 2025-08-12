@@ -42,11 +42,11 @@ import {
   getPostById,
   updatePost,
   deletePost,
-  getPostsReactions,
+  getPostsStatus,
   likePost,
   unlikePost,
-  bookmarkPost,
-  unbookmarkPost,
+  favoritePost,
+  unFavoritePost,
 } from '../api/post';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
@@ -109,9 +109,7 @@ export default function PostsList() {
 
   useEffect(() => {
     if (selectedPost?.description) {
-      parseMarkdown(selectedPost.description, {breaks: true}).then((htmlContent) => {
-        console.log(htmlContent);
-
+      parseMarkdown(selectedPost.description, { breaks: true }).then((htmlContent) => {
         setPostContent(htmlContent);
       });
     }
@@ -145,26 +143,25 @@ export default function PostsList() {
           if (status === 'authenticated') {
             const ids = res.data.posts.map((p) => p.ID);
             if (ids.length > 0) {
-              const reactionsRes = await getPostsReactions(ids);
+              const postsStatus = await getPostsStatus(ids);
 
               const likeMap = new Map<number, boolean>();
-              const bookmarkMap = new Map<number, boolean>();
+              const favoriteMap = new Map<number, boolean>();
 
-              if (reactionsRes.success && reactionsRes.data?.reactions) {
-                reactionsRes.data.reactions.forEach((r) => {
+              if (postsStatus.success && postsStatus.data?.status) {
+                postsStatus.data.status.forEach((r) => {
                   if (r.liked) likeMap.set(r.post_id, true);
-                  if (r.bookmarked) bookmarkMap.set(r.post_id, true);
+                  if (r.favorited) favoriteMap.set(r.post_id, true);
                 });
               } else {
                 // 兜底：如果列表返回带有 liked/bookmarked 字段，也同步进去（向后兼容）
-                res.data.posts.forEach((p: PostType & { liked?: boolean; bookmarked?: boolean }) => {
+                res.data.posts.forEach((p: PostType & { liked?: boolean; favorited?: boolean }) => {
                   if (typeof p.liked === 'boolean') likeMap.set(p.ID, p.liked);
-                  if (typeof p.bookmarked === 'boolean') bookmarkMap.set(p.ID, p.bookmarked);
+                  if (typeof p.favorited === 'boolean') favoriteMap.set(p.ID, p.favorited);
                 });
               }
-
               setPostLikeStates(likeMap);
-              setPostBookmarkStates(bookmarkMap);
+              setPostBookmarkStates(favoriteMap);
             }
           } else {
             // 未登录状态，清空本地映射，确保 UI 不残留上一次状态
@@ -202,6 +199,10 @@ export default function PostsList() {
     // 1) 重置到第 1 页
     // 2) 计算新的起止日期
     // 3) 显式传参触发列表与统计请求（避免闭包拿到旧状态）
+    if (status === 'loading') {
+      return
+    }
+
     const debouncedFetch = debounce(() => {
       let computedStartDate: string | undefined;
       let computedEndDate: string | undefined;
@@ -235,7 +236,7 @@ export default function PostsList() {
     };
     // 这里刻意不把 fetchPosts/fetchPostsStats 放进依赖，避免其引用变化导致误触发并重置分页
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, sortBy, dateRange, pageSize]);
+  }, [searchTerm, sortBy, dateRange, pageSize, status]);
 
   // 点赞/收藏后端交互（使用 ../api/post 封装）
   const toggleLikeOnServer = async (postId: number, like: boolean) => {
@@ -243,12 +244,12 @@ export default function PostsList() {
   };
 
   const toggleBookmarkOnServer = async (postId: number, bookmark: boolean) => {
-    return bookmark ? (await bookmarkPost(postId)).success : (await unbookmarkPost(postId)).success;
+    return bookmark ? (await favoritePost(postId)).success : (await unFavoritePost(postId)).success;
   };
 
   const handleCallPost = async (values: { title: string; description: string; twitter?: string }) => {
     try {
-       setbtnLoading(true)
+      setbtnLoading(true)
       if (isEditMode && editingPost) {
         const res = await updatePost(editingPost.ID.toString(), {
           title: values.title,
@@ -283,7 +284,7 @@ export default function PostsList() {
       fetchPostsStats();
     } catch {
       message.error('操作失败，请重试');
-    } finally{
+    } finally {
       setbtnLoading(false)
     }
   };
@@ -424,7 +425,7 @@ export default function PostsList() {
         return;
       }
 
-      message.success(nextLiked ? '点赞成功' : '取消点赞成功');
+      // message.success(nextLiked ? '点赞成功' : '取消点赞成功');
     } catch {
       message.error('操作失败，请重试');
     }
@@ -462,7 +463,7 @@ export default function PostsList() {
         return;
       }
 
-      message.success(nextBookmarked ? '收藏成功' : '取消收藏成功');
+      // message.success(nextBookmarked ? '收藏成功' : '取消收藏成功');
     } catch {
       message.error('操作失败，请重试');
     }
@@ -540,9 +541,9 @@ export default function PostsList() {
                       dates={[dayjs(), dayjs()]}
                       active={
                         dateRange[0]?.format('YYYY-MM-DD') ===
-                          dayjs().format('YYYY-MM-DD') &&
+                        dayjs().format('YYYY-MM-DD') &&
                         dateRange[1]?.format('YYYY-MM-DD') ===
-                          dayjs().format('YYYY-MM-DD')
+                        dayjs().format('YYYY-MM-DD')
                       }
                     />
                     <DateButton
@@ -555,9 +556,9 @@ export default function PostsList() {
                       dates={[dayjs().subtract(1, 'week'), dayjs()]}
                       active={
                         dateRange[0]?.format('YYYY-MM-DD') ===
-                          dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
+                        dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
                         dateRange[1]?.format('YYYY-MM-DD') ===
-                          dayjs().format('YYYY-MM-DD')
+                        dayjs().format('YYYY-MM-DD')
                       }
                     />
                   </>
@@ -723,9 +724,8 @@ export default function PostsList() {
                                     fill={postLikeStates.get(post.ID) ? 'currentColor' : 'none'}
                                   />
                                 }
-                                className={`${styles.interactionBtn} ${
-                                  postLikeStates.get(post.ID) ? styles.liked : ''
-                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                className={`${styles.interactionBtn} ${postLikeStates.get(post.ID) ? styles.liked : ''
+                                  } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardLike(post.ID, e)}
                               >
                                 {(postLikeCounts.get(post.ID) || 0) > 0 && (
@@ -748,9 +748,8 @@ export default function PostsList() {
                                     fill={postBookmarkStates.get(post.ID) ? 'currentColor' : 'none'}
                                   />
                                 }
-                                className={`${styles.interactionBtn} ${
-                                  postBookmarkStates.get(post.ID) ? styles.bookmarked : ''
-                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                className={`${styles.interactionBtn} ${postBookmarkStates.get(post.ID) ? styles.bookmarked : ''
+                                  } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardBookmark(post.ID, e)}
                               />
                             </Tooltip>

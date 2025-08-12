@@ -285,52 +285,53 @@ export const getPostsStats = async (): Promise<PostsStatsResult> => {
 // =========================
 
 // 批量查询用户对多个帖子的点赞/收藏状态
-export interface PostReaction {
+export interface PostStatus {
   post_id: number;
   liked: boolean;
-  bookmarked: boolean;
+  favorited: boolean;
 }
 
-export interface PostReactionsData {
-  reactions: PostReaction[];
+export interface PostsStatusData {
+  status: PostStatus[];
 }
 
-export interface PostReactionsResult {
+export interface PostsStatusResult {
   success: boolean;
   message: string;
-  data?: PostReactionsData;
+  data?: PostsStatusData;
 }
 
-// GET /posts/reactions?ids=1,2,3
-export const getPostsReactions = async (ids: number[]): Promise<PostReactionsResult> => {
+export const getPostsStatus = async (ids: number[]): Promise<PostsStatusResult> => {
   try {
     if (!ids || ids.length === 0) {
-      return { success: true, message: 'ok', data: { reactions: [] } };
+      return { success: true, message: 'ok', data: { status: [] } };
     }
 
     const query = new URLSearchParams({ ids: ids.join(',') });
-    const response = await apiRequest<PostReactionsResult>(
-      `/posts/reactions?${query.toString()}`,
-      'GET'
-    );
+    const response = await apiRequest<{
+      code: number;
+      message: string;
+      data?: PostsStatusData;
+    }>(`/posts/status?${query.toString()}`, 'GET');
 
     if (response.code === 200 && response.data) {
       return {
         success: true,
-        message: response.message ?? '获取帖子反应成功',
-        data: response.data as unknown as PostReactionsData,
+        message: response.message ?? '获取帖子状态成功',
+        data: response.data as unknown as PostsStatusData,
       };
     }
 
-    return { success: false, message: response.message ?? '获取帖子反应失败' };
+    return { success: false, message: response.message ?? '获取帖子状态失败' };
   } catch (error: any) {
-    console.error('获取帖子反应异常:', error);
+    console.error('获取帖子状态异常:', error);
     return {
       success: false,
       message: error?.message ?? '网络错误，请稍后重试',
     };
   }
 };
+
 
 // 通用返回（无 data）
 export interface CommonResult {
@@ -354,7 +355,7 @@ export const likePost = async (postId: number): Promise<CommonResult> => {
 
 export const unlikePost = async (postId: number): Promise<CommonResult> => {
   try {
-    const response = await apiRequest<CommonResult>(`/posts/${postId}/like`, 'DELETE');
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/unlike`, 'POST');
     if (response.code === 200) {
       return { success: true, message: response.message ?? '取消点赞成功' };
     }
@@ -366,9 +367,9 @@ export const unlikePost = async (postId: number): Promise<CommonResult> => {
 };
 
 // 收藏 / 取消收藏
-export const bookmarkPost = async (postId: number): Promise<CommonResult> => {
+export const favoritePost = async (postId: number): Promise<CommonResult> => {
   try {
-    const response = await apiRequest<CommonResult>(`/posts/${postId}/bookmark`, 'POST');
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/favorite`, 'POST');
     if (response.code === 200) {
       return { success: true, message: response.message ?? '收藏成功' };
     }
@@ -379,9 +380,9 @@ export const bookmarkPost = async (postId: number): Promise<CommonResult> => {
   }
 };
 
-export const unbookmarkPost = async (postId: number): Promise<CommonResult> => {
+export const unFavoritePost = async (postId: number): Promise<CommonResult> => {
   try {
-    const response = await apiRequest<CommonResult>(`/posts/${postId}/bookmark`, 'DELETE');
+    const response = await apiRequest<CommonResult>(`/posts/${postId}/unfavorite`, 'POST');
     if (response.code === 200) {
       return { success: true, message: response.message ?? '取消收藏成功' };
     }
