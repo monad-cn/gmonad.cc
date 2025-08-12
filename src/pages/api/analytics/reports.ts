@@ -11,12 +11,23 @@ function validatePropertyId(propertyId: string): boolean {
     return false;
   }
   
-  // GA4 Property ID格式: 纯数字（如: "123456789"）
-  // GA Universal Analytics Property ID格式: "G-" + 字母数字（如: "G-XXXXXXXXX"）
-  // GA Universal Analytics View ID格式: 纯数字（如: "123456789"）
-  const ga4PropertyIdPattern = /^\d+$/;
+  // 长度限制防止超长输入
+  if (propertyId.length > 50) {
+    return false;
+  }
+  
+  // 清理输入，移除潜在危险字符
+  const cleanPropertyId = propertyId.trim().replace(/[^\w-]/g, '');
+  if (cleanPropertyId !== propertyId.trim()) {
+    return false;
+  }
+  
+  // GA4 Property ID格式: 纯数字，长度8-15位（如: "123456789"）
+  // GA Universal Analytics Property ID格式: "G-" + 字母数字，总长度10-15位（如: "G-XXXXXXXXX"）
+  // GA Universal Analytics View ID格式: 纯数字，长度8-15位（如: "123456789"）
+  const ga4PropertyIdPattern = /^\d{8,15}$/;
   const gaUniversalPropertyIdPattern = /^G-[A-Z0-9]{8,12}$/i;
-  const gaViewIdPattern = /^\d+$/;
+  const gaViewIdPattern = /^\d{8,15}$/;
   
   return ga4PropertyIdPattern.test(propertyId) || 
          gaUniversalPropertyIdPattern.test(propertyId) || 
@@ -112,6 +123,41 @@ interface AnalyticsData {
   };
 }
 
+// 验证请求体大小和深度，防止DoS攻击
+function validateRequestBody(body: any): boolean {
+  if (!body || typeof body !== 'object') {
+    return false;
+  }
+  
+  // 请求体字符串化后的大小限制(10KB)
+  const bodyString = JSON.stringify(body);
+  if (bodyString.length > 10 * 1024) {
+    return false;
+  }
+  
+  // 检查对象嵌套深度，防止深度过深的对象
+  function getMaxDepth(obj: any, currentDepth = 0): number {
+    if (currentDepth > 10) return currentDepth; // 最大深度限制
+    if (obj === null || typeof obj !== 'object') return currentDepth;
+    
+    let maxDepth = currentDepth;
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const depth = getMaxDepth(obj[key], currentDepth + 1);
+        maxDepth = Math.max(maxDepth, depth);
+      }
+    }
+    return maxDepth;
+  }
+  
+  const maxDepth = getMaxDepth(body);
+  if (maxDepth > 5) {
+    return false;
+  }
+  
+  return true;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AnalyticsApiResponse>
@@ -123,6 +169,14 @@ export default async function handler(
     });
   }
 
+  // 验证请求体大小和结构
+  if (!validateRequestBody(req.body)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid request body size or structure'
+    });
+  }
+
   try {
     const { 
       propertyId, 
@@ -131,6 +185,48 @@ export default async function handler(
       metrics,
       dimensions 
     }: AnalyticsRequest = req.body;
+
+    // 验证和清理metrics参数
+    if (metrics && Array.isArray(metrics)) {
+      if (metrics.length > 20) { // 限制metrics数量
+        return res.status(400).json({
+          success: false,
+          error: 'Too many metrics requested'
+        });
+      }
+      
+      const validMetricPattern = /^[a-zA-Z0-9_]+$/;
+      for (const metric of metrics) {
+        if (!metric || typeof metric !== 'string' || 
+            metric.length > 50 || !validMetricPattern.test(metric)) {
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid metric name format'
+          });
+        }
+      }
+    }
+
+    // 验证和清理dimensions参数
+    if (dimensions && Array.isArray(dimensions)) {
+      if (dimensions.length > 10) { // 限制dimensions数量
+        return res.status(400).json({
+          success: false,
+          error: 'Too many dimensions requested'
+        });
+      }
+      
+      const validDimensionPattern = /^[a-zA-Z0-9_]+$/;
+      for (const dimension of dimensions) {
+        if (!dimension || typeof dimension !== 'string' || 
+            dimension.length > 50 || !validDimensionPattern.test(dimension)) {
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid dimension name format'
+          });
+        }
+      }
+    }
 
     // 如果没有提供propertyId，尝试从环境变量获取
     let finalPropertyId = propertyId || process.env.NEXT_PUBLIC_GA_ID;
@@ -217,21 +313,44 @@ export default async function handler(
     });
 
   } catch (error: any) {
-    console.error('Analytics API Error:', error);
+    // 记录详细错误信息到服务器日志，但不暴露给客户端
+    console.error('Analytics API Error:', {
+      message: error?.message,
+      stack: error?.stack,
+      timestamp: new Date().toISOString()
+    });
     
-    // 如果是认证错误或API限制，返回详细错误信息
-    if (error.status === 403) {
+    // 清理敏感错误信息
+    const sanitizeError = (err: any) => {
+      if (!err) return 'Unknown error';
+      
+      const message = typeof err === 'string' ? err : err.message || 'Unknown error';
+      
+      // 移除可能包含敏感信息的路径和详细信息
+      return message
+        .replace(/\/[^\s]*/g, '[PATH_REMOVED]')
+        .replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, '[IP_REMOVED]')
+        .replace(/[a-f0-9]{32,}/gi, '[TOKEN_REMOVED]');
+    };
+    
+    // 如果是认证错误或API限制，返回mock数据而非错误
+    if (error?.status === 403 || error?.status === 401) {
       return res.status(200).json({
         success: true,
         data: generateMockData(),
         source: 'mock',
-        error: 'API access denied, using mock data'
+        error: 'Service temporarily unavailable, using sample data'
       });
     }
     
+    // 生产环境中不暴露具体错误信息
+    const errorMessage = process.env.NODE_ENV === 'development' 
+      ? sanitizeError(error)
+      : 'Analytics service temporarily unavailable';
+    
     return res.status(500).json({
       success: false,
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Analytics service temporarily unavailable'
+      error: errorMessage
     });
   }
 }
@@ -425,6 +544,22 @@ async function fetchUniversalAnalyticsData(propertyId: string, startDate: string
   }
 }
 
+// 验证访问令牌格式
+function validateAccessToken(token: string): boolean {
+  if (!token || typeof token !== 'string') {
+    return false;
+  }
+  
+  // Bearer token基本格式验证
+  if (token.length < 10 || token.length > 2048) {
+    return false;
+  }
+  
+  // 确保token只包含安全字符
+  const tokenPattern = /^[A-Za-z0-9._-]+$/;
+  return tokenPattern.test(token);
+}
+
 // 获取Google服务账号访问令牌
 async function getAccessToken(serviceAccountKey: string): Promise<string> {
   try {
@@ -432,6 +567,12 @@ async function getAccessToken(serviceAccountKey: string): Promise<string> {
     
     if (!credentials.private_key || !credentials.client_email) {
       throw new Error('Invalid service account key format');
+    }
+    
+    // 验证服务账号邮箱格式
+    const emailPattern = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.iam\.gserviceaccount\.com$/;
+    if (!emailPattern.test(credentials.client_email)) {
+      throw new Error('Invalid service account email format');
     }
     
     // 创建JWT令牌
@@ -465,6 +606,11 @@ async function getAccessToken(serviceAccountKey: string): Promise<string> {
     if (!tokenData.access_token) {
       console.error('Token response:', tokenData);
       throw new Error('No access token in response');
+    }
+    
+    // 验证获取的访问令牌格式
+    if (!validateAccessToken(tokenData.access_token)) {
+      throw new Error('Invalid access token format received');
     }
     
     console.log('Successfully obtained access token');
@@ -605,9 +751,21 @@ async function fetchGA4Demographics(
       return null;
     }
     
+    // 安全构建API URL，防止SSRF攻击
+    const baseApiUrl = 'https://analyticsdata.googleapis.com/v1beta/properties';
+    const endpoint = 'runReport';
+    const countriesApiUrl = `${baseApiUrl}/${encodeURIComponent(propertyId)}:${endpoint}`;
+    const devicesApiUrl = `${baseApiUrl}/${encodeURIComponent(propertyId)}:${endpoint}`;
+    
+    // 验证构建的URL安全性
+    if (!validateApiUrl(countriesApiUrl) || !validateApiUrl(devicesApiUrl)) {
+      console.error('Invalid API URLs in fetchGA4Demographics');
+      return null;
+    }
+    
     const [countriesData, devicesData] = await Promise.all([
       // 获取国家数据
-      fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
+      fetch(countriesApiUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -621,8 +779,8 @@ async function fetchGA4Demographics(
           limit: 10
         })
       }),
-      // 获取设备数据 (propertyId已在函数开始处验证过)
-      fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
+      // 获取设备数据
+      fetch(devicesApiUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
