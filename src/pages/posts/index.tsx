@@ -100,6 +100,7 @@ export default function PostsList() {
   const [postLikeStates, setPostLikeStates] = useState<Map<number, boolean>>(new Map());
   const [postBookmarkStates, setPostBookmarkStates] = useState<Map<number, boolean>>(new Map());
   const [postLikeCounts, setPostLikeCounts] = useState<Map<number, number>>(new Map());
+  const [postFavoriteCounts, setPostFavoriteCounts] = useState<Map<number, number>>(new Map());
 
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
@@ -138,6 +139,16 @@ export default function PostsList() {
         setPosts(res.data.posts);
         setTotal(res.data.total || res.data.posts.length);
 
+        // 初始化点赞/收藏数量
+        const likeCountMap = new Map<number, number>();
+        const favoriteCountMap = new Map<number, number>();
+        res.data.posts.forEach((p) => {
+          likeCountMap.set(p.ID, p.like_count ?? 0);
+          favoriteCountMap.set(p.ID, p.favorite_count ?? 0);
+        });
+        setPostLikeCounts(likeCountMap);
+        setPostFavoriteCounts(favoriteCountMap);
+
         // 初始化点赞/收藏状态
         try {
           if (status === 'authenticated') {
@@ -145,19 +156,14 @@ export default function PostsList() {
             if (ids.length > 0) {
               const postsStatus = await getPostsStatus(ids);
 
-              const likeMap = new Map<number, boolean>();
-              const favoriteMap = new Map<number, boolean>();
+              // 默认全部 false，避免与计数不一致
+              const likeMap = new Map<number, boolean>(ids.map((id) => [id, false]));
+              const favoriteMap = new Map<number, boolean>(ids.map((id) => [id, false]));
 
               if (postsStatus.success && postsStatus.data?.status) {
                 postsStatus.data.status.forEach((r) => {
                   if (r.liked) likeMap.set(r.post_id, true);
                   if (r.favorited) favoriteMap.set(r.post_id, true);
-                });
-              } else {
-                // 兜底：如果列表返回带有 liked/bookmarked 字段，也同步进去（向后兼容）
-                res.data.posts.forEach((p: PostType & { liked?: boolean; favorited?: boolean }) => {
-                  if (typeof p.liked === 'boolean') likeMap.set(p.ID, p.liked);
-                  if (typeof p.favorited === 'boolean') favoriteMap.set(p.ID, p.favorited);
                 });
               }
               setPostLikeStates(likeMap);
@@ -443,11 +449,18 @@ export default function PostsList() {
 
     try {
       const currentBookmarked = postBookmarkStates.get(postId) || false;
+      const currentCount = postFavoriteCounts.get(postId) || 0;
       const nextBookmarked = !currentBookmarked;
       // 乐观更新
       setPostBookmarkStates(prev => {
         const newMap = new Map(prev);
         newMap.set(postId, nextBookmarked);
+        return newMap;
+      });
+
+      setPostFavoriteCounts(prev => {
+        const newMap = new Map(prev);
+        newMap.set(postId, nextBookmarked ? currentCount + 1 : Math.max(0, currentCount - 1));
         return newMap;
       });
 
@@ -457,6 +470,11 @@ export default function PostsList() {
         setPostBookmarkStates(prev => {
           const newMap = new Map(prev);
           newMap.set(postId, currentBookmarked);
+          return newMap;
+        });
+        setPostFavoriteCounts(prev => {
+          const newMap = new Map(prev);
+          newMap.set(postId, currentCount);
           return newMap;
         });
         message.error('操作失败，请重试');
@@ -703,12 +721,17 @@ export default function PostsList() {
 
                           <div className={styles.interactionSection}>
                             {/* 浏览量 */}
-                            {post.view_count !== 0 && (
-                              <div className={styles.viewCount}>
-                                <Eye size={14} />
+                            <Tooltip title="浏览量" placement="top">
+                              <Button
+                                type="text"
+                                size="small"
+                                icon={<Eye size={14} />}
+                                className={styles.interactionBtn}
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <span>{post.view_count?.toLocaleString()}</span>
-                              </div>
-                            )}
+                              </Button>
+                            </Tooltip>
 
                             {/* 点赞按钮 */}
                             <Tooltip
@@ -728,9 +751,7 @@ export default function PostsList() {
                                   } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardLike(post.ID, e)}
                               >
-                                {(postLikeCounts.get(post.ID) || 0) > 0 && (
-                                  <span>{postLikeCounts.get(post.ID)}</span>
-                                )}
+                                <span>{postLikeCounts.get(post.ID) ?? 0}</span>
                               </Button>
                             </Tooltip>
 
@@ -751,7 +772,9 @@ export default function PostsList() {
                                 className={`${styles.interactionBtn} ${postBookmarkStates.get(post.ID) ? styles.bookmarked : ''
                                   } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardBookmark(post.ID, e)}
-                              />
+                              >
+                                <span>{postFavoriteCounts.get(post.ID) ?? 0}</span>
+                              </Button>
                             </Tooltip>
                           </div>
                         </div>

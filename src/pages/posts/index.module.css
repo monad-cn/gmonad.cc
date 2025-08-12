@@ -286,19 +286,19 @@
     gap: 0.375rem;
     padding: 0.375rem 0.75rem;
     border-radius: 16px;
-    color: #6b7280;
+    color: #8b5cf6;
     transition: all 0.2s ease;
     text-decoration: none;
     font-size: 0.75rem;
     font-weight: 500;
-    border: 1px solid #e5e7eb;
-    background: white;
+    border: 1px solid #8b5cf6;
+    background: transparent;
 }
 
 .twitterLink:hover {
-    background: rgba(139, 92, 246, 0.1);
-    color: #8b5cf6;
-    border-color: rgba(139, 92, 246, 0.3);
+    background-color: #8b5cf6;
+    color: #ffffff;
+    border-color: #8b5cf6;
 }
 
 .twitterText {
@@ -386,26 +386,26 @@
 
 .interactionBtn:hover {
     background: rgba(107, 114, 128, 0.1);
-    color: #374151;
+    color: inherit;
     transform: none;
 }
 
 .interactionBtn.liked {
-    color: #dc2626;
+    color: #8b5cf6;
 }
 
 .interactionBtn.liked:hover {
-    background: rgba(220, 38, 38, 0.1);
-    color: #dc2626;
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6 !important;
 }
 
 .interactionBtn.bookmarked {
-    color: #d97706;
+    color: #8b5cf6;
 }
 
 .interactionBtn.bookmarked:hover {
-    background: rgba(217, 119, 6, 0.1);
-    color: #d97706;
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6 !important;
 }
 
 /* 游客状态按钮样式 */

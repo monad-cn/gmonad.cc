@@ -19,6 +19,8 @@ export interface Post {
   user?: User;
   CreatedAt: string;
   UpdatedAt: string;
+  favorite_count: number; 
+  like_count: number;
 }
 
 // 创建帖子参数
