@@ -35,7 +35,7 @@
 .titleIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: white;
+  color: #fff;
 }
 
 .title {
@@ -88,7 +88,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: white;
+  background-color: #fff;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -126,7 +126,7 @@
   top: 100%;
   left: 0;
   margin-top: 0.5rem;
-  background-color: white;
+  background-color: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -235,7 +235,7 @@
 
 .dayButtonSelected {
   background-color: #8b5cf6;
-  color: white;
+  color: #fff;
 }
 
 /* 分区标题 */
@@ -257,6 +257,11 @@
   margin: 0;
 }
 
+.dataSource {
+  color: #059669;
+  font-weight: 500;
+}
+
 /* 统计卡片网格 */
 .statsGrid {
   display: grid;
@@ -275,9 +280,9 @@
 
 /* 统计卡片 */
 .statsCard {
-  background: white;
+  background: #fff;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
   border: 1px solid #e5e7eb;
   padding: 1.5rem;
   transition: box-shadow 0.2s ease;
@@ -289,19 +294,18 @@
 
 /* 运营数据卡片 */
 .analyticsCard {
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  padding: 1.25rem;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px !important;
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .analyticsCard:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px);
 }
 
 .analyticsCard::before {
@@ -310,8 +314,30 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   background: linear-gradient(90deg, var(--card-color, #3b82f6) 0%, transparent 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.cardDetails {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+  color: #6b7280;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.analyticsCard:hover .cardDetails {
+  color: #3b82f6;
+}
+
+.detailsIcon {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .cardHeader {
@@ -333,7 +359,7 @@
 .cardIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: white;
+  color: #fff;
 }
 
 .cardTitle {
@@ -413,7 +439,7 @@
 }
 
 .chartContainer {
-  background: white;
+  background: #fff;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
@@ -497,7 +523,7 @@
 .retryButton {
   padding: 0.5rem 1rem;
   background-color: #8b5cf6;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -514,7 +540,7 @@
   color: #9ca3af;
   font-size: 0.875rem;
   padding: 2rem;
-  background: white;
+  background: #fff;
   border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
 }
@@ -561,6 +587,193 @@
   }
 }
 
+/* 自定义工具提示样式 */
+.customTooltip {
+  max-width: 400px !important;
+}
+
+.tooltipContent {
+  padding: 0.75rem;
+  background: #fff;
+}
+
+.tooltipTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.tooltipList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltipItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+}
+
+.tooltipIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.tooltipPath {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.tooltipValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tooltipFooter {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 模态框样式 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modalHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.closeButton {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.modalBody {
+  padding: 1.5rem;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
+}
+
+.pageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pageItem {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s;
+}
+
+.pageItem:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pageItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.pageIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #3b82f6;
+}
+
+.pagePath {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+.pageStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.pageStat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.25rem;
+}
+
 @media (min-width: 1536px) {
   .analyticsGrid {
     grid-template-columns: repeat(4, 1fr);
@@ -586,5 +799,18 @@
   
   .legendLabel {
     font-size: 0.75rem;
+  }
+  
+  .modalContent {
+    max-height: 90vh;
+    margin: 0.5rem;
+  }
+  
+  .pageStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .tooltipContent {
+    padding: 0.5rem;
   }
 }
