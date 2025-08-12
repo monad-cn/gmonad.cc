@@ -23,6 +23,51 @@ function validatePropertyId(propertyId: string): boolean {
          gaViewIdPattern.test(propertyId);
 }
 
+// 验证日期格式，防止注入攻击
+function validateDateParameter(date: string): boolean {
+  if (!date || typeof date !== 'string') {
+    return false;
+  }
+  
+  // 支持的日期格式：
+  // - 相对日期: "today", "yesterday", "7daysAgo", "30daysAgo" 等
+  // - 绝对日期: "YYYY-MM-DD" 格式
+  const relativeDatePattern = /^(today|yesterday|\d+daysAgo)$/i;
+  const absoluteDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+  
+  if (relativeDatePattern.test(date) || absoluteDatePattern.test(date)) {
+    // 对于绝对日期，额外验证日期是否有效
+    if (absoluteDatePattern.test(date)) {
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime()) && parsedDate.toISOString().startsWith(date);
+    }
+    return true;
+  }
+  
+  return false;
+}
+
+// 验证API URL是否为可信任的Google Analytics端点
+function validateApiUrl(url: string): boolean {
+  if (!url || typeof url !== 'string') {
+    return false;
+  }
+  
+  // 只允许Google Analytics官方API端点
+  const allowedHosts = [
+    'analyticsdata.googleapis.com',
+    'analyticsreporting.googleapis.com',
+    'oauth2.googleapis.com'
+  ];
+  
+  try {
+    const urlObj = new URL(url);
+    return allowedHosts.includes(urlObj.hostname) && urlObj.protocol === 'https:';
+  } catch (error) {
+    return false;
+  }
+}
+
 interface AnalyticsRequest {
   propertyId: string;
   startDate?: string;
@@ -98,6 +143,17 @@ export default async function handler(
         data: generateMockData(),
         source: 'mock',
         error: 'Invalid property ID format'
+      });
+    }
+    
+    // 验证日期参数，防止注入攻击
+    if (!validateDateParameter(startDate) || !validateDateParameter(endDate)) {
+      console.warn('Invalid date format detected, using mock data for security');
+      return res.status(200).json({
+        success: true,
+        data: generateMockData(),
+        source: 'mock',
+        error: 'Invalid date format'
       });
     }
     
@@ -237,7 +293,19 @@ async function fetchGA4Data(
   customDimensions?: string[]
 ): Promise<AnalyticsData | null> {
   try {
+    // 验证propertyId防止SSRF攻击
+    if (!validatePropertyId(propertyId)) {
+      console.error('Invalid propertyId in fetchGA4Data:', propertyId);
+      throw new Error('Invalid property ID format');
+    }
+    
     const apiUrl = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`;
+    
+    // 验证API URL安全性
+    if (!validateApiUrl(apiUrl)) {
+      console.error('Invalid API URL in fetchGA4Data:', apiUrl);
+      throw new Error('Invalid API URL');
+    }
     
     // 默认指标
     const defaultMetrics = [
@@ -310,6 +378,12 @@ async function fetchUniversalAnalyticsData(propertyId: string, startDate: string
   try {
     const apiUrl = 'https://analyticsreporting.googleapis.com/v4/reports:batchGet';
     
+    // 验证API URL安全性
+    if (!validateApiUrl(apiUrl)) {
+      console.error('Invalid API URL in fetchUniversalAnalyticsData:', apiUrl);
+      return null;
+    }
+    
     const requestBody = {
       reportRequests: [
         {
@@ -363,7 +437,13 @@ async function getAccessToken(serviceAccountKey: string): Promise<string> {
     // 创建JWT令牌
     const jwtToken = await createJWT(credentials);
     
-    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    const tokenUrl = 'https://oauth2.googleapis.com/token';
+    // 验证OAuth端点URL安全性
+    if (!validateApiUrl(tokenUrl)) {
+      throw new Error('Invalid OAuth token URL');
+    }
+    
+    const tokenResponse = await fetch(tokenUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -452,7 +532,19 @@ async function fetchGA4TopPages(
   accessToken: string
 ): Promise<Array<{ page: string; pageViews: number; uniquePageViews: number }> | null> {
   try {
+    // 验证propertyId防止SSRF攻击
+    if (!validatePropertyId(propertyId)) {
+      console.error('Invalid propertyId in fetchGA4TopPages:', propertyId);
+      return null;
+    }
+    
     const apiUrl = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`;
+    
+    // 验证API URL安全性
+    if (!validateApiUrl(apiUrl)) {
+      console.error('Invalid API URL in fetchGA4TopPages:', apiUrl);
+      return null;
+    }
     
     const requestBody = {
       dateRanges: [{ startDate, endDate }],
@@ -507,6 +599,12 @@ async function fetchGA4Demographics(
   accessToken: string
 ): Promise<{ countries: Array<{ country: string; users: number }>; devices: Array<{ device: string; sessions: number }> } | null> {
   try {
+    // 验证propertyId防止SSRF攻击
+    if (!validatePropertyId(propertyId)) {
+      console.error('Invalid propertyId in fetchGA4Demographics:', propertyId);
+      return null;
+    }
+    
     const [countriesData, devicesData] = await Promise.all([
       // 获取国家数据
       fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
@@ -523,7 +621,7 @@ async function fetchGA4Demographics(
           limit: 10
         })
       }),
-      // 获取设备数据
+      // 获取设备数据 (propertyId已在函数开始处验证过)
       fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
         method: 'POST',
         headers: {
