@@ -418,9 +418,12 @@ async function fetchGA4Data(
       throw new Error('Invalid property ID format');
     }
     
-    const apiUrl = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`;
+    // 安全构建API URL - 使用URL对象和encodeURIComponent防止SSRF
+    const baseUrl = 'https://analyticsdata.googleapis.com';
+    const apiPath = `/v1beta/properties/${encodeURIComponent(propertyId)}:runReport`;
+    const apiUrl = new URL(apiPath, baseUrl).toString();
     
-    // 验证API URL安全性
+    // 二次验证构建的URL安全性
     if (!validateApiUrl(apiUrl)) {
       console.error('Invalid API URL in fetchGA4Data:', apiUrl);
       throw new Error('Invalid API URL');
@@ -684,9 +687,12 @@ async function fetchGA4TopPages(
       return null;
     }
     
-    const apiUrl = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`;
+    // 安全构建API URL - 使用URL对象和encodeURIComponent防止SSRF
+    const baseUrl = 'https://analyticsdata.googleapis.com';
+    const apiPath = `/v1beta/properties/${encodeURIComponent(propertyId)}:runReport`;
+    const apiUrl = new URL(apiPath, baseUrl).toString();
     
-    // 验证API URL安全性
+    // 二次验证构建的URL安全性
     if (!validateApiUrl(apiUrl)) {
       console.error('Invalid API URL in fetchGA4TopPages:', apiUrl);
       return null;
