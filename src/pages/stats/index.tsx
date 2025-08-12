@@ -8,13 +8,29 @@ import {
   BarChart3,
   TrendingUp,
   TrendingDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
 } from 'lucide-react';
+import { Tooltip, Card } from 'antd';
 import styles from './index.module.css';
-import { getStatsOverview, getAnalyticsData, AnalyticsData, AnalyticsTrendData } from '../api/stats';
-import { Eye, Users2, MousePointer, Clock, UserPlus, UserCheck, Activity, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import {
+  getStatsOverview,
+  getAnalyticsData,
+  AnalyticsData,
+  AnalyticsTrendData,
+} from '../api/stats';
+import {
+  Eye,
+  Users2,
+  MousePointer,
+  Clock,
+  UserPlus,
+  UserCheck,
+  Activity,
+  TrendingUp as TrendingUpIcon,
+  Globe,
+  Smartphone,
+  Monitor,
+  Navigation,
+} from 'lucide-react';
 
 // 类型定义
 interface StatsOverview {
@@ -74,6 +90,15 @@ interface AnalyticsResponse {
   trend: AnalyticsTrendData[] | null;
 }
 
+// 页面数据接口
+interface PageData {
+  page: string; // 与API保持一致
+  pageViews: number;
+  uniquePageViews: number;
+  bounceRate?: number; // 可选，API中可能没有
+  avgTimeOnPage?: number; // 可选，API中可能没有
+}
+
 // 运营数据统计卡片组件
 interface AnalyticsCardProps {
   title: string;
@@ -82,6 +107,9 @@ interface AnalyticsCardProps {
   icon: React.ReactNode;
   color: string;
   trend?: number;
+  tooltip?: React.ReactNode;
+  showDetails?: boolean;
+  onDetailsClick?: () => void;
 }
 
 function AnalyticsCard({
@@ -91,6 +119,9 @@ function AnalyticsCard({
   icon,
   color,
   trend,
+  tooltip,
+  showDetails = false,
+  onDetailsClick,
 }: AnalyticsCardProps) {
   const formatValue = (val: number | string) => {
     if (typeof val === 'number') {
@@ -102,8 +133,13 @@ function AnalyticsCard({
     return val;
   };
 
-  return (
-    <div className={styles.analyticsCard}>
+  const cardContent = (
+    <Card
+      className={styles.analyticsCard}
+      style={{ '--card-color': color } as any}
+      hoverable={showDetails}
+      onClick={showDetails ? onDetailsClick : undefined}
+    >
       <div className={styles.cardHeader}>
         <div className={styles.cardIcon} style={{ backgroundColor: color }}>
           {icon}
@@ -113,7 +149,8 @@ function AnalyticsCard({
 
       <div className={styles.cardTotal}>
         <p className={styles.totalNumber}>
-          {formatValue(value)}{suffix}
+          {formatValue(value)}
+          {suffix}
         </p>
       </div>
 
@@ -127,12 +164,28 @@ function AnalyticsCard({
           <span
             className={`${styles.growthText} ${trend >= 0 ? styles.positive : styles.negative}`}
           >
-            {trend >= 0 ? '+' : ''}{trend.toFixed(1)}%
+            {trend >= 0 ? '+' : ''}
+            {trend.toFixed(1)}%
           </span>
           <span className={styles.growthLabel}>vs 昨日</span>
         </div>
       )}
-    </div>
+
+      {showDetails && (
+        <div className={styles.cardDetails}>
+          <Navigation className={styles.detailsIcon} />
+          <span>点击查看详情</span>
+        </div>
+      )}
+    </Card>
+  );
+
+  return tooltip ? (
+    <Tooltip title={tooltip} placement="top" color="#fff">
+      {cardContent}
+    </Tooltip>
+  ) : (
+    cardContent
   );
 }
 
@@ -223,7 +276,9 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
     const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
     const maxValues = metrics.map((metric) =>
-      Math.max(...data.map((d) => d[metric as keyof AnalyticsTrendData] as number))
+      Math.max(
+        ...data.map((d) => d[metric as keyof AnalyticsTrendData] as number)
+      )
     );
     const globalMax = Math.max(...maxValues);
 
@@ -256,7 +311,8 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
       data.forEach((point, index) => {
         const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
         const value = point[metric as keyof AnalyticsTrendData] as number;
-        const y = height - padding - ((height - 2 * padding) * value) / globalMax;
+        const y =
+          height - padding - ((height - 2 * padding) * value) / globalMax;
 
         if (index === 0) {
           ctx.moveTo(x, y);
@@ -272,7 +328,8 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
       data.forEach((point, index) => {
         const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
         const value = point[metric as keyof AnalyticsTrendData] as number;
-        const y = height - padding - ((height - 2 * padding) * value) / globalMax;
+        const y =
+          height - padding - ((height - 2 * padding) * value) / globalMax;
 
         ctx.beginPath();
         ctx.arc(x, y, 3, 0, 2 * Math.PI);
@@ -297,7 +354,10 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
     ctx.textBaseline = 'top';
 
     data.forEach((point, index) => {
-      if (index % Math.ceil(data.length / 6) === 0 || index === data.length - 1) {
+      if (
+        index % Math.ceil(data.length / 6) === 0 ||
+        index === data.length - 1
+      ) {
         const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
         const date = new Date(point.date);
         const label = `${date.getMonth() + 1}/${date.getDate()}`;
@@ -310,19 +370,26 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
     <div className={styles.chartContainer}>
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>运营数据趋势</h3>
-        
+
         <div className={styles.chartLegend}>
-          {['页面浏览量', '独立页面浏览量', '用户数', '会话数'].map((label, index) => (
-            <div key={label} className={styles.legendItem}>
-              <div
-                className={styles.legendColor}
-                style={{
-                  backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index],
-                }}
-              />
-              <span className={styles.legendLabel}>{label}</span>
-            </div>
-          ))}
+          {['页面浏览量', '独立页面浏览量', '用户数', '会话数'].map(
+            (label, index) => (
+              <div key={label} className={styles.legendItem}>
+                <div
+                  className={styles.legendColor}
+                  style={{
+                    backgroundColor: [
+                      '#3b82f6',
+                      '#10b981',
+                      '#f59e0b',
+                      '#ef4444',
+                    ][index],
+                  }}
+                />
+                <span className={styles.legendLabel}>{label}</span>
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -490,210 +557,119 @@ function TrendChart({ data }: TrendChartProps) {
   );
 }
 
-// 日历选择器组件
-interface CalendarPickerProps {
-  onDateRangeChange: (startDate: Date, endDate: Date) => void;
+// 日历选择器组件接口（暂时保留但未使用）
+// interface CalendarPickerProps {
+//   onDateRangeChange: (startDate: Date, endDate: Date) => void;
+// }
+
+// 页面详情浮窗组件
+interface PageDetailsModalProps {
+  visible: boolean;
+  onClose: () => void;
+  data: PageData[];
 }
 
-function CalendarPicker({ onDateRangeChange }: CalendarPickerProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    const days = [];
-
-    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-      const prevDate = new Date(year, month, -i);
-      days.push({ date: prevDate, isCurrentMonth: false });
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const currentDate = new Date(year, month, day);
-      days.push({ date: currentDate, isCurrentMonth: true });
-    }
-
-    const remainingDays = 42 - days.length;
-    for (let day = 1; day <= remainingDays; day++) {
-      const nextDate = new Date(year, month + 1, day);
-      days.push({ date: nextDate, isCurrentMonth: false });
-    }
-
-    return days;
-  };
-
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-
-    // 计算周的开始和结束日期
-    const dayOfWeek = date.getDay();
-    const startDate = new Date(date);
-    startDate.setDate(date.getDate() - dayOfWeek);
-
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-
-    onDateRangeChange(startDate, endDate);
-    setIsOpen(false);
-  };
-
-  const handleQuickSelect = (type: 'thisWeek' | 'lastWeek') => {
-    const now = new Date();
-    let startDate: Date, endDate: Date;
-
-    if (type === 'thisWeek') {
-      const dayOfWeek = now.getDay();
-      startDate = new Date(now);
-      startDate.setDate(now.getDate() - dayOfWeek);
-      endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-    } else {
-      const lastWeekStart = new Date(now);
-      lastWeekStart.setDate(now.getDate() - now.getDay() - 7);
-      const lastWeekEnd = new Date(lastWeekStart);
-      lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
-      startDate = lastWeekStart;
-      endDate = lastWeekEnd;
-    }
-
-    onDateRangeChange(startDate, endDate);
-    setIsOpen(false);
-  };
-
-  const changeMonth = (direction: 'prev' | 'next') => {
-    setCurrentMonth((prev) => {
-      const newMonth = new Date(prev);
-      if (direction === 'prev') {
-        newMonth.setMonth(prev.getMonth() - 1);
-      } else {
-        newMonth.setMonth(prev.getMonth() + 1);
-      }
-      return newMonth;
-    });
-  };
-
-  const days = getDaysInMonth(currentMonth);
-  const today = new Date();
+function PageDetailsModal({ visible, onClose, data }: PageDetailsModalProps) {
+  if (!visible) return null;
 
   return (
-    <div className={styles.calendarPicker} ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={styles.calendarButton}
-      >
-        <Calendar className={styles.calendarIcon} />
-        <span className={styles.calendarButtonText}>选择周期</span>
-        <ChevronDown
-          className={`${styles.calendarChevron} ${isOpen ? styles.calendarChevronOpen : ''}`}
-        />
-      </button>
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <h3>页面浏览量详情</h3>
+          <button className={styles.closeButton} onClick={onClose}>
+            ×
+          </button>
+        </div>
 
-      {isOpen && (
-        <div className={styles.calendarDropdown}>
-          <div className={styles.calendarQuickSelect}>
-            <button
-              onClick={() => handleQuickSelect('thisWeek')}
-              className={styles.quickSelectButton}
-            >
-              本周
-            </button>
-            <button
-              onClick={() => handleQuickSelect('lastWeek')}
-              className={styles.quickSelectButton}
-            >
-              上周
-            </button>
-          </div>
-
-          <div className={styles.calendarNavigation}>
-            <button
-              onClick={() => changeMonth('prev')}
-              className={styles.navButton}
-            >
-              <ChevronLeft className={styles.navIcon} />
-            </button>
-            <h3 className={styles.monthTitle}>
-              {currentMonth.getFullYear()}年{currentMonth.getMonth() + 1}月
-            </h3>
-            <button
-              onClick={() => changeMonth('next')}
-              className={styles.navButton}
-            >
-              <ChevronRight className={styles.navIcon} />
-            </button>
-          </div>
-
-          <div className={styles.calendarWeekdays}>
-            {['日', '一', '二', '三', '四', '五', '六'].map((day) => (
-              <div key={day} className={styles.weekday}>
-                {day}
+        <div className={styles.modalBody}>
+          <div className={styles.pageList}>
+            {data.map((page, index) => (
+              <div key={index} className={styles.pageItem}>
+                <div className={styles.pageItemHeader}>
+                  <Globe className={styles.pageIcon} />
+                  <span className={styles.pagePath}>{page.page}</span>
+                </div>
+                <div className={styles.pageStats}>
+                  <div className={styles.pageStat}>
+                    <Eye className={styles.statIcon} />
+                    <span>{page.pageViews.toLocaleString()}</span>
+                    <span className={styles.statLabel}>浏览量</span>
+                  </div>
+                  <div className={styles.pageStat}>
+                    <Users2 className={styles.statIcon} />
+                    <span>{page.uniquePageViews.toLocaleString()}</span>
+                    <span className={styles.statLabel}>独立浏览量</span>
+                  </div>
+                  {page.bounceRate !== undefined && (
+                    <div className={styles.pageStat}>
+                      <TrendingUp className={styles.statIcon} />
+                      <span>{page.bounceRate.toFixed(1)}%</span>
+                      <span className={styles.statLabel}>跳出率</span>
+                    </div>
+                  )}
+                  {page.avgTimeOnPage !== undefined && (
+                    <div className={styles.pageStat}>
+                      <Clock className={styles.statIcon} />
+                      <span>
+                        {Math.floor(page.avgTimeOnPage / 60)}m{' '}
+                        {page.avgTimeOnPage % 60}s
+                      </span>
+                      <span className={styles.statLabel}>停留时间</span>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-
-          <div className={styles.calendarDays}>
-            {days.map(({ date, isCurrentMonth }, index) => {
-              const isToday = date.toDateString() === today.toDateString();
-              const isSelected =
-                selectedDate &&
-                date.toDateString() === selectedDate.toDateString();
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleDateClick(date)}
-                  className={`${styles.dayButton} ${
-                    !isCurrentMonth ? styles.dayButtonInactive : ''
-                  } ${isToday ? styles.dayButtonToday : ''} ${
-                    isSelected ? styles.dayButtonSelected : ''
-                  }`}
-                >
-                  {date.getDate()}
-                </button>
-              );
-            })}
-          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
+// 保留CalendarPicker组件但暂时不使用
+// function CalendarPicker({ onDateRangeChange }: CalendarPickerProps) {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [currentMonth, setCurrentMonth] = useState(new Date());
+//   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+//   const dropdownRef = useRef<HTMLDivElement>(null);
+//   ... 省略实现细节
+// }
+
 // 主要统计页面组件
 export default function StatsIndex() {
   const [data, setData] = useState<StatsResponse | null>(null);
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsResponse | null>(null);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsResponse | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState<{ start: Date; end: Date } | null>(
-    null
-  );
+  // 暂时注释掉未使用的dateRange
+  // const [dateRange, setDateRange] = useState<{ start: Date; end: Date } | null>(
+  //   null
+  // );
+  const [showPageDetails, setShowPageDetails] = useState(false);
+
+  // 从API获取真实页面数据
+  const getPageData = (): PageData[] => {
+    // 只使用真实的Google Analytics API数据
+    if (analyticsData?.overview && (analyticsData as any).topPages) {
+      const topPages = (analyticsData as any).topPages;
+      console.log('Using real page data from Google Analytics API:', topPages);
+      return topPages.map((page: any) => ({
+        page: page.page,
+        pageViews: page.pageViews,
+        uniquePageViews: page.uniquePageViews,
+      }));
+    }
+
+    // 如果没有API数据，返回空数组
+    console.log('No page data available from Google Analytics API');
+    return [];
+  };
 
   // 处理日期范围变化
   // const handleDateRangeChange = async (startDate: Date, endDate: Date) => {
@@ -724,10 +700,12 @@ export default function StatsIndex() {
         // 并行获取内容数据和运营数据
         const [statsResult, analyticsResult] = await Promise.all([
           getStatsOverview(),
-          getAnalyticsData()
+          getAnalyticsData(),
         ]);
 
         if (statsResult.success && statsResult.data) {
+          console.log(statsResult.data);
+
           setData(statsResult.data);
         } else {
           setError(statsResult.message);
@@ -739,11 +717,11 @@ export default function StatsIndex() {
           setAnalyticsError(analyticsResult.message);
         }
 
-        // 设置默认日期范围（本周）
-        const now = new Date();
-        const startDate = new Date(now);
-        startDate.setDate(now.getDate() - 6);
-        setDateRange({ start: startDate, end: now });
+        // 暂时注释掉日期范围设置
+        // const now = new Date();
+        // const startDate = new Date(now);
+        // startDate.setDate(now.getDate() - 6);
+        // setDateRange({ start: startDate, end: now });
       } catch (error) {
         console.error('Failed to fetch initial data:', error);
         setError('获取统计数据失败，请重试');
@@ -757,28 +735,63 @@ export default function StatsIndex() {
     fetchInitialData();
   }, []);
 
-  // 格式化日期范围显示
-  const formatDateRange = () => {
-    if (!dateRange) return '';
-
-    const formatDate = (date: Date) => {
-      return date.toLocaleDateString('zh-CN', {
-        month: 'short',
-        day: 'numeric',
-      });
-    };
-
-    return `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`;
+  // 创建页面浏览量的详细信息工具提示
+  const createPageViewsTooltip = () => {
+    const pageData = getPageData();
+    if (pageData.length === 0) {
+      return null; // 没有数据时不显示工具提示
+    }
+    
+    const topPages = pageData.slice(0, 3);
+    return (
+      <div className={styles.tooltipContent}>
+        <h4 className={styles.tooltipTitle}>热门页面</h4>
+        <div className={styles.tooltipList}>
+          {topPages.map((page, index) => (
+            <div key={index} className={styles.tooltipItem}>
+              <Globe className={styles.tooltipIcon} />
+              <span className={styles.tooltipPath}>{page.page}</span>
+              <span className={styles.tooltipValue}>
+                {page.pageViews.toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className={styles.tooltipFooter}>点击查看所有页面详情</div>
+      </div>
+    );
   };
 
-  // 重新加载数据
-  // const handleRetry = () => {
-  //     if (dateRange) {
-  //         handleDateRangeChange(dateRange.start, dateRange.end)
-  //     } else {
-  //         window.location.reload()
-  //     }
-  // }
+  // 创建设备类型工具提示（使用API数据）
+  const createDeviceTooltip = () => {
+    // 检查是否有真实的设备数据
+    const hasDeviceData = analyticsData?.overview && (analyticsData as any).demographics?.devices;
+    
+    if (hasDeviceData) {
+      const devices = (analyticsData as any).demographics.devices;
+      return (
+        <div className={styles.tooltipContent}>
+          <h4 className={styles.tooltipTitle}>设备类型分布</h4>
+          <div className={styles.tooltipList}>
+            {devices.map((device: any, index: number) => (
+              <div key={index} className={styles.tooltipItem}>
+                {device.device === 'desktop' && <Monitor className={styles.tooltipIcon} />}
+                {device.device === 'mobile' && <Smartphone className={styles.tooltipIcon} />}
+                {device.device === 'tablet' && <Activity className={styles.tooltipIcon} />}
+                <span className={styles.tooltipPath}>
+                  {device.device === 'desktop' ? '桌面端' : 
+                   device.device === 'mobile' ? '移动端' : '平板'}
+                </span>
+                <span className={styles.tooltipValue}>{device.sessions.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    
+    return null; // 没有数据时不显示工具提示
+  };
 
   if (loading && analyticsLoading) {
     return (
@@ -823,134 +836,58 @@ export default function StatsIndex() {
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>内容数据统计</h2>
         </div>
-        
+
         {error || !data ? (
           <div className={styles.errorContainer}>
-            <p className={styles.errorText}>{error || '无法加载内容统计数据'}</p>
+            <p className={styles.errorText}>
+              {error || '无法加载内容统计数据'}
+            </p>
           </div>
         ) : (
           <div className={styles.statsGrid}>
-          <StatsCard
-            title="用户"
-            total={data.overview?.users.total ?? 0}
-            newThisWeek={data.overview?.users.new_this_Week ?? 0}
-            weeklyGrowth={data.overview?.users.weekly_growth ?? 0}
-            icon={<Users className={styles.cardIconSvg} />}
-            color="#8b5cf6"
-          />
-
-          <StatsCard
-            title="博客"
-            total={data.overview?.blogs.total ?? 0}
-            newThisWeek={data.overview?.blogs.new_this_Week ?? 0}
-            weeklyGrowth={data.overview?.blogs.weekly_growth ?? 0}
-            icon={<BookOpen className={styles.cardIconSvg} />}
-            color="#06b6d4"
-          />
-
-          <StatsCard
-            title="教程"
-            total={data.overview?.tutorials.total ?? 0}
-            newThisWeek={data.overview?.tutorials.new_this_Week ?? 0}
-            weeklyGrowth={data.overview?.tutorials.weekly_growth ?? 0}
-            icon={<GraduationCap className={styles.cardIconSvg} />}
-            color="#10b981"
-          />
-
-          <StatsCard
-            title="活动"
-            total={data.overview?.events.total ?? 0}
-            newThisWeek={data.overview?.events.new_this_Week ?? 0}
-            weeklyGrowth={data.overview?.events.weekly_growth ?? 0}
-            icon={<Calendar className={styles.cardIconSvg} />}
-            color="#f59e0b"
-          />
-
-          <StatsCard
-            title="帖子"
-            total={data.overview?.posts.total ?? 0}
-            newThisWeek={data.overview?.posts.new_this_Week ?? 0}
-            weeklyGrowth={data.overview?.posts.weekly_growth ?? 0}
-            icon={<MessageSquare className={styles.cardIconSvg} />}
-            color="#ef4444"
-          />
-          </div>
-        )}
-
-        {/* 运营数据统计 */}
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>运营数据统计</h2>
-          <p className={styles.sectionSubtitle}>基于Google Analytics的网站流量与用户行为数据</p>
-        </div>
-
-        {analyticsError || !analyticsData ? (
-          <div className={styles.errorContainer}>
-            <p className={styles.errorText}>{analyticsError || '无法加载运营数据'}</p>
-          </div>
-        ) : (
-          <div className={styles.analyticsGrid}>
-            <AnalyticsCard
-              title="页面浏览量"
-              value={analyticsData.overview?.pageViews ?? 0}
-              icon={<Eye className={styles.cardIconSvg} />}
-              color="#3b82f6"
-              trend={Math.random() * 20 - 10} // 模拟趋势数据
-            />
-            
-            <AnalyticsCard
-              title="独立页面浏览量"
-              value={analyticsData.overview?.uniquePageViews ?? 0}
-              icon={<MousePointer className={styles.cardIconSvg} />}
-              color="#10b981"
-              trend={Math.random() * 15 - 5}
-            />
-            
-            <AnalyticsCard
-              title="活跃用户"
-              value={analyticsData.overview?.users ?? 0}
-              icon={<Users2 className={styles.cardIconSvg} />}
-              color="#f59e0b"
-              trend={Math.random() * 25 - 8}
-            />
-            
-            <AnalyticsCard
-              title="会话数"
-              value={analyticsData.overview?.sessions ?? 0}
-              icon={<Activity className={styles.cardIconSvg} />}
-              color="#ef4444"
-              trend={Math.random() * 18 - 6}
-            />
-            
-            <AnalyticsCard
-              title="跳出率"
-              value={analyticsData.overview?.bounceRate ?? 0}
-              suffix="%"
-              icon={<TrendingUpIcon className={styles.cardIconSvg} />}
+            <StatsCard
+              title="用户"
+              total={data.overview?.users.total ?? 0}
+              newThisWeek={data.overview?.users.new_this_Week ?? 0}
+              weeklyGrowth={data.overview?.users.weekly_growth ?? 0}
+              icon={<Users className={styles.cardIconSvg} />}
               color="#8b5cf6"
             />
-            
-            <AnalyticsCard
-              title="平均会话时长"
-              value={Math.floor((analyticsData.overview?.avgSessionDuration ?? 0) / 60)}
-              suffix="分钟"
-              icon={<Clock className={styles.cardIconSvg} />}
+
+            <StatsCard
+              title="博客"
+              total={data.overview?.blogs.total ?? 0}
+              newThisWeek={data.overview?.blogs.new_this_Week ?? 0}
+              weeklyGrowth={data.overview?.blogs.weekly_growth ?? 0}
+              icon={<BookOpen className={styles.cardIconSvg} />}
               color="#06b6d4"
             />
-            
-            <AnalyticsCard
-              title="新用户"
-              value={analyticsData.overview?.newUsers ?? 0}
-              icon={<UserPlus className={styles.cardIconSvg} />}
-              color="#84cc16"
-              trend={Math.random() * 30 - 10}
+
+            <StatsCard
+              title="教程"
+              total={data.overview?.tutorials.total ?? 0}
+              newThisWeek={data.overview?.tutorials.new_this_Week ?? 0}
+              weeklyGrowth={data.overview?.tutorials.weekly_growth ?? 0}
+              icon={<GraduationCap className={styles.cardIconSvg} />}
+              color="#10b981"
             />
-            
-            <AnalyticsCard
-              title="回访用户"
-              value={analyticsData.overview?.returningUsers ?? 0}
-              icon={<UserCheck className={styles.cardIconSvg} />}
-              color="#f97316"
-              trend={Math.random() * 12 - 3}
+
+            <StatsCard
+              title="活动"
+              total={data.overview?.events.total ?? 0}
+              newThisWeek={data.overview?.events.new_this_Week ?? 0}
+              weeklyGrowth={data.overview?.events.weekly_growth ?? 0}
+              icon={<Calendar className={styles.cardIconSvg} />}
+              color="#f59e0b"
+            />
+
+            <StatsCard
+              title="帖子"
+              total={data.overview?.posts.total ?? 0}
+              newThisWeek={data.overview?.posts.new_this_Week ?? 0}
+              weeklyGrowth={data.overview?.posts.weekly_growth ?? 0}
+              icon={<MessageSquare className={styles.cardIconSvg} />}
+              color="#ef4444"
             />
           </div>
         )}
@@ -962,13 +899,127 @@ export default function StatsIndex() {
           </div>
         )}
 
-        {/* 运营数据趋势图表 */}
-        {Array.isArray(analyticsData?.trend) && analyticsData.trend.length > 0 && (
-          <div className={styles.chartSection}>
-            <AnalyticsTrendChart data={analyticsData.trend} />
+        {/* 运营数据统计 */}
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>运营数据统计</h2>
+          <p className={styles.sectionSubtitle}>
+            基于Google Analytics的网站流量与用户行为数据
+            {analyticsData?.overview && (
+              <span className={styles.dataSource}>
+                {process.env.NEXT_PUBLIC_GA_ID ? ' • 实时数据' : ' • 示例数据'}
+              </span>
+            )}
+          </p>
+        </div>
+
+        {analyticsError || !analyticsData ? (
+          <div className={styles.errorContainer}>
+            <p className={styles.errorText}>
+              {analyticsError || '无法加载运营数据'}
+            </p>
+          </div>
+        ) : (
+          <div className={styles.analyticsGrid}>
+            <AnalyticsCard
+              title="页面浏览量"
+              value={analyticsData.overview?.pageViews ?? 0}
+              icon={<Eye className={styles.cardIconSvg} />}
+              color="#3b82f6"
+              tooltip={createPageViewsTooltip()}
+              showDetails={getPageData().length > 0}
+              onDetailsClick={() => setShowPageDetails(true)}
+            />
+
+            <AnalyticsCard
+              title="独立页面浏览量"
+              value={analyticsData.overview?.uniquePageViews ?? 0}
+              icon={<MousePointer className={styles.cardIconSvg} />}
+              color="#10b981"
+              tooltip={createDeviceTooltip()}
+            />
+
+            <AnalyticsCard
+              title="活跃用户"
+              value={analyticsData.overview?.users ?? 0}
+              icon={<Users2 className={styles.cardIconSvg} />}
+              color="#f59e0b"
+            />
+
+            <AnalyticsCard
+              title="会话数"
+              value={analyticsData.overview?.sessions ?? 0}
+              icon={<Activity className={styles.cardIconSvg} />}
+              color="#ef4444"
+            />
+
+            <AnalyticsCard
+              title="跳出率"
+              value={analyticsData.overview?.bounceRate ?? 0}
+              suffix="%"
+              icon={<TrendingUpIcon className={styles.cardIconSvg} />}
+              color="#8b5cf6"
+            />
+
+            <AnalyticsCard
+              title="平均会话时长"
+              value={Math.floor(
+                (analyticsData.overview?.avgSessionDuration ?? 0) / 60
+              )}
+              suffix="分钟"
+              icon={<Clock className={styles.cardIconSvg} />}
+              color="#06b6d4"
+            />
+
+            <AnalyticsCard
+              title="新用户"
+              value={analyticsData.overview?.newUsers ?? 0}
+              icon={<UserPlus className={styles.cardIconSvg} />}
+              color="#84cc16"
+            />
+
+            <AnalyticsCard
+              title="回访用户"
+              value={analyticsData.overview?.returningUsers ?? 0}
+              icon={<UserCheck className={styles.cardIconSvg} />}
+              color="#f97316"
+            />
           </div>
         )}
 
+        {/* 页面详情浮窗 */}
+        {getPageData().length > 0 ? (
+          <PageDetailsModal
+            visible={showPageDetails}
+            onClose={() => setShowPageDetails(false)}
+            data={getPageData()}
+          />
+        ) : (
+          showPageDetails && (
+            <div className={styles.modalOverlay} onClick={() => setShowPageDetails(false)}>
+              <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                <div className={styles.modalHeader}>
+                  <h3>页面浏览量详情</h3>
+                  <button className={styles.closeButton} onClick={() => setShowPageDetails(false)}>
+                    ×
+                  </button>
+                </div>
+                <div className={styles.modalBody}>
+                  <div className={styles.emptyText}>
+                    暂无页面数据。请配置Google Analytics API以获取真实数据。
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+
+        {/* 运营数据趋势图表 */}
+        {Array.isArray(analyticsData?.trend) &&
+          analyticsData.trend.length > 0 && (
+            <div className={styles.chartSection}>
+              <AnalyticsTrendChart data={analyticsData.trend} />
+            </div>
+          )}
       </div>
     </div>
   );
