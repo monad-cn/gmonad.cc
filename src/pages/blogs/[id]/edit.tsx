@@ -24,7 +24,8 @@ import {
 import Link from 'next/link';
 import styles from './edit.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getBlogById, updateBlog } from '@/pages/api/blog';
@@ -57,8 +58,8 @@ export default function EditBlogPage() {
     return `${dateStr} ${timeStr}`;
   };
 
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  // 编辑器处理
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('content', value);
     },
@@ -220,9 +221,10 @@ export default function EditBlogPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入博客内容' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('content')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
+                  height={700}
                 />
               </Form.Item>
               <Form.Item
