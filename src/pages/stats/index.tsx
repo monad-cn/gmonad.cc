@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Users,
   BookOpen,
@@ -6,10 +6,7 @@ import {
   Calendar,
   MessageSquare,
   BarChart3,
-  TrendingUp,
-  TrendingDown,
 } from 'lucide-react';
-import { Tooltip, Card } from 'antd';
 import styles from './index.module.css';
 import {
   getStatsOverview,
@@ -29,604 +26,17 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  Navigation,
 } from 'lucide-react';
-
-// 类型定义
-interface StatsOverview {
-  users: {
-    total: number;
-    new_this_Week: number;
-    new_this_Month: number;
-    weekly_growth: number;
-    monthly_growth: number;
-  };
-  blogs: {
-    total: number;
-    new_this_Week: number;
-    new_this_Month: number;
-    weekly_growth: number;
-    monthly_growth: number;
-  };
-  tutorials: {
-    total: number;
-    new_this_Week: number;
-    new_this_Month: number;
-    weekly_growth: number;
-    monthly_growth: number;
-  };
-  events: {
-    total: number;
-    new_this_Week: number;
-    new_this_Month: number;
-    weekly_growth: number;
-    monthly_growth: number;
-  };
-  posts: {
-    total: number;
-    new_this_Week: number;
-    new_this_Month: number;
-    weekly_growth: number;
-    monthly_growth: number;
-  };
-}
-
-interface TimeSeriesData {
-  date: string;
-  users: number;
-  blogs: number;
-  tutorials: number;
-  events: number;
-  posts: number;
-}
-
-interface StatsResponse {
-  overview: StatsOverview | null;
-  trend: TimeSeriesData[] | null;
-}
-
-interface AnalyticsResponse {
-  overview: AnalyticsData | null;
-  trend: AnalyticsTrendData[] | null;
-}
-
-// 页面数据接口
-interface PageData {
-  page: string; // 与API保持一致
-  pageViews: number;
-  uniquePageViews: number;
-  bounceRate?: number; // 可选，API中可能没有
-  avgTimeOnPage?: number; // 可选，API中可能没有
-}
-
-// 运营数据统计卡片组件
-interface AnalyticsCardProps {
-  title: string;
-  value: number | string;
-  suffix?: string;
-  icon: React.ReactNode;
-  color: string;
-  trend?: number;
-  tooltip?: React.ReactNode;
-  showDetails?: boolean;
-  onDetailsClick?: () => void;
-}
-
-function AnalyticsCard({
-  title,
-  value,
-  suffix = '',
-  icon,
-  color,
-  trend,
-  tooltip,
-  showDetails = false,
-  onDetailsClick,
-}: AnalyticsCardProps) {
-  const formatValue = (val: number | string) => {
-    if (typeof val === 'number') {
-      if (val >= 10000) {
-        return (val / 10000).toFixed(1) + 'w';
-      }
-      return val.toLocaleString();
-    }
-    return val;
-  };
-
-  const cardContent = (
-    <Card
-      className={styles.analyticsCard}
-      style={{ '--card-color': color } as any}
-      hoverable={showDetails}
-      onClick={showDetails ? onDetailsClick : undefined}
-    >
-      <div className={styles.cardHeader}>
-        <div className={styles.cardIcon} style={{ backgroundColor: color }}>
-          {icon}
-        </div>
-        <h3 className={styles.cardTitle}>{title}</h3>
-      </div>
-
-      <div className={styles.cardTotal}>
-        <p className={styles.totalNumber}>
-          {formatValue(value)}
-          {suffix}
-        </p>
-      </div>
-
-      {trend !== undefined && (
-        <div className={styles.cardGrowth}>
-          {trend >= 0 ? (
-            <TrendingUp className={styles.trendIcon} />
-          ) : (
-            <TrendingDown className={styles.trendIcon} />
-          )}
-          <span
-            className={`${styles.growthText} ${trend >= 0 ? styles.positive : styles.negative}`}
-          >
-            {trend >= 0 ? '+' : ''}
-            {trend.toFixed(1)}%
-          </span>
-          <span className={styles.growthLabel}>vs 昨日</span>
-        </div>
-      )}
-
-      {showDetails && (
-        <div className={styles.cardDetails}>
-          <Navigation className={styles.detailsIcon} />
-          <span>点击查看详情</span>
-        </div>
-      )}
-    </Card>
-  );
-
-  return tooltip ? (
-    <Tooltip title={tooltip} placement="top" color="#fff">
-      {cardContent}
-    </Tooltip>
-  ) : (
-    cardContent
-  );
-}
-
-// 统计卡片组件
-interface StatsCardProps {
-  title: string;
-  total: number;
-  newThisWeek: number;
-  weeklyGrowth: number;
-  icon: React.ReactNode;
-  color: string;
-}
-
-function StatsCard({
-  title,
-  total,
-  newThisWeek,
-  weeklyGrowth,
-  icon,
-  color,
-}: StatsCardProps) {
-  const isPositiveGrowth = weeklyGrowth >= 0;
-
-  return (
-    <div className={styles.statsCard}>
-      <div className={styles.cardHeader}>
-        <div className={styles.cardIcon} style={{ backgroundColor: color }}>
-          {icon}
-        </div>
-        <h3 className={styles.cardTitle}>{title}</h3>
-      </div>
-
-      <div className={styles.cardTotal}>
-        <p className={styles.totalNumber}>{total.toLocaleString()}</p>
-        <p className={styles.totalLabel}>总数</p>
-      </div>
-
-      <div className={styles.cardNew}>
-        <p className={styles.newNumber}>+{newThisWeek.toLocaleString()}</p>
-        <p className={styles.newLabel}>本周新增</p>
-      </div>
-
-      <div className={styles.cardGrowth}>
-        {isPositiveGrowth ? (
-          <TrendingUp className={styles.trendIcon} />
-        ) : (
-          <TrendingDown className={styles.trendIcon} />
-        )}
-        <span
-          className={`${styles.growthText} ${isPositiveGrowth ? styles.positive : styles.negative}`}
-        >
-          {isPositiveGrowth ? '+' : ''}
-          {weeklyGrowth.toFixed(1)}%
-        </span>
-        <span className={styles.growthLabel}>vs 上周</span>
-      </div>
-    </div>
-  );
-}
-
-// 运营数据趋势图表组件
-interface AnalyticsTrendChartProps {
-  data: AnalyticsTrendData[];
-}
-
-function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current || !data || !data.length) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    const width = rect.width;
-    const height = rect.height;
-    const padding = 60;
-
-    ctx.clearRect(0, 0, width, height);
-
-    const metrics = ['pageViews', 'uniquePageViews', 'users', 'sessions'];
-    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
-
-    const maxValues = metrics.map((metric) =>
-      Math.max(
-        ...data.map((d) => d[metric as keyof AnalyticsTrendData] as number)
-      )
-    );
-    const globalMax = Math.max(...maxValues);
-
-    // 绘制网格线
-    ctx.strokeStyle = '#f3f4f6';
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i <= 5; i++) {
-      const y = padding + ((height - 2 * padding) * i) / 5;
-      ctx.beginPath();
-      ctx.moveTo(padding, y);
-      ctx.lineTo(width - padding, y);
-      ctx.stroke();
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      const x = padding + ((width - 2 * padding) * i) / (data.length - 1);
-      ctx.beginPath();
-      ctx.moveTo(x, padding);
-      ctx.lineTo(x, height - padding);
-      ctx.stroke();
-    }
-
-    // 绘制数据线
-    metrics.forEach((metric, metricIndex) => {
-      ctx.strokeStyle = colors[metricIndex];
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-
-      data.forEach((point, index) => {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const value = point[metric as keyof AnalyticsTrendData] as number;
-        const y =
-          height - padding - ((height - 2 * padding) * value) / globalMax;
-
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-
-      ctx.stroke();
-
-      // 绘制数据点
-      ctx.fillStyle = colors[metricIndex];
-      data.forEach((point, index) => {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const value = point[metric as keyof AnalyticsTrendData] as number;
-        const y =
-          height - padding - ((height - 2 * padding) * value) / globalMax;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, 2 * Math.PI);
-        ctx.fill();
-      });
-    });
-
-    // Y轴标签
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-
-    for (let i = 0; i <= 5; i++) {
-      const y = padding + ((height - 2 * padding) * i) / 5;
-      const value = Math.round((globalMax * (5 - i)) / 5);
-      ctx.fillText(value.toString(), padding - 10, y);
-    }
-
-    // X轴标签
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    data.forEach((point, index) => {
-      if (
-        index % Math.ceil(data.length / 6) === 0 ||
-        index === data.length - 1
-      ) {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const date = new Date(point.date);
-        const label = `${date.getMonth() + 1}/${date.getDate()}`;
-        ctx.fillText(label, x, height - padding + 10);
-      }
-    });
-  }, [data]);
-
-  return (
-    <div className={styles.chartContainer}>
-      <div className={styles.chartHeader}>
-        <h3 className={styles.chartTitle}>运营数据趋势</h3>
-
-        <div className={styles.chartLegend}>
-          {['页面浏览量', '独立页面浏览量', '用户数', '会话数'].map(
-            (label, index) => (
-              <div key={label} className={styles.legendItem}>
-                <div
-                  className={styles.legendColor}
-                  style={{
-                    backgroundColor: [
-                      '#3b82f6',
-                      '#10b981',
-                      '#f59e0b',
-                      '#ef4444',
-                    ][index],
-                  }}
-                />
-                <span className={styles.legendLabel}>{label}</span>
-              </div>
-            )
-          )}
-        </div>
-      </div>
-
-      <div className={styles.chartWrapper}>
-        <canvas ref={canvasRef} className={styles.chart} />
-      </div>
-    </div>
-  );
-}
-
-// 趋势图表组件
-interface TrendChartProps {
-  data: TimeSeriesData[];
-}
-
-function TrendChart({ data }: TrendChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current || !data || !data.length) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // 设置画布尺寸
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    const width = rect.width;
-    const height = rect.height;
-    const padding = 60;
-
-    // 清空画布
-    ctx.clearRect(0, 0, width, height);
-
-    // 数据处理
-    const metrics = ['users', 'blogs', 'tutorials', 'events', 'posts'];
-    const colors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
-
-    // 计算最大值用于缩放
-    const maxValues = metrics.map((metric) =>
-      Math.max(...data.map((d) => d[metric as keyof TimeSeriesData] as number))
-    );
-    const globalMax = Math.max(...maxValues);
-
-    // 绘制网格线
-    ctx.strokeStyle = '#f3f4f6';
-    ctx.lineWidth = 1;
-
-    // 水平网格线
-    for (let i = 0; i <= 5; i++) {
-      const y = padding + ((height - 2 * padding) * i) / 5;
-      ctx.beginPath();
-      ctx.moveTo(padding, y);
-      ctx.lineTo(width - padding, y);
-      ctx.stroke();
-    }
-
-    // 垂直网格线
-    for (let i = 0; i < data.length; i++) {
-      const x = padding + ((width - 2 * padding) * i) / (data.length - 1);
-      ctx.beginPath();
-      ctx.moveTo(x, padding);
-      ctx.lineTo(x, height - padding);
-      ctx.stroke();
-    }
-
-    // 绘制数据线
-    metrics.forEach((metric, metricIndex) => {
-      ctx.strokeStyle = colors[metricIndex];
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-
-      data.forEach((point, index) => {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const value = point[metric as keyof TimeSeriesData] as number;
-        const y =
-          height - padding - ((height - 2 * padding) * value) / globalMax;
-
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-
-      ctx.stroke();
-
-      // 绘制数据点
-      ctx.fillStyle = colors[metricIndex];
-      data.forEach((point, index) => {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const value = point[metric as keyof TimeSeriesData] as number;
-        const y =
-          height - padding - ((height - 2 * padding) * value) / globalMax;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, 2 * Math.PI);
-        ctx.fill();
-      });
-    });
-
-    // 绘制Y轴标签
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-
-    for (let i = 0; i <= 5; i++) {
-      const y = padding + ((height - 2 * padding) * i) / 5;
-      const value = Math.round((globalMax * (5 - i)) / 5);
-      ctx.fillText(value.toString(), padding - 10, y);
-    }
-
-    // 绘制X轴标签
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    data.forEach((point, index) => {
-      if (
-        index % Math.ceil(data.length / 6) === 0 ||
-        index === data.length - 1
-      ) {
-        const x = padding + ((width - 2 * padding) * index) / (data.length - 1);
-        const date = new Date(point.date);
-        const label = `${date.getMonth() + 1}/${date.getDate()}`;
-        ctx.fillText(label, x, height - padding + 10);
-      }
-    });
-  }, [data]);
-
-  return (
-    <div className={styles.chartContainer}>
-      <div className={styles.chartHeader}>
-        <h3 className={styles.chartTitle}>周趋势图</h3>
-
-        <div className={styles.chartLegend}>
-          {['用户', '博客', '教程', '活动', '帖子'].map((label, index) => (
-            <div key={label} className={styles.legendItem}>
-              <div
-                className={styles.legendColor}
-                style={{
-                  backgroundColor: [
-                    '#8b5cf6',
-                    '#06b6d4',
-                    '#10b981',
-                    '#f59e0b',
-                    '#ef4444',
-                  ][index],
-                }}
-              />
-              <span className={styles.legendLabel}>{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.chartWrapper}>
-        <canvas ref={canvasRef} className={styles.chart} />
-      </div>
-    </div>
-  );
-}
-
-// 日历选择器组件接口（暂时保留但未使用）
-// interface CalendarPickerProps {
-//   onDateRangeChange: (startDate: Date, endDate: Date) => void;
-// }
-
-// 页面详情浮窗组件
-interface PageDetailsModalProps {
-  visible: boolean;
-  onClose: () => void;
-  data: PageData[];
-}
-
-function PageDetailsModal({ visible, onClose, data }: PageDetailsModalProps) {
-  if (!visible) return null;
-
-  return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.modalHeader}>
-          <h3>页面浏览量详情</h3>
-          <button className={styles.closeButton} onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        <div className={styles.modalBody}>
-          <div className={styles.pageList}>
-            {data.map((page, index) => (
-              <div key={index} className={styles.pageItem}>
-                <div className={styles.pageItemHeader}>
-                  <Globe className={styles.pageIcon} />
-                  <span className={styles.pagePath}>{page.page}</span>
-                </div>
-                <div className={styles.pageStats}>
-                  <div className={styles.pageStat}>
-                    <Eye className={styles.statIcon} />
-                    <span>{page.pageViews.toLocaleString()}</span>
-                    <span className={styles.statLabel}>浏览量</span>
-                  </div>
-                  <div className={styles.pageStat}>
-                    <Users2 className={styles.statIcon} />
-                    <span>{page.uniquePageViews.toLocaleString()}</span>
-                    <span className={styles.statLabel}>独立浏览量</span>
-                  </div>
-                  {page.bounceRate !== undefined && (
-                    <div className={styles.pageStat}>
-                      <TrendingUp className={styles.statIcon} />
-                      <span>{page.bounceRate.toFixed(1)}%</span>
-                      <span className={styles.statLabel}>跳出率</span>
-                    </div>
-                  )}
-                  {page.avgTimeOnPage !== undefined && (
-                    <div className={styles.pageStat}>
-                      <Clock className={styles.statIcon} />
-                      <span>
-                        {Math.floor(page.avgTimeOnPage / 60)}m{' '}
-                        {page.avgTimeOnPage % 60}s
-                      </span>
-                      <span className={styles.statLabel}>停留时间</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { AnalyticsCard } from '../../components/stats/AnalyticsCard';
+import { StatsCard } from '../../components/stats/StatsCard';
+import { AnalyticsTrendChart } from '../../components/stats/AnalyticsTrendChart';
+import { TrendChart } from '../../components/stats/TrendChart';
+import { PageDetailsModal } from '../../components/stats/PageDetailsModal';
+import {
+  StatsResponse,
+  AnalyticsResponse,
+  PageData,
+} from '../../components/stats/types';
 
 // 保留CalendarPicker组件但暂时不使用
 // function CalendarPicker({ onDateRangeChange }: CalendarPickerProps) {
@@ -636,6 +46,47 @@ function PageDetailsModal({ visible, onClose, data }: PageDetailsModalProps) {
 //   const dropdownRef = useRef<HTMLDivElement>(null);
 //   ... 省略实现细节
 // }
+
+// 计算趋势数据（针对有trend数据的字段）
+function calculateTrend(
+  field: keyof AnalyticsTrendData,
+  analyticsData: AnalyticsResponse | null
+): number | undefined {
+  if (!analyticsData?.trend || analyticsData.trend.length < 2) {
+    return undefined;
+  }
+
+  const trendData = analyticsData.trend;
+  const latestData = trendData[trendData.length - 1];
+  const previousData = trendData[trendData.length - 2];
+
+  if (!latestData || !previousData) {
+    return undefined;
+  }
+
+  const currentValue = latestData[field] as number;
+  const previousValue = previousData[field] as number;
+
+  if (previousValue === 0) {
+    return currentValue > 0 ? 100 : 0;
+  }
+
+  return ((currentValue - previousValue) / previousValue) * 100;
+}
+
+// 计算仅有overview数据字段的趋势（模拟计算）
+function calculateTrendForOverviewOnly(
+  _field: keyof AnalyticsData,
+  analyticsData: AnalyticsResponse | null
+): number | undefined {
+  if (!analyticsData?.overview) {
+    return undefined;
+  }
+
+  // 对于只在overview中存在的字段，我们无法获取历史数据进行真实比较
+  // 这里返回undefined，表示不显示趋势
+  return undefined;
+}
 
 // 主要统计页面组件
 export default function StatsIndex() {
@@ -658,7 +109,7 @@ export default function StatsIndex() {
     // 只使用真实的Google Analytics API数据
     if (analyticsData?.overview && (analyticsData as any).topPages) {
       const topPages = (analyticsData as any).topPages;
-      console.log('Using real page data from Google Analytics API:', topPages);
+      // console.log('Using real page data from Google Analytics API:', topPages);
       return topPages.map((page: any) => ({
         page: page.page,
         pageViews: page.pageViews,
@@ -741,7 +192,7 @@ export default function StatsIndex() {
     if (pageData.length === 0) {
       return null; // 没有数据时不显示工具提示
     }
-    
+
     const topPages = pageData.slice(0, 3);
     return (
       <div className={styles.tooltipContent}>
@@ -765,8 +216,9 @@ export default function StatsIndex() {
   // 创建设备类型工具提示（使用API数据）
   const createDeviceTooltip = () => {
     // 检查是否有真实的设备数据
-    const hasDeviceData = analyticsData?.overview && (analyticsData as any).demographics?.devices;
-    
+    const hasDeviceData =
+      analyticsData?.overview && (analyticsData as any).demographics?.devices;
+
     if (hasDeviceData) {
       const devices = (analyticsData as any).demographics.devices;
       return (
@@ -775,21 +227,32 @@ export default function StatsIndex() {
           <div className={styles.tooltipList}>
             {devices.map((device: any, index: number) => (
               <div key={index} className={styles.tooltipItem}>
-                {device.device === 'desktop' && <Monitor className={styles.tooltipIcon} />}
-                {device.device === 'mobile' && <Smartphone className={styles.tooltipIcon} />}
-                {device.device === 'tablet' && <Activity className={styles.tooltipIcon} />}
+                {device.device === 'desktop' && (
+                  <Monitor className={styles.tooltipIcon} />
+                )}
+                {device.device === 'mobile' && (
+                  <Smartphone className={styles.tooltipIcon} />
+                )}
+                {device.device === 'tablet' && (
+                  <Activity className={styles.tooltipIcon} />
+                )}
                 <span className={styles.tooltipPath}>
-                  {device.device === 'desktop' ? '桌面端' : 
-                   device.device === 'mobile' ? '移动端' : '平板'}
+                  {device.device === 'desktop'
+                    ? '桌面端'
+                    : device.device === 'mobile'
+                      ? '移动端'
+                      : '平板'}
                 </span>
-                <span className={styles.tooltipValue}>{device.sessions.toLocaleString()}</span>
+                <span className={styles.tooltipValue}>
+                  {device.sessions.toLocaleString()}
+                </span>
               </div>
             ))}
           </div>
         </div>
       );
     }
-    
+
     return null; // 没有数据时不显示工具提示
   };
 
@@ -925,6 +388,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.pageViews ?? 0}
               icon={<Eye className={styles.cardIconSvg} />}
               color="#3b82f6"
+              trend={calculateTrend('pageViews', analyticsData)}
               tooltip={createPageViewsTooltip()}
               showDetails={getPageData().length > 0}
               onDetailsClick={() => setShowPageDetails(true)}
@@ -935,6 +399,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.uniquePageViews ?? 0}
               icon={<MousePointer className={styles.cardIconSvg} />}
               color="#10b981"
+              trend={calculateTrend('uniquePageViews', analyticsData)}
               tooltip={createDeviceTooltip()}
             />
 
@@ -943,6 +408,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.users ?? 0}
               icon={<Users2 className={styles.cardIconSvg} />}
               color="#f59e0b"
+              trend={calculateTrend('users', analyticsData)}
             />
 
             <AnalyticsCard
@@ -950,6 +416,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.sessions ?? 0}
               icon={<Activity className={styles.cardIconSvg} />}
               color="#ef4444"
+              trend={calculateTrend('sessions', analyticsData)}
             />
 
             <AnalyticsCard
@@ -958,6 +425,7 @@ export default function StatsIndex() {
               suffix="%"
               icon={<TrendingUpIcon className={styles.cardIconSvg} />}
               color="#8b5cf6"
+              trend={calculateTrendForOverviewOnly('bounceRate', analyticsData)}
             />
 
             <AnalyticsCard
@@ -968,6 +436,10 @@ export default function StatsIndex() {
               suffix="分钟"
               icon={<Clock className={styles.cardIconSvg} />}
               color="#06b6d4"
+              trend={calculateTrendForOverviewOnly(
+                'avgSessionDuration',
+                analyticsData
+              )}
             />
 
             <AnalyticsCard
@@ -975,6 +447,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.newUsers ?? 0}
               icon={<UserPlus className={styles.cardIconSvg} />}
               color="#84cc16"
+              trend={calculateTrendForOverviewOnly('newUsers', analyticsData)}
             />
 
             <AnalyticsCard
@@ -982,6 +455,10 @@ export default function StatsIndex() {
               value={analyticsData.overview?.returningUsers ?? 0}
               icon={<UserCheck className={styles.cardIconSvg} />}
               color="#f97316"
+              trend={calculateTrendForOverviewOnly(
+                'returningUsers',
+                analyticsData
+              )}
             />
           </div>
         )}
@@ -995,11 +472,20 @@ export default function StatsIndex() {
           />
         ) : (
           showPageDetails && (
-            <div className={styles.modalOverlay} onClick={() => setShowPageDetails(false)}>
-              <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div
+              className={styles.modalOverlay}
+              onClick={() => setShowPageDetails(false)}
+            >
+              <div
+                className={styles.modalContent}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className={styles.modalHeader}>
                   <h3>页面浏览量详情</h3>
-                  <button className={styles.closeButton} onClick={() => setShowPageDetails(false)}>
+                  <button
+                    className={styles.closeButton}
+                    onClick={() => setShowPageDetails(false)}
+                  >
                     ×
                   </button>
                 </div>
