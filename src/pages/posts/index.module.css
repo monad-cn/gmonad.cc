@@ -329,6 +329,10 @@
     color: #8b5cf6;
 }
 
+.deleteButton {
+    color: #ef4444;
+}
+
 .deleteButton:hover {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
@@ -404,6 +408,16 @@
 }
 
 .interactionBtn.bookmarked:hover {
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6 !important;
+}
+
+/* 列表卡片浏览量按钮使用主题紫色 */
+.interactionBtn.viewCount {
+    color: #8b5cf6;
+}
+
+.interactionBtn.viewCount:hover {
     background: rgba(139, 92, 246, 0.12);
     color: #8b5cf6 !important;
 }
@@ -531,7 +545,7 @@
     color: #6b7280;
 }
 
- 
+
 
 /* 活跃用户 */
 .activeUsers {
@@ -976,7 +990,7 @@
         gap: 0.5rem;
     }
 
-    
+
 
     .postDetailXLink span {
         display: none;
