@@ -286,6 +286,8 @@
   border: 1px solid #e5e7eb;
   padding: 1.5rem;
   transition: box-shadow 0.2s ease;
+  position: relative;
+  min-height: 180px;
 }
 
 .statsCard:hover {
@@ -304,6 +306,17 @@
   padding-bottom: 3rem !important;
 }
 
+.analyticsCardShot {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding-bottom: 1rem !important;
+}
+
 .analyticsCard:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
   transform: translateY(-2px);
@@ -316,7 +329,11 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--card-color, #3b82f6) 0%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    var(--card-color, #3b82f6) 0%,
+    transparent 100%
+  );
   border-radius: 12px 12px 0 0;
 }
 
@@ -332,8 +349,6 @@
   transition: color 0.2s;
   padding: 0.25rem 0.5rem;
   background: rgba(255, 255, 255, 0.9);
- 
-  
 }
 
 .analyticsCard:hover .cardDetails {
@@ -409,6 +424,13 @@
 }
 
 .cardGrowth {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.analyticsCardGrowth {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
@@ -437,8 +459,15 @@
 }
 
 .growthLabel {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #6b7280;
+  margin-left: 0.125rem;
+}
+
+.analyticsGrowthLabel {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-left: 0.125rem;
 }
 
 /* 图表区域 */
@@ -518,8 +547,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingText,
@@ -565,11 +598,11 @@
   .content {
     padding: 2rem;
   }
-  
+
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .analyticsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -579,7 +612,7 @@
   .statsGrid {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .analyticsGrid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -589,7 +622,7 @@
   .statsGrid {
     grid-template-columns: repeat(5, 1fr);
   }
-  
+
   .analyticsGrid {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -823,36 +856,51 @@
   .title {
     font-size: 1.5rem;
   }
-  
+
   .statsCard {
     padding: 1rem;
+    min-height: 160px;
   }
-  
+
+  .cardGrowth {
+    bottom: 0.75rem;
+    right: 0.75rem;
+    gap: 0.125rem;
+  }
+
+  .growthText {
+    font-size: 0.75rem;
+  }
+
+  .growthLabel {
+    font-size: 0.6875rem;
+  }
+
   .chartContainer {
     padding: 1rem;
   }
-  
+
   .chartLegend {
     gap: 0.5rem;
   }
-  
+
   .legendLabel {
     font-size: 0.75rem;
   }
-  
+
   .modalContent {
     max-height: 90vh;
     margin: 0.5rem;
   }
-  
+
   .pageStats {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .tooltipContent {
     padding: 0.5rem;
   }
-  
+
   .chartTooltip {
     font-size: 0.75rem;
     padding: 0.5rem;

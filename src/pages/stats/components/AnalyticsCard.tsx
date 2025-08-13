@@ -26,7 +26,7 @@ export function AnalyticsCard({
 
   const cardContent = (
     <Card
-      className={styles.analyticsCard}
+      className={`${trend?styles.analyticsCard:styles.analyticsCardShot}`}
       style={{ '--card-color': color } as any}
       hoverable={showDetails}
       onClick={showDetails ? onDetailsClick : undefined}
@@ -46,7 +46,7 @@ export function AnalyticsCard({
       </div>
 
       {trend !== undefined && (
-        <div className={styles.cardGrowth}>
+        <div className={styles.analyticsCardGrowth}>
           {trend >= 0 ? (
             <TrendingUp className={styles.trendIcon} />
           ) : (
@@ -58,7 +58,7 @@ export function AnalyticsCard({
             {trend >= 0 ? '+' : ''}
             {trend.toFixed(1)}%
           </span>
-          <span className={styles.growthLabel}>vs 昨日</span>
+          <span className={styles.analyticsGrowthLabel}>vs 昨日</span>
         </div>
       )}
 
