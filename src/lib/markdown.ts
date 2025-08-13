@@ -22,7 +22,7 @@ export interface MarkdownParseOptions {
 }
 
 export const defaultOptions: MarkdownParseOptions = {
-  breaks: false,
+  breaks: true,
   gfm: true,
   headerIds: true,
   mangle: false,
