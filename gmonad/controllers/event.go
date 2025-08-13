@@ -28,29 +28,29 @@ func CreateEvent(c *gin.Context) {
 		return
 	}
 
-	var regisDeadline time.Time
-	var err3 error
-	if req.RegistrationDeadline != "" {
-		regisDeadline, err3 = utils.ParseTime(req.RegistrationDeadline)
-	}
-	if err3 != nil {
-		utils.ErrorResponse(c, http.StatusBadRequest, "invalid args", nil)
+	var event = models.Event{
+		Title:            req.Title,
+		Description:      req.Desc,
+		EventMode:        req.EventMode,
+		EventType:        req.EventType,
+		Location:         req.Location,
+		Link:             req.Link,
+		RegistrationLink: req.RegistrationLink,
+		StartTime:        startT,
+		EndTime:          endT,
+		CoverImg:         req.CoverImg,
+		Tags:             req.Tags,
+		Twitter:          req.Twitter,
 	}
 
-	var event = models.Event{
-		Title:                req.Title,
-		Description:          req.Desc,
-		EventMode:            req.EventMode,
-		EventType:            req.EventType,
-		Location:             req.Location,
-		Link:                 req.Link,
-		RegistrationLink:     req.RegistrationLink,
-		RegistrationDeadline: &regisDeadline,
-		StartTime:            startT,
-		EndTime:              endT,
-		CoverImg:             req.CoverImg,
-		Tags:                 req.Tags,
-		Twitter:              req.Twitter,
+	if req.RegistrationDeadline != "" {
+		regisDeadline, err := utils.ParseTime(req.RegistrationDeadline)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "invalid args", nil)
+			return
+		}
+		event.RegistrationDeadline = &regisDeadline
+
 	}
 
 	uid, ok := c.Get("uid")
@@ -185,11 +185,6 @@ func UpdateEvent(c *gin.Context) {
 	startT, _ := utils.ParseTime(req.StartTime)
 	endT, _ := utils.ParseTime(req.EndTime)
 
-	var regisDeadline time.Time
-	if req.RegistrationDeadline != "" {
-		regisDeadline, _ = utils.ParseTime(req.RegistrationDeadline)
-	}
-
 	event.Title = req.Title
 	event.Description = req.Desc
 	event.EventMode = req.EventMode
@@ -202,7 +197,14 @@ func UpdateEvent(c *gin.Context) {
 	event.Tags = req.Tags
 	event.Twitter = req.Twitter
 	event.RegistrationLink = req.RegistrationLink
-	event.RegistrationDeadline = &regisDeadline
+	if req.RegistrationDeadline != "" {
+		regisDeadline, err := utils.ParseTime(req.RegistrationDeadline)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "Invalid arg", nil)
+			return
+		}
+		event.RegistrationDeadline = &regisDeadline
+	}
 
 	if err := event.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)
