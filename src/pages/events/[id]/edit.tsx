@@ -33,14 +33,14 @@ import {
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import styles from './edit.module.css';
-// import QuillEditor from '@/components/quillEditor/QuillEditor';
+import styles from './edit.module.css'; 
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getEventById, updateEvent, updateEventDraft } from '@/pages/api/event';
 import dynamic from 'next/dynamic';
 
-const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+// const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+const   VditorEditor  = dynamic(()=>import('@/components/vditorEditor/VditorEditor'), { ssr: false })
 
 type EventMode = '线上活动' | '线下活动';
 
@@ -112,8 +112,7 @@ export default function EditEventPage() {
     return `${dateStr} ${timeStr}`;
   };
 
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('description', value);
     },
@@ -284,9 +283,9 @@ export default function EditEventPage() {
                 name="description"
                 rules={[{ required: true, message: '请输入活动描述' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('description')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
             </Card>
