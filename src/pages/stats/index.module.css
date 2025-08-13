@@ -759,9 +759,13 @@
 }
 
 .pageStats {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  gap: 1rem; */
+  display: flex;
+  padding: 0 2rem 0 0;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .pageStat {
