@@ -788,6 +788,33 @@
   }
 }
 
+/* 图表 Tooltip 样式 */
+.chartTooltip {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.tooltipHeader {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tooltipColor {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .title {
     font-size: 1.5rem;
@@ -820,5 +847,11 @@
   
   .tooltipContent {
     padding: 0.5rem;
+  }
+  
+  .chartTooltip {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    min-width: 160px;
   }
 }

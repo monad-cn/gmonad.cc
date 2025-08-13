@@ -251,8 +251,28 @@ interface AnalyticsTrendChartProps {
   data: AnalyticsTrendData[];
 }
 
+interface TooltipData {
+  visible: boolean;
+  x: number;
+  y: number;
+  date: string;
+  values: {
+    pageViews: number;
+    uniquePageViews: number;
+    users: number;
+    sessions: number;
+  };
+}
+
 function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [tooltip, setTooltip] = useState<TooltipData>({
+    visible: false,
+    x: 0,
+    y: 0,
+    date: '',
+    values: { pageViews: 0, uniquePageViews: 0, users: 0, sessions: 0 }
+  });
 
   useEffect(() => {
     if (!canvasRef.current || !data || !data.length) return;
@@ -366,6 +386,56 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
     });
   }, [data]);
 
+  // 处理鼠标移动事件
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current || !data || !data.length) return;
+    
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    
+    const width = rect.width;
+    const height = rect.height;
+    const padding = 60;
+    
+    // 检查鼠标是否在图表区域内
+    if (mouseX < padding || mouseX > width - padding || 
+        mouseY < padding || mouseY > height - padding) {
+      setTooltip(prev => ({ ...prev, visible: false }));
+      return;
+    }
+    
+    // 计算最接近的数据点
+    const chartWidth = width - 2 * padding;
+    const relativeX = mouseX - padding;
+    const dataIndex = Math.round((relativeX / chartWidth) * (data.length - 1));
+    
+    if (dataIndex >= 0 && dataIndex < data.length) {
+      const dataPoint = data[dataIndex];
+      const date = new Date(dataPoint.date);
+      const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日`;
+      
+      setTooltip({
+        visible: true,
+        x: event.clientX,
+        y: event.clientY,
+        date: formattedDate,
+        values: {
+          pageViews: dataPoint.pageViews,
+          uniquePageViews: dataPoint.uniquePageViews,
+          users: dataPoint.users,
+          sessions: dataPoint.sessions
+        }
+      });
+    }
+  };
+
+  // 处理鼠标离开事件
+  const handleMouseLeave = () => {
+    setTooltip(prev => ({ ...prev, visible: false }));
+  };
+
   return (
     <div className={styles.chartContainer}>
       <div className={styles.chartHeader}>
@@ -394,7 +464,43 @@ function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
       </div>
 
       <div className={styles.chartWrapper}>
-        <canvas ref={canvasRef} className={styles.chart} />
+        <canvas 
+          ref={canvasRef} 
+          className={styles.chart}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        />
+        {tooltip.visible && (
+          <div 
+            className={styles.chartTooltip}
+            style={{
+              left: tooltip.x + 10,
+              top: tooltip.y - 10,
+              position: 'fixed',
+              zIndex: 1000
+            }}
+          >
+            <div className={styles.tooltipHeader}>{tooltip.date}</div>
+            <div className={styles.tooltipContent}>
+              <div className={styles.tooltipItem}>
+                <div className={styles.tooltipColor} style={{ backgroundColor: '#3b82f6' }}></div>
+                <span>页面浏览量: {tooltip.values.pageViews.toLocaleString()}</span>
+              </div>
+              <div className={styles.tooltipItem}>
+                <div className={styles.tooltipColor} style={{ backgroundColor: '#10b981' }}></div>
+                <span>独立页面浏览量: {tooltip.values.uniquePageViews.toLocaleString()}</span>
+              </div>
+              <div className={styles.tooltipItem}>
+                <div className={styles.tooltipColor} style={{ backgroundColor: '#f59e0b' }}></div>
+                <span>用户数: {tooltip.values.users.toLocaleString()}</span>
+              </div>
+              <div className={styles.tooltipItem}>
+                <div className={styles.tooltipColor} style={{ backgroundColor: '#ef4444' }}></div>
+                <span>会话数: {tooltip.values.sessions.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
