@@ -301,6 +301,7 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  padding-bottom: 3rem !important;
 }
 
 .analyticsCard:hover {
@@ -320,15 +321,19 @@
 }
 
 .cardDetails {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 0.4rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f3f4f6;
   color: #6b7280;
   font-size: 0.875rem;
   transition: color 0.2s;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+ 
+  
 }
 
 .analyticsCard:hover .cardDetails {
@@ -404,6 +409,9 @@
 }
 
 .cardGrowth {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;

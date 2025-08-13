@@ -174,7 +174,7 @@ function AnalyticsCard({
       {showDetails && (
         <div className={styles.cardDetails}>
           <Navigation className={styles.detailsIcon} />
-          <span>点击查看详情</span>
+          <span>查看详情</span>
         </div>
       )}
     </Card>
@@ -637,6 +637,47 @@ function PageDetailsModal({ visible, onClose, data }: PageDetailsModalProps) {
 //   ... 省略实现细节
 // }
 
+// 计算趋势数据（针对有trend数据的字段）
+function calculateTrend(
+  field: keyof AnalyticsTrendData,
+  analyticsData: AnalyticsResponse | null
+): number | undefined {
+  if (!analyticsData?.trend || analyticsData.trend.length < 2) {
+    return undefined;
+  }
+
+  const trendData = analyticsData.trend;
+  const latestData = trendData[trendData.length - 1];
+  const previousData = trendData[trendData.length - 2];
+
+  if (!latestData || !previousData) {
+    return undefined;
+  }
+
+  const currentValue = latestData[field] as number;
+  const previousValue = previousData[field] as number;
+
+  if (previousValue === 0) {
+    return currentValue > 0 ? 100 : 0;
+  }
+
+  return ((currentValue - previousValue) / previousValue) * 100;
+}
+
+// 计算仅有overview数据字段的趋势（模拟计算）
+function calculateTrendForOverviewOnly(
+  _field: keyof AnalyticsData,
+  analyticsData: AnalyticsResponse | null
+): number | undefined {
+  if (!analyticsData?.overview) {
+    return undefined;
+  }
+
+  // 对于只在overview中存在的字段，我们无法获取历史数据进行真实比较
+  // 这里返回undefined，表示不显示趋势
+  return undefined;
+}
+
 // 主要统计页面组件
 export default function StatsIndex() {
   const [data, setData] = useState<StatsResponse | null>(null);
@@ -925,6 +966,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.pageViews ?? 0}
               icon={<Eye className={styles.cardIconSvg} />}
               color="#3b82f6"
+              trend={calculateTrend('pageViews', analyticsData)}
               tooltip={createPageViewsTooltip()}
               showDetails={getPageData().length > 0}
               onDetailsClick={() => setShowPageDetails(true)}
@@ -935,6 +977,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.uniquePageViews ?? 0}
               icon={<MousePointer className={styles.cardIconSvg} />}
               color="#10b981"
+              trend={calculateTrend('uniquePageViews', analyticsData)}
               tooltip={createDeviceTooltip()}
             />
 
@@ -943,6 +986,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.users ?? 0}
               icon={<Users2 className={styles.cardIconSvg} />}
               color="#f59e0b"
+              trend={calculateTrend('users', analyticsData)}
             />
 
             <AnalyticsCard
@@ -950,6 +994,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.sessions ?? 0}
               icon={<Activity className={styles.cardIconSvg} />}
               color="#ef4444"
+              trend={calculateTrend('sessions', analyticsData)}
             />
 
             <AnalyticsCard
@@ -958,6 +1003,7 @@ export default function StatsIndex() {
               suffix="%"
               icon={<TrendingUpIcon className={styles.cardIconSvg} />}
               color="#8b5cf6"
+              trend={calculateTrendForOverviewOnly('bounceRate', analyticsData)}
             />
 
             <AnalyticsCard
@@ -968,6 +1014,7 @@ export default function StatsIndex() {
               suffix="分钟"
               icon={<Clock className={styles.cardIconSvg} />}
               color="#06b6d4"
+              trend={calculateTrendForOverviewOnly('avgSessionDuration', analyticsData)}
             />
 
             <AnalyticsCard
@@ -975,6 +1022,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.newUsers ?? 0}
               icon={<UserPlus className={styles.cardIconSvg} />}
               color="#84cc16"
+              trend={calculateTrendForOverviewOnly('newUsers', analyticsData)}
             />
 
             <AnalyticsCard
@@ -982,6 +1030,7 @@ export default function StatsIndex() {
               value={analyticsData.overview?.returningUsers ?? 0}
               icon={<UserCheck className={styles.cardIconSvg} />}
               color="#f97316"
+              trend={calculateTrendForOverviewOnly('returningUsers', analyticsData)}
             />
           </div>
         )}
