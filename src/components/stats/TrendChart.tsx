@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { TrendChartProps, TimeSeriesData } from './types';
-import styles from '../index.module.css';
+import styles from '../../pages/stats/index.module.css';
 
 export function TrendChart({ data }: TrendChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

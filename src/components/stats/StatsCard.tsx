@@ -1,6 +1,6 @@
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { StatsCardProps } from './types';
-import styles from '../index.module.css';
+import styles from '../../pages/stats/index.module.css';
 
 export function StatsCard({
   title,

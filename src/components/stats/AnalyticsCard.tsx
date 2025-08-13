@@ -1,7 +1,7 @@
 import { TrendingUp, TrendingDown, Navigation } from 'lucide-react';
 import { Tooltip, Card } from 'antd';
 import { AnalyticsCardProps } from './types';
-import styles from '../index.module.css';
+import styles from '../../pages/stats/index.module.css';
 
 export function AnalyticsCard({
   title,
@@ -79,3 +79,5 @@ export function AnalyticsCard({
     cardContent
   );
 }
+
+ 

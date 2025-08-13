@@ -1,4 +1,4 @@
-import { AnalyticsData, AnalyticsTrendData } from '../api/stats';
+import { AnalyticsData, AnalyticsTrendData } from  '../../pages/api/stats';
 
 // 统计概览数据类型
 export interface StatsOverview {
@@ -123,3 +123,4 @@ export interface TooltipData {
     sessions: number;
   };
 }
+

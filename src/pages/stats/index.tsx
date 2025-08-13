@@ -27,22 +27,16 @@ import {
   Smartphone,
   Monitor,
 } from 'lucide-react';
-import { AnalyticsCard } from './components/AnalyticsCard';
-import { StatsCard } from './components/StatsCard';
-import { AnalyticsTrendChart } from './components/AnalyticsTrendChart';
-import { TrendChart } from './components/TrendChart';
-import { PageDetailsModal } from './components/PageDetailsModal';
+import { AnalyticsCard } from '../../components/stats/AnalyticsCard';
+import { StatsCard } from '../../components/stats/StatsCard';
+import { AnalyticsTrendChart } from '../../components/stats/AnalyticsTrendChart';
+import { TrendChart } from '../../components/stats/TrendChart';
+import { PageDetailsModal } from '../../components/stats/PageDetailsModal';
 import {
   StatsResponse,
   AnalyticsResponse,
-  PageData
-} from './components/types';
-
-
-
-
-
-
+  PageData,
+} from '../../components/stats/types';
 
 // 保留CalendarPicker组件但暂时不使用
 // function CalendarPicker({ onDateRangeChange }: CalendarPickerProps) {
@@ -198,7 +192,7 @@ export default function StatsIndex() {
     if (pageData.length === 0) {
       return null; // 没有数据时不显示工具提示
     }
-    
+
     const topPages = pageData.slice(0, 3);
     return (
       <div className={styles.tooltipContent}>
@@ -222,8 +216,9 @@ export default function StatsIndex() {
   // 创建设备类型工具提示（使用API数据）
   const createDeviceTooltip = () => {
     // 检查是否有真实的设备数据
-    const hasDeviceData = analyticsData?.overview && (analyticsData as any).demographics?.devices;
-    
+    const hasDeviceData =
+      analyticsData?.overview && (analyticsData as any).demographics?.devices;
+
     if (hasDeviceData) {
       const devices = (analyticsData as any).demographics.devices;
       return (
@@ -232,21 +227,32 @@ export default function StatsIndex() {
           <div className={styles.tooltipList}>
             {devices.map((device: any, index: number) => (
               <div key={index} className={styles.tooltipItem}>
-                {device.device === 'desktop' && <Monitor className={styles.tooltipIcon} />}
-                {device.device === 'mobile' && <Smartphone className={styles.tooltipIcon} />}
-                {device.device === 'tablet' && <Activity className={styles.tooltipIcon} />}
+                {device.device === 'desktop' && (
+                  <Monitor className={styles.tooltipIcon} />
+                )}
+                {device.device === 'mobile' && (
+                  <Smartphone className={styles.tooltipIcon} />
+                )}
+                {device.device === 'tablet' && (
+                  <Activity className={styles.tooltipIcon} />
+                )}
                 <span className={styles.tooltipPath}>
-                  {device.device === 'desktop' ? '桌面端' : 
-                   device.device === 'mobile' ? '移动端' : '平板'}
+                  {device.device === 'desktop'
+                    ? '桌面端'
+                    : device.device === 'mobile'
+                      ? '移动端'
+                      : '平板'}
                 </span>
-                <span className={styles.tooltipValue}>{device.sessions.toLocaleString()}</span>
+                <span className={styles.tooltipValue}>
+                  {device.sessions.toLocaleString()}
+                </span>
               </div>
             ))}
           </div>
         </div>
       );
     }
-    
+
     return null; // 没有数据时不显示工具提示
   };
 
@@ -430,7 +436,10 @@ export default function StatsIndex() {
               suffix="分钟"
               icon={<Clock className={styles.cardIconSvg} />}
               color="#06b6d4"
-              trend={calculateTrendForOverviewOnly('avgSessionDuration', analyticsData)}
+              trend={calculateTrendForOverviewOnly(
+                'avgSessionDuration',
+                analyticsData
+              )}
             />
 
             <AnalyticsCard
@@ -446,7 +455,10 @@ export default function StatsIndex() {
               value={analyticsData.overview?.returningUsers ?? 0}
               icon={<UserCheck className={styles.cardIconSvg} />}
               color="#f97316"
-              trend={calculateTrendForOverviewOnly('returningUsers', analyticsData)}
+              trend={calculateTrendForOverviewOnly(
+                'returningUsers',
+                analyticsData
+              )}
             />
           </div>
         )}
@@ -460,11 +472,20 @@ export default function StatsIndex() {
           />
         ) : (
           showPageDetails && (
-            <div className={styles.modalOverlay} onClick={() => setShowPageDetails(false)}>
-              <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div
+              className={styles.modalOverlay}
+              onClick={() => setShowPageDetails(false)}
+            >
+              <div
+                className={styles.modalContent}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className={styles.modalHeader}>
                   <h3>页面浏览量详情</h3>
-                  <button className={styles.closeButton} onClick={() => setShowPageDetails(false)}>
+                  <button
+                    className={styles.closeButton}
+                    onClick={() => setShowPageDetails(false)}
+                  >
                     ×
                   </button>
                 </div>

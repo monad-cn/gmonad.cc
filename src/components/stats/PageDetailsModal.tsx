@@ -6,7 +6,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { PageDetailsModalProps } from './types';
-import styles from '../index.module.css';
+import styles from '../../pages/stats/index.module.css';
 
 export function PageDetailsModal({ visible, onClose, data }: PageDetailsModalProps) {
   if (!visible) return null;
