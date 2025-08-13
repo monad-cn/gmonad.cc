@@ -720,18 +720,20 @@ export default function PostsList() {
                           </div>
 
                           <div className={styles.interactionSection}>
-                            {/* 浏览量 */}
-                            <Tooltip title="浏览量" placement="top">
-                              <Button
-                                type="text"
-                                size="small"
-                                icon={<Eye size={14} />}
-                                className={styles.interactionBtn}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <span>{post.view_count?.toLocaleString()}</span>
-                              </Button>
-                            </Tooltip>
+                           {/* 浏览量 */}
+                            {post.view_count !== 0 && (
+                              <Tooltip title="浏览量" placement="top">
+                                <Button
+                                  type="text"
+                                  size="small"
+                                  icon={<Eye size={14} />}
+                                  className={`${styles.interactionBtn} ${styles.viewCount}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <span>{post.view_count?.toLocaleString()}</span>
+                                </Button>
+                              </Tooltip>
+                            )}
 
                             {/* 点赞按钮 */}
                             <Tooltip
@@ -751,7 +753,9 @@ export default function PostsList() {
                                   } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardLike(post.ID, e)}
                               >
-                                <span>{postLikeCounts.get(post.ID) ?? 0}</span>
+                                {(postLikeCounts.get(post.ID) ?? 0) > 0 && (
+                                  <span>{postLikeCounts.get(post.ID)}</span>
+                                )}
                               </Button>
                             </Tooltip>
 
@@ -773,7 +777,9 @@ export default function PostsList() {
                                   } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardBookmark(post.ID, e)}
                               >
-                                <span>{postFavoriteCounts.get(post.ID) ?? 0}</span>
+                                {(postFavoriteCounts.get(post.ID) ?? 0) > 0 && (
+                                  <span>{postFavoriteCounts.get(post.ID)}</span>
+                                )}
                               </Button>
                             </Tooltip>
                           </div>
