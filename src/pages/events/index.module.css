@@ -273,11 +273,6 @@
   color: #6b7280;
 }
 
-.resultInfo {
-  font-size: 0.875rem;
-  color: #666;
-}
-
 /* Loading */
 .loading {
   max-width: 1200px;

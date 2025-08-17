@@ -221,7 +221,16 @@ export default function BlogsPage() {
           </button>
         </div>
         <div className={styles.resultsInfo}>
-          显示 {startIndex}-{endIndex} 项，共 {total} 项
+          <Pagination
+            current={currentPage}
+            total={total}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) =>
+              `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
+            }
+            className={styles.fullPagination}
+          />
         </div>
       </div>
 
