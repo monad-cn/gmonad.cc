@@ -35,7 +35,7 @@ export function PageDetailsModal({ visible, onClose, data }: PageDetailsModalPro
                     <span>{page.pageViews.toLocaleString()}</span>
                     <span className={styles.statLabel}>浏览量</span>
                   </div>
-                  {page.bounceRate !== undefined && (
+                  {/* {page.bounceRate !== undefined && (
                     <div className={styles.pageStat}>
                       <TrendingUp className={styles.statIcon} />
                       <span>{page.bounceRate.toFixed(1)}%</span>
@@ -51,7 +51,7 @@ export function PageDetailsModal({ visible, onClose, data }: PageDetailsModalPro
                       </span>
                       <span className={styles.statLabel}>停留时间</span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))}
