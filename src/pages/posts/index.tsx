@@ -386,6 +386,36 @@ export default function PostsList() {
     // fetchPostsStats();
   };
 
+  // 详情页点赞处理函数
+  const handleDetailLike = async (postId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await handleCardLike(postId, e);
+    
+    // 同步更新 selectedPost 的计数
+    if (selectedPost && selectedPost.ID === postId) {
+      const newLikeCount = postLikeCounts.get(postId) ?? 0;
+      setSelectedPost({
+        ...selectedPost,
+        like_count: newLikeCount
+      });
+    }
+  };
+
+  // 详情页收藏处理函数
+  const handleDetailBookmark = async (postId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await handleCardBookmark(postId, e);
+    
+    // 同步更新 selectedPost 的计数
+    if (selectedPost && selectedPost.ID === postId) {
+      const newFavoriteCount = postFavoriteCounts.get(postId) ?? 0;
+      setSelectedPost({
+        ...selectedPost,
+        favorite_count: newFavoriteCount
+      });
+    }
+  };
+
   // 列表卡片点赞处理函数
   const handleCardLike = async (postId: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -737,7 +767,13 @@ export default function PostsList() {
 
                             {/* 点赞按钮 */}
                             <Tooltip
-                              title={status !== 'authenticated' ? '登录后可点赞' : '点赞'}
+                              title={
+                                status !== 'authenticated' 
+                                  ? '登录后可点赞' 
+                                  : postLikeStates.get(post.ID) 
+                                    ? '取消点赞' 
+                                    : '点赞'
+                              }
                               placement="top"
                             >
                               <Button
@@ -761,7 +797,13 @@ export default function PostsList() {
 
                             {/* 收藏按钮 */}
                             <Tooltip
-                              title={status !== 'authenticated' ? '登录后可收藏' : '收藏'}
+                              title={
+                                status !== 'authenticated' 
+                                  ? '登录后可收藏' 
+                                  : postBookmarkStates.get(post.ID) 
+                                    ? '取消收藏' 
+                                    : '收藏'
+                              }
                               placement="top"
                             >
                               <Button
@@ -810,10 +852,10 @@ export default function PostsList() {
                         <h4 className={styles.hotPostTitle}>{post.title}</h4>
                         <div className={styles.hotPostMeta}>
                           <span className={styles.hotPostAuthor}>
-                            {post.user?.username}
-                          </span>
-                          <span className={styles.hotPostViews}>
-                            {post.view_count} 浏览
+                            {post.user?.username &&
+                            post.user.username.length > 30
+                              ? `${post.user.username.slice(0, 30)}…`
+                              : post.user?.username}
                           </span>
                         </div>
                       </div>
@@ -991,32 +1033,67 @@ export default function PostsList() {
 
               {/* 帖子统计和操作 */}
               <div className={styles.postDetailFooter}>
-                {/* <div className={styles.postDetailStats}> */}
-                {/* {selectedPost.view_count !== 0 && <div className={styles.postDetailStat}>
-                    <Eye size={16} />
-                    <span>{selectedPost.view_count?.toLocaleString()} 浏览</span>
-                  </div>
-                  } */}
-                {/* <div className={styles.postDetailStat}>
-                    <ThumbsUp size={16} />
-                    <span>{selectedPost.likes || 0} 点赞</span>
-                  </div>
-                  <div className={styles.postDetailStat}>
-                    <MessageCircle size={16} />
-                    <span>12 评论</span>
-                  </div> */}
-                {/* </div> */}
-                {/* <div className={styles.postDetailActions}>
-                  <Button icon={<ThumbsUp size={16} />} className={styles.postDetailActionBtn}>
-                    点赞
-                  </Button>
-                  <Button icon={<MessageCircle size={16} />} className={styles.postDetailActionBtn}>
-                    评论
-                  </Button>
-                  <Button icon={<Share2 size={16} />} className={styles.postDetailActionBtn}>
-                    分享
-                  </Button>
-                </div> */}
+                <div className={styles.postDetailActions}>
+                  {/* 点赞按钮 */}
+                  <Tooltip
+                    title={
+                      status !== 'authenticated' 
+                        ? '登录后可点赞' 
+                        : postLikeStates.get(selectedPost.ID) 
+                          ? '取消点赞' 
+                          : '点赞'
+                    }
+                    placement="top"
+                  >
+                    <Button
+                      type="text"
+                      size="large"
+                      icon={
+                        <Heart
+                          size={16}
+                          fill={postLikeStates.get(selectedPost.ID) ? 'currentColor' : 'none'}
+                        />
+                      }
+                      className={`${styles.postDetailActionBtn} ${postLikeStates.get(selectedPost.ID) ? styles.liked : ''
+                        } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                      onClick={(e) => handleDetailLike(selectedPost.ID, e)}
+                    >
+                      {(postLikeCounts.get(selectedPost.ID) ?? 0) > 0 && (
+                        <span>{postLikeCounts.get(selectedPost.ID)}</span>
+                      )}
+                    </Button>
+                  </Tooltip>
+
+                  {/* 收藏按钮 */}
+                  <Tooltip
+                    title={
+                      status !== 'authenticated' 
+                        ? '登录后可收藏' 
+                        : postBookmarkStates.get(selectedPost.ID) 
+                          ? '取消收藏' 
+                          : '收藏'
+                    }
+                    placement="top"
+                  >
+                    <Button
+                      type="text"
+                      size="large"
+                      icon={
+                        <Bookmark
+                          size={16}
+                          fill={postBookmarkStates.get(selectedPost.ID) ? 'currentColor' : 'none'}
+                        />
+                      }
+                      className={`${styles.postDetailActionBtn} ${postBookmarkStates.get(selectedPost.ID) ? styles.bookmarked : ''
+                        } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                      onClick={(e) => handleDetailBookmark(selectedPost.ID, e)}
+                    >
+                      {(postFavoriteCounts.get(selectedPost.ID) ?? 0) > 0 && (
+                        <span>{postFavoriteCounts.get(selectedPost.ID)}</span>
+                      )}
+                    </Button>
+                  </Tooltip>
+                </div>
               </div>
             </div>
           )}

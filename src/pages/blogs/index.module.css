@@ -258,14 +258,9 @@
   box-shadow: 0 1px 3px rgba(99, 102, 241, 0.3);
 }
 
-.resultsInfo {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
 .resultInfo {
   font-size: 0.875rem;
-  color: #666;
+  color: #6b7280;
 }
 
 /* Loading */
