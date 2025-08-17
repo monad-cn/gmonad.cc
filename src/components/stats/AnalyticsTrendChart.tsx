@@ -10,7 +10,7 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
     x: 0,
     y: 0,
     date: '',
-    values: { pageViews: 0, uniquePageViews: 0, users: 0, sessions: 0 }
+    values: { pageViews: 0, users: 0, sessions: 0 }
   });
 
   useEffect(() => {
@@ -31,8 +31,8 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
 
     ctx.clearRect(0, 0, width, height);
 
-    const metrics = ['pageViews', 'uniquePageViews', 'users', 'sessions'];
-    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+    const metrics = ['pageViews', 'users', 'sessions'];
+    const colors = ['#3b82f6', '#f59e0b', '#ef4444'];
 
     const maxValues = metrics.map((metric) =>
       Math.max(
@@ -162,7 +162,6 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
         date: formattedDate,
         values: {
           pageViews: dataPoint.pageViews,
-          uniquePageViews: dataPoint.uniquePageViews,
           users: dataPoint.users,
           sessions: dataPoint.sessions
         }
@@ -181,7 +180,7 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
         <h3 className={styles.chartTitle}>运营数据趋势</h3>
 
         <div className={styles.chartLegend}>
-          {['页面浏览量', '独立页面浏览量', '用户数', '会话数'].map(
+          {['页面浏览量', '用户数', '会话数'].map(
             (label, index) => (
               <div key={label} className={styles.legendItem}>
                 <div
@@ -189,7 +188,6 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
                   style={{
                     backgroundColor: [
                       '#3b82f6',
-                      '#10b981',
                       '#f59e0b',
                       '#ef4444',
                     ][index],
@@ -224,10 +222,6 @@ export function AnalyticsTrendChart({ data }: AnalyticsTrendChartProps) {
               <div className={styles.tooltipItem}>
                 <div className={styles.tooltipColor} style={{ backgroundColor: '#3b82f6' }}></div>
                 <span>页面浏览量: {tooltip.values.pageViews.toLocaleString()}</span>
-              </div>
-              <div className={styles.tooltipItem}>
-                <div className={styles.tooltipColor} style={{ backgroundColor: '#10b981' }}></div>
-                <span>独立页面浏览量: {tooltip.values.uniquePageViews.toLocaleString()}</span>
               </div>
               <div className={styles.tooltipItem}>
                 <div className={styles.tooltipColor} style={{ backgroundColor: '#f59e0b' }}></div>

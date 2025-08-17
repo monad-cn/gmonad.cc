@@ -97,7 +97,6 @@ interface AnalyticsApiResponse {
 interface AnalyticsData {
   overview: {
     pageViews: number;
-    uniquePageViews: number;
     users: number;
     sessions: number;
     bounceRate: number;
@@ -109,7 +108,6 @@ interface AnalyticsData {
   trend: Array<{
     date: string;
     pageViews: number;
-    uniquePageViews: number;
     users: number;
     sessions: number;
     events: number;
@@ -117,7 +115,6 @@ interface AnalyticsData {
   topPages?: Array<{
     page: string;
     pageViews: number;
-    uniquePageViews: number;
   }>;
   demographics?: {
     countries: Array<{ country: string; users: number }>;
@@ -671,7 +668,7 @@ async function fetchGA4TopPages(
   startDate: string, 
   endDate: string, 
   accessToken: string
-): Promise<Array<{ page: string; pageViews: number; uniquePageViews: number }> | null> {
+): Promise<Array<{ page: string; pageViews: number }> | null> {
   try {
     // 验证propertyId防止SSRF攻击
     if (!validatePropertyId(propertyId)) {
@@ -694,7 +691,6 @@ async function fetchGA4TopPages(
       dateRanges: [{ startDate, endDate }],
       metrics: [
         { name: 'screenPageViews' },
-        { name: 'totalUsers' }, 
       ],
       dimensions: [
         { name: 'pagePath' }
@@ -727,7 +723,6 @@ async function fetchGA4TopPages(
     return data.rows.map((row: any) => ({
       page: row.dimensionValues[0].value,
       pageViews: parseInt(row.metricValues[0].value || '0'),
-      uniquePageViews: parseInt(row.metricValues[1].value || '0')
     }));
   } catch (error) {
     console.warn('Failed to fetch GA4 top pages:', error);
@@ -819,7 +814,6 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
     
     const overview = {
       pageViews: 0,
-      uniquePageViews: 0, // GA4中没有直接对应，使用screenPageViews
       users: 0,
       sessions: 0,
       bounceRate: 0,
@@ -832,7 +826,6 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
     const trend: Array<{
       date: string;
       pageViews: number;
-      uniquePageViews: number;
       users: number;
       sessions: number;
       events: number;
@@ -852,7 +845,6 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       const events = parseInt(metrics[6].value || '0');
 
       overview.pageViews += pageViews;
-      overview.uniquePageViews += pageViews; // GA4中使用相同值
       overview.users += users;
       overview.sessions += sessions;
       overview.bounceRate += bounceRate;
@@ -864,7 +856,6 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       trend.push({
         date: formatGA4Date(date),
         pageViews: pageViews,
-        uniquePageViews: pageViews, // GA4中使用相同值
         users: users,
         sessions: sessions,
         events: events,
@@ -898,7 +889,6 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
     
     const overview = {
       pageViews: 0,
-      uniquePageViews: 0,
       users: 0,
       sessions: 0,
       bounceRate: 0,
@@ -911,7 +901,6 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
     const trend: Array<{
       date: string;
       pageViews: number;
-      uniquePageViews: number;
       users: number;
       sessions: number;
       events: number;
@@ -923,12 +912,11 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       
       // 累加总览数据
       overview.pageViews += parseInt(metrics[0] || '0');
-      overview.uniquePageViews += parseInt(metrics[1] || '0');
-      overview.users += parseInt(metrics[2] || '0');
-      overview.sessions += parseInt(metrics[3] || '0');
-      overview.bounceRate += parseFloat(metrics[4] || '0');
-      overview.avgSessionDuration += parseFloat(metrics[5] || '0');
-      overview.newUsers += parseInt(metrics[6] || '0');
+      overview.users += parseInt(metrics[1] || '0');
+      overview.sessions += parseInt(metrics[2] || '0');
+      overview.bounceRate += parseFloat(metrics[3] || '0');
+      overview.avgSessionDuration += parseFloat(metrics[4] || '0');
+      overview.newUsers += parseInt(metrics[5] || '0');
       // UA 没有事件数据，设为0
       const events = 0;
       overview.events += events;
@@ -937,9 +925,8 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       trend.push({
         date: formatDate(date),
         pageViews: parseInt(metrics[0] || '0'),
-        uniquePageViews: parseInt(metrics[1] || '0'),
-        users: parseInt(metrics[2] || '0'),
-        sessions: parseInt(metrics[3] || '0'),
+        users: parseInt(metrics[1] || '0'),
+        sessions: parseInt(metrics[2] || '0'),
         events: events,
       });
     });

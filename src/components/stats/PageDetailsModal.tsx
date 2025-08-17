@@ -35,11 +35,6 @@ export function PageDetailsModal({ visible, onClose, data }: PageDetailsModalPro
                     <span>{page.pageViews.toLocaleString()}</span>
                     <span className={styles.statLabel}>浏览量</span>
                   </div>
-                  <div className={styles.pageStat}>
-                    <Users2 className={styles.statIcon} />
-                    <span>{page.uniquePageViews.toLocaleString()}</span>
-                    <span className={styles.statLabel}>独立浏览量</span>
-                  </div>
                   {page.bounceRate !== undefined && (
                     <div className={styles.pageStat}>
                       <TrendingUp className={styles.statIcon} />

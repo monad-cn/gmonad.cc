@@ -8,7 +8,6 @@ export interface ExtendedAnalyticsData {
   topPages?: Array<{
     page: string;
     pageViews: number;
-    uniquePageViews: number;
   }>;
   demographics?: {
     countries: Array<{ country: string; users: number }>;

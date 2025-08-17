@@ -113,7 +113,6 @@ export default function StatsIndex() {
       return topPages.map((page: any) => ({
         page: page.page,
         pageViews: page.pageViews,
-        uniquePageViews: page.uniquePageViews,
       }));
     }
 
