@@ -91,7 +91,7 @@ interface AnalyticsApiResponse {
   success: boolean;
   data?: AnalyticsData;
   error?: string;
-  source?: 'ga4' | 'ua' | 'mock';
+  source?: 'ga4' | 'ua';
 }
 
 interface AnalyticsData {
@@ -235,32 +235,24 @@ export default async function handler(
     
     // 验证propertyId格式，防止SSRF攻击
     if (finalPropertyId && !validatePropertyId(finalPropertyId)) {
-      console.warn('Invalid property ID format detected, using mock data for security');
-      return res.status(200).json({
-        success: true,
-        data: generateMockData(),
-        source: 'mock',
+      return res.status(400).json({
+        success: false,
         error: 'Invalid property ID format'
       });
     }
     
     // 验证日期参数，防止注入攻击
     if (!validateDateParameter(startDate) || !validateDateParameter(endDate)) {
-      console.warn('Invalid date format detected, using mock data for security');
-      return res.status(200).json({
-        success: true,
-        data: generateMockData(),
-        source: 'mock',
+      return res.status(400).json({
+        success: false,
         error: 'Invalid date format'
       });
     }
     
     if (!finalPropertyId) {
-      console.warn('No property ID provided and NEXT_PUBLIC_GA_ID not configured, using mock data');
-      return res.status(200).json({
-        success: true,
-        data: generateMockData(),
-        source: 'mock'
+      return res.status(400).json({
+        success: false,
+        error: 'No property ID provided and NEXT_PUBLIC_GA_ID not configured'
       });
     }
 
@@ -278,11 +270,9 @@ export default async function handler(
           finalPropertyId = viewId;
           console.log(`GA4_PROPERTY_ID not configured, falling back to GA_VIEW_ID: ${viewId}`);
         } else {
-          console.warn('GA4 format detected but neither GA4_PROPERTY_ID nor GA_VIEW_ID configured, using mock data');
-          return res.status(200).json({
-            success: true,
-            data: generateMockData(),
-            source: 'mock'
+          return res.status(400).json({
+            success: false,
+            error: 'GA4 format detected but neither GA4_PROPERTY_ID nor GA_VIEW_ID configured'
           });
         }
       }
@@ -291,11 +281,9 @@ export default async function handler(
     // 验证环境变量配置
     const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
     if (!serviceAccountKey) {
-      console.warn('Google service account key not configured, using mock data');
-      return res.status(200).json({
-        success: true,
-        data: generateMockData(),
-        source: 'mock'
+      return res.status(500).json({
+        success: false,
+        error: 'Google service account key not configured'
       });
     }
 
@@ -335,13 +323,11 @@ export default async function handler(
         .replace(/[a-f0-9]{32,}/gi, '[TOKEN_REMOVED]');
     };
     
-    // 如果是认证错误或API限制，返回mock数据而非错误
+    // 如果是认证错误或API限制，返回错误
     if (error?.status === 403 || error?.status === 401) {
-      return res.status(200).json({
-        success: true,
-        data: generateMockData(),
-        source: 'mock',
-        error: 'Service temporarily unavailable, using sample data'
+      return res.status(error.status).json({
+        success: false,
+        error: 'Authentication failed or access denied'
       });
     }
     
@@ -364,7 +350,7 @@ async function fetchAnalyticsData(
   endDate: string,
   customMetrics?: string[],
   customDimensions?: string[]
-): Promise<{ data: AnalyticsData; source: 'ga4' | 'ua' | 'mock' }> {
+): Promise<{ data: AnalyticsData; source: 'ga4' | 'ua' }> {
   const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   if (!serviceAccountKey) {
     throw new Error('Google service account key not configured');
@@ -394,13 +380,12 @@ async function fetchAnalyticsData(
       console.warn('UA API failed:', uaError);
     }
     
-    // 如果都失败，返回模拟数据
-    console.warn('Both GA4 and UA API failed, using mock data');
-    return { data: generateMockData(), source: 'mock' };
+    // 如果都失败，抛出错误
+    throw new Error('Both GA4 and UA API failed');
     
   } catch (error) {
     console.error('Failed to fetch analytics data:', error);
-    return { data: generateMockData(), source: 'mock' };
+    throw error;
   }
 }
 
@@ -481,7 +466,11 @@ async function fetchGA4Data(
       fetchGA4Demographics(propertyId, startDate, endDate, accessToken)
     ]);
 
-    const result = basicData.status === 'fulfilled' ? basicData.value : generateMockData();
+    if (basicData.status !== 'fulfilled') {
+      throw new Error('Failed to transform GA4 data');
+    }
+    
+    const result = basicData.value;
     
     // 合并额外数据
     if (topPages.status === 'fulfilled' && topPages.value) {
@@ -896,7 +885,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
     };
   } catch (error) {
     console.error('Error transforming GA4 data:', error);
-    return generateMockData();
+    throw error;
   }
 }
 
@@ -940,9 +929,9 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       overview.bounceRate += parseFloat(metrics[4] || '0');
       overview.avgSessionDuration += parseFloat(metrics[5] || '0');
       overview.newUsers += parseInt(metrics[6] || '0');
-      // UA 没有事件数据，使用模拟值
-      const mockEvents = parseInt(metrics[0] || '0') * 3; // 假设事件数是页面浏览量的3倍
-      overview.events += mockEvents;
+      // UA 没有事件数据，设为0
+      const events = 0;
+      overview.events += events;
 
       // 添加趋势数据
       trend.push({
@@ -951,7 +940,7 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
         uniquePageViews: parseInt(metrics[1] || '0'),
         users: parseInt(metrics[2] || '0'),
         sessions: parseInt(metrics[3] || '0'),
-        events: mockEvents,
+        events: events,
       });
     });
 
@@ -965,7 +954,7 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
     return { overview, trend };
   } catch (error) {
     console.error('Error transforming analytics data:', error);
-    return generateMockData();
+    throw error;
   }
 }
 
@@ -987,62 +976,3 @@ function formatDate(dateString: string): string {
   return dateString;
 }
 
-// 生成模拟数据
-function generateMockData(): AnalyticsData {
-  const overview = {
-    pageViews: Math.floor(Math.random() * 50000) + 20000,
-    uniquePageViews: Math.floor(Math.random() * 30000) + 15000,
-    users: Math.floor(Math.random() * 8000) + 3000,
-    sessions: Math.floor(Math.random() * 12000) + 5000,
-    bounceRate: Math.floor(Math.random() * 30) + 35,
-    avgSessionDuration: Math.floor(Math.random() * 180) + 120,
-    newUsers: Math.floor(Math.random() * 3000) + 1000,
-    returningUsers: Math.floor(Math.random() * 5000) + 2000,
-    events: Math.floor(Math.random() * 100000) + 50000,
-  };
-
-  const trend = [];
-  const today = new Date();
-  
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    
-    trend.push({
-      date: date.toISOString().split('T')[0],
-      pageViews: Math.floor(Math.random() * 8000) + 2000,
-      uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
-      users: Math.floor(Math.random() * 1200) + 400,
-      sessions: Math.floor(Math.random() * 1800) + 600,
-      events: Math.floor(Math.random() * 15000) + 5000,
-    });
-  }
-
-  // 生成模拟的热门页面数据
-  const topPages = [
-    { page: '/', pageViews: Math.floor(Math.random() * 5000) + 2000, uniquePageViews: Math.floor(Math.random() * 3000) + 1500 },
-    { page: '/blog', pageViews: Math.floor(Math.random() * 3000) + 1000, uniquePageViews: Math.floor(Math.random() * 2000) + 800 },
-    { page: '/about', pageViews: Math.floor(Math.random() * 2000) + 500, uniquePageViews: Math.floor(Math.random() * 1500) + 400 },
-    { page: '/contact', pageViews: Math.floor(Math.random() * 1500) + 300, uniquePageViews: Math.floor(Math.random() * 1000) + 250 },
-    { page: '/products', pageViews: Math.floor(Math.random() * 2500) + 800, uniquePageViews: Math.floor(Math.random() * 1800) + 600 },
-  ];
-
-  // 生成模拟的人口统计数据
-  const demographics = {
-    countries: [
-      { country: 'United States', users: Math.floor(Math.random() * 2000) + 1000 },
-      { country: 'China', users: Math.floor(Math.random() * 1500) + 800 },
-      { country: 'United Kingdom', users: Math.floor(Math.random() * 1000) + 500 },
-      { country: 'Germany', users: Math.floor(Math.random() * 800) + 400 },
-      { country: 'Japan', users: Math.floor(Math.random() * 600) + 300 },
-    ],
-    devices: [
-      { device: 'desktop', sessions: Math.floor(Math.random() * 5000) + 3000 },
-      { device: 'mobile', sessions: Math.floor(Math.random() * 7000) + 4000 },
-      { device: 'tablet', sessions: Math.floor(Math.random() * 2000) + 800 },
-    ]
-  };
-
-  console.log('Generated mock analytics data');
-  return { overview, trend, topPages, demographics };
-}

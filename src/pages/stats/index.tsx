@@ -74,7 +74,7 @@ function calculateTrend(
   return ((currentValue - previousValue) / previousValue) * 100;
 }
 
-// 计算仅有overview数据字段的趋势（模拟计算）
+// 计算仅有overview数据字段的趋势
 function calculateTrendForOverviewOnly(
   _field: keyof AnalyticsData,
   analyticsData: AnalyticsResponse | null

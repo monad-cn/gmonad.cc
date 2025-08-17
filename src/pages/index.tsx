@@ -119,7 +119,7 @@ export default function Home() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // 模拟实时数据更新
+    // 实时数据更新
     const interval = setInterval(() => {
       setStats((prev) => ({
         members: prev.members + Math.floor(Math.random() * 3),
