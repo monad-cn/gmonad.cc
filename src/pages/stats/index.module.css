@@ -759,6 +759,9 @@
 }
 
 .pageItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -775,7 +778,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  /* margin-bottom: 0.75rem; */
 }
 
 .pageIcon {
@@ -795,10 +798,10 @@
   /* display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem; */
-  display: flex;
+  /* display: flex;
   padding: 0 2rem 0 0;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end; */
 }
 
 .pageStat {

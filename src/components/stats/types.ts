@@ -65,7 +65,6 @@ export interface AnalyticsResponse {
 export interface PageData {
   page: string;
   pageViews: number;
-  uniquePageViews: number;
   bounceRate?: number;
   avgTimeOnPage?: number;
 }
@@ -118,7 +117,6 @@ export interface TooltipData {
   date: string;
   values: {
     pageViews: number;
-    uniquePageViews: number;
     users: number;
     sessions: number;
   };

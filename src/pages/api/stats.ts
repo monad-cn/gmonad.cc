@@ -44,7 +44,6 @@ export interface StatsResult {
 // Google Analytics 数据类型定义
 export interface AnalyticsData {
   pageViews: number;
-  uniquePageViews: number;
   users: number;
   sessions: number;
   bounceRate: number;
@@ -57,7 +56,6 @@ export interface AnalyticsData {
 export interface AnalyticsTrendData {
   date: string;
   pageViews: number;
-  uniquePageViews: number;
   users: number;
   sessions: number;
   events: number;
