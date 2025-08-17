@@ -61,6 +61,7 @@ export async function getAnalyticsDataFromGtag(): Promise<{
     avgSessionDuration: await getAvgSessionDuration(),
     newUsers: await getNewUsers(),
     returningUsers: await getReturningUsers(),
+    events: await getEvents(),
   };
 
   const mockTrend: AnalyticsTrendData[] = await getTrendData();
@@ -106,6 +107,10 @@ async function getReturningUsers(): Promise<number> {
   return Math.floor(Math.random() * 5000) + 2000;
 }
 
+async function getEvents(): Promise<number> {
+  return Math.floor(Math.random() * 100000) + 50000;
+}
+
 async function getTrendData(): Promise<AnalyticsTrendData[]> {
   const trend: AnalyticsTrendData[] = [];
   const today = new Date();
@@ -120,6 +125,7 @@ async function getTrendData(): Promise<AnalyticsTrendData[]> {
       uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
       users: Math.floor(Math.random() * 1200) + 400,
       sessions: Math.floor(Math.random() * 1800) + 600,
+      events: Math.floor(Math.random() * 15000) + 5000,
     });
   }
   
@@ -224,6 +230,7 @@ function generateFallbackData(): ExtendedAnalyticsData {
     avgSessionDuration: Math.floor(Math.random() * 180) + 120,
     newUsers: Math.floor(Math.random() * 3000) + 1000,
     returningUsers: Math.floor(Math.random() * 5000) + 2000,
+    events: Math.floor(Math.random() * 100000) + 50000,
   };
 
   const trend: AnalyticsTrendData[] = [];
@@ -239,6 +246,7 @@ function generateFallbackData(): ExtendedAnalyticsData {
       uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
       users: Math.floor(Math.random() * 1200) + 400,
       sessions: Math.floor(Math.random() * 1800) + 600,
+      events: Math.floor(Math.random() * 15000) + 5000,
     });
   }
 

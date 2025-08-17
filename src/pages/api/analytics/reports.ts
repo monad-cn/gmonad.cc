@@ -104,6 +104,7 @@ interface AnalyticsData {
     avgSessionDuration: number;
     newUsers: number;
     returningUsers: number;
+    events: number;
   };
   trend: Array<{
     date: string;
@@ -111,6 +112,7 @@ interface AnalyticsData {
     uniquePageViews: number;
     users: number;
     sessions: number;
+    events: number;
   }>;
   topPages?: Array<{
     page: string;
@@ -437,6 +439,7 @@ async function fetchGA4Data(
       { name: 'bounceRate' },      // GA4中的跳出率
       { name: 'averageSessionDuration' }, // GA4中的平均会话时长
       { name: 'newUsers' },        // GA4中的新用户
+      { name: 'eventCount' },      // GA4中的事件数
     ];
 
     // 默认维度
@@ -702,7 +705,7 @@ async function fetchGA4TopPages(
       dateRanges: [{ startDate, endDate }],
       metrics: [
         { name: 'screenPageViews' },
-        { name: 'totalUsers' }, // 作为uniquePageViews的近似值
+        { name: 'totalUsers' }, 
       ],
       dimensions: [
         { name: 'pagePath' }
@@ -834,6 +837,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       avgSessionDuration: 0,
       newUsers: 0,
       returningUsers: 0,
+      events: 0,
     };
 
     const trend: Array<{
@@ -842,6 +846,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       uniquePageViews: number;
       users: number;
       sessions: number;
+      events: number;
     }> = [];
 
     rows.forEach((row: any) => {
@@ -855,6 +860,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       const bounceRate = parseFloat(metrics[3].value || '0');
       const avgSessionDuration = parseFloat(metrics[4].value || '0');
       const newUsers = parseInt(metrics[5].value || '0');
+      const events = parseInt(metrics[6].value || '0');
 
       overview.pageViews += pageViews;
       overview.uniquePageViews += pageViews; // GA4中使用相同值
@@ -863,6 +869,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
       overview.bounceRate += bounceRate;
       overview.avgSessionDuration += avgSessionDuration;
       overview.newUsers += newUsers;
+      overview.events = (overview.events || 0) + events;
 
       // 添加趋势数据
       trend.push({
@@ -871,6 +878,7 @@ function transformGA4Data(apiResponse: any): AnalyticsData {
         uniquePageViews: pageViews, // GA4中使用相同值
         users: users,
         sessions: sessions,
+        events: events,
       });
     });
 
@@ -908,6 +916,7 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       avgSessionDuration: 0,
       newUsers: 0,
       returningUsers: 0,
+      events: 0,
     };
 
     const trend: Array<{
@@ -916,6 +925,7 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       uniquePageViews: number;
       users: number;
       sessions: number;
+      events: number;
     }> = [];
 
     rows.forEach((row: any) => {
@@ -930,6 +940,9 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
       overview.bounceRate += parseFloat(metrics[4] || '0');
       overview.avgSessionDuration += parseFloat(metrics[5] || '0');
       overview.newUsers += parseInt(metrics[6] || '0');
+      // UA 没有事件数据，使用模拟值
+      const mockEvents = parseInt(metrics[0] || '0') * 3; // 假设事件数是页面浏览量的3倍
+      overview.events += mockEvents;
 
       // 添加趋势数据
       trend.push({
@@ -938,6 +951,7 @@ function transformUniversalAnalyticsData(apiResponse: any): AnalyticsData {
         uniquePageViews: parseInt(metrics[1] || '0'),
         users: parseInt(metrics[2] || '0'),
         sessions: parseInt(metrics[3] || '0'),
+        events: mockEvents,
       });
     });
 
@@ -984,6 +998,7 @@ function generateMockData(): AnalyticsData {
     avgSessionDuration: Math.floor(Math.random() * 180) + 120,
     newUsers: Math.floor(Math.random() * 3000) + 1000,
     returningUsers: Math.floor(Math.random() * 5000) + 2000,
+    events: Math.floor(Math.random() * 100000) + 50000,
   };
 
   const trend = [];
@@ -999,6 +1014,7 @@ function generateMockData(): AnalyticsData {
       uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
       users: Math.floor(Math.random() * 1200) + 400,
       sessions: Math.floor(Math.random() * 1800) + 600,
+      events: Math.floor(Math.random() * 15000) + 5000,
     });
   }
 

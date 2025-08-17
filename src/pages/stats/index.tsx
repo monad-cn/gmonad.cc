@@ -395,11 +395,11 @@ export default function StatsIndex() {
             />
 
             <AnalyticsCard
-              title="独立页面浏览量"
-              value={analyticsData.overview?.uniquePageViews ?? 0}
+              title="用户交互事件数"
+              value={analyticsData.overview?.events ?? 0}
               icon={<MousePointer className={styles.cardIconSvg} />}
               color="#10b981"
-              trend={calculateTrend('uniquePageViews', analyticsData)}
+              trend={calculateTrend('events', analyticsData)}
               tooltip={createDeviceTooltip()}
             />
 

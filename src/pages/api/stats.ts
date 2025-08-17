@@ -51,6 +51,7 @@ export interface AnalyticsData {
   avgSessionDuration: number;
   newUsers: number;
   returningUsers: number;
+  events: number;
 }
 
 export interface AnalyticsTrendData {
@@ -59,6 +60,7 @@ export interface AnalyticsTrendData {
   uniquePageViews: number;
   users: number;
   sessions: number;
+  events: number;
 }
 
 export interface AnalyticsResult {
@@ -131,6 +133,7 @@ function getMockAnalyticsData(): AnalyticsResult {
     avgSessionDuration: Math.floor(Math.random() * 180) + 120, // 2-5分钟
     newUsers: Math.floor(Math.random() * 3000) + 1000,
     returningUsers: Math.floor(Math.random() * 5000) + 2000,
+    events: Math.floor(Math.random() * 100000) + 50000,
   };
 
   // 生成7天趋势数据
@@ -147,6 +150,7 @@ function getMockAnalyticsData(): AnalyticsResult {
       uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
       users: Math.floor(Math.random() * 1200) + 400,
       sessions: Math.floor(Math.random() * 1800) + 600,
+      events: Math.floor(Math.random() * 15000) + 5000,
     });
   }
 
