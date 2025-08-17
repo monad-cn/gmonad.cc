@@ -74,7 +74,7 @@ function calculateTrend(
   return ((currentValue - previousValue) / previousValue) * 100;
 }
 
-// 计算仅有overview数据字段的趋势（模拟计算）
+// 计算仅有overview数据字段的趋势
 function calculateTrendForOverviewOnly(
   _field: keyof AnalyticsData,
   analyticsData: AnalyticsResponse | null
@@ -395,11 +395,11 @@ export default function StatsIndex() {
             />
 
             <AnalyticsCard
-              title="独立页面浏览量"
-              value={analyticsData.overview?.uniquePageViews ?? 0}
+              title="用户交互事件数"
+              value={analyticsData.overview?.events ?? 0}
               icon={<MousePointer className={styles.cardIconSvg} />}
               color="#10b981"
-              trend={calculateTrend('uniquePageViews', analyticsData)}
+              trend={calculateTrend('events', analyticsData)}
               tooltip={createDeviceTooltip()}
             />
 

@@ -51,6 +51,7 @@ export interface AnalyticsData {
   avgSessionDuration: number;
   newUsers: number;
   returningUsers: number;
+  events: number;
 }
 
 export interface AnalyticsTrendData {
@@ -59,6 +60,7 @@ export interface AnalyticsTrendData {
   uniquePageViews: number;
   users: number;
   sessions: number;
+  events: number;
 }
 
 export interface AnalyticsResult {
@@ -79,8 +81,7 @@ export const getAnalyticsData = async (
     const propertyId = process.env.NEXT_PUBLIC_GA_ID;
     
     if (!propertyId) {
-      console.warn('Google Analytics ID not configured, using mock data');
-      return getMockAnalyticsData();
+      throw new Error('Google Analytics ID not configured');
     }
 
     // 调用后端API获取真实的Google Analytics数据
@@ -97,8 +98,9 @@ export const getAnalyticsData = async (
     });
 
     if (!response.ok) {
-      console.error('Analytics API request failed:', response.status);
-      return getMockAnalyticsData();
+      const errorText = await response.text();
+      console.error('Analytics API request failed:', response.status, errorText);
+      throw new Error(`Analytics API request failed: ${response.status}`);
     }
 
     const result = await response.json();
@@ -111,54 +113,14 @@ export const getAnalyticsData = async (
       };
     } else {
       console.error('Analytics API returned error:', result.error);
-      return getMockAnalyticsData();
+      throw new Error(result.error || 'Analytics API error');
     }
   } catch (error: any) {
     console.error('获取Analytics数据异常:', error);
-    // 如果API调用失败，返回模拟数据以保证用户体验
-    return getMockAnalyticsData();
+    throw error;
   }
 };
 
-// 获取模拟数据（作为fallback）
-function getMockAnalyticsData(): AnalyticsResult {
-  const mockOverview: AnalyticsData = {
-    pageViews: Math.floor(Math.random() * 50000) + 20000,
-    uniquePageViews: Math.floor(Math.random() * 30000) + 15000,
-    users: Math.floor(Math.random() * 8000) + 3000,
-    sessions: Math.floor(Math.random() * 12000) + 5000,
-    bounceRate: Math.floor(Math.random() * 30) + 35, // 35-65%
-    avgSessionDuration: Math.floor(Math.random() * 180) + 120, // 2-5分钟
-    newUsers: Math.floor(Math.random() * 3000) + 1000,
-    returningUsers: Math.floor(Math.random() * 5000) + 2000,
-  };
-
-  // 生成7天趋势数据
-  const mockTrend: AnalyticsTrendData[] = [];
-  const today = new Date();
-  
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    
-    mockTrend.push({
-      date: date.toISOString().split('T')[0],
-      pageViews: Math.floor(Math.random() * 8000) + 2000,
-      uniquePageViews: Math.floor(Math.random() * 5000) + 1500,
-      users: Math.floor(Math.random() * 1200) + 400,
-      sessions: Math.floor(Math.random() * 1800) + 600,
-    });
-  }
-
-  return {
-    success: true,
-    message: '获取运营数据成功（模拟数据）',
-    data: {
-      overview: mockOverview,
-      trend: mockTrend,
-    },
-  };
-}
 
 // 获取统计概览
 export const getStatsOverview = async (): Promise<StatsResult> => {
