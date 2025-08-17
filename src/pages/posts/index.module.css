@@ -541,10 +541,11 @@
 
 .hotPostAuthor {
     color: #8b5cf6;
-}
-
-.hotPostViews {
-    color: #6b7280;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 

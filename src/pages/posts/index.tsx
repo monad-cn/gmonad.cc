@@ -852,10 +852,10 @@ export default function PostsList() {
                         <h4 className={styles.hotPostTitle}>{post.title}</h4>
                         <div className={styles.hotPostMeta}>
                           <span className={styles.hotPostAuthor}>
-                            {post.user?.username}
-                          </span>
-                          <span className={styles.hotPostViews}>
-                            {post.view_count} 浏览
+                            {post.user?.username &&
+                            post.user.username.length > 30
+                              ? `${post.user.username.slice(0, 30)}…`
+                              : post.user?.username}
                           </span>
                         </div>
                       </div>
