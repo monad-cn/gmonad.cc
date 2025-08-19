@@ -1,5 +1,5 @@
 /* marked解析markdown文档，外包裹器样式 */
-@import url(./markedContainer.css); 
+@import url(./markedContainer.css);
 
 :root {
   --background: #ffffff;
@@ -7,13 +7,27 @@
   --primary: #6e54ff;
   --primary-light: #6366f1;
   --primary-dark: #4338ca;
+  --selection-bg: rgba(110, 84, 255, 0.2);
+  --selection-color: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --selection-bg: rgba(99, 102, 241, 0.4);
+    --selection-color: #ffffff;
   }
+}
+
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-color);
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-color);
 }
 
 html,
@@ -46,8 +60,6 @@ a {
   }
 }
 
-
-
 .ql-container {
   min-height: 150px;
 }
@@ -62,18 +74,15 @@ a {
 }
 
 /* 处理vditor编辑器全屏层级低于header头 */
-.vditor--fullscreen{
-  z-index: 1110!important; 
+.vditor--fullscreen {
+  z-index: 1110 !important;
 }
 
 /* 配合浮动导航栏加一个上内边距样式类 */
 .nav-t-top {
-  padding-top: 6rem!important;
+  padding-top: 6rem !important;
 }
 
-.nav-t-top > ._id__header__HaQyS{
-  border-bottom: none!important;
+.nav-t-top > ._id__header__HaQyS {
+  border-bottom: none !important;
 }
-
-
- 
