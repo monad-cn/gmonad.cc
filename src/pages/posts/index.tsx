@@ -926,44 +926,6 @@ export default function PostsList() {
                 )}
               </div>
             </div>
-
-<<<<<<< Updated upstream
-            <div className={styles.sidebar}>
-              {/* 热门帖子 */}
-              <Card className={styles.sidebarCard}>
-                <div className={styles.sidebarHeader}>
-                  <TrendingUp className={styles.sidebarIcon} />
-                  <h3 className={styles.sidebarTitle}>热门帖子</h3>
-                </div>
-                <div className={styles.hotPosts}>
-                  {(postsStats?.weekly_hot_posts ?? []).map((post, index) => (
-                    <div
-                      key={post.ID}
-                      className={styles.hotPostItem}
-                      onClick={() => handlePostClick(post)}
-                    >
-                      <div className={styles.hotPostRank}>{index + 1}</div>
-                      <div className={styles.hotPostContent}>
-                        <h4 className={styles.hotPostTitle}>{post.title}</h4>
-                        <div className={styles.hotPostMeta}>
-                          <span className={styles.hotPostAuthor}>
-                            {post.user?.username &&
-                            post.user.username.length > 30
-                              ? `${post.user.username.slice(0, 30)}…`
-                              : post.user?.username}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {(postsStats?.weekly_hot_posts?.length ?? 0) === 0 && (
-                    <Empty description="暂无热门帖子" />
-                  )}
-                </div>
-              </Card>
-=======
->>>>>>> Stashed changes
-
           </div>
 
           <div className={styles.listBottomControls}>
