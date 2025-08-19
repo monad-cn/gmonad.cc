@@ -144,7 +144,7 @@
 
 .mainLayout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr 3fr;
     gap: 2rem;
     align-items: start;
 }
@@ -549,6 +549,10 @@
 }
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 /* 活跃用户 */
 .activeUsers {
@@ -1079,6 +1083,3 @@
         min-width: auto;
     }
 }
-
-
-
