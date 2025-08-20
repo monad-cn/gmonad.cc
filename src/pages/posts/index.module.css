@@ -257,6 +257,12 @@
     overflow: hidden;
 }
 
+.postDescription a {
+  pointer-events: none; 
+  color: #8b5cf6;        
+  cursor: default;       
+}
+
 .postFooter {
     display: flex;
     justify-content: space-between;

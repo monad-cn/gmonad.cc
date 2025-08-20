@@ -839,13 +839,13 @@ export default function PostsList() {
                         <h3 className={styles.postTitle}>{post.title}</h3>
 
                         {/* 帖子描述 */}
-                        <p className={styles.postDescription}>
+                        <div className={styles.postDescription}>
                           <div
                             dangerouslySetInnerHTML={{
                               __html: parseMd(post.description),
                             }}
                           />
-                        </p>
+                        </div>
 
 
                         {/* 帖子底部：标签和互动数据 */}
