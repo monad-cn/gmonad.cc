@@ -391,6 +391,7 @@ export default function StatsIndex() {
               tooltip={createPageViewsTooltip()}
               showDetails={getPageData().length > 0}
               onDetailsClick={() => setShowPageDetails(true)}
+              description="GA4中的Views指标，统计网站页面或应用屏幕被查看的总次数。包括同一用户的多次重复查看，如用户刷新99次页面将产生100次页面浏览量。是GA4中衡量内容参与度的重要指标。"
             />
 
             <AnalyticsCard
@@ -400,6 +401,7 @@ export default function StatsIndex() {
               color="#10b981"
               trend={calculateTrend('events', analyticsData)}
               tooltip={createDeviceTooltip()}
+              description="GA4中的事件指标，统计用户在网站或应用上触发的所有交互事件总数。包括点击链接、视频播放、表单提交等用户指定的交互行为。表示用户的活跃参与程度和内容交互效果。"
             />
 
             <AnalyticsCard
@@ -408,6 +410,7 @@ export default function StatsIndex() {
               icon={<Users2 className={styles.cardIconSvg} />}
               color="#f59e0b"
               trend={calculateTrend('users', analyticsData)}
+              description="GA4中的活跃用户指标，通过统计估算独特会话 ID 数量来衡量在指定时间段内访问过网站或应用的不同用户数。同一用户的多次访问只计算为一个用户，反映真实受众规模。"
             />
 
             <AnalyticsCard
@@ -416,6 +419,7 @@ export default function StatsIndex() {
               icon={<Activity className={styles.cardIconSvg} />}
               color="#ef4444"
               trend={calculateTrend('sessions', analyticsData)}
+              description="GA4中的会话指标，表示用户与网站或应用交互的时间段总数。会话从用户启动活动（如查看页面）开始，在30分钟无活动后超时。通过session_start事件自动记录，反映用户访问频率。"
             />
 
             <AnalyticsCard
@@ -425,6 +429,7 @@ export default function StatsIndex() {
               icon={<TrendingUpIcon className={styles.cardIconSvg} />}
               color="#8b5cf6"
               trend={calculateTrendForOverviewOnly('bounceRate', analyticsData)}
+              description="GA4中的跳出率指标，计算非参与度会话的百分比，即参与度的反面。非参与会话指持续时间低于10秒、只有一个页面查看且未触发关键事件的会话。低跳出率表示高参与度。"
             />
 
             <AnalyticsCard
@@ -439,6 +444,7 @@ export default function StatsIndex() {
                 'avgSessionDuration',
                 analyticsData
               )}
+              description="GA4中的平均会话时长指标，计算所有参与度会话的总持续时间（秒）除以总会话数。只统计持续至少10秒的参与度会话，排除短暂访问干扰，更准确反映用户真实参与程度。"
             />
 
             <AnalyticsCard
@@ -447,6 +453,7 @@ export default function StatsIndex() {
               icon={<UserPlus className={styles.cardIconSvg} />}
               color="#84cc16"
               trend={calculateTrendForOverviewOnly('newUsers', analyticsData)}
+              description="GA4中的新用户指标，计算首次访问网站或应用的用户数量。通过first_visit和first_open事件识别，反映网站的用户获取能力和市场推广效果。是衡量业务增长和受众拓展的关键指标。"
             />
 
             <AnalyticsCard
@@ -458,6 +465,7 @@ export default function StatsIndex() {
                 'returningUsers',
                 analyticsData
               )}
+              description="GA4中的回访用户指标，计算之前访问过并再次访问的用户数量。在Sessions per User指标中反映为用户平均会话数，表示用户返回频率和内容参与深度。高回访率表明网站粘性和用户忠诚度。"
             />
           </div>
         )}

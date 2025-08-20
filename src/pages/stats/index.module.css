@@ -382,11 +382,27 @@
   color: #fff;
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .cardTitle {
   font-size: 1.125rem;
   font-weight: 600;
   color: #111827;
   margin: 0;
+}
+
+.infoIcon {
+  color: #6b7280;
+  cursor: help;
+  transition: color 0.2s ease;
+}
+
+.infoIcon:hover {
+  color: #374151;
 }
 
 .cardTotal {

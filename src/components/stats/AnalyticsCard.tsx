@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Navigation } from 'lucide-react';
+import { TrendingUp, TrendingDown, Navigation, Info } from 'lucide-react';
 import { Tooltip, Card } from 'antd';
 import { AnalyticsCardProps } from './types';
 import styles from '../../pages/stats/index.module.css';
@@ -11,6 +11,7 @@ export function AnalyticsCard({
   color,
   trend,
   tooltip,
+  description,
   showDetails = false,
   onDetailsClick,
 }: AnalyticsCardProps) {
@@ -35,7 +36,14 @@ export function AnalyticsCard({
         <div className={styles.cardIcon} style={{ backgroundColor: color }}>
           {icon}
         </div>
-        <h3 className={styles.cardTitle}>{title}</h3>
+        <div className={styles.titleContainer}>
+          <h3 className={styles.cardTitle}>{title}</h3>
+          {description && (
+            <Tooltip title={description} placement="top">
+              <Info className={styles.infoIcon} size={14} />
+            </Tooltip>
+          )}
+        </div>
       </div>
 
       <div className={styles.cardTotal}>

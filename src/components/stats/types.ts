@@ -78,6 +78,7 @@ export interface AnalyticsCardProps {
   color: string;
   trend?: number;
   tooltip?: React.ReactNode;
+  description?: string;
   showDetails?: boolean;
   onDetailsClick?: () => void;
 }
