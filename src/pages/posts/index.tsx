@@ -57,9 +57,24 @@ import VditorEditor from '@/components/vditorEditor';
 import { parseMarkdown } from '@/lib/markdown';
 import { useAuth } from '@/contexts/AuthContext';
 // 接口请求已封装在 ../api/post
+import { marked } from "marked"
+import DOMPurify from "dompurify"
+
+// 配置 marked
+marked.setOptions({
+  breaks: true, // 换行
+  gfm: true,    // GitHub 风格 Markdown
+})
+
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+
+export function parseMd(markdown: string): string {
+  const rawHtml = marked.parse(markdown || "") as string
+  return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ["img"] })
+}
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();
@@ -390,7 +405,7 @@ export default function PostsList() {
   const handleDetailLike = async (postId: number, e: React.MouseEvent) => {
     e.stopPropagation();
     await handleCardLike(postId, e);
-    
+
     // 同步更新 selectedPost 的计数
     if (selectedPost && selectedPost.ID === postId) {
       const newLikeCount = postLikeCounts.get(postId) ?? 0;
@@ -405,7 +420,7 @@ export default function PostsList() {
   const handleDetailBookmark = async (postId: number, e: React.MouseEvent) => {
     e.stopPropagation();
     await handleCardBookmark(postId, e);
-    
+
     // 同步更新 selectedPost 的计数
     if (selectedPost && selectedPost.ID === postId) {
       const newFavoriteCount = postFavoriteCounts.get(postId) ?? 0;
@@ -825,8 +840,13 @@ export default function PostsList() {
 
                         {/* 帖子描述 */}
                         <p className={styles.postDescription}>
-                          {post.description}
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: parseMd(post.description),
+                            }}
+                          />
                         </p>
+
 
                         {/* 帖子底部：标签和互动数据 */}
                         <div className={styles.postFooter}>
@@ -844,7 +864,7 @@ export default function PostsList() {
                           </div>
 
                           <div className={styles.interactionSection}>
-                           {/* 浏览量 */}
+                            {/* 浏览量 */}
                             {post.view_count !== 0 && (
                               <Tooltip title="浏览量" placement="top">
                                 <Button
@@ -862,10 +882,10 @@ export default function PostsList() {
                             {/* 点赞按钮 */}
                             <Tooltip
                               title={
-                                status !== 'authenticated' 
-                                  ? '登录后可点赞' 
-                                  : postLikeStates.get(post.ID) 
-                                    ? '取消点赞' 
+                                status !== 'authenticated'
+                                  ? '登录后可点赞'
+                                  : postLikeStates.get(post.ID)
+                                    ? '取消点赞'
                                     : '点赞'
                               }
                               placement="top"
@@ -892,10 +912,10 @@ export default function PostsList() {
                             {/* 收藏按钮 */}
                             <Tooltip
                               title={
-                                status !== 'authenticated' 
-                                  ? '登录后可收藏' 
-                                  : postBookmarkStates.get(post.ID) 
-                                    ? '取消收藏' 
+                                status !== 'authenticated'
+                                  ? '登录后可收藏'
+                                  : postBookmarkStates.get(post.ID)
+                                    ? '取消收藏'
                                     : '收藏'
                               }
                               placement="top"
@@ -1036,10 +1056,10 @@ export default function PostsList() {
                   {/* 点赞按钮 */}
                   <Tooltip
                     title={
-                      status !== 'authenticated' 
-                        ? '登录后可点赞' 
-                        : postLikeStates.get(selectedPost.ID) 
-                          ? '取消点赞' 
+                      status !== 'authenticated'
+                        ? '登录后可点赞'
+                        : postLikeStates.get(selectedPost.ID)
+                          ? '取消点赞'
                           : '点赞'
                     }
                     placement="top"
@@ -1066,10 +1086,10 @@ export default function PostsList() {
                   {/* 收藏按钮 */}
                   <Tooltip
                     title={
-                      status !== 'authenticated' 
-                        ? '登录后可收藏' 
-                        : postBookmarkStates.get(selectedPost.ID) 
-                          ? '取消收藏' 
+                      status !== 'authenticated'
+                        ? '登录后可收藏'
+                        : postBookmarkStates.get(selectedPost.ID)
+                          ? '取消收藏'
                           : '收藏'
                     }
                     placement="top"
@@ -1118,31 +1138,6 @@ export default function PostsList() {
             className={styles.createForm}
           >
             <Form.Item
-              name="title"
-              label="标题"
-              rules={[
-                { required: true, message: '请输入帖子标题' },
-                { max: 100, message: '标题不能超过100个字符' },
-              ]}
-            >
-              <Input placeholder="输入帖子标题..." size="large" />
-            </Form.Item>
-
-            <Form.Item
-              name="description"
-              label="内容描述"
-              rules={[
-                { required: true, message: '请输入帖子内容' },
-                { min: 100, message: '内容至少需要100个字符' },
-                { max: 2000, message: '内容不能超过2000个字符' },
-              ]}
-            >
-              <VditorEditor
-                value={form.getFieldValue('description')}
-                onChange={handleVditorEditorChange}
-              />
-            </Form.Item>
-            <Form.Item
               name="twitter"
               label="推文链接"
               rules={[
@@ -1153,6 +1148,31 @@ export default function PostsList() {
               ]}
             >
               <Input placeholder="输入推文链接" size="large" />
+            </Form.Item>
+            <Form.Item
+              name="title"
+              label="标题（推文标题）"
+              rules={[
+                { required: true, message: '请输入帖子标题' },
+                { max: 100, message: '标题不能超过100个字符' },
+              ]}
+            >
+              <Input placeholder="输入帖子标题..." size="large" />
+            </Form.Item>
+
+            <Form.Item
+              name="description"
+              label="内容描述（推文内容）"
+              rules={[
+                { required: true, message: '请输入帖子内容' },
+                { min: 100, message: '内容至少需要100个字符' },
+                { max: 3000, message: '内容不能超过3000个字符' },
+              ]}
+            >
+              <VditorEditor
+                value={form.getFieldValue('description')}
+                onChange={handleVditorEditorChange}
+              />
             </Form.Item>
             <Form.Item label="标签">
               <div className={styles.tagsContainer}>

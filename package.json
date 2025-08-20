@@ -13,6 +13,7 @@
     "antd": "^5.25.4",
     "cloudinary": "^2.6.1",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.6",
     "gray-matter": "^4.0.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.513.0",
