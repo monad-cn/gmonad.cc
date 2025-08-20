@@ -197,7 +197,53 @@ export default function EventDetailPage() {
     };
   };
 
+  const formatDateTimeRange = (startTime: string, endTime: string) => {
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    
+    // 检查是否跨天
+    const startDay = startDate.toDateString();
+    const endDay = endDate.toDateString();
+    const isSameDay = startDay === endDay;
+    
+    if (isSameDay) {
+      // 同一天：显示日期和时间范围
+      return {
+        date: startDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long',
+        }),
+        timeRange: `${startDate.toLocaleTimeString('zh-CN', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })} - ${endDate.toLocaleTimeString('zh-CN', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })}`,
+        isSameDay: true
+      };
+    } else {
+      // 跨天：只显示日期范围
+      return {
+        date: `${startDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })} - ${endDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}`,
+        timeRange: '',
+        isSameDay: false
+      };
+    }
+  };
+
   const eventStatus = getEventStatus();
+  const dateTimeRange = formatDateTimeRange(event.start_time, event.end_time);
   const startDateTime = formatDateTime(event.start_time);
   const endDateTime = formatDateTime(event.end_time);
 
@@ -261,10 +307,12 @@ export default function EventDetailPage() {
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
                 <div>
-                  <div className={styles.metaText}>{startDateTime.date}</div>
-                  <div className={styles.metaSubtext}>
-                    {startDateTime.time} - {endDateTime.time}
-                  </div>
+                  <div className={styles.metaText}>{dateTimeRange.date}</div>
+                  {dateTimeRange.timeRange && (
+                    <div className={styles.metaSubtext}>
+                      {dateTimeRange.timeRange}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={styles.metaItem}>
