@@ -205,7 +205,7 @@ export default function BlogDetailPage() {
 
       <div className={styles.main}>
         <div className="marked-paper">
-          <h2 className={styles.sectionTitle}>{blog.title}</h2>
+          {/* <h2 className={styles.sectionTitle}>{blog.title}</h2> */}
           <div
             className="prose"
             dangerouslySetInnerHTML={{ __html: blogContent }}
