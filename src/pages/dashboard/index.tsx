@@ -12,7 +12,10 @@ import {
   Pagination,
   Button,
   Popconfirm,
-  App as AntdApp
+  App as AntdApp,
+  Modal,
+  Form,
+  Input
 } from 'antd';
 import { BookOpen, FileText, Eye, Clock, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -20,24 +23,27 @@ import dayjs from 'dayjs';
 import styles from './index.module.css';
 import { deleteBlog, getBlogs } from '../api/blog';
 import { deleteTutorial, getTutorials } from '../api/tutorial';
+import { deletePost, getPosts, updatePost } from '../api/post';
 import { useAuth } from '@/contexts/AuthContext';
 import AvatarEdit from '@/components/settings/AvatarEdit';
 import NicknameEdit from '@/components/settings/NicknameEdit';
-import { updateUser, User } from '../api/user';
+import { updateUser } from '../api/user';
 import { useSession } from 'next-auth/react';
 
 
 const { Title, Text } = Typography;
 
-type ActiveTab = 'blogs' | 'tutorials';
+type ActiveTab = 'blogs' | 'tutorials' | 'posts';
 
 export default function DashboardPage() {
   const { message } = AntdApp.useApp();
   const [activeTab, setActiveTab] = useState<ActiveTab>('blogs');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [tutorials, setTutorials] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [tutorialsLoading, setTutorialsLoading] = useState(false);
+  const [postsLoading, setPostsLoading] = useState(false);
   const [blogsPagination, setBlogsPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -48,6 +54,15 @@ export default function DashboardPage() {
     pageSize: 10,
     total: 0,
   });
+  const [postsPagination, setPostsPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+  const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
+  const [postForm] = Form.useForm();
+  const [postTags, setPostTags] = useState<string[]>([]);
   const { session } = useAuth();
   const { update } = useSession();
 
@@ -103,10 +118,36 @@ export default function DashboardPage() {
     }
   };
 
+  const loadPosts = async (page = 1, pageSize = 10) => {
+    try {
+      setPostsLoading(true);
+      const result = await getPosts({
+        page,
+        page_size: pageSize,
+        user_id: session?.user?.uid as unknown as number,
+        order: 'desc',
+      });
+      if (result.success && result.data) {
+        setPosts(result.data.posts || []);
+        setPostsPagination({
+          current: result.data.page || 1,
+          pageSize: result.data.page_size || pageSize,
+          total: result.data.total || 0,
+        });
+      }
+    } catch (error) {
+      console.error('加载帖子列表失败:', error);
+      setPosts([]);
+    } finally {
+      setPostsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (session?.user?.uid) {
       loadBlogs();
       loadTutorials();
+      loadPosts();
     }
   }, [session]);
 
@@ -127,6 +168,11 @@ export default function DashboardPage() {
       key: 'tutorials',
       icon: <BookOpen className={styles.menuIcon} />,
       label: '我的教程',
+    },
+    {
+      key: 'posts',
+      icon: <FileText className={styles.menuIcon} />,
+      label: '我的帖子',
     },
   ];
 
@@ -223,6 +269,64 @@ export default function DashboardPage() {
     } catch (error) {
       message.error('删除失败，请重试');
     }
+  };
+
+  const handleDeletePost = async (id: number) => {
+    try {
+      const result = await deletePost(id);
+      if (result.success) {
+        message.success("帖子删除成功！");
+        loadPosts();
+      } else {
+        message.error('删除出错');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  };
+
+  const handleEditPost = (post: any) => {
+    setEditingPost(post);
+    setIsEditPostModalVisible(true);
+    postForm.setFieldsValue({
+      title: post.title,
+      description: post.description,
+      twitter: post.twitter || '',
+    });
+    setPostTags(post.tags || []);
+  };
+
+  const handleUpdatePost = async (values: any) => {
+    try {
+      if (!editingPost) return;
+
+      const result = await updatePost(editingPost.ID.toString(), {
+        title: values.title,
+        description: values.description,
+        tags: postTags,
+        twitter: values.twitter || '',
+      });
+
+      if (result.success) {
+        message.success("帖子更新成功！");
+        setIsEditPostModalVisible(false);
+        setEditingPost(null);
+        postForm.resetFields();
+        setPostTags([]);
+        loadPosts();
+      } else {
+        message.error(result.message || '更新失败');
+      }
+    } catch (error) {
+      message.error('更新失败，请重试');
+    }
+  };
+
+  const handleCancelEditPost = () => {
+    setIsEditPostModalVisible(false);
+    setEditingPost(null);
+    postForm.resetFields();
+    setPostTags([]);
   };
 
   if (!session) {
@@ -466,6 +570,106 @@ export default function DashboardPage() {
         </Card>
       );
     }
+
+    if (activeTab === 'posts') {
+      return (
+        <Card className={styles.contentCard}>
+          <div className={styles.cardHeader}>
+            <Title level={3} className={styles.cardTitle}>
+              <FileText className={styles.cardIcon} />
+              我的帖子
+            </Title>
+          </div>
+          <Divider />
+          <List
+            loading={postsLoading}
+            dataSource={posts}
+            renderItem={(post) => (
+              <List.Item
+                key={post.ID}
+                className={styles.listItem}
+                actions={[
+                  <div className={styles.itemMeta}>
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<Edit size={16} />}
+                      title="编辑帖子"
+                      className={styles.metaBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditPost(post);
+                      }}
+                    />
+                    <Popconfirm
+                      title="删除帖子"
+                      description="你确定删除这个帖子吗？"
+                      okText="是"
+                      cancelText="否"
+                      onConfirm={() => handleDeletePost(post.ID)}
+                    >
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        icon={<Trash2 size={16} />}
+                        title="删除帖子"
+                        className={styles.metaBtn}
+                      />
+                    </Popconfirm>
+                  </div>
+                ]}
+              >
+                <div className={styles.itemContent}>
+                  <div className={styles.itemMain}>
+                    <div className={styles.titleRow}>
+                      <Link
+                        href={`/posts`}
+                        className={styles.itemTitle}
+                        title="查看帖子详情"
+                      >
+                        {post.title}
+                      </Link>
+                    </div>
+                    <Text type="secondary" className={styles.itemDesc}>
+                      {post.description}
+                    </Text>
+                    <div className={styles.itemFooter}>
+                      <Space>
+                        {post.tags?.slice(0, 3).map((tag: string) => (
+                          <Tag key={tag} className={styles.itemTag}>
+                            {tag}
+                          </Tag>
+                        ))}
+                        <Clock size={14} className={styles.itemClock} />
+                        <span>
+                          {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:MM')}
+                        </span>
+                        <Eye size={16} className={styles.itemClock} />
+                        <span>{post.view_count || 0}</span>
+                      </Space>
+                    </div>
+                  </div>
+                </div>
+              </List.Item>
+            )}
+          />
+          <div className={styles.bottomPagination}>
+            <Pagination
+              current={postsPagination.current}
+              total={postsPagination.total}
+              pageSize={postsPagination.pageSize}
+              onChange={(page, pageSize) => loadPosts(page, pageSize)}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total, range) =>
+                `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
+              }
+            />
+          </div>
+        </Card>
+      );
+    }
   };
 
   return (
@@ -515,6 +719,85 @@ export default function DashboardPage() {
           </Col>
         </Row>
       </div>
+
+      {/* 编辑帖子Modal */}
+      <Modal
+        title="编辑帖子"
+        open={isEditPostModalVisible}
+        onCancel={handleCancelEditPost}
+        footer={null}
+        width={800}
+      >
+        <Form
+          form={postForm}
+          layout="vertical"
+          onFinish={handleUpdatePost}
+        >
+          <Form.Item
+            name="title"
+            label="标题"
+            rules={[{ required: true, message: '请输入帖子标题' }]}
+          >
+            <Input placeholder="请输入帖子标题" />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            label="内容"
+            rules={[{ required: true, message: '请输入帖子内容' }]}
+          >
+            <Input.TextArea
+              rows={8}
+              placeholder="请输入帖子内容"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="twitter"
+            label="Twitter链接"
+          >
+            <Input placeholder="请输入Twitter链接（可选）" />
+          </Form.Item>
+
+          <Form.Item label="标签">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+              {postTags.map((tag, index) => (
+                <Tag
+                  key={index}
+                  closable
+                  onClose={() => {
+                    const newTags = postTags.filter((_, i) => i !== index);
+                    setPostTags(newTags);
+                  }}
+                >
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+            <Input
+              placeholder="输入标签后按回车添加"
+              onPressEnter={(e) => {
+                const value = (e.target as HTMLInputElement).value.trim();
+                if (value && !postTags.includes(value)) {
+                  setPostTags([...postTags, value]);
+                  (e.target as HTMLInputElement).value = '';
+                }
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <Button onClick={handleCancelEditPost}>
+                取消
+              </Button>
+              <Button type="primary" htmlType="submit">
+                更新帖子
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
