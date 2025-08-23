@@ -29,6 +29,8 @@ export default function PostFilters({
   onDateRangeChange,
   onReset,
 }: PostFiltersProps) {
+  const safeDateRange = dateRange || [null, null];
+
   return (
     <Card className={styles.filtersCard}>
       <div className={styles.filters}>
@@ -52,14 +54,14 @@ export default function PostFilters({
                   size="small"
                   color="primary"
                   variant="filled"
-                  dateRange={dateRange}
+                  dateRange={safeDateRange}
                   handleDateRangeChange={onDateRangeChange}
                   label="今天"
                   dates={[dayjs(), dayjs()]}
                   active={
-                    dateRange?.[0]?.format('YYYY-MM-DD') ===
+                    safeDateRange[0]?.format('YYYY-MM-DD') ===
                       dayjs().format('YYYY-MM-DD') &&
-                    dateRange?.[1]?.format('YYYY-MM-DD') ===
+                    safeDateRange[1]?.format('YYYY-MM-DD') ===
                       dayjs().format('YYYY-MM-DD')
                   }
                 />
@@ -67,14 +69,14 @@ export default function PostFilters({
                   size="small"
                   color="primary"
                   variant="filled"
-                  dateRange={dateRange}
+                  dateRange={safeDateRange}
                   handleDateRangeChange={onDateRangeChange}
                   label="近一周"
                   dates={[dayjs().subtract(1, 'week'), dayjs()]}
                   active={
-                    dateRange[0]?.format('YYYY-MM-DD') ===
+                    safeDateRange[0]?.format('YYYY-MM-DD') ===
                       dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
-                    dateRange[1]?.format('YYYY-MM-DD') ===
+                    safeDateRange[1]?.format('YYYY-MM-DD') ===
                       dayjs().format('YYYY-MM-DD')
                   }
                 />
@@ -82,16 +84,16 @@ export default function PostFilters({
                   size="small"
                   color="default"
                   variant="filled"
-                  dateRange={dateRange}
+                  dateRange={safeDateRange}
                   handleDateRangeChange={onDateRangeChange}
                   label="全部"
                   dates={[null, null]}
-                  active={!dateRange[0] && !dateRange[1]}
+                  active={!safeDateRange[0] && !safeDateRange[1]}
                 />
               </>
             }
             placeholder={['开始日期', '结束日期']}
-            value={dateRange}
+            value={safeDateRange}
             onChange={onDateRangeChange}
             className={styles.dateRangePicker}
             size="large"
