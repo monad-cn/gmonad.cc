@@ -54,3 +54,10 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* SVG 图片样式处理 TODO 目前处理X复制粘贴后，svg图问题*/
+.editor img[src$=".svg"] {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block !important;
+}
