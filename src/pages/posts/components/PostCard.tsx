@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { PostType } from '@/types/posts';
 import styles from '../index.module.css';
 import { marked } from 'marked';
-import DOMPurify from "dompurify"
+import DOMPurify from 'dompurify';
 
 interface PostCardProps {
   post: PostType;
@@ -43,6 +43,11 @@ export default function PostCard({
   onEdit,
   onDelete,
 }: PostCardProps) {
+  const user =
+    (post.user as { username?: string; name?: string; avatar?: string }) || {};
+  const userName = user.username || user.name || '未知用户';
+  const userAvatar = user.avatar || '/placeholder.svg';
+
   return (
     <Card className={styles.postCard} onClick={() => onPostClick(post)}>
       <div className={styles.postContent}>
@@ -50,14 +55,14 @@ export default function PostCard({
         <div className={styles.postHeader}>
           <div className={styles.authorSection}>
             <Image
-              src={post.user?.avatar || '/placeholder.svg'}
-              alt={post.user?.username || 'avatar'}
+              src={userAvatar}
+              alt={userName}
               width={36}
               height={36}
               className={styles.avatar}
             />
             <div className={styles.authorInfo}>
-              <span className={styles.authorName}>{post.user?.username}</span>
+              <span className={styles.authorName}>{userName}</span>
               <span className={styles.postDate}>
                 {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
               </span>
@@ -132,21 +137,21 @@ export default function PostCard({
         {/* 帖子底部 */}
         <div className={styles.postFooter}>
           <div className={styles.tagsSection}>
-            {post.tags.slice(0, 3).map((tag, index) => (
+            {(post.tags || []).slice(0, 3).map((tag, index) => (
               <span key={index} className={styles.tag}>
                 {tag}
               </span>
             ))}
-            {post.tags.length > 3 && (
+            {(post.tags || []).length > 3 && (
               <span className={styles.moreTagsIndicator}>
-                +{post.tags.length - 3}
+                +{(post.tags || []).length - 3}
               </span>
             )}
           </div>
 
           <div className={styles.interactionSection}>
             {/* 浏览量 */}
-            {post.view_count !== 0 && (
+            {(post.view_count || 0) > 0 && (
               <Tooltip title="浏览量" placement="top">
                 <Button
                   type="text"

@@ -38,6 +38,11 @@ export default function PostDetailModal({
 }: PostDetailModalProps) {
   if (!post) return null;
 
+  const user =
+    (post.user as { username?: string; name?: string; avatar?: string }) || {};
+  const userName = user.username || user.name || '未知用户';
+  const userAvatar = user.avatar || '/placeholder.svg';
+
   return (
     <Modal
       loading={loading}
@@ -53,16 +58,14 @@ export default function PostDetailModal({
         <div className={styles.postDetailHeader}>
           <div className={styles.postDetailAuthor}>
             <Image
-              src={post.user?.avatar || '/placeholder.svg'}
+              src={userAvatar}
               width={40}
               height={40}
-              alt={post.user?.username as string}
+              alt={userName}
               className={styles.postDetailAvatar}
             />
             <div className={styles.postDetailAuthorInfo}>
-              <h4 className={styles.postDetailAuthorName}>
-                {post.user?.username}
-              </h4>
+              <h4 className={styles.postDetailAuthorName}>{userName}</h4>
 
               <div className={styles.postDetailMeta}>
                 <div className={styles.postDetailTime}>
@@ -72,7 +75,7 @@ export default function PostDetailModal({
                   </span>
                 </div>
 
-                {post.view_count !== 0 && (
+                {(post.view_count || 0) > 0 && (
                   <div className={styles.postDetailStat}>
                     <Eye size={16} />
                     <span>{post.view_count?.toLocaleString()} 浏览</span>
@@ -80,14 +83,14 @@ export default function PostDetailModal({
                 )}
 
                 <div className={styles.postDetailTags}>
-                  {post.tags.slice(0, 3).map((tag, index) => (
+                  {(post.tags || []).slice(0, 3).map((tag, index) => (
                     <span key={index} className={styles.postDetailTag}>
                       {tag}
                     </span>
                   ))}
-                  {post.tags.length > 3 && (
+                  {(post.tags || []).length > 3 && (
                     <span className={styles.postDetailTag}>
-                      +{post.tags.length - 3}
+                      +{(post.tags || []).length - 3}
                     </span>
                   )}
                 </div>

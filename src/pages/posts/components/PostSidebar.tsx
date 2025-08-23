@@ -23,26 +23,30 @@ export default function PostSidebar({
           <h3 className={styles.sidebarTitle}>热门帖子</h3>
         </div>
         <div className={styles.hotPosts}>
-          {(postsStats?.weekly_hot_posts ?? []).map((post, index) => (
-            <div
-              key={post.ID}
-              className={styles.hotPostItem}
-              onClick={() => onPostClick(post)}
-            >
-              <div className={styles.hotPostRank}>{index + 1}</div>
-              <div className={styles.hotPostContent}>
-                <h4 className={styles.hotPostTitle}>{post.title}</h4>
-                <div className={styles.hotPostMeta}>
-                  <span className={styles.hotPostAuthor}>
-                    {post.user?.username}
-                  </span>
-                  <span className={styles.hotPostViews}>
-                    {post.view_count} 浏览
-                  </span>
+          {(postsStats?.weekly_hot_posts ?? []).map((post, index) => {
+            const user =
+              (post.user as { username?: string; name?: string }) || {};
+            const userName = user.username || user.name || '未知用户';
+
+            return (
+              <div
+                key={post.ID}
+                className={styles.hotPostItem}
+                onClick={() => onPostClick(post)}
+              >
+                <div className={styles.hotPostRank}>{index + 1}</div>
+                <div className={styles.hotPostContent}>
+                  <h4 className={styles.hotPostTitle}>{post.title}</h4>
+                  <div className={styles.hotPostMeta}>
+                    <span className={styles.hotPostAuthor}>{userName}</span>
+                    <span className={styles.hotPostViews}>
+                      {post.view_count || 0} 浏览
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {(postsStats?.weekly_hot_posts?.length ?? 0) === 0 && (
             <Empty description="暂无热门帖子" />
           )}
@@ -56,23 +60,28 @@ export default function PostSidebar({
           <h3 className={styles.sidebarTitle}>活跃作者</h3>
         </div>
         <div className={styles.activeUsers}>
-          {(postsStats?.top_active_users ?? []).map((user) => (
-            <div key={user.ID} className={styles.activeUserItem}>
-              <Image
-                width={40}
-                height={40}
-                src={user.avatar || '/placeholder.svg'}
-                alt={user.username}
-                className={styles.activeUserAvatar}
-              />
-              <div className={styles.activeUserInfo}>
-                <div className={styles.activeUserName}>{user.username}</div>
-                <div className={styles.activeUserPosts}>
-                  帖子数: {user.post_count}
+          {(postsStats?.top_active_users ?? []).map((user) => {
+            const userName = user.username || '未知用户';
+            const userAvatar = user.avatar || '/placeholder.svg';
+
+            return (
+              <div key={user.ID} className={styles.activeUserItem}>
+                <Image
+                  width={40}
+                  height={40}
+                  src={userAvatar}
+                  alt={userName}
+                  className={styles.activeUserAvatar}
+                />
+                <div className={styles.activeUserInfo}>
+                  <div className={styles.activeUserName}>{userName}</div>
+                  <div className={styles.activeUserPosts}>
+                    帖子数: {user.post_count || 0}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {(postsStats?.top_active_users?.length ?? 0) === 0 && (
             <Empty description="暂无活跃用户" />
           )}
