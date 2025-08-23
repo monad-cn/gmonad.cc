@@ -31,6 +31,8 @@ import {
   Trash2,
   Heart,
   Bookmark,
+  UserPlus,
+  Check,
 } from 'lucide-react';
 import styles from './index.module.css';
 import {
@@ -57,23 +59,21 @@ import VditorEditor from '@/components/vditorEditor';
 import { parseMarkdown } from '@/lib/markdown';
 import { useAuth } from '@/contexts/AuthContext';
 // 接口请求已封装在 ../api/post
-import { marked } from "marked"
-import DOMPurify from "dompurify"
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
 // 配置 marked
 marked.setOptions({
   breaks: true, // 换行
-  gfm: true,    // GitHub 风格 Markdown
-})
-
+  gfm: true, // GitHub 风格 Markdown
+});
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-
 export function parseMd(markdown: string): string {
-  const rawHtml = marked.parse(markdown || "") as string
-  return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ["img"] })
+  const rawHtml = marked.parse(markdown || '') as string;
+  return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ['img'] });
 }
 
 export default function PostsList() {
@@ -112,10 +112,23 @@ export default function PostsList() {
   const [detailLoading, setdetailLoading] = useState(false);
 
   // 帖子列表的点赞收藏状态 - 使用Map存储每个帖子的状态
-  const [postLikeStates, setPostLikeStates] = useState<Map<number, boolean>>(new Map());
-  const [postBookmarkStates, setPostBookmarkStates] = useState<Map<number, boolean>>(new Map());
-  const [postLikeCounts, setPostLikeCounts] = useState<Map<number, number>>(new Map());
-  const [postFavoriteCounts, setPostFavoriteCounts] = useState<Map<number, number>>(new Map());
+  const [postLikeStates, setPostLikeStates] = useState<Map<number, boolean>>(
+    new Map()
+  );
+  const [postBookmarkStates, setPostBookmarkStates] = useState<
+    Map<number, boolean>
+  >(new Map());
+  const [postLikeCounts, setPostLikeCounts] = useState<Map<number, number>>(
+    new Map()
+  );
+  const [postFavoriteCounts, setPostFavoriteCounts] = useState<
+    Map<number, number>
+  >(new Map());
+
+  // 关注状态管理  [接口联调后，这个初始化应在跟组件进行，避免重复调用，目前项目可以考虑引进状态管理库Jotai]
+  const [followingStates, setFollowingStates] = useState<Map<number, boolean>>(
+    new Map()
+  );
 
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
@@ -125,9 +138,11 @@ export default function PostsList() {
 
   useEffect(() => {
     if (selectedPost?.description) {
-      parseMarkdown(selectedPost.description, { breaks: true }).then((htmlContent) => {
-        setPostContent(htmlContent);
-      });
+      parseMarkdown(selectedPost.description, { breaks: true }).then(
+        (htmlContent) => {
+          setPostContent(htmlContent);
+        }
+      );
     }
   }, [selectedPost?.description]);
 
@@ -172,8 +187,12 @@ export default function PostsList() {
               const postsStatus = await getPostsStatus(ids);
 
               // 默认全部 false，避免与计数不一致
-              const likeMap = new Map<number, boolean>(ids.map((id) => [id, false]));
-              const favoriteMap = new Map<number, boolean>(ids.map((id) => [id, false]));
+              const likeMap = new Map<number, boolean>(
+                ids.map((id) => [id, false])
+              );
+              const favoriteMap = new Map<number, boolean>(
+                ids.map((id) => [id, false])
+              );
 
               if (postsStatus.success && postsStatus.data?.status) {
                 postsStatus.data.status.forEach((r) => {
@@ -198,7 +217,16 @@ export default function PostsList() {
 
       setLoading(false);
     },
-    [searchTerm, sortBy, startDate, endDate, status, currentPage, pageSize, message]
+    [
+      searchTerm,
+      sortBy,
+      startDate,
+      endDate,
+      status,
+      currentPage,
+      pageSize,
+      message,
+    ]
   );
 
   const fetchPostsStats = useCallback(async () => {
@@ -221,7 +249,7 @@ export default function PostsList() {
     // 2) 计算新的起止日期
     // 3) 显式传参触发列表与统计请求（避免闭包拿到旧状态）
     if (status === 'loading') {
-      return
+      return;
     }
 
     const debouncedFetch = debounce(() => {
@@ -261,16 +289,24 @@ export default function PostsList() {
 
   // 点赞/收藏后端交互（使用 ../api/post 封装）
   const toggleLikeOnServer = async (postId: number, like: boolean) => {
-    return like ? (await likePost(postId)).success : (await unlikePost(postId)).success;
+    return like
+      ? (await likePost(postId)).success
+      : (await unlikePost(postId)).success;
   };
 
   const toggleBookmarkOnServer = async (postId: number, bookmark: boolean) => {
-    return bookmark ? (await favoritePost(postId)).success : (await unFavoritePost(postId)).success;
+    return bookmark
+      ? (await favoritePost(postId)).success
+      : (await unFavoritePost(postId)).success;
   };
 
-  const handleCallPost = async (values: { title: string; description: string; twitter?: string }) => {
+  const handleCallPost = async (values: {
+    title: string;
+    description: string;
+    twitter?: string;
+  }) => {
     try {
-      setbtnLoading(true)
+      setbtnLoading(true);
       if (isEditMode && editingPost) {
         const res = await updatePost(editingPost.ID.toString(), {
           title: values.title,
@@ -306,7 +342,7 @@ export default function PostsList() {
     } catch {
       message.error('操作失败，请重试');
     } finally {
-      setbtnLoading(false)
+      setbtnLoading(false);
     }
   };
 
@@ -411,7 +447,7 @@ export default function PostsList() {
       const newLikeCount = postLikeCounts.get(postId) ?? 0;
       setSelectedPost({
         ...selectedPost,
-        like_count: newLikeCount
+        like_count: newLikeCount,
       });
     }
   };
@@ -426,7 +462,7 @@ export default function PostsList() {
       const newFavoriteCount = postFavoriteCounts.get(postId) ?? 0;
       setSelectedPost({
         ...selectedPost,
-        favorite_count: newFavoriteCount
+        favorite_count: newFavoriteCount,
       });
     }
   };
@@ -447,27 +483,30 @@ export default function PostsList() {
 
       // 乐观更新
       const nextLiked = !currentLiked;
-      setPostLikeStates(prev => {
+      setPostLikeStates((prev) => {
         const newMap = new Map(prev);
         newMap.set(postId, nextLiked);
         return newMap;
       });
 
-      setPostLikeCounts(prev => {
+      setPostLikeCounts((prev) => {
         const newMap = new Map(prev);
-        newMap.set(postId, nextLiked ? currentCount + 1 : Math.max(0, currentCount - 1));
+        newMap.set(
+          postId,
+          nextLiked ? currentCount + 1 : Math.max(0, currentCount - 1)
+        );
         return newMap;
       });
 
       const ok = await toggleLikeOnServer(postId, nextLiked);
       if (!ok) {
         // 回滚
-        setPostLikeStates(prev => {
+        setPostLikeStates((prev) => {
           const newMap = new Map(prev);
           newMap.set(postId, currentLiked);
           return newMap;
         });
-        setPostLikeCounts(prev => {
+        setPostLikeCounts((prev) => {
           const newMap = new Map(prev);
           newMap.set(postId, currentCount);
           return newMap;
@@ -497,27 +536,30 @@ export default function PostsList() {
       const currentCount = postFavoriteCounts.get(postId) || 0;
       const nextBookmarked = !currentBookmarked;
       // 乐观更新
-      setPostBookmarkStates(prev => {
+      setPostBookmarkStates((prev) => {
         const newMap = new Map(prev);
         newMap.set(postId, nextBookmarked);
         return newMap;
       });
 
-      setPostFavoriteCounts(prev => {
+      setPostFavoriteCounts((prev) => {
         const newMap = new Map(prev);
-        newMap.set(postId, nextBookmarked ? currentCount + 1 : Math.max(0, currentCount - 1));
+        newMap.set(
+          postId,
+          nextBookmarked ? currentCount + 1 : Math.max(0, currentCount - 1)
+        );
         return newMap;
       });
 
       const ok = await toggleBookmarkOnServer(postId, nextBookmarked);
       if (!ok) {
         // 回滚
-        setPostBookmarkStates(prev => {
+        setPostBookmarkStates((prev) => {
           const newMap = new Map(prev);
           newMap.set(postId, currentBookmarked);
           return newMap;
         });
-        setPostFavoriteCounts(prev => {
+        setPostFavoriteCounts((prev) => {
           const newMap = new Map(prev);
           newMap.set(postId, currentCount);
           return newMap;
@@ -527,6 +569,54 @@ export default function PostsList() {
       }
 
       // message.success(nextBookmarked ? '收藏成功' : '取消收藏成功');
+    } catch {
+      message.error('操作失败，请重试');
+    }
+  };
+
+  // 关注功能处理函数
+  const handleFollow = async (userId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // 阻止事件冒泡
+
+    // 检查用户是否已登录
+    if (status !== 'authenticated') {
+      message.warning('请先登录后再进行关注操作');
+      return;
+    }
+
+    // 不能关注自己
+    if (Number(session?.user?.uid) === userId) {
+      message.warning('不能关注自己');
+      return;
+    }
+
+    try {
+      const currentFollowing = followingStates.get(userId) || false;
+      const nextFollowing = !currentFollowing;
+
+      // 乐观更新
+      setFollowingStates((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(userId, nextFollowing);
+        return newMap;
+      });
+
+      // 这里调用关注API
+      // const ok = await toggleFollowOnServer(userId, nextFollowing);
+      const ok = true; // 临时模拟成功
+
+      if (!ok) {
+        // 回滚
+        setFollowingStates((prev) => {
+          const newMap = new Map(prev);
+          newMap.set(userId, currentFollowing);
+          return newMap;
+        });
+        message.error('操作失败，请重试');
+        return;
+      }
+
+      message.success(nextFollowing ? '关注成功' : '取消关注成功');
     } catch {
       message.error('操作失败，请重试');
     }
@@ -604,9 +694,9 @@ export default function PostsList() {
                       dates={[dayjs(), dayjs()]}
                       active={
                         dateRange[0]?.format('YYYY-MM-DD') ===
-                        dayjs().format('YYYY-MM-DD') &&
+                          dayjs().format('YYYY-MM-DD') &&
                         dateRange[1]?.format('YYYY-MM-DD') ===
-                        dayjs().format('YYYY-MM-DD')
+                          dayjs().format('YYYY-MM-DD')
                       }
                     />
                     <DateButton
@@ -619,9 +709,9 @@ export default function PostsList() {
                       dates={[dayjs().subtract(1, 'week'), dayjs()]}
                       active={
                         dateRange[0]?.format('YYYY-MM-DD') ===
-                        dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
+                          dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
                         dateRange[1]?.format('YYYY-MM-DD') ===
-                        dayjs().format('YYYY-MM-DD')
+                          dayjs().format('YYYY-MM-DD')
                       }
                     />
                   </>
@@ -764,19 +854,46 @@ export default function PostsList() {
                         {/* 帖子头部：作者信息和操作按钮 */}
                         <div className={styles.postHeader}>
                           <div className={styles.authorSection}>
-                            <Image
-                              src={post.user?.avatar || '/placeholder.svg'}
-                              alt={post.user?.username || 'avatar'}
-                              width={36}
-                              height={36}
-                              className={styles.avatar}
-                            />
+                            <div className={styles.avatarContainer}>
+                              <Image
+                                src={post.user?.avatar || '/placeholder.svg'}
+                                alt={post.user?.username || 'avatar'}
+                                width={36}
+                                height={36}
+                                className={styles.avatar}
+                              />
+                              {/* Follow/Unfollow button overlay */}
+                              {status === 'authenticated' && 
+                               session?.user?.uid !== post.user?.ID && (
+                                <button
+                                  className={`${styles.followButtonOverlay} ${
+                                    followingStates.get(post.user?.ID || 0)
+                                      ? styles.following
+                                      : styles.notFollowing
+                                  }`}
+                                  onClick={(e) => handleFollow(post.user?.ID || 0, e)}
+                                  title={
+                                    followingStates.get(post.user?.ID || 0)
+                                      ? '取消关注'
+                                      : '关注用户'
+                                  }
+                                >
+                                  {followingStates.get(post.user?.ID || 0) ? (
+                                    <Check size={12} />
+                                  ) : (
+                                    <Plus size={12} />
+                                  )}
+                                </button>
+                              )}
+                            </div>
                             <div className={styles.authorInfo}>
                               <span className={styles.authorName}>
                                 {post.user?.username}
                               </span>
                               <span className={styles.postDate}>
-                                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
+                                {dayjs(post.CreatedAt).format(
+                                  'YYYY-MM-DD HH:mm'
+                                )}
                               </span>
                             </div>
                           </div>
@@ -793,7 +910,9 @@ export default function PostsList() {
                                 title="查看推文"
                               >
                                 <SiX size={14} />
-                                <span className={styles.twitterText}>查看推文</span>
+                                <span className={styles.twitterText}>
+                                  查看推文
+                                </span>
                               </a>
                             )}
 
@@ -847,7 +966,6 @@ export default function PostsList() {
                           />
                         </div>
 
-
                         {/* 帖子底部：标签和互动数据 */}
                         <div className={styles.postFooter}>
                           <div className={styles.tagsSection}>
@@ -874,7 +992,9 @@ export default function PostsList() {
                                   className={`${styles.interactionBtn} ${styles.viewCount}`}
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  <span>{post.view_count?.toLocaleString()}</span>
+                                  <span>
+                                    {post.view_count?.toLocaleString()}
+                                  </span>
                                 </Button>
                               </Tooltip>
                             )}
@@ -896,11 +1016,18 @@ export default function PostsList() {
                                 icon={
                                   <Heart
                                     size={14}
-                                    fill={postLikeStates.get(post.ID) ? 'currentColor' : 'none'}
+                                    fill={
+                                      postLikeStates.get(post.ID)
+                                        ? 'currentColor'
+                                        : 'none'
+                                    }
                                   />
                                 }
-                                className={`${styles.interactionBtn} ${postLikeStates.get(post.ID) ? styles.liked : ''
-                                  } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                className={`${styles.interactionBtn} ${
+                                  postLikeStates.get(post.ID)
+                                    ? styles.liked
+                                    : ''
+                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardLike(post.ID, e)}
                               >
                                 {(postLikeCounts.get(post.ID) ?? 0) > 0 && (
@@ -926,11 +1053,18 @@ export default function PostsList() {
                                 icon={
                                   <Bookmark
                                     size={14}
-                                    fill={postBookmarkStates.get(post.ID) ? 'currentColor' : 'none'}
+                                    fill={
+                                      postBookmarkStates.get(post.ID)
+                                        ? 'currentColor'
+                                        : 'none'
+                                    }
                                   />
                                 }
-                                className={`${styles.interactionBtn} ${postBookmarkStates.get(post.ID) ? styles.bookmarked : ''
-                                  } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                                className={`${styles.interactionBtn} ${
+                                  postBookmarkStates.get(post.ID)
+                                    ? styles.bookmarked
+                                    : ''
+                                } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                                 onClick={(e) => handleCardBookmark(post.ID, e)}
                               >
                                 {(postFavoriteCounts.get(post.ID) ?? 0) > 0 && (
@@ -964,7 +1098,7 @@ export default function PostsList() {
             </div>
           </div>
         </Spin>
-
+        {/* 详情modal */}
         <Modal
           loading={detailLoading}
           title={null}
@@ -979,13 +1113,36 @@ export default function PostsList() {
               {/* 帖子头部 */}
               <div className={styles.postDetailHeader}>
                 <div className={styles.postDetailAuthor}>
-                  <Image
-                    src={selectedPost.user?.avatar || '/placeholder.svg'}
-                    width={40}
-                    height={40}
-                    alt={selectedPost.user?.username as string}
-                    className={styles.postDetailAvatar}
-                  />
+                  <div className={styles.avatarContainer}>
+                    <Image
+                      src={selectedPost.user?.avatar || '/placeholder.svg'}
+                      width={40}
+                      height={40}
+                      alt={selectedPost.user?.username as string}
+                      className={styles.postDetailAvatar}
+                    />
+                    {/* 关注按钮 - 只有登录且不是自己的帖子时显示 */}
+                    {status === 'authenticated' &&
+                      Number(session?.user?.uid) !== selectedPost.user?.ID && (
+                        <Button
+                          type="primary"
+                          size="small"
+                          icon={<UserPlus size={12} />}
+                          className={`${styles.followButton} ${
+                            followingStates.get(selectedPost.user?.ID || 0)
+                              ? styles.following
+                              : ''
+                          }`}
+                          onClick={(e) =>
+                            handleFollow(selectedPost.user?.ID || 0, e)
+                          }
+                        >
+                          {followingStates.get(selectedPost.user?.ID || 0)
+                            ? '已关注'
+                            : '关注'}
+                        </Button>
+                      )}
+                  </div>
                   <div className={styles.postDetailAuthorInfo}>
                     <h4 className={styles.postDetailAuthorName}>
                       {selectedPost.user?.username}
@@ -1070,11 +1227,16 @@ export default function PostsList() {
                       icon={
                         <Heart
                           size={16}
-                          fill={postLikeStates.get(selectedPost.ID) ? 'currentColor' : 'none'}
+                          fill={
+                            postLikeStates.get(selectedPost.ID)
+                              ? 'currentColor'
+                              : 'none'
+                          }
                         />
                       }
-                      className={`${styles.postDetailActionBtn} ${postLikeStates.get(selectedPost.ID) ? styles.liked : ''
-                        } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                      className={`${styles.postDetailActionBtn} ${
+                        postLikeStates.get(selectedPost.ID) ? styles.liked : ''
+                      } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                       onClick={(e) => handleDetailLike(selectedPost.ID, e)}
                     >
                       {(postLikeCounts.get(selectedPost.ID) ?? 0) > 0 && (
@@ -1100,11 +1262,18 @@ export default function PostsList() {
                       icon={
                         <Bookmark
                           size={16}
-                          fill={postBookmarkStates.get(selectedPost.ID) ? 'currentColor' : 'none'}
+                          fill={
+                            postBookmarkStates.get(selectedPost.ID)
+                              ? 'currentColor'
+                              : 'none'
+                          }
                         />
                       }
-                      className={`${styles.postDetailActionBtn} ${postBookmarkStates.get(selectedPost.ID) ? styles.bookmarked : ''
-                        } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
+                      className={`${styles.postDetailActionBtn} ${
+                        postBookmarkStates.get(selectedPost.ID)
+                          ? styles.bookmarked
+                          : ''
+                      } ${status !== 'authenticated' ? styles.guestBtn : ''}`}
                       onClick={(e) => handleDetailBookmark(selectedPost.ID, e)}
                     >
                       {(postFavoriteCounts.get(selectedPost.ID) ?? 0) > 0 && (
@@ -1118,6 +1287,7 @@ export default function PostsList() {
           )}
         </Modal>
 
+        {/* 编辑新增帖子modal */}
         <Modal
           title={isEditMode ? '编辑帖子' : '发布新帖子'}
           open={isCreateModalVisible}
