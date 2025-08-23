@@ -1,0 +1,223 @@
+import React from 'react';
+import { Card, Button, Tooltip, Popconfirm } from 'antd';
+import { Edit, Trash2, Heart, Bookmark, Eye } from 'lucide-react';
+import { SiX } from 'react-icons/si';
+import Image from 'next/image';
+import dayjs from 'dayjs';
+import { PostType } from '@/types/posts';
+// import { parseMd } from '@/utils/markdown';
+import styles from '../index.module.css';
+import { marked } from 'marked';
+import DOMPurify from "dompurify"
+
+interface PostCardProps {
+  post: PostType;
+  isOwner: boolean;
+  isAuthenticated: boolean;
+  likeState: boolean;
+  bookmarkState: boolean;
+  likeCount: number;
+  favoriteCount: number;
+  onPostClick: (post: PostType) => void;
+  onLike: (postId: number, e: React.MouseEvent) => void;
+  onBookmark: (postId: number, e: React.MouseEvent) => void;
+  onEdit: (post: PostType) => void;
+  onDelete: (postId: number) => void;
+}
+
+export function parseMd(markdown: string): string {
+  const rawHtml = marked.parse(markdown || '') as string;
+  return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ['img'] });
+}
+
+export default function PostCard({
+  post,
+  isOwner,
+  isAuthenticated,
+  likeState,
+  bookmarkState,
+  likeCount,
+  favoriteCount,
+  onPostClick,
+  onLike,
+  onBookmark,
+  onEdit,
+  onDelete,
+}: PostCardProps) {
+  return (
+    <Card className={styles.postCard} onClick={() => onPostClick(post)}>
+      <div className={styles.postContent}>
+        {/* 帖子头部 */}
+        <div className={styles.postHeader}>
+          <div className={styles.authorSection}>
+            <Image
+              src={post.user?.avatar || '/placeholder.svg'}
+              alt={post.user?.username || 'avatar'}
+              width={36}
+              height={36}
+              className={styles.avatar}
+            />
+            <div className={styles.authorInfo}>
+              <span className={styles.authorName}>{post.user?.username}</span>
+              <span className={styles.postDate}>
+                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
+              </span>
+            </div>
+          </div>
+
+          {/* 右侧操作按钮 */}
+          <div className={styles.headerActions}>
+            {post.twitter && (
+              <a
+                href={post.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.twitterLink}
+                onClick={(e) => e.stopPropagation()}
+                title="查看推文"
+              >
+                <SiX size={14} />
+                <span className={styles.twitterText}>查看推文</span>
+              </a>
+            )}
+
+            {isOwner && (
+              <div className={styles.ownerActions}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<Edit size={14} />}
+                  className={styles.editButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit(post);
+                  }}
+                />
+                <Popconfirm
+                  title="确认删除该帖子吗？"
+                  description="删除后将无法恢复"
+                  okText="删除"
+                  cancelText="取消"
+                  okButtonProps={{ danger: true }}
+                  onConfirm={(e) => {
+                    e?.stopPropagation();
+                    onDelete(post.ID);
+                  }}
+                  onCancel={(e) => e?.stopPropagation()}
+                >
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<Trash2 size={14} />}
+                    className={styles.deleteButton}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </Popconfirm>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 帖子标题 */}
+        <h3 className={styles.postTitle}>{post.title}</h3>
+
+        {/* 帖子描述 */}
+        <div className={styles.postDescription}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: parseMd(post.description),
+            }}
+          />
+        </div>
+
+        {/* 帖子底部 */}
+        <div className={styles.postFooter}>
+          <div className={styles.tagsSection}>
+            {post.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
+            {post.tags.length > 3 && (
+              <span className={styles.moreTagsIndicator}>
+                +{post.tags.length - 3}
+              </span>
+            )}
+          </div>
+
+          <div className={styles.interactionSection}>
+            {/* 浏览量 */}
+            {post.view_count !== 0 && (
+              <Tooltip title="浏览量" placement="top">
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<Eye size={14} />}
+                  className={`${styles.interactionBtn} ${styles.viewCount}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span>{post.view_count?.toLocaleString()}</span>
+                </Button>
+              </Tooltip>
+            )}
+
+            {/* 点赞按钮 */}
+            <Tooltip
+              title={
+                !isAuthenticated
+                  ? '登录后可点赞'
+                  : likeState
+                    ? '取消点赞'
+                    : '点赞'
+              }
+              placement="top"
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={
+                  <Heart size={14} fill={likeState ? 'currentColor' : 'none'} />
+                }
+                className={`${styles.interactionBtn} ${
+                  likeState ? styles.liked : ''
+                } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                onClick={(e) => onLike(post.ID, e)}
+              >
+                {likeCount > 0 && <span>{likeCount}</span>}
+              </Button>
+            </Tooltip>
+
+            {/* 收藏按钮 */}
+            <Tooltip
+              title={
+                !isAuthenticated
+                  ? '登录后可收藏'
+                  : bookmarkState
+                    ? '取消收藏'
+                    : '收藏'
+              }
+              placement="top"
+            >
+              <Button
+                type="text"
+                size="small"
+                icon={
+                  <Bookmark
+                    size={14}
+                    fill={bookmarkState ? 'currentColor' : 'none'}
+                  />
+                }
+                className={`${styles.interactionBtn} ${
+                  bookmarkState ? styles.bookmarked : ''
+                } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                onClick={(e) => onBookmark(post.ID, e)}
+              >
+                {favoriteCount > 0 && <span>{favoriteCount}</span>}
+              </Button>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
