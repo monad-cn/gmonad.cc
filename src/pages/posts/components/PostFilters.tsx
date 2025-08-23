@@ -57,9 +57,9 @@ export default function PostFilters({
                   label="今天"
                   dates={[dayjs(), dayjs()]}
                   active={
-                    dateRange[0]?.format('YYYY-MM-DD') ===
+                    dateRange?.[0]?.format('YYYY-MM-DD') ===
                       dayjs().format('YYYY-MM-DD') &&
-                    dateRange[1]?.format('YYYY-MM-DD') ===
+                    dateRange?.[1]?.format('YYYY-MM-DD') ===
                       dayjs().format('YYYY-MM-DD')
                   }
                 />
