@@ -25,8 +25,17 @@ interface PostCardProps {
 }
 
 export function parseMd(markdown: string): string {
-  const rawHtml = marked.parse(markdown || '') as string;
-  return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ['img'] });
+  if (typeof window === 'undefined') {
+    return markdown || '';
+  }
+
+  try {
+    const rawHtml = marked.parse(markdown || '') as string;
+    return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ['img'] });
+  } catch (error) {
+    console.error('Failed to parse markdown:', error);
+    return markdown || '';
+  }
 }
 
 export default function PostCard({
@@ -43,6 +52,10 @@ export default function PostCard({
   onEdit,
   onDelete,
 }: PostCardProps) {
+  if (!post) {
+    return null;
+  }
+
   const user =
     (post.user as { username?: string; name?: string; avatar?: string }) || {};
   const userName = user.username || user.name || '未知用户';
@@ -64,7 +77,9 @@ export default function PostCard({
             <div className={styles.authorInfo}>
               <span className={styles.authorName}>{userName}</span>
               <span className={styles.postDate}>
-                {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
+                {post.CreatedAt
+                  ? dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')
+                  : '未知时间'}
               </span>
             </div>
           </div>
@@ -123,13 +138,13 @@ export default function PostCard({
         </div>
 
         {/* 帖子标题 */}
-        <h3 className={styles.postTitle}>{post.title}</h3>
+        <h3 className={styles.postTitle}>{post.title || '无标题'}</h3>
 
         {/* 帖子描述 */}
         <div className={styles.postDescription}>
           <div
             dangerouslySetInnerHTML={{
-              __html: parseMd(post.description),
+              __html: parseMd(post.description || ''),
             }}
           />
         </div>

@@ -24,6 +24,8 @@ export default function PostSidebar({
         </div>
         <div className={styles.hotPosts}>
           {(postsStats?.weekly_hot_posts ?? []).map((post, index) => {
+            if (!post) return null;
+
             const user =
               (post.user as { username?: string; name?: string }) || {};
             const userName = user.username || user.name || '未知用户';
@@ -36,7 +38,9 @@ export default function PostSidebar({
               >
                 <div className={styles.hotPostRank}>{index + 1}</div>
                 <div className={styles.hotPostContent}>
-                  <h4 className={styles.hotPostTitle}>{post.title}</h4>
+                  <h4 className={styles.hotPostTitle}>
+                    {post.title || '无标题'}
+                  </h4>
                   <div className={styles.hotPostMeta}>
                     <span className={styles.hotPostAuthor}>{userName}</span>
                     <span className={styles.hotPostViews}>
@@ -61,6 +65,8 @@ export default function PostSidebar({
         </div>
         <div className={styles.activeUsers}>
           {(postsStats?.top_active_users ?? []).map((user) => {
+            if (!user) return null;
+
             const userName = user.username || '未知用户';
             const userAvatar = user.avatar || '/placeholder.svg';
 

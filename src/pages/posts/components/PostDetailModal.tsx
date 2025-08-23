@@ -71,7 +71,9 @@ export default function PostDetailModal({
                 <div className={styles.postDetailTime}>
                   <Clock size={16} />
                   <span>
-                    {dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')}
+                    {post.CreatedAt
+                      ? dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')
+                      : '未知时间'}
                   </span>
                 </div>
 
@@ -113,13 +115,13 @@ export default function PostDetailModal({
         </div>
 
         {/* 帖子标题 */}
-        <h1 className={styles.postDetailTitle}>{post.title}</h1>
+        <h1 className={styles.postDetailTitle}>{post.title || '无标题'}</h1>
 
         {/* 帖子内容 */}
         <div className={styles.postDetailBody}>
           <div
             className="prose"
-            dangerouslySetInnerHTML={{ __html: postContent }}
+            dangerouslySetInnerHTML={{ __html: postContent || '' }}
           />
         </div>
 
