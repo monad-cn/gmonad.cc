@@ -39,6 +39,8 @@ export default function CreatePostModal({
   onInputVisibleChange,
   onKeyPress,
 }: CreatePostModalProps) {
+  const currentDescription = form?.getFieldValue?.('description') || '';
+
   return (
     <Modal
       title={isEditMode ? '编辑帖子' : '发布新帖子'}
@@ -87,10 +89,7 @@ export default function CreatePostModal({
             { max: 3000, message: '内容不能超过3000个字符' },
           ]}
         >
-          <VditorEditor
-            value={form.getFieldValue('description')}
-            onChange={onEditorChange}
-          />
+          <VditorEditor value={currentDescription} onChange={onEditorChange} />
         </Form.Item>
 
         <Form.Item label="标签">
