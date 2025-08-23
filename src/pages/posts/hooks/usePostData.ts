@@ -48,18 +48,18 @@ export function usePostData() {
 
   // 获取帖子列表
   const fetchPosts = useCallback(
-    async (params?: any) => {
+    async (params?: {
+      keyword?: string;
+      order?: 'asc' | 'desc';
+      page?: number;
+      page_size?: number;
+      start_date?: string;
+      end_date?: string;
+    }) => {
       setListState((prev) => ({ ...prev, loading: true }));
 
       try {
-        const res = await getPosts({
-          keyword: params?.keyword || listState.searchTerm,
-          order: params?.order || (listState.sortBy as 'asc' | 'desc'),
-          page: params?.page || listState.currentPage,
-          page_size: params?.page_size || listState.pageSize,
-          start_date: params?.start_date || listState.startDate,
-          end_date: params?.end_date || listState.endDate,
-        });
+        const res = await getPosts(params);
 
         if (res.success && res.data) {
           setListState((prev) => ({
@@ -88,7 +88,7 @@ export function usePostData() {
         setListState((prev) => ({ ...prev, loading: false }));
       }
     },
-    [listState, message]
+    [message]
   );
 
   // 获取统计数据

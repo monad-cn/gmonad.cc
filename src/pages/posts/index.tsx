@@ -110,7 +110,19 @@ export default function PostsList() {
     listState.dateRange,
     listState.pageSize,
     status,
+    fetchPosts, 
+    fetchPostsStats, 
   ]);
+
+  const handleResetFilters = useCallback(() => {
+    setListState((prev) => ({
+      ...prev,
+      searchTerm: '',
+      sortBy: 'desc',
+      dateRange: [null, null],
+      currentPage: 1,
+    }));
+  }, [setListState]);
 
   // 处理帖子创建/更新
   const handlePostSubmit = async (values: {
@@ -365,6 +377,7 @@ export default function PostsList() {
               dateRange: dates || [null, null],
             }))
           }
+          onReset={handleResetFilters}
         />
 
         <Spin spinning={listState.loading}>

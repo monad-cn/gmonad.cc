@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Input, Select, DatePicker } from 'antd';
-import { Search, Calendar } from 'lucide-react';
+import { Card, Input, Select, DatePicker, Button } from 'antd';
+import { Search, Calendar, RotateCcw } from 'lucide-react';
 import dayjs from 'dayjs';
 import DateButton from '@/components/base/DateButton';
 import styles from '../index.module.css';
@@ -17,6 +17,7 @@ interface PostFiltersProps {
   onDateRangeChange: (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => void;
+  onReset: () => void;
 }
 
 export default function PostFilters({
@@ -26,6 +27,7 @@ export default function PostFilters({
   onSearchChange,
   onSortChange,
   onDateRangeChange,
+  onReset,
 }: PostFiltersProps) {
   return (
     <Card className={styles.filtersCard}>
@@ -42,42 +44,52 @@ export default function PostFilters({
         </div>
 
         <div className={styles.dateContainer}>
+          <div className={styles.dateButtonsGroup}>
+            <DateButton
+              style={{ marginRight: '4px' }}
+              size="small"
+              color="primary"
+              variant="filled"
+              dateRange={dateRange}
+              handleDateRangeChange={onDateRangeChange}
+              label="今天"
+              dates={[dayjs(), dayjs()]}
+              active={
+                dateRange[0]?.format('YYYY-MM-DD') ===
+                  dayjs().format('YYYY-MM-DD') &&
+                dateRange[1]?.format('YYYY-MM-DD') ===
+                  dayjs().format('YYYY-MM-DD')
+              }
+            />
+            <DateButton
+              style={{ marginRight: '4px' }}
+              size="small"
+              color="primary"
+              variant="filled"
+              dateRange={dateRange}
+              handleDateRangeChange={onDateRangeChange}
+              label="近一周"
+              dates={[dayjs().subtract(1, 'week'), dayjs()]}
+              active={
+                dateRange[0]?.format('YYYY-MM-DD') ===
+                  dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
+                dateRange[1]?.format('YYYY-MM-DD') ===
+                  dayjs().format('YYYY-MM-DD')
+              }
+            />
+            <DateButton
+              size="small"
+              color="default"
+              variant="filled"
+              dateRange={dateRange}
+              handleDateRangeChange={onDateRangeChange}
+              label="全部"
+              dates={[null, null]}
+              active={!dateRange[0] && !dateRange[1]}
+            />
+          </div>
+
           <RangePicker
-            prefix={
-              <>
-                <DateButton
-                  style={{ marginRight: '4px' }}
-                  size="small"
-                  color="primary"
-                  variant="filled"
-                  dateRange={dateRange}
-                  handleDateRangeChange={onDateRangeChange}
-                  label="今天"
-                  dates={[dayjs(), dayjs()]}
-                  active={
-                    dateRange[0]?.format('YYYY-MM-DD') ===
-                      dayjs().format('YYYY-MM-DD') &&
-                    dateRange[1]?.format('YYYY-MM-DD') ===
-                      dayjs().format('YYYY-MM-DD')
-                  }
-                />
-                <DateButton
-                  size="small"
-                  color="primary"
-                  variant="filled"
-                  dateRange={dateRange}
-                  handleDateRangeChange={onDateRangeChange}
-                  label="近一周"
-                  dates={[dayjs().subtract(1, 'week'), dayjs()]}
-                  active={
-                    dateRange[0]?.format('YYYY-MM-DD') ===
-                      dayjs().subtract(1, 'week').format('YYYY-MM-DD') &&
-                    dateRange[1]?.format('YYYY-MM-DD') ===
-                      dayjs().format('YYYY-MM-DD')
-                  }
-                />
-              </>
-            }
             placeholder={['开始日期', '结束日期']}
             value={dateRange}
             onChange={onDateRangeChange}
@@ -99,6 +111,17 @@ export default function PostFilters({
             <Option value="desc">最新发布</Option>
             <Option value="asc">最早发布</Option>
           </Select>
+        </div>
+
+        <div className={styles.resetContainer}>
+          <Button
+            icon={<RotateCcw size={16} />}
+            onClick={onReset}
+            className={styles.resetButton}
+            size="large"
+          >
+            重置
+          </Button>
         </div>
       </div>
     </Card>
