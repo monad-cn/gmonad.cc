@@ -1,8 +1,13 @@
 import React from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { Plus, X } from 'lucide-react';
-import VditorEditor from '@/components/vditorEditor';
 import styles from '../index.module.css';
+import dynamic from 'next/dynamic';
+
+const VditorEditor = dynamic(() => import('@/components/vditorEditor'), {
+  ssr: false,
+  loading: () => <div>加载编辑器中...</div>,
+});
 
 interface CreatePostModalProps {
   visible: boolean;
@@ -94,7 +99,7 @@ export default function CreatePostModal({
 
         <Form.Item label="标签">
           <div className={styles.tagsContainer}>
-            {tags.map((tag, index) => (
+            {(tags || []).map((tag, index) => (
               <span key={index} className={styles.selectedTag}>
                 {tag}
                 <button

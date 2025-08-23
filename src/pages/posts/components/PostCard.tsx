@@ -6,8 +6,8 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 import { PostType } from '@/types/posts';
 import styles from '../index.module.css';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+
+import { parseMd } from '@/utils/posts';
 
 interface PostCardProps {
   post: PostType;
@@ -22,20 +22,6 @@ interface PostCardProps {
   onBookmark: (postId: number, e: React.MouseEvent) => void;
   onEdit: (post: PostType) => void;
   onDelete: (postId: number) => void;
-}
-
-export function parseMd(markdown: string): string {
-  if (typeof window === 'undefined') {
-    return markdown || '';
-  }
-
-  try {
-    const rawHtml = marked.parse(markdown || '') as string;
-    return DOMPurify.sanitize(rawHtml, { FORBID_TAGS: ['img'] });
-  } catch (error) {
-    console.error('Failed to parse markdown:', error);
-    return markdown || '';
-  }
 }
 
 export default function PostCard({
