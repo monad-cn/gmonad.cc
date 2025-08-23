@@ -5,7 +5,6 @@ import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import { PostType } from '@/types/posts';
-// import { parseMd } from '@/utils/markdown';
 import styles from '../index.module.css';
 import { marked } from 'marked';
 import DOMPurify from "dompurify"

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Pagination, Button, Spin, Empty, Form, App as AntdApp } from 'antd';
 import { User, Plus } from 'lucide-react';
-import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { usePostData } from './hooks/usePostData';
+import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 import { createPost, updatePost, deletePost, getPostById } from '../api/post';
 import { PostType, CreatePostState, PostDetailState } from '@/types/posts';
@@ -110,8 +109,8 @@ export default function PostsList() {
     listState.dateRange,
     listState.pageSize,
     status,
-    fetchPosts, 
-    fetchPostsStats, 
+    fetchPosts,
+    fetchPostsStats,
   ]);
 
   const handleResetFilters = useCallback(() => {
