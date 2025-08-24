@@ -3,7 +3,7 @@ import { Card, Empty } from 'antd';
 import { TrendingUp, Users, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { PostType, PostsStats } from '@/types/posts';
-import styles from '../index.module.css';
+import styles from '../../pages/posts/index.module.css';
 
 interface PostSidebarProps {
   postsStats: PostsStats | null;

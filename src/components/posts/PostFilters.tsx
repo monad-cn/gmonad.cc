@@ -3,7 +3,7 @@ import { Card, Input, Select, DatePicker, Button } from 'antd';
 import { Search, Calendar, RotateCcw } from 'lucide-react';
 import dayjs from 'dayjs';
 import DateButton from '@/components/base/DateButton';
-import styles from '../index.module.css';
+import styles from '../../pages/posts/index.module.css';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
