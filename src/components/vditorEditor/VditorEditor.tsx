@@ -6,6 +6,19 @@ import { emoji } from './emoji';
 import styles from './VditorEditor.module.css';
 import 'vditor/dist/index.css';
 
+// 清理Markdown格式符号前后的空格
+const cleanMarkdownSpaces = (text: string): string => {
+  return text
+    // 处理加粗：** text **、**text **、** text** → **text**
+    .replace(/\*\*(\s*)([^*]+?)(\s*)\*\*/g, '**$2**')
+    // 处理斜体：* text *、*text *、* text* → *text*
+    .replace(/(?<!\*)\*(\s*)([^*]+?)(\s*)\*(?!\*)/g, '*$2*')
+    // 处理行内代码：` text `、`text `、` text` → `text`
+    .replace(/`(\s*)([^`]+?)(\s*)`/g, '`$2`')
+    // 处理删除线：~~ text ~~、~~text ~~、~~ text~~ → ~~text~~
+    .replace(/~~(\s*)([^~]+?)(\s*)~~/g, '~~$2~~');
+};
+
 interface VditorEditorProps {
   value?: string;
   onChange?: (value: string) => void;
@@ -197,8 +210,11 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               }
             },
             input: (val: string) => {
+              // 清理Markdown格式符号前后的空格
+              const cleanedVal = cleanMarkdownSpaces(val);
+           
               if (onChange) {
-                onChange(val);
+                onChange(cleanedVal);
               }
             },
             focus: (val: string) => {
