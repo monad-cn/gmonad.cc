@@ -615,7 +615,9 @@
     min-width: 280px;
   }
 
-  .galleryImage img {
+  .galleryImage img,
+  .galleryImage :global(.ant-image),
+  .galleryImage :global(.ant-image img) {
     width: 280px;
     height: 182px;
   }
@@ -705,13 +707,19 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
-.galleryImage img {
+.galleryImage img,
+.galleryImage :global(.ant-image),
+.galleryImage :global(.ant-image img) {
   width: 300px;
   height: 195px;
   object-fit: cover;
   display: block;
   border-radius: 14px;
   transition: all 0.3s ease;
+}
+
+.galleryImage :global(.ant-image) {
+  line-height: 0;
 }
 
 
@@ -819,7 +827,9 @@
     min-width: 200px;
   }
 
-  .galleryImage img {
+  .galleryImage img,
+  .galleryImage :global(.ant-image),
+  .galleryImage :global(.ant-image img) {
     width: 200px;
     height: 130px;
   }
@@ -894,7 +904,9 @@
     min-width: 160px;
   }
 
-  .galleryImage img {
+  .galleryImage img,
+  .galleryImage :global(.ant-image),
+  .galleryImage :global(.ant-image img) {
     width: 160px;
     height: 104px;
   }

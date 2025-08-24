@@ -9,11 +9,11 @@ import { parseMarkdown } from '@/lib/markdown';
 import { createPost, updatePost, deletePost, getPostById } from '../api/post';
 import { PostType, CreatePostState, PostDetailState } from '@/types/posts';
 
-import PostFilters from './components/PostFilters';
-import PostSidebar from './components/PostSidebar';
-import PostCard from './components/PostCard';
-import PostDetailModal from './components/PostDetailModal';
-import CreatePostModal from './components/CreatePostModal';
+import PostFilters from '@/components/posts/PostFilters';
+import PostSidebar from '@/components/posts/PostSidebar';
+import PostCard from '@/components/posts/PostCard';
+import PostDetailModal from '@/components/posts/PostDetailModal';
+import CreatePostModal from '@/components/posts/CreatePostModal';
 
 import styles from './index.module.css';
 

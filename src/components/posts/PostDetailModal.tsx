@@ -5,7 +5,7 @@ import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import { PostType } from '@/types/posts';
-import styles from '../index.module.css';
+import styles from '../../pages/posts/index.module.css';
 
 interface PostDetailModalProps {
   visible: boolean;

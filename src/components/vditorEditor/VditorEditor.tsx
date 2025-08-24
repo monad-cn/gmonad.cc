@@ -196,8 +196,6 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
             },
             after: () => {
               console.log('Vditor初始化完成');
-              console.log(vditor);
-              console.log(value);
 
               if (value) {
                 vditor.setValue(value);

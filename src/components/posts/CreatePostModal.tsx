@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { Plus, X } from 'lucide-react';
-import styles from '../index.module.css';
+import styles from '../../pages/posts/index.module.css';
 import dynamic from 'next/dynamic';
 
 const VditorEditor = dynamic(() => import('@/components/vditorEditor'), {

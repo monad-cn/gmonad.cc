@@ -27,7 +27,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { SiDiscord, SiTelegram, SiX } from 'react-icons/si';
-import { Avatar } from 'antd';
+import { Avatar, Image } from 'antd';
 import EventSection from './events/section';
 import { getDapps } from './api/dapp';
 
@@ -329,31 +329,112 @@ export default function Home() {
 
               <div className={styles.galleryContainer}>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp1.jpg" alt="Monad社区活动1" />
+                  <Image 
+                    src="/community/cp1.jpg" 
+                    alt="Monad社区活动1" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp2.jpg" alt="Monad社区活动2" />
+                  <Image 
+                    src="/community/cp2.jpg" 
+                    alt="Monad社区活动2" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp3.jpg" alt="Monad社区活动3" />
+                  <Image 
+                    src="/community/cp3.jpg" 
+                    alt="Monad社区活动3" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp4.jpg" alt="Monad社区活动4" />
+                  <Image 
+                    src="/community/cp4.jpg" 
+                    alt="Monad社区活动4" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp6.jpg" alt="Monad社区活动5" />
+                  <Image 
+                    src="/community/cp6.jpg" 
+                    alt="Monad社区活动5" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp7.jpg" alt="Monad社区活动6" />
+                  <Image 
+                    src="/community/cp7.jpg" 
+                    alt="Monad社区活动6" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp8.jpg" alt="Monad社区活动7" />
+                  <Image 
+                    src="/community/cp8.jpg" 
+                    alt="Monad社区活动7" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp9.jpg" alt="Monad社区活动8" />
+                  <Image 
+                    src="/community/cp9.jpg" 
+                    alt="Monad社区活动8" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
                 <div className={styles.galleryImage}>
-                  <img src="/community/cp10.jpg" alt="Monad社区活动9" />
+                  <Image 
+                    src="/community/cp10.jpg" 
+                    alt="Monad社区活动9" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
                 </div>
               </div>
 
