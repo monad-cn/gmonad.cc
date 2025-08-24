@@ -85,7 +85,6 @@ export default function PostCard({
                 <span className={styles.twitterText}>查看推文</span>
               </a>
             )}
-
             {isOwner && (
               <div className={styles.ownerActions}>
                 <Button
