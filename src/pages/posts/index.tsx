@@ -397,7 +397,7 @@ export default function PostsList() {
                     <PostCard
                       key={post.ID}
                       post={post}
-                      isOwner={session?.user?.uid === post.user?.ID}
+                      isOwner={session?.user?.uid == post.user?.ID}
                       isAuthenticated={status === 'authenticated'}
                       likeState={
                         interactionState.postLikeStates.get(post.ID) || false
