@@ -815,18 +815,11 @@
 
 /* SVG 图片样式处理 TODO 目前处理X复制粘贴后，svg图问题*/
 .postDetailBody img[src$='.svg'] {
+  display: inline-block !important;
+  vertical-align: middle;
   margin: 0 !important;
   width: 20px !important;
   height: 20px !important;
-  display: inline-block !important;
-}
-
-/* SVG 图片样式处理 TODO 目前处理X复制粘贴后，svg图问题*/
-.postDetailBody img[src$='.svg'] {
-  margin: 0 !important;
-  width: 20px !important;
-  height: 20px !important;
-  display: inline-block !important;
 }
 
 .postDetailFooter {

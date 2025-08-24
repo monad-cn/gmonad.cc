@@ -66,6 +66,7 @@ export default function PostFilters({
                   }
                 />
                 <DateButton
+                  style={{ marginRight: '4px' }}
                   size="small"
                   color="primary"
                   variant="filled"
@@ -82,7 +83,7 @@ export default function PostFilters({
                 />
                 <DateButton
                   size="small"
-                  color="default"
+                  color="primary"
                   variant="filled"
                   dateRange={safeDateRange}
                   handleDateRangeChange={onDateRangeChange}
