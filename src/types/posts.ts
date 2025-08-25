@@ -38,3 +38,7 @@ export interface PostDetailState {
   postContent: string;
   detailLoading: boolean;
 }
+
+export interface FollowState {
+  followingStates: Map<number, boolean>;
+}
