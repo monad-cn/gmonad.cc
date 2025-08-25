@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 import { createPost, updatePost, deletePost, getPostById } from '../api/post';
-import { PostType, CreatePostState, PostDetailState } from '@/types/posts';
+import { PostType, CreatePostState, PostDetailState, FollowState } from '@/types/posts';
 
 import PostFilters from '@/components/posts/PostFilters';
 import PostSidebar from '@/components/posts/PostSidebar';
@@ -52,6 +52,11 @@ export default function PostsList() {
     selectedPost: null,
     postContent: '',
     detailLoading: false,
+  });
+
+  // 关注状态管理
+  const [followState, setFollowState] = useState<FollowState>({
+    followingStates: new Map(),
   });
 
   const [form] = Form.useForm();
@@ -258,6 +263,51 @@ export default function PostsList() {
     }
   };
 
+  // 处理关注
+  const handleFollow = async (userId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (status !== 'authenticated') {
+      message.warning('请先登录后再进行关注操作');
+      return;
+    }
+
+    // 不能关注自己
+    if (Number(session?.user?.uid) === userId) {
+      message.warning('不能关注自己');
+      return;
+    }
+
+    try {
+      const currentFollowing = followState.followingStates.get(userId) || false;
+      const nextFollowing = !currentFollowing;
+
+      // 乐观更新
+      setFollowState((prev) => ({
+        ...prev,
+        followingStates: new Map(prev.followingStates).set(userId, nextFollowing)
+      }));
+
+      // 这里调用关注API
+      // TODO: 实际调用关注API
+      const ok = true; // 临时模拟成功
+
+      if (!ok) {
+        // 回滚
+        setFollowState((prev) => ({
+          ...prev,
+          followingStates: new Map(prev.followingStates).set(userId, currentFollowing)
+        }));
+        message.error('操作失败，请重试');
+        return;
+      }
+
+      message.success(nextFollowing ? '关注成功' : '取消关注成功');
+    } catch {
+      message.error('操作失败，请重试');
+    }
+  };
+
   // 其他处理函数...
   const handleEditPost = (post: PostType) => {
     setCreateState({
@@ -399,12 +449,16 @@ export default function PostsList() {
                       post={post}
                       isOwner={session?.user?.uid == post.user?.ID}
                       isAuthenticated={status === 'authenticated'}
+                      currentUserId={Number(session?.user?.uid)}
                       likeState={
                         interactionState.postLikeStates.get(post.ID) || false
                       }
                       bookmarkState={
                         interactionState.postBookmarkStates.get(post.ID) ||
                         false
+                      }
+                      followingState={
+                        followState.followingStates.get(post.user?.ID || 0) || false
                       }
                       likeCount={
                         interactionState.postLikeCounts.get(post.ID) ?? 0
@@ -415,6 +469,7 @@ export default function PostsList() {
                       onPostClick={handlePostClick}
                       onLike={handleLike}
                       onBookmark={handleBookmark}
+                      onFollow={handleFollow}
                       onEdit={handleEditPost}
                       onDelete={handleDeletePost}
                     />
@@ -448,6 +503,7 @@ export default function PostsList() {
           post={detailState.selectedPost}
           postContent={detailState.postContent}
           isAuthenticated={status === 'authenticated'}
+          currentUserId={Number(session?.user?.uid)}
           likeState={
             detailState.selectedPost
               ? interactionState.postLikeStates.get(
@@ -460,6 +516,11 @@ export default function PostsList() {
               ? interactionState.postBookmarkStates.get(
                   detailState.selectedPost.ID
                 ) || false
+              : false
+          }
+          followingState={
+            detailState.selectedPost?.user?.ID
+              ? followState.followingStates.get(detailState.selectedPost.user.ID) || false
               : false
           }
           likeCount={
@@ -486,6 +547,7 @@ export default function PostsList() {
           }
           onLike={handleLike}
           onBookmark={handleBookmark}
+          onFollow={handleFollow}
         />
 
         {/* 创建/编辑帖子模态框 */}
