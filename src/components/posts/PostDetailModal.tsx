@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Tooltip } from 'antd';
-import { Clock, Eye, Heart, Bookmark } from 'lucide-react';
+import { Clock, Eye, Heart, Bookmark, UserPlus, Check } from 'lucide-react';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
@@ -13,13 +13,16 @@ interface PostDetailModalProps {
   post: PostType | null;
   postContent: string;
   isAuthenticated: boolean;
+  currentUserId?: number;
   likeState: boolean;
   bookmarkState: boolean;
+  followingState: boolean;
   likeCount: number;
   favoriteCount: number;
   onClose: () => void;
   onLike: (postId: number, e: React.MouseEvent) => void;
   onBookmark: (postId: number, e: React.MouseEvent) => void;
+  onFollow: (userId: number, e: React.MouseEvent) => void;
 }
 
 export default function PostDetailModal({
@@ -28,20 +31,24 @@ export default function PostDetailModal({
   post,
   postContent,
   isAuthenticated,
+  currentUserId,
   likeState,
   bookmarkState,
+  followingState,
   likeCount,
   favoriteCount,
   onClose,
   onLike,
   onBookmark,
+  onFollow,
 }: PostDetailModalProps) {
   if (!post) return null;
 
   const user =
-    (post.user as { username?: string; name?: string; avatar?: string }) || {};
+    (post.user as { ID?: number; username?: string; name?: string; avatar?: string }) || {};
   const userName = user.username || user.name || '未知用户';
   const userAvatar = user.avatar || '/placeholder.svg';
+  const userId = user.ID;
 
   return (
     <Modal
@@ -57,13 +64,31 @@ export default function PostDetailModal({
         {/* 帖子头部 */}
         <div className={styles.postDetailHeader}>
           <div className={styles.postDetailAuthor}>
-            <Image
-              src={userAvatar}
-              width={40}
-              height={40}
-              alt={userName}
-              className={styles.postDetailAvatar}
-            />
+            <div className={styles.avatarContainer}>
+              <Image
+                src={userAvatar}
+                width={40}
+                height={40}
+                alt={userName}
+                className={styles.postDetailAvatar}
+              />
+              {/* 关注按钮 - 只有登录且不是自己的帖子时显示 */}
+              {isAuthenticated &&
+                userId &&
+                currentUserId !== userId && (
+                  <Button
+                    type="primary"
+                    size="small"
+                    icon={followingState?<Check size={12} />:<UserPlus size={12} />}
+                    className={`${styles.followButton} ${
+                      followingState ? styles.following : ''
+                    }`}
+                    onClick={(e) => onFollow(userId, e)}
+                  >
+                    {followingState ? '已关注' : '关注'}
+                  </Button>
+                )}
+            </div>
             <div className={styles.postDetailAuthorInfo}>
               <h4 className={styles.postDetailAuthorName}>{userName}</h4>
 

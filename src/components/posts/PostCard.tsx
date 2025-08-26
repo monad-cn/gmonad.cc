@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Button, Tooltip, Popconfirm } from 'antd';
-import { Edit, Trash2, Heart, Bookmark, Eye } from 'lucide-react';
+import { Edit, Trash2, Heart, Bookmark, Eye, Check, Plus } from 'lucide-react';
 import { SiX } from 'react-icons/si';
 import Image from 'next/image';
 import dayjs from 'dayjs';
@@ -13,13 +13,16 @@ interface PostCardProps {
   post: PostType;
   isOwner: boolean;
   isAuthenticated: boolean;
+  currentUserId?: number;
   likeState: boolean;
   bookmarkState: boolean;
+  followingState: boolean;
   likeCount: number;
   favoriteCount: number;
   onPostClick: (post: PostType) => void;
   onLike: (postId: number, e: React.MouseEvent) => void;
   onBookmark: (postId: number, e: React.MouseEvent) => void;
+  onFollow: (userId: number, e: React.MouseEvent) => void;
   onEdit: (post: PostType) => void;
   onDelete: (postId: number) => void;
 }
@@ -28,13 +31,16 @@ export default function PostCard({
   post,
   isOwner,
   isAuthenticated,
+  currentUserId,
   likeState,
   bookmarkState,
+  followingState,
   likeCount,
   favoriteCount,
   onPostClick,
   onLike,
   onBookmark,
+  onFollow,
   onEdit,
   onDelete,
 }: PostCardProps) {
@@ -43,9 +49,10 @@ export default function PostCard({
   }
 
   const user =
-    (post.user as { username?: string; name?: string; avatar?: string }) || {};
+    (post.user as { ID?: number; username?: string; name?: string; avatar?: string }) || {};
   const userName = user.username || user.name || '未知用户';
   const userAvatar = user.avatar || '/placeholder.svg';
+  const userId = user.ID;
 
   return (
     <Card className={styles.postCard} onClick={() => onPostClick(post)}>
@@ -53,13 +60,39 @@ export default function PostCard({
         {/* 帖子头部 */}
         <div className={styles.postHeader}>
           <div className={styles.authorSection}>
-            <Image
-              src={userAvatar}
-              alt={userName}
-              width={36}
-              height={36}
-              className={styles.avatar}
-            />
+            <div className={styles.avatarContainer}>
+              <Image
+                src={userAvatar}
+                alt={userName}
+                width={36}
+                height={36}
+                className={styles.avatar}
+              />
+              {/* Follow/Unfollow button overlay */}
+              {isAuthenticated && 
+               userId && 
+               currentUserId !== userId && (
+                <button
+                  className={`${styles.followButtonOverlay} ${
+                    followingState
+                      ? styles.following
+                      : styles.notFollowing
+                  }`}
+                  onClick={(e) => onFollow(userId, e)}
+                  title={
+                    followingState
+                      ? '取消关注'
+                      : '关注用户'
+                  }
+                >
+                  {followingState ? (
+                    <Check size={12} />
+                  ) : (
+                    <Plus size={12} />
+                  )}
+                </button>
+              )}
+            </div>
             <div className={styles.authorInfo}>
               <span className={styles.authorName}>{userName}</span>
               <span className={styles.postDate}>
