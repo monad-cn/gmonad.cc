@@ -14,6 +14,7 @@ type Article struct {
 	Description   string         `json:"description"`
 	Content       string         `gorm:"type:text" json:"content"`
 	SourceLink    string         `json:"source_link"`
+	SourceType    string         `json:"source_type"`
 	CoverImg      string         `json:"cover_img"`
 	Tags          pq.StringArray `gorm:"type:text[]" json:"tags"`
 	Category      string         `json:"category"`

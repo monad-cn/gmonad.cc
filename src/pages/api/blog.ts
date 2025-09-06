@@ -8,6 +8,7 @@ export interface CreateBlogParams {
   category: string;
   cover_img: string;
   source_link: string;
+  source_type: string;
   tags: string[];
   author: string;
   translator: string;
@@ -98,6 +99,7 @@ export const createBlog = async (
       content: params.content,
       category: 'blog',
       source_link: params.source_link,
+      source_type: params.source_type,
       cover_img: params.cover_img,
       tags: params.tags ?? [],
       author: params.author ?? '',

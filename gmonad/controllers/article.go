@@ -26,6 +26,7 @@ func CreateArticle(c *gin.Context) {
 		CoverImg:    req.CoverImg,
 		Tags:        req.Tags,
 		SourceLink:  req.SourceLink,
+		SourceType:  req.SourceType,
 		Author:      req.Author,
 		Translator:  req.Translator,
 	}
