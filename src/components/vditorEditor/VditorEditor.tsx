@@ -6,6 +6,11 @@ import { emoji } from './emoji';
 import styles from './VditorEditor.module.css';
 import 'vditor/dist/index.css';
 
+// 获取 ImagePlus 图标的 SVG 字符串
+const getImagePlusSvg = (): string => {
+  return `<svg t="1757168120066" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6241" width="64" height="64"><path d="M829 598q-9-9-22.5-9t-22.5 9l-90 90q-9 10-9 22.5t9.5 22 22 9.5 22.5-9l35-35v198q1 12 9.5 21.5t23 10 23-8T838 896V698l39 38q10 10 22.5 10t22-10 9.5-22.5-9-22.5zM410 358q11-27 5.5-55T390 253q-22-22-51.5-27t-56.5 4q-27 13-42.5 38.5T224 323q1 40 27 66t66 27q29 0 54.5-15.5T410 358z m-122-35q0-13 10-22 2-7 8.5-10t13.5-3q13 0 22.5 8.5T352 317t-8 22-21 13q-15 0-25-8.5T288 323zM896 96H128q-27 1-45 19t-19 45v640q1 27 19 45t45 19h544v-64H160q-15-1-23.5-10.5T128 768V192q0-13 8.5-22.5T160 160h704q15 0 23.5 9.5T896 192v416h64V160q-1-27-19-45t-45-19zM182 714q10 9 22.5 9t22.5-9l135-135 115 115h3q19 11 38-3l317-317q10-10 10-22t-10-22-22.5-10-22.5 10L496 624 381 506q-10-8-21-7.5T339 509L179 669q-7 10-6.5 22.5T182 714z" p-id="6242"></path></svg>`;
+};
+
 // 清理Markdown格式符号前后的空格
 const cleanMarkdownSpaces = (text: string): string => {
   return text
@@ -94,6 +99,10 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               'italic',
               'strike',
               'link',
+              {
+                name: 'upload',
+                icon: getImagePlusSvg(),
+              },
               '|',
               'list',
               'ordered-list',
@@ -106,9 +115,7 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               'code',
               'inline-code',
               '|',
-              'upload',
               'table',
-              '|',
               'undo',
               'redo',
               '|',
