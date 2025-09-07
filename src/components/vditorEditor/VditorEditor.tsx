@@ -102,6 +102,7 @@ const VditorEditor = React.forwardRef<any, VditorEditorProps>(
               {
                 name: 'upload',
                 icon: getImagePlusSvg(),
+                tip: '上传图片',
               },
               '|',
               'list',
