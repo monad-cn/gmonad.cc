@@ -13,9 +13,7 @@ import {
   Button,
   Popconfirm,
   App as AntdApp,
-  Modal,
   Form,
-  Input
 } from 'antd';
 import { BookOpen, FileText, Eye, Clock, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -23,13 +21,23 @@ import dayjs from 'dayjs';
 import styles from './index.module.css';
 import { deleteBlog, getBlogs } from '../api/blog';
 import { deleteTutorial, getTutorials } from '../api/tutorial';
-import { deletePost, getPosts, updatePost } from '../api/post';
+import { deletePost, getPosts, updatePost, getPostById } from '../api/post';
 import { useAuth } from '@/contexts/AuthContext';
 import AvatarEdit from '@/components/settings/AvatarEdit';
 import NicknameEdit from '@/components/settings/NicknameEdit';
+import PostDetailModal from '@/components/posts/PostDetailModal';
+import CreatePostModal from '@/components/posts/CreatePostModal';
+import {
+  PostType,
+  CreatePostState,
+  PostDetailState,
+  FollowState,
+} from '@/types/posts';
+import { usePostData } from '@/hooks/usePostData';
+import { parseMarkdown } from '@/lib/markdown';
+
 import { updateUser } from '../api/user';
 import { useSession } from 'next-auth/react';
-
 
 const { Title, Text } = Typography;
 
@@ -59,12 +67,36 @@ export default function DashboardPage() {
     pageSize: 10,
     total: 0,
   });
-  const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
-  const [editingPost, setEditingPost] = useState<any>(null);
   const [postForm] = Form.useForm();
-  const [postTags, setPostTags] = useState<string[]>([]);
   const { session } = useAuth();
   const { update } = useSession();
+
+  // 帖子相关
+  const [createState, setCreateState] = useState<CreatePostState>({
+    isCreateModalVisible: false,
+    isEditMode: false,
+    editingPost: null,
+    tags: [],
+    inputVisible: false,
+    inputValue: '',
+    btnLoading: false,
+  });
+
+  // 帖子详情状态
+  const [detailState, setDetailState] = useState<PostDetailState>({
+    isPostDetailVisible: false,
+    selectedPost: null,
+    postContent: '',
+    detailLoading: false,
+  });
+
+  // 关注状态管理
+  const [followState, setFollowState] = useState<FollowState>({
+    followingStates: new Map(),
+  });
+
+  // 使用帖子相关Hook
+  const { interactionState, fetchPosts, fetchPostsStats } = usePostData();
 
   const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
@@ -122,8 +154,8 @@ export default function DashboardPage() {
     try {
       setPostsLoading(true);
       const result = await getPosts({
-        page,
-        page_size: pageSize,
+        page: postsPagination.current || page,
+        page_size: postsPagination.pageSize || pageSize,
         user_id: session?.user?.uid as unknown as number,
         order: 'desc',
       });
@@ -142,6 +174,17 @@ export default function DashboardPage() {
       setPostsLoading(false);
     }
   };
+
+  // 解析Markdown内容
+  useEffect(() => {
+    if (detailState.selectedPost?.description) {
+      parseMarkdown(detailState.selectedPost.description, {
+        breaks: true,
+      }).then((htmlContent) => {
+        setDetailState((prev) => ({ ...prev, postContent: htmlContent }));
+      });
+    }
+  }, [detailState.selectedPost?.description]);
 
   useEffect(() => {
     if (session?.user?.uid) {
@@ -186,11 +229,11 @@ export default function DashboardPage() {
         email: session?.user?.email ?? '',
         avatar: avatarUrl,
         github: session?.user?.github ?? '',
-        username: session?.user?.username ?? ''
+        username: session?.user?.username ?? '',
       });
 
       if (result.success) {
-        message.success("头像更新成功")
+        message.success('头像更新成功');
         console.log('头像更新成功:', avatarUrl);
 
         // 刷新session，更新用户信息
@@ -198,8 +241,8 @@ export default function DashboardPage() {
           ...session,
           user: {
             ...session?.user,
-            avatar: avatarUrl
-          }
+            avatar: avatarUrl,
+          },
         });
       } else {
         console.error('头像更新失败:', result.message);
@@ -216,11 +259,11 @@ export default function DashboardPage() {
         email: session?.user?.email ?? '',
         avatar: session?.user?.avatar ?? '',
         github: session?.user?.github ?? '',
-        username: nickname
+        username: nickname,
       });
 
       if (result.success) {
-        message.success("昵称修改成功")
+        message.success('昵称修改成功');
 
         // 刷新session，更新用户信息
         await update({
@@ -228,8 +271,8 @@ export default function DashboardPage() {
           user: {
             ...session?.user,
             username: nickname,
-            name: nickname  // 同时更新name字段
-          }
+            name: nickname, // 同时更新name字段
+          },
         });
       } else {
         message.error('昵称修改失败');
@@ -241,12 +284,11 @@ export default function DashboardPage() {
     }
   };
 
-
   const handleDeleteTutorial = async (id: number) => {
     try {
       const result = await deleteTutorial(id);
       if (result.success) {
-        message.success("教程删除成功！");
+        message.success('教程删除成功！');
         loadTutorials();
       } else {
         message.error('删除出错');
@@ -256,12 +298,11 @@ export default function DashboardPage() {
     }
   };
 
-
   const handleDeleteBlog = async (id: number) => {
     try {
       const result = await deleteBlog(id);
       if (result.success) {
-        message.success("博客删除成功！");
+        message.success('博客删除成功！');
         loadBlogs();
       } else {
         message.error('删除出错');
@@ -275,7 +316,7 @@ export default function DashboardPage() {
     try {
       const result = await deletePost(id);
       if (result.success) {
-        message.success("帖子删除成功！");
+        message.success('帖子删除成功！');
         loadPosts();
       } else {
         message.error('删除出错');
@@ -285,62 +326,103 @@ export default function DashboardPage() {
     }
   };
 
-  const handleEditPost = (post: any) => {
-    setEditingPost(post);
-    setIsEditPostModalVisible(true);
+  const handlePostClick = async (post: PostType) => {
+    try {
+      setPostsLoading(true);
+      setDetailState((prev) => ({
+        ...prev,
+        isPostDetailVisible: true,
+        detailLoading: true,
+      }));
+
+      const res = await getPostById(post.ID.toString());
+      if (res.success && res.data) {
+        setDetailState((prev) => ({
+          ...prev,
+          selectedPost: res.data || null, // 确保类型兼容
+        }));
+      }
+    } catch (error) {
+      console.error('获取帖子详情异常:', error);
+    } finally {
+      setPostsLoading(false);
+      setDetailState((prev) => ({
+        ...prev,
+        detailLoading: false,
+      }));
+    }
+  };
+
+  // 处理帖子创建/更新
+  const handlePostSubmit = async (values: {
+    title: string;
+    description: string;
+    twitter?: string;
+  }) => {
+    try {
+      setCreateState((prev) => ({ ...prev, btnLoading: true }));
+
+      if (createState.isEditMode && createState.editingPost) {
+        const res = await updatePost(createState.editingPost.ID.toString(), {
+          title: values.title,
+          description: values.description,
+          tags: createState.tags,
+          twitter: values.twitter || '',
+        });
+
+        if (res.success) {
+          message.success('帖子更新成功！');
+          // 帖子列表更新
+          loadPosts();
+        } else {
+          message.error(res.message || '更新失败');
+        }
+      }
+      // 重置状态
+      setCreateState({
+        isCreateModalVisible: false,
+        isEditMode: false,
+        editingPost: null,
+        tags: [],
+        inputVisible: false,
+        inputValue: '',
+        btnLoading: false,
+      });
+      postForm.resetFields();
+      fetchPosts();
+      fetchPostsStats();
+    } catch {
+      message.error('操作失败，请重试');
+    } finally {
+      setCreateState((prev) => ({ ...prev, btnLoading: false }));
+    }
+  };
+
+  //  点击编辑帖子
+  const handleEditPost = (post: PostType) => {
+    setCreateState({
+      ...createState,
+      isEditMode: true,
+      editingPost: post,
+      isCreateModalVisible: true,
+      tags: post.tags || [],
+    });
+
     postForm.setFieldsValue({
       title: post.title,
       description: post.description,
       twitter: post.twitter || '',
     });
-    setPostTags(post.tags || []);
-  };
-
-  const handleUpdatePost = async (values: any) => {
-    try {
-      if (!editingPost) return;
-
-      const result = await updatePost(editingPost.ID.toString(), {
-        title: values.title,
-        description: values.description,
-        tags: postTags,
-        twitter: values.twitter || '',
-      });
-
-      if (result.success) {
-        message.success("帖子更新成功！");
-        setIsEditPostModalVisible(false);
-        setEditingPost(null);
-        postForm.resetFields();
-        setPostTags([]);
-        loadPosts();
-      } else {
-        message.error(result.message || '更新失败');
-      }
-    } catch (error) {
-      message.error('更新失败，请重试');
-    }
-  };
-
-  const handleCancelEditPost = () => {
-    setIsEditPostModalVisible(false);
-    setEditingPost(null);
-    postForm.resetFields();
-    setPostTags([]);
   };
 
   if (!session) {
     return (
       <div className={styles.emptyState}>
-        <img
-          src="/meme1.gif"
-          className={styles.emptyImage}
-        />
+        <img src="/meme1.gif" className={styles.emptyImage} />
         <p>请先登录以查看个人中心</p>
       </div>
     );
   }
-
 
   const renderContent = () => {
     if (activeTab === 'blogs') {
@@ -362,7 +444,9 @@ export default function DashboardPage() {
                 className={styles.listItem}
                 actions={[
                   <div className={styles.itemMeta}>
-                    <Link href={`/blogs/${blog.ID}/edit`}><Edit size={16} className={styles.metaIcon} /></Link>
+                    <Link href={`/blogs/${blog.ID}/edit`}>
+                      <Edit size={16} className={styles.metaIcon} />
+                    </Link>
                     <Popconfirm
                       title="删除博客"
                       description="你确定删除这个博客吗？"
@@ -378,7 +462,7 @@ export default function DashboardPage() {
                         title="删除博客"
                       />
                     </Popconfirm>
-                  </div>
+                  </div>,
                 ]}
               >
                 <div className={styles.itemContent}>
@@ -424,11 +508,10 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-              </List.Item >
-            )
-            }
+              </List.Item>
+            )}
           />
-          < div className={styles.bottomPagination} >
+          <div className={styles.bottomPagination}>
             <Pagination
               current={blogsPagination.current}
               total={blogsPagination.total}
@@ -440,8 +523,8 @@ export default function DashboardPage() {
                 `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
               }
             />
-          </div >
-        </Card >
+          </div>
+        </Card>
       );
     }
 
@@ -483,7 +566,7 @@ export default function DashboardPage() {
                         className={styles.metaBtn}
                       />
                     </Popconfirm>
-                  </div>
+                  </div>,
                 ]}
               >
                 <div className={styles.itemContent}>
@@ -516,16 +599,6 @@ export default function DashboardPage() {
                     </Text>
                     <div className={styles.itemFooter}>
                       <Space>
-                        {/* {tutorial.dapp?.name && (
-                          <Tag className={styles.itemTag}>
-                            {tutorial.dapp.name}
-                          </Tag>
-                        )} */}
-                        {/* {tutorial.tags?.slice(0, 2).map((tag: string) => (
-                          <Tag key={tag} className={styles.itemTag}>
-                            {tag}
-                          </Tag>
-                        ))} */}
                         <Clock size={14} className={styles.itemClock} />
                         <span>
                           {dayjs(
@@ -541,18 +614,6 @@ export default function DashboardPage() {
               </List.Item>
             )}
           />
-          {/*
-          <Pagination
-            current={tutorialsPagination.current}
-            total={tutorialsPagination.total}
-            pageSize={tutorialsPagination.pageSize}
-            onChange={(page, pageSize) => loadTutorials(page, pageSize)}
-            showSizeChanger
-            showQuickJumper
-            showTotal={(total, range) =>
-              `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`
-            }
-          /> */}
 
           <div className={styles.bottomPagination}>
             <Pagination
@@ -587,19 +648,20 @@ export default function DashboardPage() {
             renderItem={(post) => (
               <List.Item
                 key={post.ID}
-                className={styles.listItem}
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => handlePostClick(post)}
                 actions={[
-                  <div className={styles.itemMeta}>
+                  <div
+                    className={styles.itemMeta}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Button
                       type="text"
                       size="small"
                       icon={<Edit size={16} />}
                       title="编辑帖子"
                       className={styles.metaBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditPost(post);
-                      }}
+                      onClick={(e) => handleEditPost(post)}
                     />
                     <Popconfirm
                       title="删除帖子"
@@ -617,7 +679,7 @@ export default function DashboardPage() {
                         className={styles.metaBtn}
                       />
                     </Popconfirm>
-                  </div>
+                  </div>,
                 ]}
               >
                 <div className={styles.itemContent}>
@@ -720,84 +782,107 @@ export default function DashboardPage() {
         </Row>
       </div>
 
-      {/* 编辑帖子Modal */}
-      <Modal
-        title="编辑帖子"
-        open={isEditPostModalVisible}
-        onCancel={handleCancelEditPost}
-        footer={null}
-        width={800}
-      >
-        <Form
-          form={postForm}
-          layout="vertical"
-          onFinish={handleUpdatePost}
-        >
-          <Form.Item
-            name="title"
-            label="标题"
-            rules={[{ required: true, message: '请输入帖子标题' }]}
-          >
-            <Input placeholder="请输入帖子标题" />
-          </Form.Item>
+      {/* 帖子详情模态框 */}
+      <PostDetailModal
+        visible={detailState.isPostDetailVisible}
+        loading={detailState.detailLoading}
+        post={detailState.selectedPost}
+        postContent={detailState.postContent}
+        isAuthenticated={status === 'authenticated'}
+        currentUserId={Number(session?.user?.uid)}
+        isShowOperate={false}
+        likeCount={
+          detailState.selectedPost
+            ? (interactionState.postLikeCounts.get(
+                detailState.selectedPost.ID
+              ) ?? 0)
+            : 0
+        }
+        favoriteCount={
+          detailState.selectedPost
+            ? (interactionState.postFavoriteCounts.get(
+                detailState.selectedPost.ID
+              ) ?? 0)
+            : 0
+        }
+        onClose={() =>
+          setDetailState({
+            isPostDetailVisible: false,
+            selectedPost: null,
+            postContent: '',
+            detailLoading: false,
+          })
+        }
+        onLike={() => {}}
+        onBookmark={() => {}}
+        onFollow={() => {}}
+      />
 
-          <Form.Item
-            name="description"
-            label="内容"
-            rules={[{ required: true, message: '请输入帖子内容' }]}
-          >
-            <Input.TextArea
-              rows={8}
-              placeholder="请输入帖子内容"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="twitter"
-            label="Twitter链接"
-          >
-            <Input placeholder="请输入Twitter链接（可选）" />
-          </Form.Item>
-
-          <Form.Item label="标签">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
-              {postTags.map((tag, index) => (
-                <Tag
-                  key={index}
-                  closable
-                  onClose={() => {
-                    const newTags = postTags.filter((_, i) => i !== index);
-                    setPostTags(newTags);
-                  }}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-            <Input
-              placeholder="输入标签后按回车添加"
-              onPressEnter={(e) => {
-                const value = (e.target as HTMLInputElement).value.trim();
-                if (value && !postTags.includes(value)) {
-                  setPostTags([...postTags, value]);
-                  (e.target as HTMLInputElement).value = '';
-                }
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-              <Button onClick={handleCancelEditPost}>
-                取消
-              </Button>
-              <Button type="primary" htmlType="submit">
-                更新帖子
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Modal>
+      {/* 创建/编辑帖子模态框 */}
+      <CreatePostModal
+        visible={createState.isCreateModalVisible}
+        isEditMode={createState.isEditMode}
+        loading={createState.btnLoading}
+        form={postForm}
+        tags={createState.tags}
+        inputVisible={createState.inputVisible}
+        inputValue={createState.inputValue}
+        onCancel={() => {
+          setCreateState({
+            isCreateModalVisible: false,
+            isEditMode: false,
+            editingPost: null,
+            tags: [],
+            inputVisible: false,
+            inputValue: '',
+            btnLoading: false,
+          });
+          postForm.resetFields();
+        }}
+        onSubmit={handlePostSubmit}
+        onEditorChange={(value) => postForm.setFieldValue('description', value)}
+        onTagAdd={() => {
+          if (
+            createState.inputValue &&
+            !createState.tags.includes(createState.inputValue)
+          ) {
+            setCreateState((prev) => ({
+              ...prev,
+              tags: [...prev.tags, prev.inputValue],
+              inputValue: '',
+              inputVisible: false,
+            }));
+          }
+        }}
+        onTagRemove={(tag) => {
+          setCreateState((prev) => ({
+            ...prev,
+            tags: prev.tags.filter((t) => t !== tag),
+          }));
+        }}
+        onInputChange={(value) =>
+          setCreateState((prev) => ({ ...prev, inputValue: value }))
+        }
+        onInputVisibleChange={(visible) =>
+          setCreateState((prev) => ({ ...prev, inputVisible: visible }))
+        }
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (
+              createState.inputValue &&
+              !createState.tags.includes(createState.inputValue)
+            ) {
+              setCreateState((prev) => ({
+                ...prev,
+                tags: [...prev.tags, prev.inputValue],
+                inputValue: '',
+                inputVisible: false,
+              }));
+            }
+          }
+        }}
+      />
     </div>
   );
 }

@@ -14,11 +14,12 @@ interface PostDetailModalProps {
   postContent: string;
   isAuthenticated: boolean;
   currentUserId?: number;
-  likeState: boolean;
-  bookmarkState: boolean;
-  followingState: boolean;
+  likeState?: boolean;
+  bookmarkState?: boolean;
+  followingState?: boolean;
   likeCount: number;
   favoriteCount: number;
+  isShowOperate?: boolean;
   onClose: () => void;
   onLike: (postId: number, e: React.MouseEvent) => void;
   onBookmark: (postId: number, e: React.MouseEvent) => void;
@@ -37,6 +38,7 @@ export default function PostDetailModal({
   followingState,
   likeCount,
   favoriteCount,
+  isShowOperate,
   onClose,
   onLike,
   onBookmark,
@@ -45,7 +47,12 @@ export default function PostDetailModal({
   if (!post) return null;
 
   const user =
-    (post.user as { ID?: number; username?: string; name?: string; avatar?: string }) || {};
+    (post.user as {
+      ID?: number;
+      username?: string;
+      name?: string;
+      avatar?: string;
+    }) || {};
   const userName = user.username || user.name || '未知用户';
   const userAvatar = user.avatar || '/placeholder.svg';
   const userId = user.ID;
@@ -73,21 +80,25 @@ export default function PostDetailModal({
                 className={styles.postDetailAvatar}
               />
               {/* 关注按钮 - 只有登录且不是自己的帖子时显示 */}
-              {isAuthenticated &&
-                userId &&
-                currentUserId !== userId && (
-                  <Button
-                    type="primary"
-                    size="small"
-                    icon={followingState?<Check size={12} />:<UserPlus size={12} />}
-                    className={`${styles.followButton} ${
-                      followingState ? styles.following : ''
-                    }`}
-                    onClick={(e) => onFollow(userId, e)}
-                  >
-                    {followingState ? '已关注' : '关注'}
-                  </Button>
-                )}
+              {isAuthenticated && userId && currentUserId !== userId && (
+                <Button
+                  type="primary"
+                  size="small"
+                  icon={
+                    followingState ? (
+                      <Check size={12} />
+                    ) : (
+                      <UserPlus size={12} />
+                    )
+                  }
+                  className={`${styles.followButton} ${
+                    followingState ? styles.following : ''
+                  }`}
+                  onClick={(e) => onFollow(userId, e)}
+                >
+                  {followingState ? '已关注' : '关注'}
+                </Button>
+              )}
             </div>
             <div className={styles.postDetailAuthorInfo}>
               <h4 className={styles.postDetailAuthorName}>{userName}</h4>
@@ -154,59 +165,66 @@ export default function PostDetailModal({
         <div className={styles.postDetailFooter}>
           <div className={styles.postDetailActions}>
             {/* 点赞按钮 */}
-            <Tooltip
-              title={
-                !isAuthenticated
-                  ? '登录后可点赞'
-                  : likeState
-                    ? '取消点赞'
-                    : '点赞'
-              }
-              placement="top"
-            >
-              <Button
-                type="text"
-                size="large"
-                icon={
-                  <Heart size={16} fill={likeState ? 'currentColor' : 'none'} />
+            {isShowOperate ? (
+              <Tooltip
+                title={
+                  !isAuthenticated
+                    ? '登录后可点赞'
+                    : likeState
+                      ? '取消点赞'
+                      : '点赞'
                 }
-                className={`${styles.postDetailActionBtn} ${
-                  likeState ? styles.liked : ''
-                } ${!isAuthenticated ? styles.guestBtn : ''}`}
-                onClick={(e) => onLike(post.ID, e)}
+                placement="top"
               >
-                {likeCount > 0 && <span>{likeCount}</span>}
-              </Button>
-            </Tooltip>
+                <Button
+                  type="text"
+                  size="large"
+                  icon={
+                    <Heart
+                      size={16}
+                      fill={likeState ? 'currentColor' : 'none'}
+                    />
+                  }
+                  className={`${styles.postDetailActionBtn} ${
+                    likeState ? styles.liked : ''
+                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                  onClick={(e) => onLike(post.ID, e)}
+                >
+                  {likeCount > 0 && <span>{likeCount}</span>}
+                </Button>
+              </Tooltip>
+            ) : null}
 
             {/* 收藏按钮 */}
-            <Tooltip
-              title={
-                !isAuthenticated
-                  ? '登录后可收藏'
-                  : bookmarkState
-                    ? '取消收藏'
-                    : '收藏'
-              }
-              placement="top"
-            >
-              <Button
-                type="text"
-                size="large"
-                icon={
-                  <Bookmark
-                    size={16}
-                    fill={bookmarkState ? 'currentColor' : 'none'}
-                  />
+            {isShowOperate ? (
+              <Tooltip
+                title={
+                  !isAuthenticated
+                    ? '登录后可收藏'
+                    : bookmarkState
+                      ? '取消收藏'
+                      : '收藏'
                 }
-                className={`${styles.postDetailActionBtn} ${
-                  bookmarkState ? styles.bookmarked : ''
-                } ${!isAuthenticated ? styles.guestBtn : ''}`}
-                onClick={(e) => onBookmark(post.ID, e)}
+                placement="top"
               >
-                {favoriteCount > 0 && <span>{favoriteCount}</span>}
-              </Button>
-            </Tooltip>
+                <Button
+                  type="text"
+                  size="large"
+                  icon={
+                    <Bookmark
+                      size={16}
+                      fill={bookmarkState ? 'currentColor' : 'none'}
+                    />
+                  }
+                  className={`${styles.postDetailActionBtn} ${
+                    bookmarkState ? styles.bookmarked : ''
+                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                  onClick={(e) => onBookmark(post.ID, e)}
+                >
+                  {favoriteCount > 0 && <span>{favoriteCount}</span>}
+                </Button>
+              </Tooltip>
+            ) : null}
           </div>
         </div>
       </div>

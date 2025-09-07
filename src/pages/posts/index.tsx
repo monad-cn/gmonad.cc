@@ -504,6 +504,7 @@ export default function PostsList() {
           postContent={detailState.postContent}
           isAuthenticated={status === 'authenticated'}
           currentUserId={Number(session?.user?.uid)}
+          isShowOperate={true}
           likeState={
             detailState.selectedPost
               ? interactionState.postLikeStates.get(
