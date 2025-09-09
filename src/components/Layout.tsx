@@ -9,7 +9,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const router = useRouter();
+  // const router = useRouter();
   
   // Define routes that should hide the navbar
   // const hideNavbarRoutes = [

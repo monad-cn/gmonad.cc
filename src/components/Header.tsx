@@ -2,19 +2,26 @@ import { ChevronDown, Menu as MenuIcon } from 'lucide-react';
 import { Image, Drawer } from 'antd';
 import styles from '../styles/Header.module.css';
 import Link from 'next/link';
-import { Dropdown, Menu } from 'antd';
+import { Dropdown } from 'antd';
 import Auth from './Auth';
 import { useState, useMemo, useEffect } from 'react';
-import { SiWechat, SiX } from 'react-icons/si';
+// import { SiWechat, SiX } from 'react-icons/si';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // 使用 useMemo 确保 Auth 组件只创建一次，避免重复渲染
   const authComponent = useMemo(() => <Auth />, []);
 
-  // 控制页面滚动锁定
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 控制页面滚动锁定 - 仅在客户端执行
+  useEffect(() => {
+    if (!mounted) return;
+    
     if (mobileMenuOpen) {
       // 保存当前滚动位置
       const scrollY = window.scrollY;
@@ -53,7 +60,7 @@ export default function Header() {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, mounted]);
 
   // const [showNewsBanner, setShowNewsBanner] = useState(true);
   // useEffect(() => {

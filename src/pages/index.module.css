@@ -1765,6 +1765,23 @@
   animation: pulse 2s infinite;
 }
 
+.ctaParticleStatic {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.particleFallback {
+  position: absolute;
+  inset: 0;
+}
+
 .ctaContent {
   position: relative;
   z-index: 10;

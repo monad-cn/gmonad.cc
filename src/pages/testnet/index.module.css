@@ -612,6 +612,23 @@
 .star:nth-child(3n) {
     width: 3px;
     height: 3px;
+}
+
+.starStatic {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.starsFallback {
+    position: absolute;
+    inset: 0;
     opacity: 0.8;
 }
 

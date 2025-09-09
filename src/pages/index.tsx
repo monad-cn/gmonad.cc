@@ -25,13 +25,16 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import styles from './index.module.css';
-import { SiDiscord, SiTelegram, SiX } from 'react-icons/si';
+import { SiTelegram, SiX } from 'react-icons/si';
 import { Avatar, Image } from 'antd';
 import EventSection from './events/section';
 import { getDapps } from './api/dapp';
+import ClientOnly from '../components/ClientOnly';
 
 export default function Home() {
+  const router = useRouter();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [dapps, setDapps] = useState<any[]>([]);
@@ -39,12 +42,8 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
-  const [stats, setStats] = useState({
-    members: 1000,
-    activities: 50,
-    projects: 20,
-    commits: 1250,
-  });
+  // Removed stats - currently not used as the stats section is commented out
+  const [particleStyles, setParticleStyles] = useState<Array<React.CSSProperties>>([]);
 
   const scrollGallery = (direction: 'left' | 'right') => {
     const container = document.querySelector(`.${styles.galleryContainer}`) as HTMLElement;
@@ -119,19 +118,17 @@ export default function Home() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // 实时数据更新
-    const interval = setInterval(() => {
-      setStats((prev) => ({
-        members: prev.members + Math.floor(Math.random() * 3),
-        activities: prev.activities,
-        projects: prev.projects,
-        commits: prev.commits + Math.floor(Math.random() * 5),
-      }));
-    }, 5000);
+    // 生成粒子样式（客户端挂载后）
+    const styles = [...Array(30)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      animationDuration: `${2 + Math.random() * 3}s`,
+    }));
+    setParticleStyles(styles);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      clearInterval(interval);
     };
   }, []);
 
@@ -515,7 +512,7 @@ export default function Home() {
             <div className={styles.timelineLine}></div>
             {milestones.map((milestone, index) => (
               <div
-                key={index}
+                key={`milestone-${index}`}
                 className={`${styles.milestoneItem} ${index % 2 === 0 ? styles.milestoneLeft : styles.milestoneRight}`}
               >
                 <div className={styles.milestoneContent}>
@@ -556,7 +553,7 @@ export default function Home() {
           </div>
           <div className={styles.featuresGrid}>
             {features.map((feature, index) => (
-              <div key={index} className={styles.featureCard}>
+              <div key={`feature-${index}`} className={styles.featureCard}>
                 <div className={styles.featureCardGlow}></div>
                 <div className={styles.featureCardContent}>
                   <div className={styles.featureIconWrapper}>
@@ -588,39 +585,42 @@ export default function Home() {
             onMouseLeave={() => setIsHovering(false)}
           >
             {dapps.map((dapp) => (
-              <Link href={`/ecosystem/dapps/${dapp.ID}`}>
-                <div key={dapp.ID} className={styles.dappCard}>
-                  <div className={styles.coverContainer}>
-                    <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
-                    <div className={styles.cardTop}>
-                      <div className={styles.cardActions}>
-                        {dapp.featured && (
-                          <div className={styles.featuredBadge}>
-                            <Star className={styles.featuredIcon} />
-                          </div>
-                        )}
-                        {dapp.x && (
-                          <Link href={dapp.x} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
-                            <SiX className={styles.actionIcon} />
-                          </Link>
-                        )}
-                        {dapp.site && (
-                          <Link href={dapp.site} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
-                            <Globe className={styles.actionIcon} />
-                          </Link>
-                        )}
-                      </div>
+              <div 
+                key={dapp.ID} 
+                className={styles.dappCard} 
+                onClick={() => router.push(`/ecosystem/dapps/${dapp.ID}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.coverContainer}>
+                  <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                  <div className={styles.cardTop}>
+                    <div className={styles.cardActions}>
+                      {dapp.featured && (
+                        <div className={styles.featuredBadge}>
+                          <Star className={styles.featuredIcon} />
+                        </div>
+                      )}
+                      {dapp.x && (
+                        <Link href={dapp.x} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                          <SiX className={styles.actionIcon} />
+                        </Link>
+                      )}
+                      {dapp.site && (
+                        <Link href={dapp.site} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                          <Globe className={styles.actionIcon} />
+                        </Link>
+                      )}
                     </div>
                   </div>
-                  <div className={styles.logoContainer}>
-                    <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
-                  </div>
-                  <div className={styles.cardContent}>
-                    <h3 className={styles.dappName}>{dapp.name}</h3>
-                    <p className={styles.dappDescription}>{dapp.description}</p>
-                  </div>
                 </div>
-              </Link>
+                <div className={styles.logoContainer}>
+                  <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+                </div>
+                <div className={styles.cardContent}>
+                  <h3 className={styles.dappName}>{dapp.name}</h3>
+                  <p className={styles.dappDescription}>{dapp.description}</p>
+                </div>
+              </div>
             ))}
           </div>
           <div className={styles.viewMoreWrapper}>
@@ -643,7 +643,7 @@ export default function Home() {
           </div>
           <div className={styles.resourcesGrid}>
             {resources.map((resource, index) => (
-              <div key={index} className={styles.resourceCard}>
+              <div key={`resource-${index}`} className={styles.resourceCard}>
                 <div className={styles.resourceCardGlow}></div>
                 <div className={styles.resourceCardHeader}>
                   <div className={styles.resourceIconWrapper}>
@@ -685,7 +685,7 @@ export default function Home() {
               className={styles.membersScrollStatic}
             >
               {duplicatedMembers.map((member, index) => (
-                <div key={index} className={styles.memberItem}>
+                <div key={`member-${index}`} className={styles.memberItem}>
                   <a
                     href={member.twitter}
                     target="_blank"
@@ -712,18 +712,22 @@ export default function Home() {
       {/* CTA Section */}
       <section className={styles.cta}>
         <div className={styles.ctaBackground}>
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className={styles.ctaParticle}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            ></div>
-          ))}
+          <ClientOnly fallback={
+            <div className={styles.particleFallback}>
+              {/* 静态占位粒子，避免布局偏移 */}
+              {[...Array(30)].map((_, i) => (
+                <div key={`particle-static-${i}`} className={styles.ctaParticleStatic}></div>
+              ))}
+            </div>
+          }>
+            {particleStyles.map((style, i) => (
+              <div
+                key={`particle-${i}`}
+                className={styles.ctaParticle}
+                style={style}
+              ></div>
+            ))}
+          </ClientOnly>
         </div>
         <div className={styles.container}>
           <div className={styles.ctaContent}>
