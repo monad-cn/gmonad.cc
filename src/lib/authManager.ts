@@ -3,6 +3,7 @@ class AuthManager {
   private static instance: AuthManager;
   private isLoggingIn = false;
   private loginPromise: Promise<any> | null = null;
+  private lastSuccessMessageTime = 0;
 
   private constructor() {}
 
@@ -44,10 +45,21 @@ class AuthManager {
     return this.isLoggingIn;
   }
 
+  // 防止重复显示成功消息
+  public shouldShowSuccessMessage(): boolean {
+    const now = Date.now();
+    if (now - this.lastSuccessMessageTime < 1000) { // 1秒内不重复显示
+      return false;
+    }
+    this.lastSuccessMessageTime = now;
+    return true;
+  }
+
   // 用于测试的重置方法
   public reset(): void {
     this.isLoggingIn = false;
     this.loginPromise = null;
+    this.lastSuccessMessageTime = 0;
   }
 }
 

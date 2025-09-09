@@ -40,7 +40,10 @@ const Auth: React.FC = () => {
         });
 
         if (res?.ok) {
-          message.success('登录成功');
+          // 防止 React Strict Mode 导致的重复消息显示
+          if (authManager.shouldShowSuccessMessage()) {
+            message.success('登录成功');
+          }
           // 清除 URL 中的 code 参数，NextAuth 会自动更新 session 状态
           router.replace(router.pathname, undefined, { shallow: true });
         } else {

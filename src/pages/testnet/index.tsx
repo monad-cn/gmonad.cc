@@ -39,6 +39,7 @@ import {
 import styles from './index.module.css';
 import { SiDiscord, SiX } from 'react-icons/si';
 import { useEffect, useRef, useState } from 'react';
+import ClientOnly from '../../components/ClientOnly';
 import { StatisticsUrl } from '../api/api';
 import CountUp from 'react-countup';
 import { getDapps } from '../api/dapp';
@@ -99,6 +100,7 @@ export default function TestnetPage() {
   const [messageApi, contextHolder] = message.useMessage();
   const [stat, setStat] = useState<Stat | null>(null);
   const [dapps, setDapps] = useState<any[]>([]);
+  const [starStyles, setStarStyles] = useState<Array<React.CSSProperties>>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [startedScroll, setStartedScroll] = useState(false);
 
@@ -140,6 +142,14 @@ export default function TestnetPage() {
   };
 
   useEffect(() => {
+    // 生成星星样式（客户端挂载后）
+    const styles = [...Array(50)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+    }));
+    setStarStyles(styles);
+    
     const eventSource = new EventSource(StatisticsUrl);
 
     eventSource.onmessage = (event) => {
@@ -835,17 +845,21 @@ export default function TestnetPage() {
         {/* Call to Action */}
         <div className={styles.ctaSection}>
           <div className={styles.ctaStars}>
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className={styles.star}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                }}
-              />
-            ))}
+            <ClientOnly fallback={
+              <div className={styles.starsFallback}>
+                {[...Array(20)].map((_, i) => (
+                  <div key={i} className={styles.starStatic} />
+                ))}
+              </div>
+            }>
+              {starStyles.slice(0, 20).map((style, i) => (
+                <div
+                  key={i}
+                  className={styles.star}
+                  style={style}
+                />
+              ))}
+            </ClientOnly>
           </div>
           <div className={styles.ctaContent}>
             <Title level={2} className={styles.ctaTitle}>
