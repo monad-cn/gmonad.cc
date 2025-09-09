@@ -377,4 +377,38 @@ func GetUserPostStatuses(userID uint, postIDs []uint) (PostStatus, error) {
 		Liked:     likedPostIDs,
 		Favorited: favoritedPostIDs,
 	}, nil
+
+}
+
+// 查询用户是否关注了这些帖子作者
+func GetUserFollowStatusForPosts(userID uint, postIDs []uint) ([]uint, error) {
+	// 查出作者ID
+	var authorIDs []uint
+	if err := db.Model(&Post{}).
+		Where("id IN ?", postIDs).
+		Pluck("user_id", &authorIDs).Error; err != nil {
+		return nil, err
+	}
+
+	// 去重
+	authorMap := make(map[uint]struct{})
+	for _, id := range authorIDs {
+		authorMap[id] = struct{}{}
+	}
+	uniqueAuthors := make([]uint, 0, len(authorMap))
+	for id := range authorMap {
+		uniqueAuthors = append(uniqueAuthors, id)
+	}
+
+	// 查询是否关注
+	var following []uint
+	if len(uniqueAuthors) > 0 {
+		if err := db.Model(&Follow{}).
+			Where("follower_id = ? AND following_id IN ?", userID, uniqueAuthors).
+			Pluck("following_id", &following).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	return following, nil
 }

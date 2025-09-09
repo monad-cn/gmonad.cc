@@ -114,3 +114,42 @@ export const unfollowUser = async (userId: number): Promise<FollowResult> => {
         };
     }
 };
+
+
+export interface FollowState {
+  user_id: number;
+  is_following: boolean;
+}
+
+export interface FollowStatesResult {
+  success: boolean;
+  message: string;
+  data?: FollowState[];
+}
+
+export const getFollowStates = async (
+  userIds: number[]
+): Promise<FollowStatesResult> => {
+  try {
+    const response = await apiRequest<FollowStatesResult>(
+      "/users/follow/states",
+      "POST",
+      { user_ids: userIds }
+    );
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? "ok",
+        data: response.data as unknown as FollowState[],
+      };
+    }
+
+    return { success: false, message: response.message ?? "查询失败" };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message ?? "网络错误，请稍后重试",
+    };
+  }
+};

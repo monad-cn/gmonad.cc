@@ -11,7 +11,6 @@ import {
   PostType,
   CreatePostState,
   PostDetailState,
-  FollowState,
 } from '@/types/posts';
 
 import PostFilters from '@/components/posts/PostFilters';
@@ -61,11 +60,6 @@ export default function PostsList() {
     detailLoading: false,
   });
 
-  // 关注状态管理
-  const [followState, setFollowState] = useState<FollowState>({
-    followingStates: new Map(),
-  });
-
   const [form] = Form.useForm();
 
   // 解析Markdown内容
@@ -79,7 +73,7 @@ export default function PostsList() {
     }
   }, [detailState.selectedPost?.description]);
 
-  // 获取用户的点赞/收藏状态
+  // 获取用户的点赞/收藏/关注状态
   useEffect(() => {
     if (status === 'authenticated' && listState.posts.length > 0) {
       fetchPostsStatus();
@@ -293,17 +287,9 @@ export default function PostsList() {
     }
 
     try {
-      const currentFollowing = followState.followingStates.get(userId) || false;
-      const nextFollowing = !currentFollowing;
 
-      // 乐观更新
-      setFollowState((prev) => ({
-        ...prev,
-        followingStates: new Map(prev.followingStates).set(
-          userId,
-          nextFollowing
-        ),
-      }));
+      const currentFollowing = interactionState.followingStates.get(userId) || false;
+      const nextFollowing = !currentFollowing;
 
       // 调用后端 API
       let result;
@@ -313,15 +299,12 @@ export default function PostsList() {
         result = await unfollowUser(userId);
       }
 
+       if (result.success) { 
+        fetchPostsStatus();
+       }
+
       if (!result.success) {
         // 回滚
-        setFollowState((prev) => ({
-          ...prev,
-          followingStates: new Map(prev.followingStates).set(
-            userId,
-            currentFollowing
-          ),
-        }));
         message.error('操作失败，请重试');
         return;
       }
@@ -331,6 +314,7 @@ export default function PostsList() {
       message.error('操作失败，请重试');
     }
   };
+
 
   // 其他处理函数...
   const handleEditPost = (post: PostType) => {
@@ -482,7 +466,7 @@ export default function PostsList() {
                         false
                       }
                       followingState={
-                        followState.followingStates.get(post.user?.ID || 0) ||
+                        interactionState.followingStates.get(post.user?.ID || 0) ||
                         false
                       }
                       likeCount={
@@ -546,7 +530,7 @@ export default function PostsList() {
           }
           followingState={
             detailState.selectedPost?.user?.ID
-              ? followState.followingStates.get(
+              ? interactionState.followingStates.get(
                   detailState.selectedPost.user.ID
                 ) || false
               : false

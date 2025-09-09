@@ -293,3 +293,7 @@ type UpdateUserRequest struct {
 	Avatar   string `json:"avatar" binding:"required"`
 	Github   string `json:"github"`
 }
+
+type FollowStatesRequest struct {
+	UserIDs []uint `json:"user_ids" binding:"required"`
+}

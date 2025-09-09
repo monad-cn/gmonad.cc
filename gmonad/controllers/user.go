@@ -156,3 +156,27 @@ func UnfollowUser(c *gin.Context) {
 
 	utils.SuccessResponse(c, http.StatusOK, "unfollow success", nil)
 }
+
+func GetFollowStates(c *gin.Context) {
+	var req FollowStatesRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "invalid request", nil)
+		return
+	}
+
+	uid, ok := c.Get("uid")
+	if !ok {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "unauthorized", nil)
+		return
+	}
+	followerID, _ := uid.(uint)
+
+	states, err := models.GetFollowingStates(followerID, req.UserIDs)
+	if err != nil {
+		logger.Log.Errorf("get follow states failed: %v", err)
+		utils.ErrorResponse(c, http.StatusInternalServerError, "internal error", nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "ok", states)
+}

@@ -42,6 +42,7 @@ export function usePostData() {
       postBookmarkStates: new Map(),
       postLikeCounts: new Map(),
       postFavoriteCounts: new Map(),
+      followingStates: new Map(),
     });
 
   const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
@@ -52,19 +53,25 @@ export function usePostData() {
       const postIds = listState.posts.map(p => p.ID);
       if (postIds.length > 0) {
         const res = await getPostsStatus(postIds);
-        if (res.success && res.data?.status) {
+        if (res.success && res.data?.status && res.data?.followed) {
           const likeMap = new Map<number, boolean>();
           const favoriteMap = new Map<number, boolean>();
+          const followedMap = new Map<number, boolean>();
 
           res.data.status.forEach((r) => {
             if (r.liked) likeMap.set(r.post_id, true);
             if (r.favorited) favoriteMap.set(r.post_id, r.favorited);
           });
 
+          res.data.followed.forEach((f) => {
+            followedMap.set(f, true)
+          });
+
           setInteractionState((prev) => ({
             ...prev,
             postLikeStates: likeMap,
             postBookmarkStates: favoriteMap,
+            followingStates: followedMap
           }));
         }
       }
@@ -107,6 +114,7 @@ export function usePostData() {
             ...prev,
             postLikeCounts: likeCountMap,
             postFavoriteCounts: favoriteCountMap,
+            
           }));
         }
       } catch (error) {

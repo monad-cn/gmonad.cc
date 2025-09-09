@@ -17,6 +17,7 @@ export interface Post {
   tags: string[];
   view_count: number;
   user?: User;
+  user_id: number;
   CreatedAt: string;
   UpdatedAt: string;
   favorite_count: number; 
@@ -295,6 +296,7 @@ export interface PostStatus {
 
 export interface PostsStatusData {
   status: PostStatus[];
+  followed: number[];
 }
 
 export interface PostsStatusResult {
@@ -306,7 +308,7 @@ export interface PostsStatusResult {
 export const getPostsStatus = async (ids: number[]): Promise<PostsStatusResult> => {
   try {
     if (!ids || ids.length === 0) {
-      return { success: true, message: 'ok', data: { status: [] } };
+      return { success: true, message: 'ok', data: { status: [], followed: []} };
     }
 
     const query = new URLSearchParams({ ids: ids.join(',') });

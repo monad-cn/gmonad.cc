@@ -24,6 +24,7 @@ func init() {
 	db.AutoMigrate(&PostLike{})
 	db.AutoMigrate(&PostFavorite{})
 	db.AutoMigrate(&DailyStats{})
+	db.AutoMigrate(&Follow{})
 
 	InitRolesAndPermissions()
 	InitCategories()

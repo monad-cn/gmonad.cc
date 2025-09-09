@@ -131,3 +131,39 @@ func IsFollowing(followerID, followingID uint) (bool, error) {
 	}
 	return true, nil
 }
+
+type FollowState struct {
+	UserID      uint `json:"user_id"`
+	IsFollowing bool `json:"is_following"`
+}
+
+// 批量检查是否关注
+func GetFollowingStates(followerID uint, userIDs []uint) ([]FollowState, error) {
+	// 默认全部 false
+	states := make([]FollowState, 0, len(userIDs))
+	stateMap := make(map[uint]bool, len(userIDs))
+	for _, id := range userIDs {
+		stateMap[id] = false
+	}
+
+	// 查找已关注的
+	var follows []Follow
+	if err := db.Where("follower_id = ? AND following_id IN ?", followerID, userIDs).
+		Find(&follows).Error; err != nil {
+		return nil, err
+	}
+
+	for _, f := range follows {
+		stateMap[f.FollowingID] = true
+	}
+
+	// 转换为数组
+	for _, id := range userIDs {
+		states = append(states, FollowState{
+			UserID:      id,
+			IsFollowing: stateMap[id],
+		})
+	}
+
+	return states, nil
+}

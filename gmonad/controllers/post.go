@@ -275,7 +275,8 @@ type PostStatus struct {
 }
 
 type PostStatusResponse struct {
-	Status []PostStatus `json:"status"`
+	Status   []PostStatus `json:"status"`
+	Followed []uint       `json:"followed"`
 }
 
 func GetPostStatus(c *gin.Context) {
@@ -314,6 +315,12 @@ func GetPostStatus(c *gin.Context) {
 		favoritedSet[id] = true
 	}
 
+	following, err := models.GetUserFollowStatusForPosts(userID, postIDs)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "failed to get follow status", nil)
+		return
+	}
+
 	var respStatus []PostStatus
 	for _, pid := range postIDs {
 		respStatus = append(respStatus, PostStatus{
@@ -324,7 +331,8 @@ func GetPostStatus(c *gin.Context) {
 	}
 
 	resp := PostStatusResponse{
-		Status: respStatus,
+		Status:   respStatus,
+		Followed: following,
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "get success", resp)

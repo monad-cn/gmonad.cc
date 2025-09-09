@@ -20,6 +20,7 @@ export interface PostInteractionState {
   postBookmarkStates: Map<number, boolean>;
   postLikeCounts: Map<number, number>;
   postFavoriteCounts: Map<number, number>;
+  followingStates: Map<number, boolean>;
 }
 
 export interface CreatePostState {
@@ -37,8 +38,4 @@ export interface PostDetailState {
   selectedPost: PostType | null;
   postContent: string;
   detailLoading: boolean;
-}
-
-export interface FollowState {
-  followingStates: Map<number, boolean>;
 }
