@@ -46,6 +46,33 @@ export function usePostData() {
 
   const [postsStats, setPostsStats] = useState<PostsStats | null>(null);
 
+  // 获取用户帖子状态（点赞/收藏）
+  const fetchPostsStatus = useCallback(async () => {
+    try {
+      const postIds = listState.posts.map(p => p.ID);
+      if (postIds.length > 0) {
+        const res = await getPostsStatus(postIds);
+        if (res.success && res.data?.status) {
+          const likeMap = new Map<number, boolean>();
+          const favoriteMap = new Map<number, boolean>();
+
+          res.data.status.forEach((r) => {
+            if (r.liked) likeMap.set(r.post_id, true);
+            if (r.favorited) favoriteMap.set(r.post_id, r.favorited);
+          });
+
+          setInteractionState((prev) => ({
+            ...prev,
+            postLikeStates: likeMap,
+            postBookmarkStates: favoriteMap,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('获取帖子状态失败:', error);
+    }
+  }, [listState.posts]);
+
   // 获取帖子列表
   const fetchPosts = useCallback(
     async (params?: {
@@ -128,6 +155,7 @@ export function usePostData() {
     postsStats,
     fetchPosts,
     fetchPostsStats,
+    fetchPostsStatus,
     toggleLike,
     toggleBookmark,
   };

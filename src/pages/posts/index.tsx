@@ -37,6 +37,7 @@ export default function PostsList() {
     postsStats,
     fetchPosts,
     fetchPostsStats,
+    fetchPostsStatus,
     toggleLike,
     toggleBookmark,
   } = usePostData();
@@ -77,6 +78,13 @@ export default function PostsList() {
       });
     }
   }, [detailState.selectedPost?.description]);
+
+  // 获取用户的点赞/收藏状态
+  useEffect(() => {
+    if (status === 'authenticated' && listState.posts.length > 0) {
+      fetchPostsStatus();
+    }
+  }, [status, listState.posts, fetchPostsStatus]);
 
   // 筛选条件变化时重新获取数据
   useEffect(() => {
