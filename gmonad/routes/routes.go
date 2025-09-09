@@ -15,6 +15,8 @@ func SetupRouter(r *gin.Engine) {
 	user := r.Group("v1/users")
 	{
 		user.PUT("/:id", middlewares.JWT(""), controllers.UpdateUser)
+		user.POST("/follow/:id", middlewares.JWT(""), controllers.FollowUser)
+		user.POST("/unfollow/:id", middlewares.JWT(""), controllers.UnfollowUser)
 	}
 
 	event := r.Group("/v1/events")

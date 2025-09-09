@@ -21,6 +21,12 @@ export interface UserResult {
     data?: User;
 }
 
+export interface FollowResult {
+    success: boolean;
+    message: string;
+}
+
+
 export const updateUser = async (
     userId: number,
     params: UpdateUserParams
@@ -52,6 +58,59 @@ export const updateUser = async (
         return {
             success: false,
             message: error?.message ?? '网络错误，请稍后重试',
+        };
+    }
+};
+
+
+export const followUser = async (userId: number): Promise<FollowResult> => {
+    try {
+        const response = await apiRequest<FollowResult>(
+            `/users/follow/${userId}`,
+            "POST"
+        );
+
+        if (response.code === 200) {
+            return {
+                success: true,
+                message: response.message ?? "关注成功",
+            };
+        }
+
+        return {
+            success: false,
+            message: response.message ?? "关注失败",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error?.message ?? "网络错误，请稍后重试",
+        };
+    }
+};
+
+export const unfollowUser = async (userId: number): Promise<FollowResult> => {
+    try {
+        const response = await apiRequest<FollowResult>(
+            `/users/unfollow/${userId}`,
+            "POST"
+        );
+
+        if (response.code === 200) {
+            return {
+                success: true,
+                message: response.message ?? "取消关注成功",
+            };
+        }
+
+        return {
+            success: false,
+            message: response.message ?? "取消关注失败",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error?.message ?? "网络错误，请稍后重试",
         };
     }
 };

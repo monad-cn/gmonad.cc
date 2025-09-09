@@ -94,3 +94,40 @@ func GetUserWithPermissions(uid uint) ([]string, error) {
 	}
 	return perms, nil
 }
+
+type Follow struct {
+	gorm.Model
+	FollowerID  uint `gorm:"not null;index" json:"follower_id"`  // 关注者
+	FollowingID uint `gorm:"not null;index" json:"following_id"` // 被关注者
+
+	Follower  User `gorm:"foreignKey:FollowerID" json:"follower"`
+	Following User `gorm:"foreignKey:FollowingID" json:"following"`
+}
+
+// 关注
+func FollowUser(followerID, followingID uint) error {
+	follow := Follow{
+		FollowerID:  followerID,
+		FollowingID: followingID,
+	}
+	return db.Create(&follow).Error
+}
+
+// 取消关注
+func UnfollowUser(followerID, followingID uint) error {
+	return db.Where("follower_id = ? AND following_id = ?", followerID, followingID).
+		Delete(&Follow{}).Error
+}
+
+// 检查是否已关注
+func IsFollowing(followerID, followingID uint) (bool, error) {
+	var follow Follow
+	err := db.Where("follower_id = ? AND following_id = ?", followerID, followingID).First(&follow).Error
+	if err == gorm.ErrRecordNotFound {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

@@ -16,6 +16,7 @@ import PostDetailModal from '@/components/posts/PostDetailModal';
 import CreatePostModal from '@/components/posts/CreatePostModal';
 
 import styles from './index.module.css';
+import { followUser, unfollowUser } from '../api/user';
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();
@@ -266,7 +267,7 @@ export default function PostsList() {
   // 处理关注
   const handleFollow = async (userId: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     if (status !== 'authenticated') {
       message.warning('请先登录后再进行关注操作');
       return;
@@ -288,11 +289,15 @@ export default function PostsList() {
         followingStates: new Map(prev.followingStates).set(userId, nextFollowing)
       }));
 
-      // 这里调用关注API
-      // TODO: 实际调用关注API
-      const ok = true; // 临时模拟成功
+      // 调用后端 API
+      let result;
+      if (nextFollowing) {
+        result = await followUser(userId);
+      } else {
+        result = await unfollowUser(userId);
+      }
 
-      if (!ok) {
+      if (!result.success) {
         // 回滚
         setFollowState((prev) => ({
           ...prev,
@@ -504,19 +509,18 @@ export default function PostsList() {
           postContent={detailState.postContent}
           isAuthenticated={status === 'authenticated'}
           currentUserId={Number(session?.user?.uid)}
-          isShowOperate={true}
           likeState={
             detailState.selectedPost
               ? interactionState.postLikeStates.get(
-                  detailState.selectedPost.ID
-                ) || false
+                detailState.selectedPost.ID
+              ) || false
               : false
           }
           bookmarkState={
             detailState.selectedPost
               ? interactionState.postBookmarkStates.get(
-                  detailState.selectedPost.ID
-                ) || false
+                detailState.selectedPost.ID
+              ) || false
               : false
           }
           followingState={
@@ -527,15 +531,15 @@ export default function PostsList() {
           likeCount={
             detailState.selectedPost
               ? (interactionState.postLikeCounts.get(
-                  detailState.selectedPost.ID
-                ) ?? 0)
+                detailState.selectedPost.ID
+              ) ?? 0)
               : 0
           }
           favoriteCount={
             detailState.selectedPost
               ? (interactionState.postFavoriteCounts.get(
-                  detailState.selectedPost.ID
-                ) ?? 0)
+                detailState.selectedPost.ID
+              ) ?? 0)
               : 0
           }
           onClose={() =>
