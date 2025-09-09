@@ -7,7 +7,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 import { createPost, updatePost, deletePost, getPostById } from '../api/post';
-import { PostType, CreatePostState, PostDetailState, FollowState } from '@/types/posts';
+import {
+  PostType,
+  CreatePostState,
+  PostDetailState,
+  FollowState,
+} from '@/types/posts';
 
 import PostFilters from '@/components/posts/PostFilters';
 import PostSidebar from '@/components/posts/PostSidebar';
@@ -286,7 +291,10 @@ export default function PostsList() {
       // 乐观更新
       setFollowState((prev) => ({
         ...prev,
-        followingStates: new Map(prev.followingStates).set(userId, nextFollowing)
+        followingStates: new Map(prev.followingStates).set(
+          userId,
+          nextFollowing
+        ),
       }));
 
       // 调用后端 API
@@ -301,7 +309,10 @@ export default function PostsList() {
         // 回滚
         setFollowState((prev) => ({
           ...prev,
-          followingStates: new Map(prev.followingStates).set(userId, currentFollowing)
+          followingStates: new Map(prev.followingStates).set(
+            userId,
+            currentFollowing
+          ),
         }));
         message.error('操作失败，请重试');
         return;
@@ -463,7 +474,8 @@ export default function PostsList() {
                         false
                       }
                       followingState={
-                        followState.followingStates.get(post.user?.ID || 0) || false
+                        followState.followingStates.get(post.user?.ID || 0) ||
+                        false
                       }
                       likeCount={
                         interactionState.postLikeCounts.get(post.ID) ?? 0
@@ -509,37 +521,40 @@ export default function PostsList() {
           postContent={detailState.postContent}
           isAuthenticated={status === 'authenticated'}
           currentUserId={Number(session?.user?.uid)}
+          isShowOperate={true}
           likeState={
             detailState.selectedPost
               ? interactionState.postLikeStates.get(
-                detailState.selectedPost.ID
-              ) || false
+                  detailState.selectedPost.ID
+                ) || false
               : false
           }
           bookmarkState={
             detailState.selectedPost
               ? interactionState.postBookmarkStates.get(
-                detailState.selectedPost.ID
-              ) || false
+                  detailState.selectedPost.ID
+                ) || false
               : false
           }
           followingState={
             detailState.selectedPost?.user?.ID
-              ? followState.followingStates.get(detailState.selectedPost.user.ID) || false
+              ? followState.followingStates.get(
+                  detailState.selectedPost.user.ID
+                ) || false
               : false
           }
           likeCount={
             detailState.selectedPost
               ? (interactionState.postLikeCounts.get(
-                detailState.selectedPost.ID
-              ) ?? 0)
+                  detailState.selectedPost.ID
+                ) ?? 0)
               : 0
           }
           favoriteCount={
             detailState.selectedPost
               ? (interactionState.postFavoriteCounts.get(
-                detailState.selectedPost.ID
-              ) ?? 0)
+                  detailState.selectedPost.ID
+                ) ?? 0)
               : 0
           }
           onClose={() =>
