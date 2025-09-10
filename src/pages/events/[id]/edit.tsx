@@ -137,7 +137,7 @@ export default function EditEventPage() {
         twitter: values.twitter,
         registration_link: values.registrationLink,
         registration_deadline: values.registrationDeadline
-          ? values.registrationDeadline.format('YYYY-MM-DD HH:mm')
+          ? values.registrationDeadline.format('YYYY-MM-DD HH:mm:ss')
           : '',
       };
 
