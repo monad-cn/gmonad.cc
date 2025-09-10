@@ -52,24 +52,118 @@ type PostFilter struct {
 	UserId    uint
 	StartDate *time.Time
 	EndDate   *time.Time
-	OrderDesc bool
+
 	Page      int
 	PageSize  int
+	OrderDesc bool
+
+	// ------------------------
+	// Hybrid Feed
+	// ------------------------
+	Hybrid      bool // true 表示混合流模式（关注流 + 自然流）
+	FollowingOf uint // 当前登录用户 ID，用于查询关注流
 }
 
 func QueryPosts(filter PostFilter) ([]Post, int64, error) {
 	var posts []Post
 	var total int64
 
+	// 分页 limit
+	pageSize := filter.PageSize
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	page := filter.Page
+	if page < 1 {
+		page = 1
+	}
+
+	// 判断是否 hybrid 模式（关注流 + 自然流混合）
+	if filter.Hybrid && filter.FollowingOf != 0 {
+		// 70%关注流，30%自然流
+		followLimit := int(float64(pageSize) * 0.7)
+
+		// 查询关注流
+		var followPosts []Post
+		followQuery := db.Preload("User").Model(&Post{}).Joins("LEFT JOIN users ON users.id = posts.user_id")
+		if filter.Keyword != "" {
+			likePattern := "%" + strings.ToLower(filter.Keyword) + "%"
+			followQuery = followQuery.Where(`
+				LOWER(posts.title) LIKE ? OR
+				LOWER(posts.description) LIKE ? OR
+				LOWER(users.username) LIKE ?
+			`, likePattern, likePattern, likePattern)
+		}
+		if filter.UserId != 0 {
+			followQuery = followQuery.Where("user_id = ?", filter.UserId)
+		}
+		if filter.StartDate != nil {
+			followQuery = followQuery.Where("posts.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
+		}
+		followQuery = followQuery.Where("posts.user_id IN (?)",
+			db.Model(&Follow{}).Select("following_id").Where("follower_id = ?", filter.FollowingOf),
+		)
+		followQuery = followQuery.Order("created_at desc").Order("view_count desc").Limit(50)
+		if err := followQuery.Find(&followPosts).Error; err != nil {
+			return nil, 0, err
+		}
+
+		// 查询自然流
+		var globalPosts []Post
+		globalQuery := db.Preload("User").Model(&Post{}).Joins("LEFT JOIN users ON users.id = posts.user_id")
+		if filter.Keyword != "" {
+			likePattern := "%" + strings.ToLower(filter.Keyword) + "%"
+			globalQuery = globalQuery.Where(`
+				LOWER(posts.title) LIKE ? OR
+				LOWER(posts.description) LIKE ? OR
+				LOWER(users.username) LIKE ?
+			`, likePattern, likePattern, likePattern)
+		}
+		if filter.UserId != 0 {
+			globalQuery = globalQuery.Where("user_id = ?", filter.UserId)
+		}
+		if filter.StartDate != nil {
+			globalQuery = globalQuery.Where("posts.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
+		}
+		globalQuery = globalQuery.Where("posts.user_id NOT IN (?)",
+			db.Model(&Follow{}).Select("following_id").Where("follower_id = ?", filter.FollowingOf),
+		)
+		globalQuery = globalQuery.Order("created_at desc").Order("view_count desc").Limit(50)
+		if err := globalQuery.Find(&globalPosts).Error; err != nil {
+			return nil, 0, err
+		}
+
+		// 按比例混合
+		fIdx, gIdx := 0, 0
+		for len(posts) < pageSize {
+			if fIdx < len(followPosts) && len(posts) < followLimit {
+				posts = append(posts, followPosts[fIdx])
+				fIdx++
+			}
+			if gIdx < len(globalPosts) && len(posts) < pageSize {
+				posts = append(posts, globalPosts[gIdx])
+				gIdx++
+			}
+			if fIdx >= len(followPosts) && gIdx >= len(globalPosts) {
+				break
+			}
+		}
+
+		// 统计总数（可选，近似值）
+		total = int64(len(posts))
+		return posts, total, nil
+	}
+
+	// 非 hybrid 模式，原有逻辑
 	query := db.Preload("User").Model(&Post{}).Joins("LEFT JOIN users ON users.id = posts.user_id")
 
 	if filter.Keyword != "" {
 		likePattern := "%" + strings.ToLower(filter.Keyword) + "%"
 		query = query.Where(`
-        LOWER(posts.title) LIKE ? OR
-        LOWER(posts.description) LIKE ? OR
-        LOWER(users.username) LIKE ?
-    `, likePattern, likePattern, likePattern)
+			LOWER(posts.title) LIKE ? OR
+			LOWER(posts.description) LIKE ? OR
+			LOWER(users.username) LIKE ?
+		`, likePattern, likePattern, likePattern)
 	}
 
 	if filter.UserId != 0 {
@@ -80,7 +174,7 @@ func QueryPosts(filter PostFilter) ([]Post, int64, error) {
 		query = query.Where("posts.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
 	}
 
-	// 统计总数（不加 limit 和 offset）
+	// 统计总数
 	query.Count(&total)
 
 	// 排序
@@ -89,22 +183,64 @@ func QueryPosts(filter PostFilter) ([]Post, int64, error) {
 	} else {
 		query = query.Order("created_at asc")
 	}
-
 	query = query.Order("view_count desc")
 
 	// 分页
-	if filter.Page < 1 {
-		filter.Page = 1
-	}
-	if filter.PageSize <= 0 {
-		filter.PageSize = 10
-	}
-	offset := (filter.Page - 1) * filter.PageSize
-	query = query.Offset(offset).Limit(filter.PageSize)
+	offset := (page - 1) * pageSize
+	query = query.Offset(offset).Limit(pageSize)
 
 	err := query.Find(&posts).Error
 	return posts, total, err
 }
+
+// func QueryPosts(filter PostFilter) ([]Post, int64, error) {
+// 	var posts []Post
+// 	var total int64
+
+// 	query := db.Preload("User").Model(&Post{}).Joins("LEFT JOIN users ON users.id = posts.user_id")
+
+// 	if filter.Keyword != "" {
+// 		likePattern := "%" + strings.ToLower(filter.Keyword) + "%"
+// 		query = query.Where(`
+//         LOWER(posts.title) LIKE ? OR
+//         LOWER(posts.description) LIKE ? OR
+//         LOWER(users.username) LIKE ?
+//     `, likePattern, likePattern, likePattern)
+// 	}
+
+// 	if filter.UserId != 0 {
+// 		query = query.Where("user_id = ?", filter.UserId)
+// 	}
+
+// 	if filter.StartDate != nil {
+// 		query = query.Where("posts.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
+// 	}
+
+// 	// 统计总数（不加 limit 和 offset）
+// 	query.Count(&total)
+
+// 	// 排序
+// 	if filter.OrderDesc {
+// 		query = query.Order("created_at desc")
+// 	} else {
+// 		query = query.Order("created_at asc")
+// 	}
+
+// 	query = query.Order("view_count desc")
+
+// 	// 分页
+// 	if filter.Page < 1 {
+// 		filter.Page = 1
+// 	}
+// 	if filter.PageSize <= 0 {
+// 		filter.PageSize = 10
+// 	}
+// 	offset := (filter.Page - 1) * filter.PageSize
+// 	query = query.Offset(offset).Limit(filter.PageSize)
+
+// 	err := query.Find(&posts).Error
+// 	return posts, total, err
+// }
 
 type PostStats struct {
 	TotalPosts      int64            `json:"total_posts"`

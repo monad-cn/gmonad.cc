@@ -161,6 +161,13 @@ func QueryPosts(c *gin.Context) {
 		PageSize:  pageSize,
 	}
 
+	uid, ok := c.Get("uid")
+	if ok {
+		userId, _ := uid.(uint)
+		filter.FollowingOf = userId
+		filter.Hybrid = true
+	}
+
 	var start, end time.Time
 	start, _ = time.Parse("2006-01-02", startDate)
 	end, _ = time.Parse("2006-01-02", endDate)
