@@ -4,6 +4,7 @@ import { TrendingUp, Users, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { PostType, PostsStats } from '@/types/posts';
 import styles from '../../pages/posts/index.module.css';
+import Link from 'next/link';
 
 interface PostSidebarProps {
   postsStats: PostsStats | null;
@@ -71,7 +72,7 @@ export default function PostSidebar({
             const userAvatar = user.avatar || '/placeholder.svg';
 
             return (
-              <div key={user.ID} className={styles.activeUserItem}>
+              <Link key={user.id} href={`/dashboard/${user.id}`} className={styles.activeUserItem}>
                 <Image
                   width={40}
                   height={40}
@@ -85,7 +86,7 @@ export default function PostSidebar({
                     帖子数: {user.post_count || 0}
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
           {(postsStats?.top_active_users?.length ?? 0) === 0 && (

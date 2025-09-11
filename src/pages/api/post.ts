@@ -8,6 +8,13 @@ export interface User {
   post_count: number;
 }
 
+export interface UserV2 {
+  id: number;
+  username: string;
+  avatar: string;
+  post_count: number;
+}
+
 // 帖子主模型
 export interface Post {
   twitter: string | undefined;
@@ -250,7 +257,7 @@ export interface PostsStats {
   total_posts: number;       // 总帖子数
   active_user_count: number;      // 活跃用户数（发帖用户数）
   weekly_post_count: number;   // 本周帖子数
-  top_active_users: User[];         // 活跃用户列表，假设是用户数组（可根据后端调整）
+  top_active_users: UserV2[];         // 活跃用户列表，假设是用户数组（可根据后端调整）
   weekly_hot_posts: Post[];    // 本周热门帖子列表
   all_time_hot_posts: Post[];     // 总热门帖子列表
 }

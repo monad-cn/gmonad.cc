@@ -631,6 +631,10 @@
   margin-bottom: 0.25rem;
 }
 
+.activeUserPosts:hover {
+  color: #8b5cf6;
+}
+
 /* 社区统计 */
 .communityStats {
   display: grid;
