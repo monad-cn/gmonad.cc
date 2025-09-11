@@ -10,6 +10,17 @@
   max-width: none;
   line-height: 1.45;
   color: #374151;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* 模拟一个空行 */
+.prose p.extra-break {
+  height: 1.45em;
+  margin: 0;
 }
 
 .prose h1,
