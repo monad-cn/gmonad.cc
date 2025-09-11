@@ -45,7 +45,7 @@ type ActiveTab = 'blogs' | 'tutorials' | 'posts';
 
 export default function DashboardPage() {
   const { message } = AntdApp.useApp();
-  const [activeTab, setActiveTab] = useState<ActiveTab>('blogs');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('posts');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [tutorials, setTutorials] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
@@ -198,6 +198,11 @@ export default function DashboardPage() {
 
   const menuItems = [
     {
+      key: 'posts',
+      icon: <FileText className={styles.menuIcon} />,
+      label: '我的帖子',
+    },
+    {
       key: 'blogs',
       icon: <FileText className={styles.menuIcon} />,
       label: '我的博客',
@@ -206,11 +211,6 @@ export default function DashboardPage() {
       key: 'tutorials',
       icon: <BookOpen className={styles.menuIcon} />,
       label: '我的教程',
-    },
-    {
-      key: 'posts',
-      icon: <FileText className={styles.menuIcon} />,
-      label: '我的帖子',
     },
   ];
 
