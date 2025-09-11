@@ -31,13 +31,13 @@ import {
   PostType,
   CreatePostState,
   PostDetailState,
-  FollowState,
 } from '@/types/posts';
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 
 import { updateUser } from '../api/user';
 import { useSession } from 'next-auth/react';
+import { parseMd } from '@/utils/posts';
 
 const { Title, Text } = Typography;
 
@@ -88,11 +88,6 @@ export default function DashboardPage() {
     selectedPost: null,
     postContent: '',
     detailLoading: false,
-  });
-
-  // 关注状态管理
-  const [followState, setFollowState] = useState<FollowState>({
-    followingStates: new Map(),
   });
 
   // 使用帖子相关Hook
@@ -693,9 +688,14 @@ export default function DashboardPage() {
                         {post.title}
                       </Link>
                     </div>
-                    <Text type="secondary" className={styles.itemDesc}>
-                      {post.description}
-                    </Text>
+                    {/* 帖子描述 */}
+                    <div className={styles.postDescription}>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: parseMd(post.description || ''),
+                        }}
+                      />
+                    </div>
                     <div className={styles.itemFooter}>
                       <Space>
                         {post.tags?.slice(0, 3).map((tag: string) => (
@@ -794,15 +794,15 @@ export default function DashboardPage() {
         likeCount={
           detailState.selectedPost
             ? (interactionState.postLikeCounts.get(
-                detailState.selectedPost.ID
-              ) ?? 0)
+              detailState.selectedPost.ID
+            ) ?? 0)
             : 0
         }
         favoriteCount={
           detailState.selectedPost
             ? (interactionState.postFavoriteCounts.get(
-                detailState.selectedPost.ID
-              ) ?? 0)
+              detailState.selectedPost.ID
+            ) ?? 0)
             : 0
         }
         onClose={() =>
@@ -813,9 +813,9 @@ export default function DashboardPage() {
             detailLoading: false,
           })
         }
-        onLike={() => {}}
-        onBookmark={() => {}}
-        onFollow={() => {}}
+        onLike={() => { }}
+        onBookmark={() => { }}
+        onFollow={() => { }}
       />
 
       {/* 创建/编辑帖子模态框 */}

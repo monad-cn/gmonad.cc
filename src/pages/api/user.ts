@@ -27,6 +27,31 @@ export interface FollowResult {
 }
 
 
+export const getUser = async (userId: number): Promise<UserResult> => {
+  try {
+    const response = await apiRequest<UserResult>(
+      `/users/${userId}`,
+      "GET"
+    );
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? "获取成功",
+        data: response.data as unknown as User,
+      };
+    }
+
+    return { success: false, message: response.message ?? "获取失败" };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message ?? "网络错误，请稍后重试",
+    };
+  }
+};
+
+
 export const updateUser = async (
     userId: number,
     params: UpdateUserParams

@@ -10,6 +10,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetUser(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid ID", nil)
+		return
+	}
+
+	user, err := models.GetUserById(uint(id))
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid Article", nil)
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "success", user)
+}
+
 func UpdateUser(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
