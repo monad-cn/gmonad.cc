@@ -17,6 +17,12 @@
   overflow-wrap: break-word;
 }
 
+/* 模拟一个空行 */
+.prose p.extra-break {
+  height: 1.45em;
+  margin: 0;
+}
+
 .prose h1,
 .prose h2,
 .prose h3,
