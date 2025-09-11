@@ -34,6 +34,7 @@ import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 import { useRouter } from 'next/router';
 import { getUser, User } from '../../api/user';
+import { parseMd } from '@/utils/posts';
 
 const { Title, Text } = Typography;
 
@@ -467,9 +468,13 @@ export default function DashboardPage() {
                                                 {post.title}
                                             </Link>
                                         </div>
-                                        <Text type="secondary" className={styles.itemDesc}>
-                                            {post.description}
-                                        </Text>
+                                        <div className={styles.postDescription}>
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: parseMd(post.description || ''),
+                                                }}
+                                            />
+                                        </div>
                                         <div className={styles.itemFooter}>
                                             <Space>
                                                 {post.tags?.slice(0, 3).map((tag: string) => (
