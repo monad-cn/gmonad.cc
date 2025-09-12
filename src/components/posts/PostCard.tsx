@@ -8,6 +8,7 @@ import { PostType } from '@/types/posts';
 import styles from '../../pages/posts/index.module.css';
 
 import { parseMd } from '@/utils/posts';
+import Link from 'next/link';
 
 interface PostCardProps {
   post: PostType;
@@ -61,37 +62,33 @@ export default function PostCard({
         <div className={styles.postHeader}>
           <div className={styles.authorSection}>
             <div className={styles.avatarContainer}>
-              <Image
-                src={userAvatar}
-                alt={userName}
-                width={36}
-                height={36}
-                className={styles.avatar}
-              />
+              {/* 点击头像跳转 */}
+              <Link href={`/dashboard/${userId}`} passHref>
+                <Image
+                  src={userAvatar}
+                  alt={userName}
+                  width={36}
+                  height={36}
+                  className={styles.avatar}
+                />
+              </Link>
+
               {/* Follow/Unfollow button overlay */}
-              {isAuthenticated && 
-               userId && 
-               currentUserId !== userId && (
-                <button
-                  className={`${styles.followButtonOverlay} ${
-                    followingState
-                      ? styles.following
-                      : styles.notFollowing
-                  }`}
-                  onClick={(e) => onFollow(userId, e)}
-                  title={
-                    followingState
-                      ? '取消关注'
-                      : '关注用户'
-                  }
-                >
-                  {followingState ? (
-                    <Check size={12} />
-                  ) : (
-                    <Plus size={12} />
-                  )}
-                </button>
-              )}
+              {isAuthenticated &&
+                userId &&
+                currentUserId !== userId && (
+                  <button
+                    className={`${styles.followButtonOverlay} ${followingState ? styles.following : styles.notFollowing
+                      }`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // ✅ 阻止冒泡，避免触发头像的跳转
+                      onFollow(userId, e);
+                    }}
+                    title={followingState ? "取消关注" : "关注用户"}
+                  >
+                    {followingState ? <Check size={12} /> : <Plus size={12} />}
+                  </button>
+                )}
             </div>
             <div className={styles.authorInfo}>
               <span className={styles.authorName}>{userName}</span>
@@ -215,9 +212,8 @@ export default function PostCard({
                 icon={
                   <Heart size={14} fill={likeState ? 'currentColor' : 'none'} />
                 }
-                className={`${styles.interactionBtn} ${
-                  likeState ? styles.liked : ''
-                } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                className={`${styles.interactionBtn} ${likeState ? styles.liked : ''
+                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
                 onClick={(e) => onLike(post.ID, e)}
               >
                 {likeCount > 0 && <span>{likeCount}</span>}
@@ -244,9 +240,8 @@ export default function PostCard({
                     fill={bookmarkState ? 'currentColor' : 'none'}
                   />
                 }
-                className={`${styles.interactionBtn} ${
-                  bookmarkState ? styles.bookmarked : ''
-                } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                className={`${styles.interactionBtn} ${bookmarkState ? styles.bookmarked : ''
+                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
                 onClick={(e) => onBookmark(post.ID, e)}
               >
                 {favoriteCount > 0 && <span>{favoriteCount}</span>}
