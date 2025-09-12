@@ -10,6 +10,12 @@
   margin-bottom: 24px;
 }
 
+.avatarImage {
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
 .profileSection {
   max-width: 1200px;
   min-width: 1200px;
@@ -159,8 +165,8 @@
 
 .emptyState p {
   font-size: 14px;
-  color: #6E54FF;
-  border-color: #6E54FF;
+  color: #6e54ff;
+  border-color: #6e54ff;
   border-radius: 12px;
   padding: 1rem;
   margin-top: 20px;
@@ -253,7 +259,6 @@
   margin-top: 6px;
 }
 
-
 .itemFooter span {
   color: #8c8c8c;
   font-size: 12px;
@@ -328,7 +333,6 @@
   font-size: 14px;
 }
 
-
 .postDescription {
   color: #4b5563;
   font-size: 0.875rem;
@@ -346,7 +350,6 @@
   color: #8b5cf6;
   cursor: default;
 }
-
 
 /* ͔�� */
 @media (max-width: 1024px) {
