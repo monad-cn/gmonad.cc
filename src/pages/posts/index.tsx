@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Pagination, Button, Spin, Empty, Form, App as AntdApp } from 'antd';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Button, Spin, Empty, Form, App as AntdApp } from 'antd';
 import { User, Plus } from 'lucide-react';
 import debounce from 'lodash/debounce';
 
@@ -26,6 +26,9 @@ export default function PostsList() {
   const { message } = AntdApp.useApp();
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
+  const loadingRef = useRef<HTMLDivElement>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [allPosts, setAllPosts] = useState<PostType[]>([]);
 
   // 使用自定义Hook
   const {
@@ -73,12 +76,114 @@ export default function PostsList() {
     }
   }, [detailState.selectedPost?.description]);
 
+  // 同步帖子数据
+  useEffect(() => {
+    if (listState.currentPage === 1) {
+      // 当是第一页时，重置列表
+      setAllPosts(listState.posts);
+    } else if (isLoadingMore) {
+      // 加载更多时，追加数据
+      setAllPosts(prev => [...prev, ...listState.posts]);
+    }
+  }, [listState.posts, listState.currentPage, isLoadingMore]);
+
   // 获取用户的点赞/收藏/关注状态
   useEffect(() => {
-    if (status === 'authenticated' && listState.posts.length > 0) {
+    if (status === 'authenticated' && allPosts.length > 0) {
       fetchPostsStatus();
     }
-  }, [status, listState.posts, fetchPostsStatus]);
+  }, [status, allPosts, fetchPostsStatus]);
+
+  const handleLoadMore = useCallback(async () => {
+    if (
+      isLoadingMore || 
+      listState.loading || 
+      allPosts.length >= listState.total ||
+      !allPosts.length
+    ) {
+      return;
+    }
+
+    setIsLoadingMore(true);
+    try {
+      const nextPage = listState.currentPage + 1;
+      await fetchPosts({
+        keyword: listState.searchTerm,
+        order: listState.sortBy as 'asc' | 'desc',
+        page: nextPage,
+        page_size: listState.pageSize,
+        start_date: listState.startDate,
+        end_date: listState.endDate
+      });
+      setListState(prev => ({
+        ...prev,
+        currentPage: nextPage
+      }));
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [
+    isLoadingMore,
+    listState.loading,
+    listState.currentPage,
+    listState.searchTerm,
+    listState.sortBy,
+    listState.pageSize,
+    listState.startDate,
+    listState.endDate,
+    listState.total,
+    allPosts.length,
+    fetchPosts,
+    setListState
+  ]);
+
+  // 使用防抖处理滚动加载
+  const debouncedLoadMore = useCallback(
+    debounce(() => {
+      handleLoadMore();
+    }, 200),
+    [handleLoadMore]
+  );
+
+  // 监听滚动加载
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (
+          target.isIntersecting && 
+          !listState.loading && 
+          !isLoadingMore && 
+          allPosts.length > 0 && 
+          allPosts.length < listState.total
+        ) {
+          debouncedLoadMore();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0.1
+      }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+      debouncedLoadMore.cancel();
+    };
+  }, [
+    listState.loading,
+    listState.total,
+    allPosts.length,
+    isLoadingMore,
+    debouncedLoadMore
+  ]);
 
   // 筛选条件变化时重新获取数据
   useEffect(() => {
@@ -96,12 +201,15 @@ export default function PostsList() {
         computedEndDate = listState.dateRange[1].format('YYYY-MM-DD');
       }
 
+      // 重置状态
       setListState((prev) => ({
         ...prev,
         currentPage: 1,
         startDate: computedStartDate,
         endDate: computedEndDate,
       }));
+      setAllPosts([]); // 重置帖子列表
+      setIsLoadingMore(false);
 
       fetchPosts({
         keyword: listState.searchTerm,
@@ -124,6 +232,7 @@ export default function PostsList() {
     status,
     fetchPosts,
     fetchPostsStats,
+    setListState
   ]);
 
   const handleResetFilters = useCallback(() => {
@@ -373,21 +482,6 @@ export default function PostsList() {
     }
   };
 
-  const handlePageChange = async (page: number, size?: number) => {
-    setListState((prev) => ({
-      ...prev,
-      currentPage: page,
-      pageSize: size || prev.pageSize,
-    }));
-    await fetchPosts({ page, page_size: size || listState.pageSize });
-  };
-
-  const startIndex = (listState.currentPage - 1) * listState.pageSize + 1;
-  const endIndex = Math.min(
-    listState.currentPage * listState.pageSize,
-    listState.total
-  );
-
   return (
     <div className={`${styles.container} nav-t-top`}>
       <div className={styles.content}>
@@ -437,21 +531,27 @@ export default function PostsList() {
           onReset={handleResetFilters}
         />
 
-        <Spin spinning={listState.loading}>
-          <div className={styles.mainLayout}>
-            {/* 侧边栏 */}
-            <PostSidebar
-              postsStats={postsStats}
-              onPostClick={handlePostClick}
-            />
+        <div className={styles.mainLayout}>
+          {/* 侧边栏 */}
+          <PostSidebar
+            postsStats={postsStats}
+            onPostClick={handlePostClick}
+          />
 
-            {/* 帖子列表 */}
-            <div className={styles.postsSection}>
-              <div className={styles.postsContainer}>
-                {listState.posts.length === 0 ? (
-                  <Empty description="暂无帖子" className={styles.empty} />
+          {/* 帖子列表 */}
+          <div className={styles.postsSection}>
+            <div className={styles.postsContainer}>
+              {allPosts.length === 0 ? (
+                listState.loading && !isLoadingMore ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                    <Spin size="large" />
+                  </div>
                 ) : (
-                  listState.posts.map((post) => (
+                  <Empty description="暂无帖子" className={styles.empty} />
+                )
+              ) : (
+                <>
+                  {allPosts.map((post) => (
                     <PostCard
                       key={post.ID}
                       post={post}
@@ -482,28 +582,35 @@ export default function PostsList() {
                       onEdit={handleEditPost}
                       onDelete={handleDeletePost}
                     />
-                  ))
-                )}
-              </div>
+                  ))}
+                  {/* 加载更多指示器 */}
+                  <div 
+                    ref={loadingRef} 
+                    style={{ 
+                      height: '50px', 
+                      margin: '10px 0', 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center' 
+                    }}
+                  >
+                    {isLoadingMore ? (
+                      <Spin size="default" />
+                    ) : allPosts.length < listState.total ? (
+                      <div style={{ color: '#999', fontSize: '14px' }}>
+                        上滑加载更多
+                      </div>
+                    ) : (
+                      <div style={{ color: '#999', fontSize: '14px' }}>
+                        没有更多帖子了
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
-
-          {/* 分页 */}
-          <div className={styles.listBottomControls}>
-            <div className={styles.bottomPagination}>
-              <Pagination
-                current={listState.currentPage}
-                total={listState.total}
-                pageSize={listState.pageSize}
-                onChange={handlePageChange}
-                showTotal={(total) =>
-                  `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
-                }
-                className={styles.fullPagination}
-              />
-            </div>
-          </div>
-        </Spin>
+        </div>
 
         {/* 帖子详情模态框 */}
         <PostDetailModal
