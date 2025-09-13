@@ -18,6 +18,7 @@ interface PostCardProps {
   likeState: boolean;
   bookmarkState: boolean;
   followingState: boolean;
+  followLoading?: boolean;
   likeCount: number;
   favoriteCount: number;
   onPostClick: (post: PostType) => void;
@@ -36,6 +37,7 @@ export default function PostCard({
   likeState,
   bookmarkState,
   followingState,
+  followLoading,
   likeCount,
   favoriteCount,
   onPostClick,
@@ -85,8 +87,15 @@ export default function PostCard({
                       onFollow(userId, e);
                     }}
                     title={followingState ? "取消关注" : "关注用户"}
+                    disabled={followLoading}
                   >
-                    {followingState ? <Check size={12} /> : <Plus size={12} />}
+                    {followLoading ? (
+                      <span className={styles.loadingDot}></span>
+                    ) : followingState ? (
+                      <Check size={12} />
+                    ) : (
+                      <Plus size={12} />
+                    )}
                   </button>
                 )}
             </div>

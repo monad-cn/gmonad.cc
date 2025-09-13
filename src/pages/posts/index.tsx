@@ -63,6 +63,9 @@ export default function PostsList() {
     detailLoading: false,
   });
 
+  // 关注状态
+  const [followLoadingStates, setFollowLoadingStates] = useState<Map<number, boolean>>(new Map());
+
   const [form] = Form.useForm();
 
   // 解析Markdown内容
@@ -395,7 +398,14 @@ export default function PostsList() {
       return;
     }
 
+    // 如果正在加载中，直接返回
+    if (followLoadingStates.get(userId)) {
+      return;
+    }
+
     try {
+      // 设置加载状态
+      setFollowLoadingStates(prev => new Map(prev).set(userId, true));
 
       const currentFollowing = interactionState.followingStates.get(userId) || false;
       const nextFollowing = !currentFollowing;
@@ -408,9 +418,9 @@ export default function PostsList() {
         result = await unfollowUser(userId);
       }
 
-       if (result.success) { 
+      if (result.success) { 
         fetchPostsStatus();
-       }
+      }
 
       if (!result.success) {
         // 回滚
@@ -421,6 +431,13 @@ export default function PostsList() {
       message.success(nextFollowing ? '关注成功' : '取消关注成功');
     } catch {
       message.error('操作失败，请重试');
+    } finally {
+      // 清除加载状态
+      setFollowLoadingStates(prev => {
+        const next = new Map(prev);
+        next.delete(userId);
+        return next;
+      });
     }
   };
 
@@ -569,6 +586,7 @@ export default function PostsList() {
                         interactionState.followingStates.get(post.user?.ID || 0) ||
                         false
                       }
+                      followLoading={followLoadingStates.get(post.user?.ID || 0) || false}
                       likeCount={
                         interactionState.postLikeCounts.get(post.ID) ?? 0
                       }
