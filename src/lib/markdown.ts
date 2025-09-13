@@ -34,17 +34,17 @@ export const defaultOptions: MarkdownParseOptions = {
   xhtml: false,
 };
 
-// 1. 自定义换行扩展
+// 1. 自定义换行扩展【默认换行有2个/n标识，解析器会识别到，只有3个以上多行换行才会被合并，因此正则影爱匹配3个以上/n】
 const customLineBreakExtension = {
   name: 'customLineBreak',
   level: 'block',
   start(src: string) {
     // 寻找任意连续两个或以上换行符的位置
-    return src.match(/\n{2,}/)?.index;
+    return src.match(/\n{3,}/)?.index;
   },
   tokenizer(src: string) {
     // 正则表达式：匹配行首的 2 个或更多换行符
-    const rule = /^\n{2,}/;
+    const rule = /^\n{3,}/;
     const match = rule.exec(src);
 
     if (match) {
@@ -60,7 +60,7 @@ const customLineBreakExtension = {
     const newlineCount = (token.raw.match(/\n/g) || []).length;
 
     // 2. 计算需要生成多少个 <p> 标签
-    const pTagCount = newlineCount - 1;
+    const pTagCount = newlineCount - 2;
 
     // 3. 如果需要生成的标签数量大于0，就生成它们
     if (pTagCount > 0) {
