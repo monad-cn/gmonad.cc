@@ -104,6 +104,17 @@
   color: #8b5cf6;
 }
 
+.clearIcon {
+  color: #9ca3af;
+  width: 16px;
+  height: 16px;
+  transition: color 0.2s ease;
+}
+
+.clearIcon:hover {
+  color: #6b7280;
+}
+
 /* 🆕 新增：日期选择器样式 */
 .dateContainer {
   min-width: 280px;
