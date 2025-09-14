@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Input, Select, DatePicker, Button } from 'antd';
-import { Search, Calendar, RotateCcw } from 'lucide-react';
+import { Search, Calendar, RotateCcw, X } from 'lucide-react';
 import dayjs from 'dayjs';
 import DateButton from '@/components/base/DateButton';
 import styles from '../../pages/posts/index.module.css';
@@ -38,6 +38,15 @@ export default function PostFilters({
           <Input
             placeholder="搜索帖子、作者..."
             prefix={<Search className={styles.searchIcon} />}
+            suffix={
+              searchTerm ? (
+                <X
+                  className={styles.clearIcon}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => onSearchChange('')}
+                />
+              ) : null
+            }
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className={styles.searchInput}

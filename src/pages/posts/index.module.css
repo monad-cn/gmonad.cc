@@ -104,6 +104,17 @@
   color: #8b5cf6;
 }
 
+.clearIcon {
+  color: #9ca3af;
+  width: 16px;
+  height: 16px;
+  transition: color 0.2s ease;
+}
+
+.clearIcon:hover {
+  color: #6b7280;
+}
+
 /* 🆕 新增：日期选择器样式 */
 .dateContainer {
   min-width: 280px;
@@ -1164,5 +1175,29 @@
   .postDetailXLink {
     padding: 0.5rem;
     min-width: auto;
+  }
+}
+
+.loadingDot {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
   }
 }
