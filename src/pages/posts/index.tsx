@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
-import { createPost, updatePost, deletePost, getPostById } from '../api/post';
+import { createPost, updatePost, deletePost, getPostById, getPostsStatus } from '../api/post';
 import {
   PostType,
   CreatePostState,
@@ -86,9 +86,12 @@ export default function PostsList() {
       setAllPosts(listState.posts);
     } else if (isLoadingMore) {
       // 加载更多时，追加数据
-      setAllPosts(prev => [...prev, ...listState.posts]);
+      const newPosts = listState.posts;
+      const existingPostIds = new Set(allPosts.map(p => p.ID));
+      const uniqueNewPosts = newPosts.filter(p => !existingPostIds.has(p.ID));
+      setAllPosts(prev => [...prev, ...uniqueNewPosts]);
     }
-  }, [listState.posts, listState.currentPage, isLoadingMore]);
+  }, [listState.posts, listState.currentPage, isLoadingMore, allPosts]);
 
   // 获取用户的点赞/收藏/关注状态
   useEffect(() => {
@@ -122,6 +125,11 @@ export default function PostsList() {
         ...prev,
         currentPage: nextPage
       }));
+
+      // 获取新加载帖子的状态
+      if (status === 'authenticated') {
+        await fetchPostsStatus();
+      }
     } finally {
       setIsLoadingMore(false);
     }
@@ -137,7 +145,9 @@ export default function PostsList() {
     listState.total,
     allPosts.length,
     fetchPosts,
-    setListState
+    setListState,
+    status,
+    fetchPostsStatus
   ]);
 
   // 使用防抖处理滚动加载
@@ -403,34 +413,39 @@ export default function PostsList() {
       return;
     }
 
+    const currentFollowing = interactionState.followingStates.get(userId) || false;
+    const nextFollowing = !currentFollowing;
+
     try {
       // 设置加载状态
       setFollowLoadingStates(prev => new Map(prev).set(userId, true));
 
-      const currentFollowing = interactionState.followingStates.get(userId) || false;
-      const nextFollowing = !currentFollowing;
+      // 乐观更新
+      setInteractionState(prev => ({
+        ...prev,
+        followingStates: new Map(prev.followingStates).set(userId, nextFollowing)
+      }));
 
       // 调用后端 API
-      let result;
-      if (nextFollowing) {
-        result = await followUser(userId);
-      } else {
-        result = await unfollowUser(userId);
-      }
+      const result = await (nextFollowing ? followUser(userId) : unfollowUser(userId));
 
       if (result.success) { 
-        fetchPostsStatus();
+        message.success(nextFollowing ? '关注成功' : '取消关注成功', 1);
+      } else {
+        // 操作失败，回滚状态
+        setInteractionState(prev => ({
+          ...prev,
+          followingStates: new Map(prev.followingStates).set(userId, currentFollowing)
+        }));
+        message.error('操作失败，请重试', 1);
       }
-
-      if (!result.success) {
-        // 回滚
-        message.error('操作失败，请重试');
-        return;
-      }
-
-      message.success(nextFollowing ? '关注成功' : '取消关注成功');
-    } catch {
-      message.error('操作失败，请重试');
+    } catch (error) {
+      // 发生错误，回滚状态
+      setInteractionState(prev => ({
+        ...prev,
+        followingStates: new Map(prev.followingStates).set(userId, currentFollowing)
+      }));
+      message.error('操作失败，请重试', 1);
     } finally {
       // 清除加载状态
       setFollowLoadingStates(prev => {

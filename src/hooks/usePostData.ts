@@ -54,25 +54,29 @@ export function usePostData() {
       if (postIds.length > 0) {
         const res = await getPostsStatus(postIds);
         if (res.success && res.data?.status && res.data?.followed) {
-          const likeMap = new Map<number, boolean>();
-          const favoriteMap = new Map<number, boolean>();
-          const followedMap = new Map<number, boolean>();
+          setInteractionState((prev) => {
+            // 保留之前的状态
+            const likeMap = new Map(prev.postLikeStates);
+            const favoriteMap = new Map(prev.postBookmarkStates);
+            const followedMap = new Map(prev.followingStates);
 
-          res.data.status.forEach((r) => {
-            if (r.liked) likeMap.set(r.post_id, true);
-            if (r.favorited) favoriteMap.set(r.post_id, r.favorited);
+            // 更新状态
+            res.data.status.forEach((r) => {
+              if (r.liked) likeMap.set(r.post_id, true);
+              if (r.favorited) favoriteMap.set(r.post_id, r.favorited);
+            });
+
+            res.data.followed.forEach((f) => {
+              followedMap.set(f, true);
+            });
+
+            return {
+              ...prev,
+              postLikeStates: likeMap,
+              postBookmarkStates: favoriteMap,
+              followingStates: followedMap
+            };
           });
-
-          res.data.followed.forEach((f) => {
-            followedMap.set(f, true)
-          });
-
-          setInteractionState((prev) => ({
-            ...prev,
-            postLikeStates: likeMap,
-            postBookmarkStates: favoriteMap,
-            followingStates: followedMap
-          }));
         }
       }
     } catch (error) {
@@ -102,20 +106,23 @@ export function usePostData() {
             total: res.data?.total || res.data?.posts?.length || 0,
           }));
 
-          // 初始化计数
-          const likeCountMap = new Map<number, number>();
-          const favoriteCountMap = new Map<number, number>();
-          res.data.posts.forEach((p: PostType) => {
-            likeCountMap.set(p.ID, p.like_count ?? 0);
-            favoriteCountMap.set(p.ID, p.favorite_count ?? 0);
-          });
+          // 更新计数，保留之前的状态
+          setInteractionState((prev) => {
+            const likeCountMap = new Map(prev.postLikeCounts);
+            const favoriteCountMap = new Map(prev.postFavoriteCounts);
 
-          setInteractionState((prev) => ({
-            ...prev,
-            postLikeCounts: likeCountMap,
-            postFavoriteCounts: favoriteCountMap,
-            
-          }));
+            // 更新新获取的帖子的计数
+            res.data.posts.forEach((p: PostType) => {
+              likeCountMap.set(p.ID, p.like_count ?? 0);
+              favoriteCountMap.set(p.ID, p.favorite_count ?? 0);
+            });
+
+            return {
+              ...prev,
+              postLikeCounts: likeCountMap,
+              postFavoriteCounts: favoriteCountMap,
+            };
+          });
         }
       } catch (error) {
         message.error('获取帖子失败');
