@@ -382,6 +382,7 @@
 .editButton:hover {
   background: rgba(139, 92, 246, 0.1);
   color: #8b5cf6;
+  transform: scale(1.1);
 }
 
 .deleteButton {
@@ -391,6 +392,7 @@
 .deleteButton:hover {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
+  transform: scale(1.1); 
 }
 
 /* 浏览量样式 */
