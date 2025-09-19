@@ -4,9 +4,9 @@
 
 | 姓名       | 价值                                                         |
 | ---------- | ------------------------------------------------------------ |
-| 网络名称   | Monad 测试网                                                 |
+| 网络名称   | Monad Testnet                                                |
 | 链ID       | 10143                                                        |
-| 货币符号   | 星期一                                                       |
+| 货币符号   | MON                                                          |
 | 区块浏览器 | [https://testnet.monadexplorer.com](https://testnet.monadexplorer.com/) |
 
 ### 公共 RPC
