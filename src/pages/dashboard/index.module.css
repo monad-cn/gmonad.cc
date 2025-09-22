@@ -39,6 +39,51 @@
   color: white;
 }
 
+.introductionRow {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.introductionRowActive {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.introductionRow:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 2px;
+}
+
+.introductionText {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 14px !important;
+  flex: 1 1 auto;
+  word-break: break-word;
+}
+
+.introductionPlaceholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 14px !important;
+  flex: 1 1 auto;
+  word-break: break-word;
+}
+
+.introductionIcon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.introductionIconActive {
+  color: #ffffff;
+}
+
 .name {
   color: white !important;
   margin-bottom: 4px !important;
@@ -54,6 +99,7 @@
 }
 
 .subtitle {
+  padding-left: 8px;
   color: rgba(255, 255, 255, 0.7) !important;
   font-size: 14px !important;
   display: block;
