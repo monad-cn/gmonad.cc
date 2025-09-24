@@ -14,6 +14,7 @@ export interface LoginUser {
   avatar: string,
   permissions: string[],
   token: string,
+  introduction?: string,
 }
 
 // 登录结果

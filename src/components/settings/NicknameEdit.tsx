@@ -14,6 +14,7 @@ export default function NicknameEdit({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [nickname, setNickname] = useState(currentNickname || '');
   const [saving, setSaving] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const { message } = AntdApp.useApp();
 
   const handleSave = async () => {
@@ -58,21 +59,29 @@ export default function NicknameEdit({
     <>
       <div
         onClick={handleOpenModal}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={() => setIsHovered(false)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleOpenModal();
+          }
+        }}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
           cursor: 'pointer',
           padding: '4px 8px',
-          borderRadius: '6px',
-          transition: 'all 0.2s ease',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+          borderRadius: '8px',
+          transition: 'background-color 0.2s ease',
+          backgroundColor: isHovered
+            ? 'rgba(255, 255, 255, 0.12)'
+            : 'transparent',
         }}
       >
         <span
@@ -85,7 +94,11 @@ export default function NicknameEdit({
         >
           {currentNickname || '未设置昵称'}
         </span>
-        <Edit3 size={16} color="rgba(255, 255, 255, 0.8)" />
+        <Edit3
+          size={16}
+          color={isHovered ? '#ffffff' : 'rgba(255, 255, 255, 0.6)'}
+          style={{ transition: 'color 0.2s ease' }}
+        />
       </div>
 
       <Modal
