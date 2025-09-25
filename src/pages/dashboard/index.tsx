@@ -14,8 +14,10 @@ import {
   Popconfirm,
   App as AntdApp,
   Form,
+  Modal,
+  Input,
 } from 'antd';
-import { BookOpen, FileText, Eye, Clock, Edit, Trash2 } from 'lucide-react';
+import { BookOpen, FileText, Eye, Clock, Edit, Trash2, Edit3 } from 'lucide-react';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import styles from './index.module.css';
@@ -68,7 +70,7 @@ export default function DashboardPage() {
     total: 0,
   });
   const [postForm] = Form.useForm();
-  const { session } = useAuth();
+  const { session, status } = useAuth();
   const { update } = useSession();
 
   // 帖子相关
@@ -92,6 +94,14 @@ export default function DashboardPage() {
 
   // 使用帖子相关Hook
   const { interactionState, fetchPosts, fetchPostsStats } = usePostData();
+
+  const [introduction, setIntroduction] = useState(
+    () => session?.user?.introduction ?? ''
+  );
+  const [introModalVisible, setIntroModalVisible] = useState(false);
+  const [introSubmitting, setIntroSubmitting] = useState(false);
+  const [introHover, setIntroHover] = useState(false);
+  const [introForm] = Form.useForm();
 
   const loadBlogs = async (page = 1, pageSize = 10) => {
     try {
@@ -189,6 +199,18 @@ export default function DashboardPage() {
     }
   }, [session]);
 
+  useEffect(() => {
+    if (session?.user?.introduction !== undefined) {
+      setIntroduction(session.user.introduction ?? '');
+    }
+  }, [session?.user?.introduction]);
+
+  useEffect(() => {
+    if (!session?.user) {
+      setIntroduction('');
+    }
+  }, [session?.user]);
+
   const profileData = {
     name: session?.user?.username || '',
     email: session?.user?.email || '',
@@ -220,11 +242,17 @@ export default function DashboardPage() {
 
   const handleAvatarSave = async (avatarUrl: string) => {
     try {
-      const result = await updateUser(session?.user?.uid as unknown as number, {
+      const userId = Number(session?.user?.uid);
+      if (!userId) {
+        message.error('用户信息异常，请重新登录');
+        return;
+      }
+      const result = await updateUser(userId, {
         email: session?.user?.email ?? '',
         avatar: avatarUrl,
         github: session?.user?.github ?? '',
         username: session?.user?.username ?? '',
+        introduction,
       });
 
       if (result.success) {
@@ -237,6 +265,7 @@ export default function DashboardPage() {
           user: {
             ...session?.user,
             avatar: avatarUrl,
+            introduction,
           },
         });
       } else {
@@ -250,11 +279,17 @@ export default function DashboardPage() {
 
   const handleNicknameSave = async (nickname: string) => {
     try {
-      const result = await updateUser(session?.user?.uid as unknown as number, {
+      const userId = Number(session?.user?.uid);
+      if (!userId) {
+        message.error('用户信息异常，请重新登录');
+        return;
+      }
+      const result = await updateUser(userId, {
         email: session?.user?.email ?? '',
         avatar: session?.user?.avatar ?? '',
         github: session?.user?.github ?? '',
         username: nickname,
+        introduction,
       });
 
       if (result.success) {
@@ -267,6 +302,7 @@ export default function DashboardPage() {
             ...session?.user,
             username: nickname,
             name: nickname, // 同时更新name字段
+            introduction,
           },
         });
       } else {
@@ -318,6 +354,47 @@ export default function DashboardPage() {
       }
     } catch (error) {
       message.error('删除失败，请重试');
+    }
+  };
+
+  const handleIntroductionSave = async (values: { introduction?: string }) => {
+    if (!session?.user?.uid) return;
+    try {
+      const userId = Number(session.user.uid);
+      if (!userId) {
+        message.error('用户信息异常，请重新登录');
+        return;
+      }
+      setIntroSubmitting(true);
+      const content = values.introduction?.trim() ?? '';
+      const result = await updateUser(userId, {
+        email: session?.user?.email ?? '',
+        avatar: session?.user?.avatar ?? '',
+        github: session?.user?.github ?? '',
+        username: session?.user?.username ?? '',
+        introduction: content,
+      });
+
+      if (result.success) {
+        message.success('个人简介已更新');
+        setIntroduction(content);
+        setIntroModalVisible(false);
+        introForm.resetFields();
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            introduction: content,
+          },
+        });
+      } else {
+        message.error(result.message || '更新失败');
+      }
+    } catch (error) {
+      console.error('更新个人简介失败:', error);
+      message.error('更新个人简介失败，请稍后重试');
+    } finally {
+      setIntroSubmitting(false);
     }
   };
 
@@ -752,6 +829,44 @@ export default function DashboardPage() {
               <Text className={styles.subtitle}>
                 Email: {profileData.email}
               </Text>
+              <div
+                className={`${styles.introductionRow} ${
+                  introHover ? styles.introductionRowActive : ''
+                }`}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  introForm.setFieldsValue({ introduction });
+                  setIntroModalVisible(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    introForm.setFieldsValue({ introduction });
+                    setIntroModalVisible(true);
+                  }
+                }}
+                onMouseEnter={() => setIntroHover(true)}
+                onMouseLeave={() => setIntroHover(false)}
+                onFocus={() => setIntroHover(true)}
+                onBlur={() => setIntroHover(false)}
+              >
+                <span
+                  className={
+                    introduction
+                      ? styles.introductionText
+                      : styles.introductionPlaceholder
+                  }
+                >
+                  {introduction || '暂无个人简介，添加一句自我介绍吧～'}
+                </span>
+                <Edit3
+                  size={16}
+                  className={`${styles.introductionIcon} ${
+                    introHover ? styles.introductionIconActive : ''
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -883,6 +998,39 @@ export default function DashboardPage() {
           }
         }}
       />
+
+      <Modal
+        title="编辑个人简介"
+        open={introModalVisible}
+        onCancel={() => {
+          setIntroModalVisible(false);
+          introForm.resetFields();
+        }}
+        onOk={() => introForm.submit()}
+        confirmLoading={introSubmitting}
+        destroyOnClose
+      >
+        <Form form={introForm} layout="vertical" onFinish={handleIntroductionSave}>
+          <Form.Item
+            name="introduction"
+            label="个人简介"
+            initialValue={introduction}
+            rules={[
+              {
+                max: 200,
+                message: '个人简介请控制在 200 字以内',
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={4}
+              placeholder="简单介绍自己，让大家更了解你"
+              showCount
+              maxLength={200}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

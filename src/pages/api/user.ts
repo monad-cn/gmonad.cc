@@ -5,6 +5,7 @@ export interface UpdateUserParams {
     avatar: string;
     github: string;
     username: string;
+    introduction?: string;
 }
 
 export interface User {
@@ -13,6 +14,7 @@ export interface User {
     github: string;
     email: string;
     avatar: string;
+    introduction?: string;
 }
 
 export interface UserResult {
@@ -57,12 +59,16 @@ export const updateUser = async (
     params: UpdateUserParams
 ): Promise<UserResult> => {
     try {
-        const body = {
+        const body: Record<string, string> = {
             email: params.email.trim(),
             avatar: params.avatar.trim(),
             github: params.github.trim(),
-            username: params.username?.trim(),
+            username: params.username?.trim() ?? '',
         };
+
+        if (params.introduction !== undefined) {
+            body.introduction = params.introduction.trim();
+        }
 
         const response = await apiRequest<UserResult>(
             `/users/${userId}`,

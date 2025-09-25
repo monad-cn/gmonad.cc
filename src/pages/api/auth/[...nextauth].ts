@@ -14,6 +14,7 @@ declare module 'next-auth' {
       avatar?: string;
       permissions?: string[];
       token?: string;
+      introduction?: string;
     };
   }
 }
@@ -25,6 +26,7 @@ declare module 'next-auth/jwt' {
     avatar?: string;
     permissions?: string[];
     token?: string;
+    introduction?: string;
   }
 }
 
@@ -97,6 +99,7 @@ export default NextAuth({
         token.avatar = (user as any).avatar;
         token.permissions = (user as any).permissions;
         token.token = (user as any).token;
+        token.introduction = (user as any).introduction;
       }
       
       // 当触发update()时，更新token中的用户信息
@@ -105,6 +108,7 @@ export default NextAuth({
         token.avatar = session.user.avatar || token.avatar;
         token.email = session.user.email || token.email;
         token.github = session.user.github || token.github;
+        token.introduction = session.user.introduction ?? token.introduction;
       }
       
       return token;
@@ -119,6 +123,7 @@ export default NextAuth({
         session.user.avatar = token.avatar as string;
         session.user.permissions = token.permissions as string[];
         session.user.token = token.token as string;
+        session.user.introduction = token.introduction;
       }
       return session;
     },
