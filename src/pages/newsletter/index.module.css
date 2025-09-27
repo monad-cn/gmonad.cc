@@ -22,32 +22,7 @@
 }
 
 .headerIcon {
-  color: #6E54FF;
-}
-
-/* Subscription Box Styles */
-.subscriptionBox {
-  background: white;
-  border-radius: 16px;
-  padding: 2.5rem;
-  text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
-}
-
-.subscriptionIcon {
-  display: inline-flex;
-  padding: 1rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(110, 84, 255, 0.1), rgba(99, 102, 241, 0.08));
-  color: #6E54FF;
-  margin-bottom: 1.5rem;
-}
-
-.sectionTitle {
-  font-size: 2.25rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  color: #6e54ff;
 }
 
 .sectionTitleSmall {
@@ -63,54 +38,19 @@
   margin: 0 auto 1.5rem;
 }
 
-.subscriptionForm {
-  display: flex;
-  gap: 0.5rem;
-  max-width: 500px;
-  margin: 1.5rem auto 0;
+/* Weekly Reports Section */
+.weeklyReportsSection {
+  text-align: center;
 }
 
-.emailInput {
-  flex-grow: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.emailInput:focus {
-  border-color: #6E54FF;
-  box-shadow: 0 0 0 3px rgba(110, 84, 255, 0.2);
-  outline: none;
-}
-
-.subscribeButton {
-  background: #6E54FF;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.subscribeButton:hover {
-  background: #5b47d1;
-  transform: translateY(-1px);
-}
-
-/* Announcements Section */
-.announcementsGrid {
+.reportsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-top: 1.5rem;
 }
 
-.announcementCard {
+.reportCard {
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -118,21 +58,22 @@
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
+  text-align: left;
 }
 
-.announcementCard:hover {
+.reportCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border-color: #6E54FF;
+  border-color: #6e54ff;
 }
 
-.announcementTitle {
+.reportTitle {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
 }
 
-.announcementDate {
+.reportDate {
   font-size: 0.875rem;
   color: #6b7280;
   margin: 0;
@@ -144,7 +85,7 @@
 }
 
 .viewAllButton {
-  color: #6E54FF;
+  color: #6e54ff;
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
@@ -179,7 +120,7 @@
   content: '✓';
   position: absolute;
   left: 0;
-  color: #6E54FF;
+  color: #6e54ff;
   font-weight: 700;
 }
 
@@ -202,7 +143,8 @@
   flex-wrap: wrap;
 }
 
-.ctaPrimaryButton, .ctaSecondaryButton {
+.ctaPrimaryButton,
+.ctaSecondaryButton {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -214,16 +156,16 @@
 }
 
 .ctaPrimaryButton {
-  background-color: #5865F2; /* Discord color for variety */
+  background-color: #5865f2; /* Discord color for variety */
   color: white;
 }
 
 .ctaPrimaryButton:hover {
-  background-color: #4752C4;
+  background-color: #4752c4;
 }
 
 .ctaSecondaryButton {
-  background-color: #1DA1F2; /* Twitter color */
+  background-color: #1da1f2; /* Twitter color */
   color: white;
 }
 
@@ -253,7 +195,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #6E54FF;
+  color: #6e54ff;
 }
 
 .memoColumn ul {
@@ -272,7 +214,7 @@
 }
 
 .memoColumn a:hover {
-  color: #6E54FF;
+  color: #6e54ff;
   text-decoration: underline;
 }
 
@@ -287,17 +229,9 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .subscriptionForm {
-    flex-direction: column;
-  }
-  
   .memoGrid {
     grid-template-columns: 1fr;
     text-align: center;
-  }
-
-  .sectionTitle {
-    font-size: 1.75rem;
   }
 
   .sectionTitleSmall {
