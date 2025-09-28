@@ -102,8 +102,8 @@ export default function PostsList() {
 
   const handleLoadMore = useCallback(async () => {
     if (
-      isLoadingMore || 
-      listState.loading || 
+      isLoadingMore ||
+      listState.loading ||
       allPosts.length >= listState.total ||
       !allPosts.length
     ) {
@@ -164,10 +164,10 @@ export default function PostsList() {
       (entries) => {
         const target = entries[0];
         if (
-          target.isIntersecting && 
-          !listState.loading && 
-          !isLoadingMore && 
-          allPosts.length > 0 && 
+          target.isIntersecting &&
+          !listState.loading &&
+          !isLoadingMore &&
+          allPosts.length > 0 &&
           allPosts.length < listState.total
         ) {
           debouncedLoadMore();
@@ -429,7 +429,7 @@ export default function PostsList() {
       // 调用后端 API
       const result = await (nextFollowing ? followUser(userId) : unfollowUser(userId));
 
-      if (result.success) { 
+      if (result.success) {
         message.success(nextFollowing ? '关注成功' : '取消关注成功', 1);
       } else {
         // 操作失败，回滚状态
@@ -568,6 +568,11 @@ export default function PostsList() {
           <PostSidebar
             postsStats={postsStats}
             onPostClick={handlePostClick}
+            isAuthenticated={status === 'authenticated'}
+            currentUserId={Number(session?.user?.uid)}
+            followingStates={Object.fromEntries(interactionState.followingStates)}
+            followLoadingStates={Object.fromEntries(followLoadingStates)}
+            onFollow={handleFollow}
           />
 
           {/* 帖子列表 */}
@@ -617,14 +622,14 @@ export default function PostsList() {
                     />
                   ))}
                   {/* 加载更多指示器 */}
-                  <div 
-                    ref={loadingRef} 
-                    style={{ 
-                      height: '50px', 
-                      margin: '10px 0', 
-                      display: 'flex', 
-                      justifyContent: 'center', 
-                      alignItems: 'center' 
+                  <div
+                    ref={loadingRef}
+                    style={{
+                      height: '50px',
+                      margin: '10px 0',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
                     }}
                   >
                     {isLoadingMore ? (

@@ -7,6 +7,132 @@ import dayjs from 'dayjs';
 import { PostType } from '@/types/posts';
 import styles from '../../pages/posts/index.module.css';
 
+// 优化头像组件，避免不必要的重新渲染
+const MemoizedAvatar = React.memo(({ src, alt, width, height, className }: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  className: string;
+}) => (
+  <Image
+    src={src}
+    width={width}
+    height={height}
+    alt={alt}
+    className={className}
+  />
+));
+
+// 优化作者信息部分，避免因为点赞收藏状态变化导致重新渲染
+const MemoizedAuthorSection = React.memo(({ 
+  userAvatar, 
+  userName, 
+  post, 
+  isAuthenticated, 
+  userId, 
+  currentUserId, 
+  followingState, 
+  onFollow 
+}: {
+  userAvatar: string;
+  userName: string;
+  post: PostType;
+  isAuthenticated: boolean;
+  userId?: number;
+  currentUserId?: number;
+  followingState?: boolean;
+  onFollow: (userId: number, e: React.MouseEvent) => void;
+}) => (
+  <div className={styles.postDetailAuthor}>
+    <div className={styles.avatarContainer}>
+      <MemoizedAvatar
+        src={userAvatar}
+        width={40}
+        height={40}
+        alt={userName}
+        className={styles.postDetailAvatar}
+      />
+      {/* 关注按钮 - 只有登录且不是自己的帖子时显示 */}
+      {isAuthenticated && userId && currentUserId !== userId && (
+        <Button
+          type="primary"
+          size="small"
+          icon={
+            followingState ? (
+              <Check size={12} />
+            ) : (
+              <UserPlus size={12} />
+            )
+          }
+          className={`${styles.followButton} ${
+            followingState ? styles.following : ''
+          }`}
+          onClick={(e) => onFollow(userId, e)}
+        >
+          {followingState ? '已关注' : '关注'}
+        </Button>
+      )}
+    </div>
+    <div className={styles.postDetailAuthorInfo}>
+      <h4 className={styles.postDetailAuthorName}>{userName}</h4>
+
+      <div className={styles.postDetailMeta}>
+        <div className={styles.postDetailTime}>
+          <Clock size={16} />
+          <span>
+            {post.CreatedAt
+              ? dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')
+              : '未知时间'}
+          </span>
+        </div>
+
+        {(post.view_count || 0) > 0 && (
+          <div className={styles.postDetailStat}>
+            <Eye size={16} />
+            <span>{post.view_count?.toLocaleString()} 浏览</span>
+          </div>
+        )}
+
+        <div className={styles.postDetailTags}>
+          {(post.tags || []).slice(0, 3).map((tag, index) => (
+            <span key={index} className={styles.postDetailTag}>
+              {tag}
+            </span>
+          ))}
+          {(post.tags || []).length > 3 && (
+            <span className={styles.postDetailTag}>
+              +{(post.tags || []).length - 3}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+));
+
+// 优化内容部分，避免因为点赞收藏状态变化导致重新渲染
+const MemoizedPostContent = React.memo(({ 
+  title, 
+  postContent 
+}: {
+  title: string;
+  postContent: string;
+}) => (
+  <>
+    {/* 帖子标题 */}
+    <h1 className={styles.postDetailTitle}>{title || '无标题'}</h1>
+
+    {/* 帖子内容 */}
+    <div className={styles.postDetailBody}>
+      <div
+        className="prose"
+        dangerouslySetInnerHTML={{ __html: postContent || '' }}
+      />
+    </div>
+  </>
+));
+
 interface PostDetailModalProps {
   visible: boolean;
   loading: boolean;
@@ -70,71 +196,16 @@ export default function PostDetailModal({
       <div className={styles.postDetailContent}>
         {/* 帖子头部 */}
         <div className={styles.postDetailHeader}>
-          <div className={styles.postDetailAuthor}>
-            <div className={styles.avatarContainer}>
-              <Image
-                src={userAvatar}
-                width={40}
-                height={40}
-                alt={userName}
-                className={styles.postDetailAvatar}
-              />
-              {/* 关注按钮 - 只有登录且不是自己的帖子时显示 */}
-              {isAuthenticated && userId && currentUserId !== userId && (
-                <Button
-                  type="primary"
-                  size="small"
-                  icon={
-                    followingState ? (
-                      <Check size={12} />
-                    ) : (
-                      <UserPlus size={12} />
-                    )
-                  }
-                  className={`${styles.followButton} ${
-                    followingState ? styles.following : ''
-                  }`}
-                  onClick={(e) => onFollow(userId, e)}
-                >
-                  {followingState ? '已关注' : '关注'}
-                </Button>
-              )}
-            </div>
-            <div className={styles.postDetailAuthorInfo}>
-              <h4 className={styles.postDetailAuthorName}>{userName}</h4>
-
-              <div className={styles.postDetailMeta}>
-                <div className={styles.postDetailTime}>
-                  <Clock size={16} />
-                  <span>
-                    {post.CreatedAt
-                      ? dayjs(post.CreatedAt).format('YYYY-MM-DD HH:mm')
-                      : '未知时间'}
-                  </span>
-                </div>
-
-                {(post.view_count || 0) > 0 && (
-                  <div className={styles.postDetailStat}>
-                    <Eye size={16} />
-                    <span>{post.view_count?.toLocaleString()} 浏览</span>
-                  </div>
-                )}
-
-                <div className={styles.postDetailTags}>
-                  {(post.tags || []).slice(0, 3).map((tag, index) => (
-                    <span key={index} className={styles.postDetailTag}>
-                      {tag}
-                    </span>
-                  ))}
-                  {(post.tags || []).length > 3 && (
-                    <span className={styles.postDetailTag}>
-                      +{(post.tags || []).length - 3}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <MemoizedAuthorSection
+            userAvatar={userAvatar}
+            userName={userName}
+            post={post}
+            isAuthenticated={isAuthenticated}
+            userId={userId}
+            currentUserId={currentUserId}
+            followingState={followingState}
+            onFollow={onFollow}
+          />
 
           {/* 推文链接 */}
           {post.twitter && (
@@ -150,16 +221,10 @@ export default function PostDetailModal({
           )}
         </div>
 
-        {/* 帖子标题 */}
-        <h1 className={styles.postDetailTitle}>{post.title || '无标题'}</h1>
-
-        {/* 帖子内容 */}
-        <div className={styles.postDetailBody}>
-          <div
-            className="prose"
-            dangerouslySetInnerHTML={{ __html: postContent || '' }}
-          />
-        </div>
+        <MemoizedPostContent
+          title={post.title}
+          postContent={postContent}
+        />
 
         {/* 帖子统计和操作 */}
         <div className={styles.postDetailFooter}>

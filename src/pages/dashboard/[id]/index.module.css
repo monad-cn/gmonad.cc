@@ -219,6 +219,9 @@
 .titleRow {
   display: flex;
   align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
 }
 
 .itemTitle {
