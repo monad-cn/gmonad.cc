@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Empty } from 'antd';
-import { TrendingUp, Users, MessageCircle } from 'lucide-react';
+import { TrendingUp, Users, MessageCircle, Check, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { PostType, PostsStats } from '@/types/posts';
 import styles from '../../pages/posts/index.module.css';
@@ -9,11 +9,21 @@ import Link from 'next/link';
 interface PostSidebarProps {
   postsStats: PostsStats | null;
   onPostClick: (post: PostType) => void;
+  isAuthenticated: boolean;
+  currentUserId?: number;
+  followingStates: { [userId: number]: boolean };
+  followLoadingStates: { [userId: number]: boolean };
+  onFollow: (userId: number, e: React.MouseEvent) => void;
 }
 
 export default function PostSidebar({
   postsStats,
   onPostClick,
+  isAuthenticated,
+  currentUserId,
+  followingStates,
+  followLoadingStates,
+  onFollow,
 }: PostSidebarProps) {
   return (
     <div className={styles.sidebar}>
@@ -71,22 +81,55 @@ export default function PostSidebar({
             const userName = user.username || '未知用户';
             const userAvatar = user.avatar || '/placeholder.svg';
 
+            const followingState = followingStates[user.id] || false;
+            const followLoading = followLoadingStates[user.id] || false;
+
             return (
-              <Link key={user.id} href={`/dashboard/${user.id}`} className={styles.activeUserItem}>
-                <Image
-                  width={40}
-                  height={40}
-                  src={userAvatar}
-                  alt={userName}
-                  className={styles.activeUserAvatar}
-                />
+              <div key={user.id} className={styles.activeUserItem}>
+                <div className={styles.avatarContainer}>
+                  <Link href={`/dashboard/${user.id}`}>
+                    <Image
+                      width={40}
+                      height={40}
+                      src={userAvatar}
+                      alt={userName}
+                      className={styles.activeUserAvatar}
+                    />
+                  </Link>
+
+                  {/* Follow/Unfollow button overlay */}
+                  {isAuthenticated &&
+                    user.id &&
+                    currentUserId !== user.id && (
+                      <button
+                        className={`${styles.followButtonOverlay} ${followingState ? styles.following : styles.notFollowing
+                          }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onFollow(user.id, e);
+                        }}
+                        title={followingState ? "取消关注" : "关注用户"}
+                        disabled={followLoading}
+                      >
+                        {followLoading ? (
+                          <span className={styles.loadingDot}></span>
+                        ) : followingState ? (
+                          <Check size={12} />
+                        ) : (
+                          <Plus size={12} />
+                        )}
+                      </button>
+                    )}
+                </div>
                 <div className={styles.activeUserInfo}>
-                  <div className={styles.activeUserName}>{userName}</div>
+                  <Link href={`/dashboard/${user.id}`} className={styles.activeUserName}>
+                    {userName}
+                  </Link>
                   <div className={styles.activeUserPosts}>
                     帖子数: {user.post_count || 0}
                   </div>
                 </div>
-              </Link>
+              </div>
             );
           })}
           {(postsStats?.top_active_users?.length ?? 0) === 0 && (

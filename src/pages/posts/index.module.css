@@ -618,7 +618,7 @@
   padding: 0.5rem;
   border-radius: 8px;
   transition: background-color 0.2s ease;
-  cursor: pointer;
+  cursor: default;
 }
 
 .activeUserItem:hover {
@@ -642,6 +642,13 @@
   font-weight: 500;
   color: #111827;
   margin-bottom: 0.25rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.activeUserName:hover {
+  color: #8b5cf6;
 }
 
 .activeUserPosts:hover {
