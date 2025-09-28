@@ -405,13 +405,14 @@ export default function DashboardPage() {
         ...prev,
         isPostDetailVisible: true,
         detailLoading: true,
+        selectedPost: post, // 立即设置post数据，避免loading时为null
       }));
 
       const res = await getPostById(post.ID.toString());
       if (res.success && res.data) {
         setDetailState((prev) => ({
           ...prev,
-          selectedPost: res.data || null, // 确保类型兼容
+          selectedPost: res.data || null, // 用详细数据替换
         }));
       }
     } catch (error) {
