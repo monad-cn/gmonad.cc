@@ -170,22 +170,20 @@ export default function PostDetailModal({
   onBookmark,
   onFollow,
 }: PostDetailModalProps) {
-  if (!post) return null;
-
-  const user =
-    (post.user as {
-      ID?: number;
-      username?: string;
-      name?: string;
-      avatar?: string;
-    }) || {};
+  const user = post
+    ? (post.user as {
+        ID?: number;
+        username?: string;
+        name?: string;
+        avatar?: string;
+      }) || {}
+    : {};
   const userName = user.username || user.name || '未知用户';
   const userAvatar = user.avatar || '/placeholder.svg';
   const userId = user.ID;
 
   return (
     <Modal
-      loading={loading}
       title={null}
       open={visible}
       onCancel={onClose}
@@ -193,106 +191,115 @@ export default function PostDetailModal({
       width={800}
       className={styles.postDetailModal}
     >
-      <div className={styles.postDetailContent}>
-        {/* 帖子头部 */}
-        <div className={styles.postDetailHeader}>
-          <MemoizedAuthorSection
-            userAvatar={userAvatar}
-            userName={userName}
-            post={post}
-            isAuthenticated={isAuthenticated}
-            userId={userId}
-            currentUserId={currentUserId}
-            followingState={followingState}
-            onFollow={onFollow}
+      {loading || !post ? (
+        <div className={styles.postDetailLoading}>
+          <div className={styles.loadingSpinner}>
+            <div className={styles.spinner}></div>
+          </div>
+          <p className={styles.loadingText}>加载中...</p>
+        </div>
+      ) : (
+        <div className={styles.postDetailContent}>
+          {/* 帖子头部 */}
+          <div className={styles.postDetailHeader}>
+            <MemoizedAuthorSection
+              userAvatar={userAvatar}
+              userName={userName}
+              post={post}
+              isAuthenticated={isAuthenticated}
+              userId={userId}
+              currentUserId={currentUserId}
+              followingState={followingState}
+              onFollow={onFollow}
+            />
+
+            {/* 推文链接 */}
+            {post.twitter && (
+              <a
+                href={post.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.postDetailXLink}
+              >
+                <SiX size={18} />
+                <span>查看推文</span>
+              </a>
+            )}
+          </div>
+
+          <MemoizedPostContent
+            title={post.title}
+            postContent={postContent}
           />
 
-          {/* 推文链接 */}
-          {post.twitter && (
-            <a
-              href={post.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.postDetailXLink}
-            >
-              <SiX size={18} />
-              <span>查看推文</span>
-            </a>
-          )}
-        </div>
-
-        <MemoizedPostContent
-          title={post.title}
-          postContent={postContent}
-        />
-
-        {/* 帖子统计和操作 */}
-        <div className={styles.postDetailFooter}>
-          <div className={styles.postDetailActions}>
-            {/* 点赞按钮 */}
-            {isShowOperate ? (
-              <Tooltip
-                title={
-                  !isAuthenticated
-                    ? '登录后可点赞'
-                    : likeState
-                      ? '取消点赞'
-                      : '点赞'
-                }
-                placement="top"
-              >
-                <Button
-                  type="text"
-                  size="large"
-                  icon={
-                    <Heart
-                      size={16}
-                      fill={likeState ? 'currentColor' : 'none'}
-                    />
+          {/* 帖子统计和操作 */}
+          <div className={styles.postDetailFooter}>
+            <div className={styles.postDetailActions}>
+              {/* 点赞按钮 */}
+              {isShowOperate ? (
+                <Tooltip
+                  title={
+                    !isAuthenticated
+                      ? '登录后可点赞'
+                      : likeState
+                        ? '取消点赞'
+                        : '点赞'
                   }
-                  className={`${styles.postDetailActionBtn} ${
-                    likeState ? styles.liked : ''
-                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
-                  onClick={(e) => onLike(post.ID, e)}
+                  placement="top"
                 >
-                  {likeCount > 0 && <span>{likeCount}</span>}
-                </Button>
-              </Tooltip>
-            ) : null}
+                  <Button
+                    type="text"
+                    size="large"
+                    icon={
+                      <Heart
+                        size={16}
+                        fill={likeState ? 'currentColor' : 'none'}
+                      />
+                    }
+                    className={`${styles.postDetailActionBtn} ${
+                      likeState ? styles.liked : ''
+                    } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                    onClick={(e) => onLike(post.ID, e)}
+                  >
+                    {likeCount > 0 && <span>{likeCount}</span>}
+                  </Button>
+                </Tooltip>
+              ) : null}
 
-            {/* 收藏按钮 */}
-            {isShowOperate ? (
-              <Tooltip
-                title={
-                  !isAuthenticated
-                    ? '登录后可收藏'
-                    : bookmarkState
-                      ? '取消收藏'
-                      : '收藏'
-                }
-                placement="top"
-              >
-                <Button
-                  type="text"
-                  size="large"
-                  icon={
-                    <Bookmark
-                      size={16}
-                      fill={bookmarkState ? 'currentColor' : 'none'}
-                    />
+              {/* 收藏按钮 */}
+              {isShowOperate ? (
+                <Tooltip
+                  title={
+                    !isAuthenticated
+                      ? '登录后可收藏'
+                      : bookmarkState
+                        ? '取消收藏'
+                        : '收藏'
                   }
-                  className={`${styles.postDetailActionBtn} ${
-                    bookmarkState ? styles.bookmarked : ''
-                  } ${!isAuthenticated ? styles.guestBtn : ''}`}
-                  onClick={(e) => onBookmark(post.ID, e)}
+                  placement="top"
                 >
-                  {favoriteCount > 0 && <span>{favoriteCount}</span>}
-                </Button>
-              </Tooltip>
-            ) : null}
+                  <Button
+                    type="text"
+                    size="large"
+                    icon={
+                      <Bookmark
+                        size={16}
+                        fill={bookmarkState ? 'currentColor' : 'none'}
+                      />
+                    }
+                    className={`${styles.postDetailActionBtn} ${
+                      bookmarkState ? styles.bookmarked : ''
+                    } ${!isAuthenticated ? styles.guestBtn : ''}`}
+                    onClick={(e) => onBookmark(post.ID, e)}
+                  >
+                    {favoriteCount > 0 && <span>{favoriteCount}</span>}
+                  </Button>
+                </Tooltip>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </Modal>
   );
 }
