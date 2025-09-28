@@ -75,7 +75,6 @@ export default function AvatarEdit({
       // 保存上传后的 URL
       await onSave(uploadedUrl);
 
-      message.success('头像修改成功');
       setIsModalVisible(false);
     } catch (error) {
       console.error('头像上传失败:', error);
