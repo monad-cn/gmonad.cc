@@ -41,11 +41,36 @@ export default function EventDetailPage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'intro' | 'recap'>('intro');
+  const [backLink, setBackLink] = useState('/events');
+  const [backText, setBackText] = useState('返回活动列表');
 
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
+
+  // 检测入口来源并设置返回链接
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const referrer = document.referrer;
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+      
+      // 优先检查 URL 参数
+      if (fromParam === 'calendar') {
+        setBackLink('/events/calendar');
+        setBackText('返回活动日历');
+      } else if (referrer.includes('/events/calendar')) {
+        // 检查 referrer 是否来自日历页面
+        setBackLink('/events/calendar');
+        setBackText('返回活动日历');
+      } else {
+        // 默认返回活动列表
+        setBackLink('/events');
+        setBackText('返回活动列表');
+      }
+    }
+  }, []);
 
   // parseMarkdown将返回的markdown转为html展示
   const [eventContent, setEventContent] = useState<string>('');
@@ -164,8 +189,8 @@ export default function EventDetailPage() {
       <div className={styles.error}>
         <h2>活动不存在</h2>
         <p>抱歉，找不到您要查看的活动</p>
-        <Link href="/events" className={styles.backButton}>
-          返回活动列表
+        <Link href={backLink} className={styles.backButton}>
+          {backText}
         </Link>
       </div>
     );
@@ -252,9 +277,9 @@ export default function EventDetailPage() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <Link href="/events" className={styles.backLink}>
+          <Link href={backLink} className={styles.backLink}>
             <ArrowLeft className={styles.backIcon} />
-            返回活动列表
+            {backText}
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&

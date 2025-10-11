@@ -135,7 +135,7 @@ const EventsCalendar: React.FC = () => {
             className={`${styles.eventItem} ${getEventStatusClass(event)}`}
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/events/${event.ID}`);
+              router.push(`/events/${event.ID}?from=calendar`);
             }}
           >
             {event.title.length > 12 ? event.title.substring(0, 12) + '...' : event.title}
@@ -232,7 +232,7 @@ const EventsCalendar: React.FC = () => {
                   className={styles.eventCard}
                   hoverable
                   actions={[
-                    <Link href={`/events/${event.ID}`} key="view">
+                    <Link href={`/events/${event.ID}?from=calendar`} key="view">
                       <Eye size={16} /> 查看详情
                     </Link>,
                     <Button
