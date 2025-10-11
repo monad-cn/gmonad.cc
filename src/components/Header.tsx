@@ -127,6 +127,7 @@ export default function Header() {
                   { key: 'workshop', label: <Link href="/events?type=workshop">Workshop</Link> },
                   { key: 'ama', label: <Link href="/events?type=ama">AMA</Link> },
                   { key: 'meetup', label: <Link href="/events?type=meetup">社区聚会</Link> },
+                  { key: 'calendar', label: <Link href="/events/calendar">活动日历</Link> },
                   { key: 'posts', label: <Link href="/posts">社区帖子</Link> },
                 ],
               }}
@@ -252,7 +253,12 @@ export default function Header() {
                 <span>🤝</span>
                 <span>社区聚会</span>
               </Link>
+              <Link href="/events/calendar" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>📅</span>
+                <span>活动日历</span>
+              </Link>
               <Link href="/posts" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+                <span>📝</span>
                 <span>社区帖子</span>
               </Link>
             </div>

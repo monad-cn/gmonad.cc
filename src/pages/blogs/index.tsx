@@ -8,8 +8,6 @@ import {
   Popconfirm,
   Modal,
   Image,
-  Row,
-  Col,
   App as AntdApp,
 } from 'antd';
 import dayjs from 'dayjs';
@@ -22,18 +20,15 @@ import {
   Share2,
   LayoutGrid,
   List,
-  BookOpenText,
-  Languages,
-  TypeOutline,
   Eye,
   UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { getEvents, deleteEvent } from '../api/event';
+
 import router from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
-import { getBlogs } from '../api/blog';
+import { getBlogs,deleteBlog } from '../api/blog';
 
 const { Search: AntSearch } = Input;
 
@@ -136,10 +131,10 @@ export default function BlogsPage() {
 
   const currentBlogs = blogs; // 服务端已经处理了分页
 
-  const handleDeleteEvent = async (id: number) => {
+  const handleDeleteBlog = async (id: number) => {
     // 调用创建博客接口
     try {
-      const result = await deleteEvent(id);
+      const result = await deleteBlog(id);
       if (result.success) {
         message.success(result.message);
         loadBlogs();
@@ -155,7 +150,6 @@ export default function BlogsPage() {
     setViewMode(mode);
     setCurrentPage(1);
   };
-
 
   useEffect(() => {
     if (status === 'loading') return; // 等待认证状态确定
@@ -283,7 +277,7 @@ export default function BlogsPage() {
                       <div className={styles.cardActions}>
                         {/* 只有博客作者才可以编辑 */}
                         {status === 'authenticated' &&
-                          blog.publisher_id.toString() === session?.user?.uid ? (
+                        blog.publisher_id.toString() === session?.user?.uid ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -418,7 +412,7 @@ export default function BlogsPage() {
                   <div className={styles.listActions}>
                     {/* 只有博客发布者才可以编辑 */}
                     {status === 'authenticated' &&
-                      blog.publisher_id.toString() === session?.user?.uid ? (
+                    blog.publisher_id.toString() === session?.user?.uid ? (
                       <Button
                         type="text"
                         size="small"
@@ -442,13 +436,13 @@ export default function BlogsPage() {
                     />
                     {/* 只有博客发布者才可以删除*/}
                     {status === 'authenticated' &&
-                      blog.publisher_id?.toString() === session?.user?.uid ? (
+                    blog.publisher_id?.toString() === session?.user?.uid ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
                         okText="是"
                         cancelText="否"
-                        onConfirm={() => handleDeleteEvent(blog.ID)}
+                        onConfirm={() => handleDeleteBlog(blog.ID)}
                       >
                         <Button
                           type="text"

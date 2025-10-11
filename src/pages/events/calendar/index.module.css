@@ -1,0 +1,419 @@
+/* 日历页面容器 */
+.container {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  padding-top: 6.5rem;
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
+}
+
+/* 日历主体包装器 */
+.calendarWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 页面标题 */
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 2rem 0;
+  letter-spacing: -0.02em;
+  text-align: center;
+  justify-content: center;
+}
+
+.titleIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #6366f1;
+}
+
+/* 日历容器 */
+.calendar {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+}
+
+/* 日历事件容器 */
+.calendarEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 20px;
+  padding: 2px;
+}
+
+/* 单个事件项 */
+.eventItem {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  font-weight: 500;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 事件状态样式 */
+.eventUpcoming {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.eventUpcoming:hover {
+  background: rgba(16, 185, 129, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.eventOngoing {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.eventOngoing:hover {
+  background: rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.eventEnded {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border-color: rgba(107, 114, 128, 0.2);
+}
+
+.eventEnded:hover {
+  background: rgba(107, 114, 128, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+}
+
+/* 更多事件显示 */
+.moreEvents {
+  font-size: 0.65rem;
+  color: #6b7280;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(156, 163, 175, 0.1);
+  border: 1px solid rgba(156, 163, 175, 0.2);
+  text-align: center;
+  font-weight: 600;
+}
+
+.moreEvents:hover {
+  background: rgba(156, 163, 175, 0.15);
+  color: #374151;
+  transform: translateY(-1px);
+}
+
+/* 抽屉标题 */
+.drawerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.drawerIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #6366f1;
+}
+
+/* 事件卡片 */
+.eventCard {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid #f1f5f9 !important;
+  background: white !important;
+  margin-bottom: 1rem;
+}
+
+.eventCard:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+.eventCard .ant-card-body {
+  padding: 1.5rem !important;
+}
+
+.eventCard .ant-card-actions {
+  background: #fafbfc !important;
+  border-top: 1px solid #f1f5f9 !important;
+  padding: 1rem 1.5rem !important;
+  margin: 0 !important;
+}
+
+.eventCard .ant-card-actions > li {
+  margin: 0 !important;
+  padding: 0 0.25rem !important;
+}
+
+.eventCard .ant-card-actions > li:not(:last-child) {
+  border-right: none !important;
+}
+
+/* 事件标题 */
+.eventTitle {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  margin: 0 0 0.75rem 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* 事件描述 */
+.eventDescription {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  line-height: 1.6 !important;
+  margin: 0 0 1rem 0 !important;
+}
+
+/* 事件信息容器 */
+.eventInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.eventInfoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.eventInfoIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+/* 事件标签 */
+.eventTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.eventTag {
+  margin: 0 !important;
+  padding: 0.25rem 0.75rem !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border-radius: 16px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.2s !important;
+}
+
+.eventTag:hover {
+  background: #e2e8f0 !important;
+  transform: translateY(-1px) !important;
+}
+
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .calendar {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    padding-top: 5rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .titleIcon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .calendar {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .eventCard .ant-card-body {
+    padding: 1rem !important;
+  }
+
+  .eventCard .ant-card-actions {
+    padding: 0.75rem 1rem !important;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .titleIcon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .calendar {
+    padding: 0.75rem;
+  }
+
+  .drawerTitle {
+    font-size: 1.125rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .eventTitle {
+    font-size: 1.125rem !important;
+  }
+
+}
+
+/* Ant Design Calendar 样式覆盖 */
+.calendar :global(.ant-picker-calendar) {
+  background: transparent !important;
+  border: none !important;
+}
+
+.calendar :global(.ant-picker-calendar-header) {
+  padding: 0 0 1.5rem 0 !important;
+  border-bottom: 2px solid #f3f4f6 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-year-select),
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-month-select) {
+  border-radius: 8px !important;
+  border-color: #e5e7eb !important;
+  font-weight: 600 !important;
+}
+
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-year-select:hover),
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-month-select:hover) {
+  border-color: #6366f1 !important;
+}
+
+.calendar :global(.ant-picker-content) {
+  background: transparent !important;
+}
+
+.calendar :global(.ant-picker-cell) {
+  border-radius: 8px !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+.calendar :global(.ant-picker-cell:hover) {
+  background: #f8fafc !important;
+}
+
+.calendar :global(.ant-picker-cell-selected) {
+  background: rgba(99, 102, 241, 0.1) !important;
+  border-color: #6366f1 !important;
+}
+
+.calendar :global(.ant-picker-cell-today) {
+  border-color: #6366f1 !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+}
+
+.calendar :global(.ant-picker-cell-in-view) {
+  color: #374151 !important;
+}
+
+.calendar :global(.ant-picker-cell-disabled) {
+  background: #f9fafb !important;
+  color: #d1d5db !important;
+}
+
+.calendar :global(.ant-picker-date-panel) {
+  background: transparent !important;
+}
+
+.calendar :global(.ant-picker-body) {
+  padding: 0 !important;
+}
+
+/* 日历头部样式 */
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-mode-switch) {
+  display: flex !important;
+  gap: 0.5rem !important;
+}
+
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-mode-switch > *) {
+  border-radius: 8px !important;
+  border-color: #e5e7eb !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.calendar :global(.ant-picker-calendar-header .ant-picker-calendar-mode-switch > *:hover) {
+  border-color: #6366f1 !important;
+  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* 抽屉内容样式 */
+.calendar :global(.ant-drawer-body) {
+  padding: 1.5rem !important;
+}
+
+.calendar :global(.ant-drawer-header) {
+  padding: 1.5rem 1.5rem 1rem 1.5rem !important;
+  border-bottom: 2px solid #f3f4f6 !important;
+}
+
+.calendar :global(.ant-drawer-title) {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+
+/* Empty 状态样式 */
+.calendar :global(.ant-empty) {
+  margin: 2rem 0 !important;
+}
+
+.calendar :global(.ant-empty-description) {
+  color: #6b7280 !important;
+  font-size: 1rem !important;
+}
