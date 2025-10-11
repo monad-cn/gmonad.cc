@@ -45,6 +45,8 @@ export interface GetEventsParams {
   event_mode?: string;
   event_type?: string;
   publish_status?: number;
+  start_date?:string,
+  end_date?:string,
 }
 
 export interface Event {
@@ -321,6 +323,10 @@ export const getEvents = async (
     if (params.status != null) query.append('status', params.status.toString());
     if (params.publish_status != null)
       query.append('publish_status', params.publish_status.toString());
+    if (params.start_date?.trim())
+      query.append('start_date', params.start_date.trim());
+    if (params.end_date?.trim())
+      query.append('end_date', params.end_date.trim());
 
     query.append('order', params.order ?? 'desc');
     query.append('page', (params.page ?? 1).toString());

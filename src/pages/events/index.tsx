@@ -32,7 +32,6 @@ import styles from './index.module.css';
 import { getEvents, deleteEvent } from '../api/event';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
-import EventDraftTable from '@/components/event/EventDraftTable';
 
 const { Search: AntSearch } = Input;
 const { Option } = Select;
