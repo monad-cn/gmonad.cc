@@ -15,6 +15,7 @@
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.6",
     "gray-matter": "^4.0.3",
+    "jotai": "^2.15.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.513.0",
     "marked": "^16.0.0",

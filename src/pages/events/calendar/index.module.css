@@ -65,61 +65,68 @@
   white-space: nowrap;
 }
 
-/* 事件状态样式 */
+/* 事件状态样式 - 紫色风格 */
 .eventUpcoming {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+  border-color: rgba(139, 92, 246, 0.2);
 }
 
 .eventUpcoming:hover {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(139, 92, 246, 0.15);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
 }
 
 .eventOngoing {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-  border-color: rgba(59, 130, 246, 0.2);
+  background: rgba(168, 85, 247, 0.1);
+  color: #9333ea;
+  border-color: rgba(168, 85, 247, 0.2);
 }
 
 .eventOngoing:hover {
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(168, 85, 247, 0.15);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 4px rgba(168, 85, 247, 0.2);
 }
 
 .eventEnded {
-  background: rgba(107, 114, 128, 0.1);
-  color: #6b7280;
-  border-color: rgba(107, 114, 128, 0.2);
+  background: rgba(147, 51, 234, 0.1);
+  color: #7e22ce;
+  border-color: rgba(147, 51, 234, 0.2);
 }
 
 .eventEnded:hover {
-  background: rgba(107, 114, 128, 0.15);
+  background: rgba(147, 51, 234, 0.15);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+  box-shadow: 0 2px 4px rgba(147, 51, 234, 0.2);
 }
 
-/* 更多事件显示 */
+/* 更多事件显示 - 紫色风格 */
 .moreEvents {
   font-size: 0.65rem;
-  color: #6b7280;
+  color: #7c3aed;
   padding: 2px 6px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: rgba(156, 163, 175, 0.1);
-  border: 1px solid rgba(156, 163, 175, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
   text-align: center;
   font-weight: 600;
 }
 
 .moreEvents:hover {
-  background: rgba(156, 163, 175, 0.15);
-  color: #374151;
+  background: rgba(139, 92, 246, 0.15);
+  color: #6d28d9;
   transform: translateY(-1px);
+}
+
+/* 导航加载状态 */
+.navigating {
+  opacity: 0.7 !important;
+  pointer-events: none !important;
+  transform: scale(0.98) !important;
 }
 
 /* 抽屉标题 */
@@ -147,6 +154,10 @@
   border: 1px solid #f1f5f9 !important;
   background: white !important;
   margin-bottom: 1rem;
+}
+
+.eventCardContent {
+  padding: 0 !important;
 }
 
 .eventCard:hover {
@@ -180,8 +191,9 @@
   font-size: 1.25rem !important;
   font-weight: 600 !important;
   color: #111827 !important;
-  margin: 0 0 0.75rem 0 !important;
+  margin: 0 !important;
   line-height: 1.4 !important;
+  flex: 1;
 }
 
 /* 事件描述 */
@@ -220,24 +232,26 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  margin: 0;
 }
 
 .eventTag {
   margin: 0 !important;
-  padding: 0.25rem 0.75rem !important;
-  background: #f1f5f9 !important;
+  padding: 0.3rem 0.8rem !important;
+  background: linear-gradient(45deg, #f8fafc, #f1f5f9) !important;
   color: #475569 !important;
-  border-radius: 16px !important;
-  font-size: 0.75rem !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
   font-weight: 500 !important;
   border: 1px solid #e2e8f0 !important;
-  transition: all 0.2s !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 .eventTag:hover {
-  background: #e2e8f0 !important;
+  background: linear-gradient(45deg, #e2e8f0, #cbd5e1) !important;
   transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 
