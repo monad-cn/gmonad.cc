@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import Image from 'next/image';
+
 import {
   Calendar,
   Badge,
@@ -9,6 +9,7 @@ import {
   Button,
   Drawer,
   Empty,
+  Select,
 } from 'antd';
 import {
   Calendar as CalendarIcon,
@@ -27,6 +28,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import styles from './index.module.css';
 
 const { Paragraph } = Typography;
+const { Option } = Select;
 
 interface EventsByDate {
   [key: string]: Event[];
@@ -38,7 +40,8 @@ const EventsCalendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  
+  const [statusFilter, setStatusFilter] = useState('3'); // 默认显示所有状态
+
   const router = useRouter();
   const { session, status } = useAuth();
   const permissions = useMemo(() => session?.user?.permissions || [], [session?.user?.permissions]);
@@ -55,6 +58,7 @@ const EventsCalendar: React.FC = () => {
         page: 1,
         page_size: 1000,
         publish_status: 2, // 只显示已发布的活动
+        status: statusFilter, // 添加状态筛选
         start_date: startOfMonth,
         end_date: endOfMonth,
       });
@@ -87,11 +91,16 @@ const EventsCalendar: React.FC = () => {
     } catch (error) {
       console.error('加载事件失败:', error);
     }
-  }, [status, permissions, selectedDate]);
+  }, [status, permissions, selectedDate, statusFilter]);
 
   useEffect(() => {
     loadEvents();
   }, [status, loadEvents]);
+
+  // 状态筛选处理
+  const handleStatusFilter = (status: string) => {
+    setStatusFilter(status);
+  };
 
   // 获取事件状态颜色类名
   const getEventStatusClass = (event: Event) => {
@@ -173,11 +182,26 @@ const EventsCalendar: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.calendarWrapper}>
-        {/* 标题 */}
-        <h2 className={styles.title}>
-          <CalendarIcon className={styles.titleIcon} />
-          活动日历
-        </h2>
+        {/* 标题和筛选器 */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 className={styles.title}>
+            <CalendarIcon className={styles.titleIcon} />
+            活动日历
+          </h2>
+          <Select
+            placeholder="活动状态"
+            allowClear
+            size="large"
+            style={{ width: 120 }}
+            value={statusFilter || undefined}
+            onChange={handleStatusFilter}
+          >
+            <Option value="3">所有</Option>
+            <Option value="0">未开始</Option>
+            <Option value="1">进行中</Option>
+            <Option value="2">已结束</Option>
+          </Select>
+        </div>
 
         {/* 日历主体 */}
         <div className={styles.calendar}>
