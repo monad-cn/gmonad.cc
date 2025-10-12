@@ -9,6 +9,7 @@ import styles from '../../pages/posts/index.module.css';
 
 import { parseMd } from '@/utils/posts';
 import Link from 'next/link';
+import TwitterShare, { TwitterSharePresets } from '@/components/social/TwitterShare';
 
 interface PostCardProps {
   post: PostType;
@@ -111,6 +112,18 @@ export default function PostCard({
 
           {/* 右侧操作按钮 */}
           <div className={styles.headerActions}>
+            {/* 推特分享按钮 */}
+            <TwitterShare
+              {...TwitterSharePresets.blogPost(
+                post.title || '精彩内容分享',
+                post.description ? post.description.slice(0, 100) + '...' : undefined,
+                typeof window !== 'undefined' ? `${window.location.origin}/posts/${post.ID}` : undefined
+              )}
+              iconOnly
+              className={styles.twitterShare}
+            />
+            
+            {/* 如果有原推特链接，保留查看推文功能 */}
             {post.twitter && (
               <a
                 href={post.twitter}
@@ -118,10 +131,10 @@ export default function PostCard({
                 rel="noopener noreferrer"
                 className={styles.twitterLink}
                 onClick={(e) => e.stopPropagation()}
-                title="查看推文"
+                title="查看原推文"
               >
                 <SiX size={14} />
-                <span className={styles.twitterText}>查看推文</span>
+                <span className={styles.twitterText}>原推文</span>
               </a>
             )}
             {isOwner && (

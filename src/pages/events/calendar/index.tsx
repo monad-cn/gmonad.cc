@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAtom } from 'jotai';
 
 import {
   Calendar,
@@ -10,6 +11,7 @@ import {
   Drawer,
   Empty,
   Select,
+  Spin,
 } from 'antd';
 import {
   Calendar as CalendarIcon,
@@ -17,14 +19,15 @@ import {
   Users,
   Globe,
   Eye,
-  Share2
+  Plus
 } from 'lucide-react';
+import TwitterShare, { TwitterSharePresets } from '@/components/social/TwitterShare';
 import dayjs, { Dayjs } from 'dayjs';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getEvents } from '../../api/event';
 import type { Event } from '../../api/event';
 import { useAuth } from '@/contexts/AuthContext';
+import { selectedDateAtom, statusFilterAtom, currentMonthDayjsAtom } from '@/atoms/calendar';
 import styles from './index.module.css';
 
 const { Paragraph } = Typography;
@@ -37,22 +40,35 @@ interface EventsByDate {
 const EventsCalendar: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [eventsByDate, setEventsByDate] = useState<EventsByDate>({});
-  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('3'); // 默认显示所有状态
+  const [statusFilter, setStatusFilter] = useAtom(statusFilterAtom);
+  const [currentMonth, setCurrentMonth] = useAtom(currentMonthDayjsAtom);
+  const [loading, setLoading] = useState(true);
+  const [monthLoading, setMonthLoading] = useState(false);
+  const [navigating, setNavigating] = useState<string | null>(null);
 
   const router = useRouter();
   const { session, status } = useAuth();
   const permissions = useMemo(() => session?.user?.permissions || [], [session?.user?.permissions]);
 
   // 加载事件数据 - 优化为按日期范围查询
-  const loadEvents = useCallback(async (currentDate?: Dayjs) => {
+  const loadEvents = useCallback(async (targetDate?: Dayjs, isMonthChange = false) => {
     try {
-      const targetDate = currentDate || selectedDate;
+      if (isMonthChange) {
+        setMonthLoading(true);
+      } else if (!targetDate) {
+        setLoading(true);
+      }
+
+      const dateToUse = targetDate || currentMonth;
       // 获取当前月份的开始和结束日期
-      const startOfMonth = targetDate.startOf('month').format('YYYY-MM-DD');
-      const endOfMonth = targetDate.endOf('month').format('YYYY-MM-DD');
+      const startOfMonth = dateToUse.startOf('month').format('YYYY-MM-DD');
+      const endOfMonth = dateToUse.endOf('month').format('YYYY-MM-DD');
+
+      console.log(startOfMonth);
+      console.log(endOfMonth);
 
       const result = await getEvents({
         page: 1,
@@ -90,12 +106,34 @@ const EventsCalendar: React.FC = () => {
       }
     } catch (error) {
       console.error('加载事件失败:', error);
+    } finally {
+      setLoading(false);
+      setMonthLoading(false);
     }
-  }, [status, permissions, selectedDate, statusFilter]);
+  }, [status, permissions, currentMonth, statusFilter]);
 
   useEffect(() => {
+    // 只有在认证状态稳定后才加载数据，避免多次触发
+    if (status === 'loading') return;
     loadEvents();
   }, [status, loadEvents]);
+
+  // 监听路由变化，重置导航状态
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setNavigating(null);
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('routeChangeComplete', handleRouteChange);
+    router.events.on('routeChangeError', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('routeChangeComplete', handleRouteChange);
+      router.events.off('routeChangeError', handleRouteChange);
+    };
+  }, [router.events]);
 
   // 状态筛选处理
   const handleStatusFilter = (status: string) => {
@@ -118,15 +156,45 @@ const EventsCalendar: React.FC = () => {
     }
   };
 
-  // 获取事件类型颜色
+  // 获取事件类型颜色 - 紫色风格
   const getEventTypeColor = (type: string) => {
     const colors: { [key: string]: string } = {
-      'hackathon': '#722ed1',
-      'workshop': '#13c2c2',
-      'ama': '#eb2f96',
-      'meetup': '#52c41a',
+      'hackathon': '#7c3aed',
+      'workshop': '#9333ea',
+      'ama': '#a855f7',
+      'meetup': '#8b5cf6',
     };
-    return colors[type] || '#1890ff';
+    return colors[type] || '#7c3aed';
+  };
+
+  // 添加到谷歌日历
+  const addToGoogleCalendar = (event: Event) => {
+    const startTime = dayjs(event.start_time);
+    const endTime = event.end_time ? dayjs(event.end_time) : startTime.add(2, 'hour');
+    
+    const details = [
+      event.description?.replace(/<[^>]*>/g, '') || '',
+      '',
+      event.event_mode === '线上活动' ? '线上活动' : `地点: ${event.location || '未指定地点'}`,
+      event.participants > 0 ? `参与人数: ${event.participants}人` : '',
+      '',
+      `详情链接: ${typeof window !== 'undefined' ? window.location.origin : ''}/events/${event.ID}`
+    ].filter(Boolean).join('\n');
+
+    // 使用正确的谷歌日历URL格式 - 使用本地时间
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: event.title,
+      dates: `${startTime.format('YYYYMMDD[T]HHmmss')}/${endTime.format('YYYYMMDD[T]HHmmss')}`,
+      details: details
+    });
+    
+    if (event.event_mode !== '线上活动' && event.location) {
+      params.set('location', event.location);
+    }
+
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?${params.toString()}`;
+    window.open(googleCalendarUrl, '_blank');
   };
 
   // 日历单元格渲染
@@ -141,13 +209,21 @@ const EventsCalendar: React.FC = () => {
         {dayEvents.slice(0, 3).map((event) => (
           <div
             key={event.ID}
-            className={`${styles.eventItem} ${getEventStatusClass(event)}`}
+            className={`${styles.eventItem} ${getEventStatusClass(event)} ${navigating === event.ID.toString() ? styles.navigating : ''}`}
             onClick={(e) => {
               e.stopPropagation();
+              setNavigating(event.ID.toString());
               router.push(`/events/${event.ID}?from=calendar`);
             }}
           >
-            {event.title.length > 12 ? event.title.substring(0, 12) + '...' : event.title}
+            {navigating === event.ID.toString() ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Spin size="small" />
+                <span style={{ fontSize: '12px' }}>跳转中...</span>
+              </div>
+            ) : (
+              event.title.length > 12 ? event.title.substring(0, 12) + '...' : event.title
+            )}
           </div>
         ))}
         {dayEvents.length > 3 && (
@@ -179,6 +255,16 @@ const EventsCalendar: React.FC = () => {
     ) : null;
   };
 
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.calendarWrapper}>
@@ -195,6 +281,7 @@ const EventsCalendar: React.FC = () => {
             style={{ width: 120 }}
             value={statusFilter || undefined}
             onChange={handleStatusFilter}
+            disabled={monthLoading}
           >
             <Option value="3">所有</Option>
             <Option value="0">未开始</Option>
@@ -204,35 +291,38 @@ const EventsCalendar: React.FC = () => {
         </div>
 
         {/* 日历主体 */}
-        <div className={styles.calendar}>
-          <Calendar
-            cellRender={(current, info) => {
-              if (info.type === 'date') {
-                return dateCellRender(current);
-              }
-              if (info.type === 'month') {
-                return monthCellRender(current);
-              }
-              return info.originNode;
-            }}
-            onSelect={(date) => {
-              const dateKey = date.format('YYYY-MM-DD');
-              const dayEvents = eventsByDate[dateKey] || [];
-              if (dayEvents.length > 0) {
+        <Spin spinning={monthLoading} tip="加载中...">
+          <div className={styles.calendar}>
+            <Calendar
+              value={selectedDate}
+              cellRender={(current, info) => {
+                if (info.type === 'date') {
+                  return dateCellRender(current);
+                }
+                if (info.type === 'month') {
+                  return monthCellRender(current);
+                }
+                return info.originNode;
+              }}
+              onSelect={(date) => {
                 setSelectedDate(date);
-                setSelectedEvents(dayEvents);
-                setDrawerVisible(true);
-              }
-            }}
-            onPanelChange={(date, mode) => {
-              // 当切换月份或年份时，重新加载当前月份的数据
-              if (mode === 'month') {
-                setSelectedDate(date);
-                loadEvents(date);
-              }
-            }}
-          />
-        </div>
+                const dateKey = date.format('YYYY-MM-DD');
+                const dayEvents = eventsByDate[dateKey] || [];
+                if (dayEvents.length > 0) {
+                  setSelectedEvents(dayEvents);
+                  setDrawerVisible(true);
+                }
+              }}
+              onPanelChange={(date, mode) => {
+                // 当切换月份或年份时，重新加载当前月份的数据
+                if (mode === 'month') {
+                  setCurrentMonth(date);
+                  loadEvents(date, true);
+                }
+              }}
+            />
+          </div>
+        </Spin>
 
         {/* 某日活动列表抽屉 */}
         <Drawer
@@ -256,70 +346,94 @@ const EventsCalendar: React.FC = () => {
                   className={styles.eventCard}
                   hoverable
                   actions={[
-                    <Link href={`/events/${event.ID}?from=calendar`} key="view">
-                      <Eye size={16} /> 查看详情
-                    </Link>,
                     <Button
-                      key="share"
-                      type="text"
-                      icon={<Share2 size={16} />}
+                      key="view"
+                      type="link"
+                      loading={navigating === event.ID.toString()}
                       onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.origin}/events/${event.ID}`);
+                        setNavigating(event.ID.toString());
+                        router.push(`/events/${event.ID}?from=calendar`);
                       }}
                     >
-                      分享
-                    </Button>
+                      <Eye size={16} /> 查看详情
+                    </Button>,
+                    <Button
+                      key="calendar"
+                      type="link"
+                      onClick={() => addToGoogleCalendar(event)}
+                    >
+                      <Plus size={16} /> 添加到日历
+                    </Button>,
+                    <TwitterShare
+                      key="share"
+                      {...TwitterSharePresets.event(
+                        event.title,
+                        event.description ?
+                          event.description.replace(/<[^>]*>/g, '').slice(0, 80) + '...' :
+                          `精彩活动即将开始！时间：${dayjs(event.start_time).format('MM月DD日 HH:mm')}`,
+                        `${typeof window !== 'undefined' ? window.location.origin : ''}/events/${event.ID}`
+                      )}
+                      type="link"
+
+                      buttonText="分享到X"
+                    />
                   ]}
                 >
-                  <Card.Meta
-                    title={
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span className={styles.eventTitle}>{event.title}</span>
-                        <Tag color={getEventTypeColor(event.event_type)}>
-                          {event.event_type}
-                        </Tag>
-                      </div>
-                    }
-                    description={
-                      <div>
-                        <Paragraph ellipsis={{ rows: 2 }} className={styles.eventDescription}>
-                          {event.description}
-                        </Paragraph>
-                        <div className={styles.eventInfo}>
-                          <div className={styles.eventInfoItem}>
-                            <CalendarIcon size={14} className={styles.eventInfoIcon} />
-                            {dayjs(event.start_time).format('HH:mm')}
-                          </div>
-                          <div className={styles.eventInfoItem}>
-                            {event.event_mode === '线上活动' ? (
-                              <>
-                                <Globe size={14} className={styles.eventInfoIcon} />
-                                线上活动
-                              </>
-                            ) : (
-                              <>
-                                <MapPin size={14} className={styles.eventInfoIcon} />
-                                {event.location || '未指定地点'}
-                              </>
-                            )}
-                          </div>
-                          {event.participants > 0 && (
-                            <div className={styles.eventInfoItem}>
-                              <Users size={14} className={styles.eventInfoIcon} />
-                              {event.participants}人
-                            </div>
-                          )}
-                        </div>
-                        {event.tags && event.tags.length > 0 && (
-                          <div className={styles.eventTags}>
-                            {event.tags.map((tag, index) => (
-                              <Tag key={index} className={styles.eventTag}>{tag}</Tag>
-                            ))}
-                          </div>
+                  <div className={styles.eventCardContent}>
+                    {/* 标题和类型标签 */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                      <h3 className={styles.eventTitle}>{event.title}</h3>
+                      <Tag color={getEventTypeColor(event.event_type)} style={{marginTop:'0.1rem', marginLeft: '0.5rem', flexShrink: 0 }}>
+                        {event.event_type}
+                      </Tag>
+                    </div>
+
+                    {/* 活动标签 - 显眼位置 */}
+                    {event.tags && event.tags.length > 0 && (
+                      <div className={styles.eventTags} style={{ marginBottom: '1rem' }}>
+                        {event.tags.slice(0, 3).map((tag, index) => (
+                          <Tag key={index} className={styles.eventTag}>{tag}</Tag>
+                        ))}
+                        {event.tags.length > 3 && (
+                          <Tag className={styles.eventTag} style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                            +{event.tags.length - 3}
+                          </Tag>
                         )}
                       </div>
-                    }
-                  />
+                    )}
+
+                    {/* 描述 */}
+                    <Paragraph ellipsis={{ rows: 2 }} className={styles.eventDescription}>
+                      {event.description?.replace(/<[^>]*>/g, '') || ''}
+                    </Paragraph>
+
+                    {/* 活动信息 */}
+                    <div className={styles.eventInfo}>
+                      <div className={styles.eventInfoItem}>
+                        <CalendarIcon size={14} className={styles.eventInfoIcon} />
+                        {dayjs(event.start_time).format('HH:mm')}
+                      </div>
+                      <div className={styles.eventInfoItem}>
+                        {event.event_mode === '线上活动' ? (
+                          <>
+                            <Globe size={14} className={styles.eventInfoIcon} />
+                            线上活动
+                          </>
+                        ) : (
+                          <>
+                            <MapPin size={14} className={styles.eventInfoIcon} />
+                            {event.location || '未指定地点'}
+                          </>
+                        )}
+                      </div>
+                      {event.participants > 0 && (
+                        <div className={styles.eventInfoItem}>
+                          <Users size={14} className={styles.eventInfoIcon} />
+                          {event.participants}人
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>
