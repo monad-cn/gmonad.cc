@@ -64,6 +64,8 @@ type EventFilter struct {
 	PageSize      int  // 每页数量，建议默认 10
 	Status        int
 	PublishStatus int
+	StartDate     *time.Time
+	EndDate       *time.Time
 }
 
 func QueryEvents(filter EventFilter) ([]Event, int64, error) {
@@ -99,6 +101,10 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	if filter.Location != "" {
 		query = query.Where("location LIKE  ?", "%"+filter.Location+"%")
+	}
+
+	if filter.StartDate != nil {
+		query = query.Where("events.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
 	}
 
 	// 统计总数（不加 limit 和 offset）

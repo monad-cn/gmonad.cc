@@ -101,6 +101,8 @@ func QueryEvents(c *gin.Context) {
 	eventMode := c.Query("event_mode")
 	eventType := c.Query("event_type")
 	order := c.DefaultQuery("order", "desc")
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -120,6 +122,16 @@ func QueryEvents(c *gin.Context) {
 		PageSize:      pageSize,
 		Status:        status,
 		PublishStatus: publishStatus,
+	}
+
+	var start, end time.Time
+	start, _ = time.Parse("2006-01-02", startDate)
+	end, _ = time.Parse("2006-01-02", endDate)
+
+	if !start.IsZero() && !end.IsZero() {
+		newEnd := end.AddDate(0, 0, 1)
+		filter.StartDate = &start
+		filter.EndDate = &newEnd
 	}
 
 	events, total, err := models.QueryEvents(filter)
