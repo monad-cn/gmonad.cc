@@ -47,11 +47,11 @@ export const docsCategories: DocCategory[] = [
     title: '介绍 Monad',
     collapsed: false,
     docs: [
-        { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
-        { slug: 'introduction/why-monad-decentralization-+-performance', title: '为什么选择 Monad: 去中心化+性能' },
-        { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
-        { slug: 'introduction/monad-for-developers', title: '面向开发人员的 Monad' },
-        { slug: 'introduction/devnet-request', title: 'Devnet 开发者申请' },
+      { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
+      { slug: 'introduction/why-monad-decentralization-+-performance', title: '为什么选择 Monad: 去中心化+性能' },
+      { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
+      { slug: 'introduction/monad-for-developers', title: '面向开发人员的 Monad' },
+      { slug: 'introduction/devnet-request', title: 'Devnet 开发者申请' },
     ],
   },
   {
@@ -158,11 +158,13 @@ export const docsCategories: DocCategory[] = [
   },
   {
     id: 'reference',
-    title: '参考资料',
+    title: 'RPC 参考',
     collapsed: true,
     docs: [
-      { slug: 'reference/rpc-overview', title: 'RPC 概览' },
-      { slug: 'reference/rpc-error-codes', title: 'RPC 故障代码' },
+      { slug: 'reference/rpc-differences', title: 'RPC 差异' },
+      { slug: 'reference/rpc-limits', title: 'RPC 限制' },
+      { slug: 'reference/rpc-error-codes', title: 'RPC 错误代码' },
+      { slug: 'reference/websockets', title: 'WebSocket 指南' },
     ],
   },
   {
@@ -189,7 +191,7 @@ export function getDocsByCategory(): DocCategory[] {
  * @returns 包含分类和文档信息的对象，如果未找到则返回 null
  */
 export function findDocCategory(
-  slug: string
+    slug: string
 ): { category: DocCategory; doc: DocItem } | null {
   for (const category of docsCategories) {
     // 首先搜索分类下直接的文档
