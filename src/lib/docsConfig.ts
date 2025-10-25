@@ -47,11 +47,11 @@ export const docsCategories: DocCategory[] = [
     title: '介绍 Monad',
     collapsed: false,
     docs: [
+        { slug: 'introduction/README', title: '引言' },
         { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
-        { slug: 'introduction/why-monad-decentralization-+-performance', title: '为什么选择 Monad: 去中心化+性能' },
+        { slug: 'introduction/why-monad', title: '为什么选择 Monad: 去中心化+性能' },
         { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
         { slug: 'introduction/monad-for-developers', title: '面向开发人员的 Monad' },
-        { slug: 'introduction/devnet-request', title: 'Devnet 开发者申请' },
     ],
   },
   {
