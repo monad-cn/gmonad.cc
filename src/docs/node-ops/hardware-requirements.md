@@ -1,7 +1,5 @@
 # 硬件要求
 
-URL: https://docs.monad.xyz/node-ops/hardware-requirements
-
 > **⚠️ 警告**
 > 
 > 官方不支持基于云的环境。

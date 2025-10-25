@@ -1,7 +1,5 @@
 # 全节点配置
 
-URL: https://docs.monad.xyz/node-ops/full-node-configurations
-
 Monad 支持全节点通过 [RaptorCast](/monad-arch/consensus/raptorcast) 协议接收区块提案的多种方式。
 
 ## 1. 专用全节点
