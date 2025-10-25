@@ -1,6 +1,5 @@
 # 归档数据
 
-URL: https://docs.monad.xyz/node-ops/archive-data
 
 ## 背景
 
