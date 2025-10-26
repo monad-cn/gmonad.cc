@@ -1,7 +1,18 @@
-# RPC 故障代码
+# RPC 错误代码
 
-Monad 支持用于与区块链交互的 [JSON-RPC](https://www.jsonrpc.org/specification) 接口。Monad JSON-RPC 旨在等效于以太坊 JSON-RPC，但由于以太坊客户端之间缺乏标准化，一些故障代码可能略有偏差，以下仅供参考。
 
-### Monad 故障代码参考
+Monad 支持 [JSON-RPC](https://www.jsonrpc.org/specification) 接口与区块链交互。Monad JSON-RPC 旨在与以太坊 JSON-RPC 等效，但由于以太坊客户端之间缺乏标准化，某些错误代码略有偏差。
 
-<table><thead><tr><th width="148">故障代码</th><th width="239">消息提示</th><th>故障解释</th></tr></thead><tbody><tr><td><strong>-32601</strong></td><td>Parse error</td><td>无法解析 JSON-RPC 请求</td></tr><tr><td><strong>-32601</strong></td><td>Invalid request</td><td>请求无效，例如请求超出大小限制</td></tr><tr><td><strong>-32601</strong></td><td>Method not found</td><td>不符合 JSON-RPC 规范</td></tr><tr><td><strong>-32601</strong></td><td>Method not supported</td><td>符合 JSON-RPC 规范，但 Monad 尚未支持</td></tr><tr><td><strong>-32602</strong></td><td>Invalid block range</td><td>eth_getLogs 过滤器范围限制为 1000 个区块</td></tr><tr><td><strong>-32602</strong></td><td>Invalid params</td><td>请求包含与特定方法关联的错误参数</td></tr><tr><td><strong>-32603</strong></td><td>Internal error</td><td>由于内部错误而无法完成的请求</td></tr><tr><td><strong>-32603</strong></td><td>Execution reverted</td><td>eth_call 和 eth_estimateGas 模拟还原交易</td></tr><tr><td><strong>-32603</strong></td><td>Transaction decoding error</td><td>请求包含无法解码的原始交易</td></tr></tbody></table>
+## Monad 错误代码参考
+
+| 错误代码 | 消息 | 说明 |
+| --- | --- | --- |
+| **-32601** | Parse error | 无法解析 JSON-RPC 请求 |
+| **-32601** | Invalid request | 无效请求，例如超出大小限制的请求 |
+| **-32601** | Method not found | 不属于 JSON-RPC 规范的方法 |
+| **-32601** | Method not supported | 属于 JSON-RPC 规范但 Monad 尚不支持的方法 |
+| **-32602** | Invalid block range | eth_getLogs 的最大区块范围由每个 RPC 提供商配置，但通常限制为 1000 个区块 |
+| **-32602** | Invalid params | 请求包含与特定方法相关的错误参数 |
+| **-32603** | Internal error | 由于内部错误而无法完成的请求 |
+| **-32603** | Execution reverted | eth_call 和 eth_estimateGas 模拟交易回滚 |
+| **-32603** | Transaction decoding error | 请求包含无法解码的原始交易 |
