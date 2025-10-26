@@ -3,9 +3,9 @@
  * 表示单个文档页面的配置信息
  */
 export interface DocItem {
-  slug: string;        // 文档的唯一标识符，对应文件路径（不含扩展名）
-  title: string;       // 文档显示标题
-  hasArrow?: boolean;  // 是否显示外链箭头图标（可选）
+  slug: string; // 文档的唯一标识符，对应文件路径（不含扩展名）
+  title: string; // 文档显示标题
+  hasArrow?: boolean; // 是否显示外链箭头图标（可选）
 }
 
 /**
@@ -13,10 +13,10 @@ export interface DocItem {
  * 用于将相关文档组织在一起，支持嵌套结构
  */
 export interface DocGroup {
-  id: string;                     // 分组的唯一标识符
-  title: string;                  // 分组显示标题
-  collapsed?: boolean;            // 是否默认折叠状态（可选）
-  type: 'group';                  // 类型标识符，用于区分分组和文档项
+  id: string; // 分组的唯一标识符
+  title: string; // 分组显示标题
+  collapsed?: boolean; // 是否默认折叠状态（可选）
+  type: 'group'; // 类型标识符，用于区分分组和文档项
   children: (DocItem | DocGroup)[]; // 子项数组，可以包含文档项或嵌套分组
 }
 
@@ -25,11 +25,11 @@ export interface DocGroup {
  * 顶级分类，用于组织整个文档结构
  */
 export interface DocCategory {
-  id: string;           // 分类的唯一标识符
-  title: string;        // 分类显示标题
-  collapsed?: boolean;  // 是否默认折叠状态（可选）
-  docs?: DocItem[];     // 直属于该分类的文档列表（可选）
-  groups?: DocGroup[];  // 该分类下的分组列表（可选）
+  id: string; // 分类的唯一标识符
+  title: string; // 分类显示标题
+  collapsed?: boolean; // 是否默认折叠状态（可选）
+  docs?: DocItem[]; // 直属于该分类的文档列表（可选）
+  groups?: DocGroup[]; // 该分类下的分组列表（可选）
 }
 
 /**
@@ -44,14 +44,70 @@ export interface DocCategory {
 export const docsCategories: DocCategory[] = [
   {
     id: 'introduction',
-    title: '介绍 Monad',
+    title: '介绍',
     collapsed: false,
     docs: [
-        { slug: 'introduction/README', title: '引言' },
-        { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
-        { slug: 'introduction/why-monad', title: '为什么选择 Monad: 去中心化+性能' },
-        { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
-        { slug: 'introduction/monad-for-developers', title: '面向开发人员的 Monad' },
+      { slug: 'introduction/README', title: '引言' },
+      { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
+      {
+        slug: 'introduction/why-monad',
+        title: '为什么选择 Monad: 去中心化+性能',
+      },
+      { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
+      {
+        slug: 'introduction/monad-for-developers',
+        title: '面向开发人员的 Monad',
+      },
+    ],
+  },
+  {
+    id: 'developer-essentials',
+    title: '开发人员必备',
+    collapsed: true,
+    docs: [
+      {
+        slug: 'developer-essentials/network-information',
+        title: '网络信息:主网',
+      },
+      { slug: 'developer-essentials/testnets', title: '网络信息:测试网' },
+      { slug: 'developer-essentials/summary', title: '部署摘要' },
+      {
+        slug: 'developer-essentials/differences',
+        title: 'Monad 与以太坊的差异',
+      },
+      { slug: 'developer-essentials/transactions', title: '交易' },
+      { slug: 'developer-essentials/gas-pricing', title: 'Gas 定价' },
+      { slug: 'developer-essentials/opcode-pricing', title: '操作码定价' },
+      { slug: 'developer-essentials/precompiles', title: '预编译合约' },
+      { slug: 'developer-essentials/reserve-balance', title: '储备余额' },
+      { slug: 'developer-essentials/eip-7702', title: 'EIP-7702 支持' },
+      { slug: 'developer-essentials/historical-data', title: '历史数据' },
+      { slug: 'developer-essentials/best-practices', title: '最佳实践' },
+    ],
+    groups: [
+      {
+        id: 'staking',
+        title: '质押机制',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'developer-essentials/staking/index', title: '质押机制概览' },
+          { slug: 'developer-essentials/staking/staking-behavior', title: '质押行为机制' },
+          { slug: 'developer-essentials/staking/staking-precompile', title: '质押预编译合约' },
+        ],
+      },
+      {
+        id: 'changelog',
+        title: '更新日志',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'developer-essentials/changelog/index', title: '更新日志概览' },
+          { slug: 'developer-essentials/changelog/releases', title: '版本发布记录' },
+          { slug: 'developer-essentials/changelog/testnet', title: 'Testnet 更新日志' },
+          { slug: 'developer-essentials/changelog/testnet-2', title: 'Testnet-2 更新日志' },
+        ],
+      },
     ],
   },
   {
@@ -65,9 +121,15 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          { slug: 'getting-started/deploy-contract/foundry', title: '使用 Foundry 部署合约' },
-          { slug: 'getting-started/deploy-contract/hardhat', title: '使用 Hardhat 部署合约' },
-        ]
+          {
+            slug: 'getting-started/deploy-contract/foundry',
+            title: '使用 Foundry 部署合约',
+          },
+          {
+            slug: 'getting-started/deploy-contract/hardhat',
+            title: '使用 Hardhat 部署合约',
+          },
+        ],
       },
       {
         id: 'verify-contract',
@@ -75,18 +137,27 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          { slug: 'getting-started/deploy-contract/verify-contract/foundry', title: '验证合约 (Foundry)' },
-          { slug: 'getting-started/deploy-contract/verify-contract/hardhat', title: '验证合约 (Hardhat)' },
-        ]
-      }
-    ]
+          {
+            slug: 'getting-started/deploy-contract/verify-contract/foundry',
+            title: '验证合约 (Foundry)',
+          },
+          {
+            slug: 'getting-started/deploy-contract/verify-contract/hardhat',
+            title: '验证合约 (Hardhat)',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'guides',
     title: '开发指南',
     collapsed: false,
     docs: [
-      { slug: 'guides/scaffold-eth-monad', title: '使用 Scaffold-Eth-Monad 构建 dApp' },
+      {
+        slug: 'guides/scaffold-eth-monad',
+        title: '使用 Scaffold-Eth-Monad 构建 dApp',
+      },
     ],
     groups: [
       {
@@ -96,28 +167,43 @@ export const docsCategories: DocCategory[] = [
         type: 'group',
         children: [
           { slug: 'guides/evm-resources/evm-behavior', title: 'EVM Behavior' },
-          { slug: 'guides/evm-resources/solidity-resources', title: 'Solidity 资源' },
+          {
+            slug: 'guides/evm-resources/solidity-resources',
+            title: 'Solidity 资源',
+          },
           {
             id: 'other-languages',
             title: '其他编程语言',
             collapsed: false,
             type: 'group',
             children: [
-              { slug: 'guides/evm-resources/other-languages/yul', title: 'Yul 语言' },
-              { slug: 'guides/evm-resources/other-languages/huff', title: 'Huff 语言' },
-              { slug: 'guides/evm-resources/other-languages/vyper', title: 'Vyper 语言' },
-            ]
-          }
-        ]
-      }
-    ]
+              {
+                slug: 'guides/evm-resources/other-languages/yul',
+                title: 'Yul 语言',
+              },
+              {
+                slug: 'guides/evm-resources/other-languages/huff',
+                title: 'Huff 语言',
+              },
+              {
+                slug: 'guides/evm-resources/other-languages/vyper',
+                title: 'Vyper 语言',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'monad-architecture',
     title: 'Monad 架构',
     collapsed: false,
     docs: [
-      { slug: 'monad-architecture/transaction-lifecycle-in-monad', title: 'Monad 的交易生命周期' },
+      {
+        slug: 'monad-architecture/transaction-lifecycle-in-monad',
+        title: 'Monad 的交易生命周期',
+      },
       { slug: 'monad-architecture/hardware-requirements', title: '硬件要求' },
       { slug: 'monad-architecture/other-details', title: '其他详细信息' },
     ],
@@ -128,9 +214,15 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          { slug: 'monad-architecture/concepts/asynchronous-i-o', title: 'Asynchronous I/O' },
-          { slug: 'monad-architecture/concepts/pipelining', title: 'Pipelining' },
-        ]
+          {
+            slug: 'monad-architecture/concepts/asynchronous-i-o',
+            title: 'Asynchronous I/O',
+          },
+          {
+            slug: 'monad-architecture/concepts/pipelining',
+            title: 'Pipelining',
+          },
+        ],
       },
       {
         id: 'consensus',
@@ -138,11 +230,23 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          { slug: 'monad-architecture/consensus/monadbft', title: 'MonadBFT 共识机制' },
-          { slug: 'monad-architecture/consensus/deferred-execution', title: '延迟执行' },
-          { slug: 'monad-architecture/consensus/shared-mempool', title: '共享内存池' },
-          { slug: 'monad-architecture/consensus/carriage-cost-and-reserve-balance', title: '传输成本和储备余额' },
-        ]
+          {
+            slug: 'monad-architecture/consensus/monadbft',
+            title: 'MonadBFT 共识机制',
+          },
+          {
+            slug: 'monad-architecture/consensus/deferred-execution',
+            title: '延迟执行',
+          },
+          {
+            slug: 'monad-architecture/consensus/shared-mempool',
+            title: '共享内存池',
+          },
+          {
+            slug: 'monad-architecture/consensus/carriage-cost-and-reserve-balance',
+            title: '传输成本和储备余额',
+          },
+        ],
       },
       {
         id: 'execution',
@@ -150,11 +254,17 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          { slug: 'monad-architecture/execution/parallel-execution', title: '并行执行' },
-          { slug: 'monad-architecture/execution/monaddb', title: 'MonadDb 数据库' },
-        ]
-      }
-    ]
+          {
+            slug: 'monad-architecture/execution/parallel-execution',
+            title: '并行执行',
+          },
+          {
+            slug: 'monad-architecture/execution/monaddb',
+            title: 'MonadDb 数据库',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'reference',
@@ -164,12 +274,6 @@ export const docsCategories: DocCategory[] = [
       { slug: 'reference/rpc-overview', title: 'RPC 概览' },
       { slug: 'reference/rpc-error-codes', title: 'RPC 故障代码' },
     ],
-  },
-  {
-    id: 'developer-essentials',
-    title: '开发人员必备',
-    collapsed: true,
-    docs: [{ slug: 'developer/network-info', title: '网络信息' }],
   },
 ];
 
