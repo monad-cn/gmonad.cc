@@ -85,7 +85,7 @@ println!("Payload: {exec_event:x?}");
 
 因为这是一行非常长的行（Rust 的 `#[derive(Debug)]` 输出中没有换行），所以在我们的示例输出文本中缩写了它。我们稍后会查看它的部分内容，但我们将在这里暂停以解释有关此 `println!("Payload: {exec_event:x?}")` 语句的一些内容。
 
-`exec_event` is a value of Rust enum type `ExecEvent` . Here is how that enum is defined:
+`exec_event` 是 Rust 枚举类型 `ExecEvent` 的一个值。以下是该枚举的定义：
 
 ```rust
 pub enum ExecEvent {
@@ -104,46 +104,46 @@ pub enum ExecEvent {
         data_bytes: Box<[u8]>,
         blob_bytes: Box<[u8]>,
     },
-    // ... more enum variants follow, full definition not shown
+    // ... 更多枚举变体如下，未显示完整定义
 }
 ```
 
-- The debug output starts with `BlockStart(...)` , so `exec_event` has the `ExecEvent::BlockStart` enum variant
-- It seems like we already knew that from the earlier `BLOCK_START [2 0x2]` print-out, but there's a subtle difference. The first line prints information found in the *event descriptor* , which is like a header containing the the common fields of an event. At the point in the program where the descriptor line is printed, it has not yet decoded the event payload to construct the `exec_event` variant. Suppose we were only interested in block 15,000,002. In that case, we could look at just the descriptor, notice it relates to block 15,000,001, and skip over this event (and all other events for that block), i.e., we would not bother decoding it
-- The value associated with an `ExecEvent::BlockStart` variant if of type `struct monad_exec_block_start` ; notice that this type does *not* follow the normal Rust code-formatting style: it uses `lower_case_snake_case` instead of `UpperCamelCase` and has a seemingly-unnecessary prefix (all the variant value types start with `monad_exec_` ). This is because the payload types are defined as C language structures, and their Rust equivalents are generated using bindgen. The C-style spelling helps indicate that. The definition of `monad_exec_block_start` comes from the C header file `exec_event_ctypes.h` , where it is defined like this:
+- 调试输出以 `BlockStart(...)` 开头，因此 `exec_event` 具有 `ExecEvent::BlockStart` 枚举变体
+- 看起来我们从之前的 `BLOCK_START [2 0x2]` 输出中已经知道了这一点，但有一个微妙的区别。第一行打印的是在*事件描述符*中找到的信息，它就像一个包含事件公共字段的头部。在程序打印描述符行的时候，它还没有解码事件载荷来构造 `exec_event` 变体。假设我们只对区块 15,000,002 感兴趣。在这种情况下，我们可以只查看描述符，注意到它与区块 15,000,001 相关，然后跳过此事件（以及该区块的所有其他事件），也就是说，我们不会费心去解码它
+- 与 `ExecEvent::BlockStart` 变体关联的值是 `struct monad_exec_block_start` 类型；请注意，此类型*不*遵循正常的 Rust 代码格式样式：它使用 `lower_case_snake_case` 而不是 `UpperCamelCase`，并且有一个看似不必要的前缀（所有变体值类型都以 `monad_exec_` 开头）。这是因为载荷类型被定义为 C 语言结构，它们的 Rust 等价物是使用 bindgen 生成的。C 风格的拼写有助于表明这一点。`monad_exec_block_start` 的定义来自 C 头文件 `exec_event_ctypes.h`，其中定义如下：
 
 ```c
-/// Event recorded at the start of EVM execution
+/// 在 EVM 执行开始时记录的事件
 struct monad_exec_block_start
 {
-    struct monad_exec_block_tag block_tag;          ///< Proposal is for this block
-    uint64_t round;                                 ///< Round when block was proposed
-    uint64_t epoch;                                 ///< Epoch when block was proposed
-    __uint128_t proposal_epoch_nanos;               ///< UNIX epoch nanosecond timestamp
-    monad_c_uint256_ne chain_id;                    ///< Blockchain we're associated with
-    struct monad_c_secp256k1_pubkey author;         ///< Public key of block author
-    monad_c_bytes32 parent_eth_hash;                ///< Hash of Ethereum parent block
-    struct monad_c_eth_block_input eth_block_input; ///< Ethereum execution inputs
-    struct monad_c_native_block_input monad_block_input; ///< Monad execution inputs
+    struct monad_exec_block_tag block_tag;          ///< 此区块的提案
+    uint64_t round;                                 ///< 提议区块时的轮次
+    uint64_t epoch;                                 ///< 提议区块时的纪元
+    __uint128_t proposal_epoch_nanos;               ///< UNIX 纪元纳秒时间戳
+    monad_c_uint256_ne chain_id;                    ///< 我们关联的区块链
+    struct monad_c_secp256k1_pubkey author;         ///< 区块作者的公钥
+    monad_c_bytes32 parent_eth_hash;                ///< 以太坊父区块的哈希
+    struct monad_c_eth_block_input eth_block_input; ///< 以太坊执行输入
+    struct monad_c_native_block_input monad_block_input; ///< Monad 执行输入
 };
 ```
 
-The Ethereum execution inputs field `eth_block_input` is the field that corresponds to the parts of the Ethereum block header which are known at the start of execution.
+以太坊执行输入字段 `eth_block_input` 对应于在执行开始时已知的以太坊区块头的部分。
 
-Some of this output is difficult to read, since Rust's `#[derive(Debug)]` is meant for ease of debugging and doesn't always "pretty-print" data in the best way for readability. Other fields are clear though, for example, the `gas_limit` of the block is shown as a hexidecimal value:
+此输出的某些部分难以阅读，因为 Rust 的 `#[derive(Debug)]` 是为了便于调试而设计的，并不总是以最佳方式"美化打印"数据以提高可读性。不过其他字段很清楚，例如，区块的 `gas_limit` 显示为十六进制值：
 
 ```text
 monad_c_eth_block_input { <not shown...> gas_limit: 1c9c380 <...not shown> }
 ```
 
-`0x1c9c380` corresponds to the decimal number `30,000,000` , a number we expect to see for a mainnet Ethereum gas limit.
+`0x1c9c380` 对应于十进制数 `30,000,000`，这是我们期望在以太坊主网 gas 限制中看到的数字。
 
-info
-Real pretty-printing of events is done with a developer tool called `eventcap` , which is part of the SDK. This example is meant to be as simple and short as possible, to help with learning the API. When debugging real event programs, you will probably prefer developer tools like eventcap. The build instructions for it are in the final step of the "Getting start" guide [(here)](/execution-events/getting-started/final#optional-build-the-eventcap-program) .
+提示
+事件的真正美化打印是使用名为 `eventcap` 的开发工具完成的，它是 SDK 的一部分。此示例旨在尽可能简单和简短，以帮助学习 API。在调试实际事件程序时，您可能会更喜欢使用 eventcap 等开发工具。它的构建说明在"入门"指南的最后一步[（这里）](/execution-events/getting-started/final#optional-build-the-eventcap-program)中。
 
-Now let's look for something a little more interesting, to get a sense of a what a real SDK consumer might do with this data.
+现在让我们寻找一些更有趣的东西，以了解真正的 SDK 使用者可能如何处理这些数据。
 
-If you search the output for the string `TXN_EVM_OUTPUT` , the first match will be this event (with some formatting differences):
+如果您在输出中搜索字符串 `TXN_EVM_OUTPUT`，第一个匹配项将是此事件（格式略有不同）：
 
 ```text
 16:26:14.376725676 TXN_EVM_OUTPUT [17 0x11] SEQ: 236 BLK: 15000001 TXN: 0
@@ -153,31 +153,31 @@ Payload: TxnEvmOutput { txn_index: 0, output: monad_exec_txn_evm_output {
 } }
 ```
 
-This is the first event that describes the output of transaction zero in block 15,000,001 -- note the `TXN: 0` in the descriptor and `txn_index: 0` in the payload. We say "first event" because the output for any particular transaction usually spans *several* events: each log, call frame, state change, and state access is recorded as a separate event.
+这是描述区块 15,000,001 中交易零输出的第一个事件——注意描述符中的 `TXN: 0` 和载荷中的 `txn_index: 0`。我们说"第一个事件"是因为任何特定交易的输出通常跨越*多个*事件：每个日志、调用帧、状态更改和状态访问都作为单独的事件记录。
 
-The first event is always of type `TXN_EVM_OUTPUT` . It contains a basic summary of what happened, and an indication of how many more output-related events will follow. You can see that this particular transaction emitted zero logs, and one call frame trace. The call frame information is recorded in the next event, on the line below this one.
+第一个事件始终是 `TXN_EVM_OUTPUT` 类型。它包含发生了什么的基本摘要，以及将有多少与输出相关的事件跟随的指示。您可以看到这个特定交易发出了零个日志和一个调用帧跟踪。调用帧信息记录在下一个事件中，就在此事件的下一行。
 
-As it turns out, the very first transaction is also somewhat interesting: it failed to execute after using 30,300 gas (0x765c). The transaction's failure is recorded by `status` field. As you can see, it is set to `false` .
+事实证明，第一个交易也有点有趣：它在使用 30,300 gas (0x765c) 后执行失败。交易的失败由 `status` 字段记录。如您所见，它被设置为 `false`。
 
-Why did it fail? To figure it out, we'll use the information in the `TXN_CALL_FRAME` event that follows this one. The `evmc_status_code` field in that event has the value `2` , which is the numeric value of the [`EVMC_REVERT`](https://github.com/ipsilon/evmc/blob/496ce0f81058378b72d0b592d1c49b935bce3302/include/evmc/evmc.h#L298) status code. This tells us that the revert was requested by the contract code itself, i.e., it executed a [`REVERT`](https://www.evm.codes/?fork=cancun#fd) instruction. In other words, this was not a VM-initiated exceptional halt such as "out of gas" or "illegal instruction, but something the contract itself decided to do.
+它为什么失败？要弄清楚这一点，我们将使用在此事件之后的 `TXN_CALL_FRAME` 事件中的信息。该事件中的 `evmc_status_code` 字段的值为 `2`，这是 [`EVMC_REVERT`](https://github.com/ipsilon/evmc/blob/496ce0f81058378b72d0b592d1c49b935bce3302/include/evmc/evmc.h#L298) 状态代码的数值。这告诉我们回滚是由合约代码本身请求的，即它执行了 [`REVERT`](https://www.evm.codes/?fork=cancun#fd) 指令。换句话说，这不是 VM 发起的异常停止，如"gas 不足"或"非法指令"，而是合约本身决定做的事情。
 
-Because this is a Solidity contract, we can decode richer error information from the call frame. The `REVERT` instruction can pass arbitrary-length return data back to the caller. This return data is recorded in the call frame, in the `return_bytes` array.
+因为这是一个 Solidity 合约，我们可以从调用帧中解码更丰富的错误信息。`REVERT` 指令可以将任意长度的返回数据传递回调用者。此返回数据记录在调用帧的 `return_bytes` 数组中。
 
-Observe that the first 4 bytes of `return_bytes` are `0x8c379a0` . This is how Solidity represents a revert that carries a string explanation. The details of how this string is encoded is [here](https://docs.soliditylang.org/en/v0.8.21/control-structures.html#revert) , but the upshot is that we can decode the last 32 bytes of this `return_bytes` array as an ASCII string. If you try this yourself, you'll discover that it says:
+请注意，`return_bytes` 的前 4 个字节是 `0x8c379a0`。这是 Solidity 表示带有字符串解释的回滚的方式。关于如何编码此字符串的详细信息在[这里](https://docs.soliditylang.org/en/v0.8.21/control-structures.html#revert)，但结果是我们可以将此 `return_bytes` 数组的最后 32 个字节解码为 ASCII 字符串。如果您自己尝试，您会发现它显示：
 
 ```text
 Ownable: caller is not the owner
 ```
 
-This error string ultimately comes from [here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.0/contracts/access/Ownable.sol#L43) , in OpenZeppelin's abstract "Ownable" contract. This was used as a third-party library in the implementation of this smart contract, to provide some simple access controls.
+此错误字符串最终来自 OpenZeppelin 的抽象"Ownable"合约[这里](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.0/contracts/access/Ownable.sol#L43)。这被用作此智能合约实现中的第三方库，以提供一些简单的访问控制。
 
-In an earlier event (called `TXN_HEADER_START` ) we can find the transaction's Keccak hash, which is `0xaedb8ef26125d8ad6e0c5f19fc9cbdd7f4a42eb82de88686b39090b8abcfeb8f` . If we look up information about this transaction on [Etherscan](https://etherscan.io/tx/0xaedb8ef26125d8ad6e0c5f19fc9cbdd7f4a42eb82de88686b39090b8abcfeb8f) , using the hash, we can see that Etherscan agrees. The `Status:` field reads:
+在较早的事件（称为 `TXN_HEADER_START`）中，我们可以找到交易的 Keccak 哈希，即 `0xaedb8ef26125d8ad6e0c5f19fc9cbdd7f4a42eb82de88686b39090b8abcfeb8f`。如果我们使用该哈希在 [Etherscan](https://etherscan.io/tx/0xaedb8ef26125d8ad6e0c5f19fc9cbdd7f4a42eb82de88686b39090b8abcfeb8f) 上查找有关此交易的信息，我们可以看到 Etherscan 同意这一点。`Status:` 字段显示：
 
 ```text
 Fail with error 'Ownable: caller is not the owner'
 ```
 
-Feel free to double-check this result using your favorite tool for exploring Ethereum mainnet data!
+请随意使用您最喜欢的工具来探索以太坊主网数据，以再次验证此结果！
 
 ### 步骤 4：了解其工作原理
 
