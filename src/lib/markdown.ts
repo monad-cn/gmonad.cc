@@ -79,7 +79,13 @@ export async function parseMarkdown(content: string, options: MarkdownParseOptio
 
   marked.setOptions(config);
 
-  return await marked(content);
+  // 处理相对路径的图片引用，转换为 API 路由
+  const processedContent = content.replace(
+    /!\[([^\]]*)\]\((\.\/)?images\/([^)]+)\)/g,
+    '![$1](/api/docs/images/$3)'
+  );
+
+  return await marked(processedContent);
 }
 
 export function parseMarkdownToTokens(content: string): MarkedToken[] {
