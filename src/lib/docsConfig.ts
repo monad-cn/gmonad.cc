@@ -268,12 +268,60 @@ export const docsCategories: DocCategory[] = [
   },
   {
     id: 'reference',
-    title: '参考资料',
+    title: 'RPC 参考',
     collapsed: true,
     docs: [
-      { slug: 'reference/rpc-overview', title: 'RPC 概览' },
-      { slug: 'reference/rpc-error-codes', title: 'RPC 故障代码' },
+      { slug: 'reference/rpc-differences', title: 'RPC 差异' },
+      { slug: 'reference/rpc-limits', title: 'RPC 限制' },
+      { slug: 'reference/rpc-error-codes', title: 'RPC 错误代码' },
+      { slug: 'reference/websockets', title: 'WebSocket 指南' },
     ],
+  },
+  {
+    id: 'node-ops',
+    title: '节点操作',
+    collapsed: false,
+    docs: [
+      { slug: 'node-ops/hardware-requirements', title: '硬件要求' },
+      { slug: 'node-ops/full-node-configurations', title: '全节点配置' },
+      { slug: 'node-ops/archive-data', title: '归档数据' },
+    ],
+  },
+  {
+    id: 'execution-events',
+    title: '执行事件',
+    collapsed: true,
+    docs: [
+      { slug: 'execution-events/release-notes', title: '发布说明' },
+      { slug: 'execution-events/overview', title: '概览' },
+      { slug: 'execution-events/event-ring', title: '事件环详解' },
+      { slug: 'execution-events/c-api', title: 'C API' },
+      { slug: 'execution-events/rust-api', title: 'Rust API' },
+      { slug: 'execution-events/consensus-events', title: '共识事件' },
+      { slug: 'execution-events/advanced', title: '高级主题' },
+    ],
+    groups: [
+      {
+        id: 'getting-started',
+        title: '快速入门',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'execution-events/getting-started/c', title: '构建 C 示例程序' },
+          { slug: 'execution-events/getting-started/rust', title: '构建 Rust 示例程序' },
+          { slug: 'execution-events/getting-started/snapshot', title: '在快照数据上运行示例程序' },
+          { slug: 'execution-events/getting-started/setup-node', title: '设置 Monad 节点' },
+          { slug: 'execution-events/getting-started/final', title: '在实时数据上运行示例程序及后续步骤' },
+        ]
+      }
+    ],
+  },
+
+  {
+    id: 'developer-essentials',
+    title: '开发人员必备',
+    collapsed: true,
+    docs: [{ slug: 'developer/network-info', title: '网络信息' }],
   },
 ];
 
@@ -293,7 +341,7 @@ export function getDocsByCategory(): DocCategory[] {
  * @returns 包含分类和文档信息的对象，如果未找到则返回 null
  */
 export function findDocCategory(
-  slug: string
+    slug: string
 ): { category: DocCategory; doc: DocItem } | null {
   for (const category of docsCategories) {
     // 首先搜索分类下直接的文档
