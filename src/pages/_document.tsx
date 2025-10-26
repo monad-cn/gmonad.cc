@@ -24,6 +24,14 @@ export default function Document() {
         />
         <meta name="twitter:image" content="https://gmonad.cc/cover.png" />
          <link rel="icon" href="/logo.png" />
+         
+        {/* KaTeX CSS for mathematical formula rendering */}
+        <link 
+          rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" 
+          integrity="sha384-rZAJzP1QN3lGfPAr5cVEzb+GD+AZTi3XZjPp4ILr8+WbkVh0fSxAx+K5SkHKzPsY" 
+          crossOrigin="anonymous" 
+        />
       </Head>
       <body>
         <Main />
