@@ -168,6 +168,16 @@ export const docsCategories: DocCategory[] = [
     ],
   },
   {
+    id: 'node-ops',
+    title: '节点操作',
+    collapsed: false,
+    docs: [
+      { slug: 'node-ops/hardware-requirements', title: '硬件要求' },
+      { slug: 'node-ops/full-node-configurations', title: '全节点配置' },
+      { slug: 'node-ops/archive-data', title: '归档数据' },
+    ],
+  },
+  {
     id: 'developer-essentials',
     title: '开发人员必备',
     collapsed: true,
