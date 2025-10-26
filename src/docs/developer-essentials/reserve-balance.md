@@ -148,9 +148,7 @@ block=1, balances={Alice: 110}
 
 如果账户未委托,并且没有先前的飞行中交易,则共识检查此交易的 gas 费用是否小于延迟状态中的余额。
 
-```text
 gas_fees(tx)≤balance
-```
 
 #### 如果账户未委托且有一笔清空飞行中交易
 
@@ -189,11 +187,8 @@ $\sum_{tx \in I} \text{gas\_fees}(tx) \leq \text{reserve}$
 执行模块在 Coq 中形式化为 `execAcceptableTxs`。谓词 `execAcceptableTxs s ltx s'` 确保在状态 `s` 之上执行交易列表 `ltx` 后产生的状态 `s'` 符合储备余额约束,并且不包含因违反这些约束而回滚的交易。
 
 证明声明,对于任何交易列表 `ltx`,如果共识认为其可接受,则执行也会认为其可接受,即一旦列表被共识接受,执行状态就不会违反储备余额约束:
-
-```coq
-consensusAcceptableTxs s ltx -> execAcceptableTxs s ltx s'
-```
-
+`consensusAcceptableTxs s ltx -> execAcceptableTxs s ltx s'`
+ 
 ## 示例
 
 以下示例说明了储备余额机制在实践中的行为,假设 `k=3`。

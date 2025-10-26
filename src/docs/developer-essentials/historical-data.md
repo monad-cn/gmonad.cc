@@ -1,51 +1,54 @@
-# Historical Data
+# 历史数据
 
-## Summary
+## 概述
 
-Monad full nodes provide access to all historic transactional data, including:
-- Blocks
-- Transactions
-- Receipts
-- Events
-- Traces
+Monad 全节点提供对所有历史交易数据的访问（区块、交易、收据、事件和执行跟踪）。
 
-However, Monad full nodes do not provide access to arbitrary historic state.
+Monad 全节点不提供对任意历史状态的访问。
 
-## Background
+## 背景
 
-Blockchains have two main types of data:
-1. Transactional data: List of transactions and their artifacts
-2. State data: Current state resulting from applying transactions
+区块链是有状态系统，主要包含两种数据类型：
 
-### Transactional Data Includes:
-- Blocks
-- Transactions
-- Receipts
-- Events
-- Execution traces
+1. **交易数据**（交易列表及其产物）；以及
+2. **状态数据**（通过顺序执行这些交易所产生的当前世界状态，存储在默克尔树中）。
 
-### State Data Includes:
-- Account native token balances
-- Smart contract storage mappings
+交易数据包括：
 
-## Transactional Data
+- 区块
+- 交易
+- 执行这些交易产生的收据
+- 智能合约在执行过程中发出的事件（日志）
+- 每个交易执行的详细跟踪信息
 
-Monad full nodes provide complete access to historic transactional data.
+状态数据包括：
 
-## State
+- 每个账户的原生代币余额
+- 每个智能合约的存储映射（将存储槽位映射到值）
 
-Unlike Ethereum, Monad's approach to historical state is unique:
-- Every "full node" functions like an "archive node"
-- Maintains historical per-block state tries based on disk size
-- For a 2 TB SSD, this can cover around 40,000 blocks
+区块链中的典型节点持有当前状态，随着新交易的添加不断更新。最近的历史状态也可能可用，这取决于每个增量版本的成本以及可用的磁盘空间。
 
-**Important Limitation**: Full nodes do not provide access to arbitrary historic state due to storage constraints.
+举例来说，想象维护一个 MySQL 或 Postgres 表，其中每个 `INSERT` 或 `UPDATE` 查询都是一个交易。如果表足够小，那么缓存表的每个新版本可能是可行的，但如果是大表，你可能只期望访问当前版本。
 
-### Recommendations
-- Use events to log state that might be needed later
-- Utilize [smart contract indexers](/tooling-and-infra/indexers/indexing-frameworks)
+以下描述了 Monad 中的历史数据访问：
 
-## Footnotes
+## 交易数据
 
-1. Transactional data storage may use separate archive nodes
-2. High block frequency and larger block sizes limit historical state accessibility
+Monad 全节点提供对所有历史交易数据的访问（区块、交易、收据、事件和执行跟踪）。[1](https://docs.monad.xyz/developer-essentials/historical-data#user-content-fn-1)
+
+## 状态
+
+在以太坊中，"全节点"提供当前区块和往前 128 个区块的链状态，而"归档节点"提供从创世区块开始的每个区块的链状态。也就是说，以太坊的"归档节点"是一个配置不同的全节点，运行在具有大磁盘的机器上。这个术语在[这里](https://chainstack.com/evm-nodes-a-dive-into-the-full-vs-archive-mode/)有进一步描述。
+
+在 Monad 中，每个"全节点"都是"归档节点"，意味着每个节点都尽可能多地维护历史的每个区块状态树。这意味着回溯能力取决于 RPC 提供商选择的磁盘大小。对于 2TB SSD，最近对应约 40,000 个区块，不过这取决于每个区块中状态差异的数量。
+
+由于 Monad 的高吞吐量，**全节点不提供对任意历史状态的访问**，因为这需要太多存储空间。[2](https://docs.monad.xyz/developer-essentials/historical-data#user-content-fn-2)
+
+像 `eth_call` 这样的方法可以引用最近的状态，直到状态树被清除的时间点。
+
+在编写智能合约时，建议使用事件来记录以后需要的任何状态，或使用[智能合约索引器](https://docs.monad.xyz/tooling-and-infra/indexers/indexing-frameworks)在链下计算。
+
+## 脚注
+
+1. 实现细节：最近的交易数据直接存储在节点上，而较旧的数据存储在由 RPC 提供商配置和操作的单独归档节点中。[↩](https://docs.monad.xyz/developer-essentials/historical-data#user-content-fnref-1)
+2. 在有足够 SSD 容量的情况下，Monad 全节点的行为类似于以太坊"归档"节点，提供从创世区块开始的历史状态访问。但实际上，由于每个区块有更大的变更集（每个区块最多 5,000 个交易 vs 以太坊的约 200 个，即 25 倍大的区块）和更频繁的区块（Monad 0.4 秒 vs 以太坊 12 秒，即 30 倍更频繁），目前没有 RPC 提供商提供对任意久远历史状态的访问。[↩](https://docs.monad.xyz/developer-essentials/historical-data#user-content-fnref-2)
