@@ -1,0 +1,128 @@
+/* Activity Map Styles */
+.container {
+  min-height: 100vh;
+  background-color: #111827;
+  color: white;
+}
+
+.header {
+  padding: 24px;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.subtitle {
+  color: #9ca3af;
+}
+
+.mapContainer {
+  position: relative;
+  height: calc(100vh - 200px);
+  margin: 0 24px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mapElement {
+  width: 100%;
+  height: 100%;
+}
+
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingText {
+  color: white;
+  font-size: 1.125rem;
+}
+
+.errorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorText {
+  color: #f87171;
+  font-size: 1.125rem;
+}
+
+.filterButtons {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  gap: 8px;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.filterButtonActive {
+  background-color: #ff6b35;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.filterButtonInactive {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.filterButtonInactive:hover {
+  background-color: #4b5563;
+}
+
+/* Marker animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.activityMarker {
+  width: 16px;
+  height: 16px;
+  background-color: #ff6b35;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.6);
+  animation: pulse 2s infinite;
+}
