@@ -52,7 +52,7 @@ ArchiveDB 是运行在归档服务器上的 MongoDB 数据库。它由全节点�
 
 ## 架构
 
-![Monad 归档服务器架构](/docs-images/monad-archive-server-architecture.png)
+![Monad 归档服务器架构](/images/docs/monad-archive-server-architecture.png)
 ## 存储的数据
 
 ArchiveDB 存储以下数据类型：
