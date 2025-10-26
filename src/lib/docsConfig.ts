@@ -230,23 +230,18 @@ export const docsCategories: DocCategory[] = [
         collapsed: false,
         type: 'group',
         children: [
-          {
-            slug: 'monad-architecture/consensus/monadbft',
-            title: 'MonadBFT 共识机制',
-          },
-          {
-            slug: 'monad-architecture/consensus/deferred-execution',
-            title: '延迟执行',
-          },
-          {
-            slug: 'monad-architecture/consensus/shared-mempool',
-            title: '共享内存池',
-          },
-          {
-            slug: 'monad-architecture/consensus/carriage-cost-and-reserve-balance',
-            title: '传输成本和储备余额',
-          },
-        ],
+          { slug: 'monad-architecture/consensus/monadbft', title: 'MonadBFT' },
+          { slug: 'monad-architecture/consensus/raptorcast', title: 'RaptorCast' },
+          { slug: 'monad-architecture/consensus/asynchrodnous-execution', title: '异步执行' },
+          { slug: 'monad-architecture/consensus/block-states', title: '区块状态' },
+          { slug: 'monad-architecture/consensus/local-mempool', title: '本地内存池' },
+          { slug: 'monad-architecture/consensus/statesync', title: '状态同步' },
+          { slug: 'monad-architecture/consensus/blocksync', title: '区块同步' },
+          { slug: 'monad-architecture/consensus/peer-discovery', title: '节点发现' },
+          { slug: 'monad-architecture/consensus/authentication', title: '消息认证' },
+          { slug: 'monad-architecture/consensus/transport-protocols', title: '传输协议的使用' },
+          { slug: 'monad-architecture/consensus/carriage-cost-and-reserve-balance', title: '传输成本和储备余额' },
+        ]
       },
       {
         id: 'execution',
