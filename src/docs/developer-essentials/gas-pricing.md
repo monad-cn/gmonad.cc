@@ -70,7 +70,7 @@ price_per_gas = min(base_price_per_gas + priority_price_per_gas, max_price_per_g
 
 Monad 使用与以太坊不同的 `base_price_per_gas` 控制器：
 
-![图片描述](./images/gas-pricing.png) 
+![图片描述](/images/docs/gas-pricing.png) 
 
 与以太坊中的 `base_price_per_gas` 控制器相比，此控制器增长更慢、下降更快。这是为了避免由于 `base_price_per_gas` 定价过高而导致区块空间利用不足。
 

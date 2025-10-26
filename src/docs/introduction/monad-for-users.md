@@ -28,7 +28,7 @@ Monad 通过在 EVM 层引入 **并行执行** 与 **超标量流水线（Supers
 ### 超标量流水线（Superscalar Pipeline）
 流水线是一种将任务拆解为多个阶段并并行执行的优化方式。一个经典的例子如下：
 
-![流水线洗衣日](./images/pipelining.png)
+![流水线洗衣日](/images/docs/pipelining.png)
 > 洗衣流程示例：上图为传统顺序执行方式，下图为流水线执行方式。来源：[Prof. Lois Hawkes, FSU](https://www.cs.fsu.edu/~hawkes/cda3101lects/chap6/index.html?$$$F6.1.html$$$)
 
 举例来说，传统方式是等待第一批洗衣完成洗涤、烘干、折叠、收纳后再开始下一批。而流水线方式则在第一批进入烘干机时立即启动第二批洗涤，从而显著提升资源利用率与处理效率。

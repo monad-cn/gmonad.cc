@@ -1,36 +1,10 @@
-# Staking
+# 质押
 
-Monad uses staking to determine voting weights and leader schedule in MonadBFT. Validators must stake a minimum amount, and others can delegate to them.
+Monad 使用质押来确定 [MonadBFT](https://docs.monad.xyz/monad-arch/consensus/monad-bft) 中的投票权重和出块者调度。验证者必须质押至少最小数量的代币，其他人也可以向他们委托。
 
-When a block is produced, the block's leader earns a reward distributed to delegators proportionally, minus a commission.
+当产生一个区块时，产生该区块的出块者获得区块奖励，该奖励按照每个委托者在该出块者质押中的比例分配给该出块者的每个委托者，减去佣金。
 
-## Key Topics
+查看以下主题：
 
-### [Staking Behavior](/developer-essentials/staking/staking-behavior)
-Describes how the staking system works, including relevant parameters and time periods.
-
-### [Staking Precompile](/developer-essentials/staking/staking-precompile)
-Provides the interface for the staking precompile. Developers interacting with the trading system should first review Staking Behavior, then consult this section.
-
-## Navigation
-
-- [Previous: Precompiles](/developer-essentials/precompiles)
-- [Next: Staking Behavior](/developer-essentials/staking/staking-behavior)
-
-## Additional Resources
-
-### Docs
-- [Introduction](/)
-- [Monad for Developers](/introduction/monad-for-developers)
-- [Monad for Users](/introduction/monad-for-users)
-
-### Community
-- [Developer Discord](https://discord.gg/monaddev)
-- [Community Discord](https://discord.gg/monad)
-- [Twitter](https://x.com/monad)
-
-### More
-- [Blog](https://blog.monad.xyz/)
-- [GitHub](https://github.com/monad-developers)
-
-*Copyright © 2025 Monad Foundation. Built with Docusaurus.*
+- [质押行为](https://docs.monad.xyz/developer-essentials/staking/staking-behavior) 描述了质押系统的工作原理。用户应参考此页面了解相关参数和时间周期。
+- [质押预编译](https://docs.monad.xyz/developer-essentials/staking/staking-precompile) 描述了质押预编译的接口。构建与交易系统交互功能的开发者应先查看质押行为，然后再来这里。

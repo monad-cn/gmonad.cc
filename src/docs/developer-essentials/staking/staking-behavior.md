@@ -1,117 +1,117 @@
-# Staking Behavior
+# 质押行为
 
-## Overview for Users
+## 用户概览
 
-Monad uses staking to determine the voting weights and leader schedule in [MonadBFT](https://docs.monad.xyz/monad-arch/consensus/monad-bft). Validators must stake at least a minimum amount, plus others can delegate to them.
+Monad 使用质押来确定 [MonadBFT](https://docs.monad.xyz/monad-arch/consensus/monad-bft) 中的投票权重和出块者调度。验证者必须质押至少最小数量的代币，其他人也可以向他们委托。
 
-When a block is produced, the leader who produced that block earns a block reward, which is distributed to each delegator of that leader, pro rata to their portion of that leader's stake, minus a commission.
+当产生一个区块时，产生该区块的出块者获得区块奖励，该奖励按照每个委托者在该出块者质押中的比例分配给该出块者的每个委托者，减去佣金。
 
-Here's what you need to know as a user:
+作为用户，您需要了解以下内容：
 
-| Feature                       | Details                                                      |
-| ----------------------------- | ------------------------------------------------------------ |
-| In-protocol delegation        | Supported                                                    |
-| Validator commission          | Each validator sets a fixed percentage of the block reward to keep for themselves before sharing the rest of the reward prorata by stake.  You should choose a validator that you trust whose commission you're happy with.  The min commission is 0%, the max commission is 100%. |
-| Source of rewards             | Successful proposal of a block by a leader earns a reward from two components: (1) a fixed reward derived from inflation (`REWARD`), and (2) the priority fees from all the transactions in the block. |
-| Inflationary reward           | The fixed reward (`REWARD`) is shared among all delegators of that validator after deducting the validator commission.  As a delegator, your proportion of the remainder is your proportion of the total stake on that validator.  For example: if you have delegated to a validator and comprise 20% of that validator's total stake, the reward for that block is 10 MON, and the commission is 10%, then you would receive 10 MON * 90% * 20% = 1.8 MON. |
-| Priority fees                 | Currently, priority fees only go to the validator. Validators may choose to donate their priority fees back to the delegators (including themselves) by using the [`externalReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#externalreward) method on the staking precompile. |
-| Boundary block                | At each boundary block, staking changes and the associated validator set are committed for the following epoch. Consecutive boundary blocks are separated by 50,000 **blocks** (roughly 20,000 seconds or 5.5 hours without timeouts). |
-| Epoch                         | After `EPOCH_DELAY_PERIOD` **rounds** has elapsed from the boundary block, the next epoch starts with the snapshot taken at the boundary block. Although you may initiate staking operations like (un)delegation at any time, these actions only take effect at the start of a new epoch. Note that a round is not a block - a round increments regardless of missed proposals. Epoch cannot be inferred by any mod operation on block or round number, and users should query via [`getEpoch`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getepoch) for this information. |
-| Stake activation              | New delegations made in epoch `n` become active at the start of epoch `n+1` (if submitted before the boundary block) or epoch `n+2` (if not). |
-| Stake deactivation            | Tokens unstaked in epoch `n` become inactive at the start of epoch `n+1` (if submitted before the boundary block) or epoch `n+2` (if not).  Upon becoming inactive, this stake moves into a pending state for `WITHDRAWAL_DELAY` epochs before it is withdrawable.  When it becomes withdrawable, you have to submit a `withdraw` command to move the MON back to your account. |
-| Reward claiming / compounding | Each delegation accumulates rewards. You can choose either to claim or compound any accumulated rewards.  Claimed rewards get withdrawn to your account, while compounded rewards are added to your delegation. |
-| Active validator set          | Validatorsmust have self-delegated a minimum amount (`MIN_VALIDATE_STAKE`)must have a total delegation of at least a certain amount (`ACTIVE_VALIDATOR_STAKE`), andmust be in the top `NUM_ACTIVE_VALIDATORS` validators by stake weightin order to be part of the active validator set. |
+| 功能                      | 详情                                                                  |
+| ----------------------- | ------------------------------------------------------------------- |
+| 协议内委托                 | 支持                                                                  |
+| 验证者佣金                 | 每个验证者设置一个固定百分比的区块奖励作为自己的佣金，然后按质押比例分享剩余奖励。您应该选择一个您信任且佣金合理的验证者。最低佣金为 0%，最高佣金为 100%。 |
+| 奖励来源                  | 出块者成功提议区块获得的奖励来自两个组成部分：(1) 来自通胀的固定奖励（`REWARD`），以及 (2) 区块中所有交易的优先费用。 |
+| 通胀奖励                  | 固定奖励（`REWARD`）在扣除验证者佣金后，在该验证者的所有委托者之间分配。作为委托者，您获得剩余部分的比例就是您在该验证者总质押中的比例。例如：如果您委托给一个验证者并占该验证者总质押的 20%，该区块的奖励为 10 MON，佣金为 10%，那么您将获得 10 MON * 90% * 20% = 1.8 MON。 |
+| 优先费用                  | 目前，优先费用只归验证者所有。验证者可以选择通过质押预编译上的 [`externalReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#externalreward) 方法将其优先费用捐回给委托者（包括自己）。 |
+| 边界区块                  | 在每个边界区块，质押变更和相关的验证者集合被提交到下一个时期。连续的边界区块之间间隔 50,000 个**区块**（大约 20,000 秒或 5.5 小时，不计超时）。 |
+| 时期                     | 在边界区块之后经过 `EPOCH_DELAY_PERIOD` 个**轮次**，下一个时期将以在边界区块拍摄的快照开始。虽然您可以随时发起质押操作如（取消）委托，但这些操作只在新时期开始时生效。注意轮次不是区块 - 无论是否错过提议，轮次都会递增。时期不能通过区块或轮次号的任何模运算推断，用户应通过 [`getEpoch`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getepoch) 查询此信息。 |
+| 质押激活                  | 在时期 `n` 中进行的新委托在时期 `n+1` 开始时生效（如果在边界区块之前提交）或时期 `n+2`（如果未在边界区块前提交）。 |
+| 质押停用                  | 在时期 `n` 中取消质押的代币在时期 `n+1` 开始时失效（如果在边界区块之前提交）或时期 `n+2`（如果未在边界区块前提交）。失效后，此质押进入待定状态 `WITHDRAWAL_DELAY` 个时期，之后才可提取。当可提取时，您必须提交 `withdraw` 命令将 MON 转回您的账户。 |
+| 奖励领取/复投               | 每个委托都会累积奖励。您可以选择领取或复投任何累积的奖励。领取的奖励会提取到您的账户，而复投的奖励会添加到您的委托中。 |
+| 活跃验证者集合              | 验证者必须自我委托最低金额（`MIN_VALIDATE_STAKE`），必须有至少一定数量的总委托（`ACTIVE_VALIDATOR_STAKE`），并且必须按质押权重位列前 `NUM_ACTIVE_VALIDATORS` 名验证者中，才能成为活跃验证者集合的一部分。 |
 
-## Constants
+## 常量
 
-| Constant                                                     | Meaning                                                      | Value         |
+| 常量                                                     | 含义                                                      | 值         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------- |
-| `EPOCH_LENGTH`[1](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fn-1) | epoch length                                                 | 50,000 blocks |
-| `EPOCH_DELAY_PERIOD`[2](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fn-2) | number of rounds between the boundary block and the end of each epoch | 5,000 rounds  |
-| `WITHDRAWAL_DELAY`                                           | number of epochs before unstaked tokens can be withdrawn     | 1 epoch       |
-| `MIN_VALIDATE_STAKE`                                         | min amount of MON self-delegated by a validator for it to be eligible for the active set | TBD           |
-| `ACTIVE_VALIDATOR_STAKE`                                     | min amount of MON staked with a validator for it to be eligible for the active set | TBD           |
-| `ACTIVE_VALSET_SIZE`                                         | number of validators in the active set                       | 200           |
-| `REWARD`                                                     | MON reward per block                                         | TBD           |
+| `EPOCH_LENGTH`[1](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fn-1) | 时期长度                                                 | 50,000 区块 |
+| `EPOCH_DELAY_PERIOD`[2](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fn-2) | 边界区块和每个时期结束之间的轮次数 | 5,000 轮次  |
+| `WITHDRAWAL_DELAY`                                           | 取消质押的代币可以提取之前的时期数     | 1 时期       |
+| `MIN_VALIDATE_STAKE`                                         | 验证者自我委托的 MON 最低金额，以便有资格进入活跃集合 | TBD           |
+| `ACTIVE_VALIDATOR_STAKE`                                     | 验证者质押的 MON 最低金额，以便有资格进入活跃集合 | TBD           |
+| `ACTIVE_VALSET_SIZE`                                         | 活跃集合中的验证者数量                       | 200           |
+| `REWARD`                                                     | 每区块的 MON 奖励                                         | TBD           |
 
-It's worth noting that the `EPOCH_LENGTH` is denominated in **blocks**, while `EPOCH_DELAY_PERIOD` is denominated in **rounds**. If perfect consensus is achieved, these will increment at the same rate. However, upon a failed block proposal (e.g. timeout), the round will increment while the block will not.
+值得注意的是，`EPOCH_LENGTH` 以**区块**为单位计算，而 `EPOCH_DELAY_PERIOD` 以**轮次**为单位计算。如果达到完美共识，它们将以相同的速率递增。但是，在区块提议失败（例如超时）时，轮次会递增但区块不会。
 
-## Consensus and Execution
+## 共识和执行
 
-Monad nodes are split into consensus and execution components. The validator set is maintained by the execution component; all staking-related state changes are queued and applied deterministically in the execution system. The result of these changes is accepted by the consensus component when a predefined block finalization criterion is satisfied.
+Monad 节点分为共识和执行组件。验证者集合由执行组件维护；所有与质押相关的状态变更都会在执行系统中排队并确定性地应用。当满足预定义的区块最终确认标准时，这些变更的结果会被共识组件接受。
 
-### Definitions
+### 定义
 
-Consider the timeline below, which spans hundreds of thousands of [rounds](https://docs.monad.xyz/monad-arch/consensus/monad-bft#round) (each round in MonadBFT is 400 ms):
+考虑下面的时间线，它跨越数十万个[轮次](https://docs.monad.xyz/monad-arch/consensus/monad-bft#round)（MonadBFT 中每轮次为 400 毫秒）：
 
-![timeline showing the placement of boundary blocks within an epoch](https://docs.monad.xyz/assets/images/staking-timeline-d66f162b241ec5402250e8bca4777e80.png)
+![显示边界区块在时期内放置的时间线](https://docs.monad.xyz/assets/images/staking-timeline-d66f162b241ec5402250e8bca4777e80.png)
 
-**A. Epoch**: a range of rounds during which the validator set remains unchanged.
+**A. 时期（Epoch）**：验证者集合保持不变的轮次范围。
 
-- In the diagram above, the epochs are the intervals `[0, 1]`, `[1, 2]`, `[2, 3]`, and so on. We refer to them by the starting index; for example, epoch `0` is `[0, 1]`.
+- 在上图中，时期是区间 `[0, 1]`、`[1, 2]`、`[2, 3]` 等等。我们通过起始索引引用它们；例如，时期 `0` 是 `[0, 1]`。
 
-**B. Boundary block**: the block marking the initial point of the end of an epoch. The epoch does not end at the boundary block; also the boundary block is finalized before the next epoch begins.
+**B. 边界区块（Boundary block）**：标记时期结束起始点的区块。时期不在边界区块结束；边界区块在下一个时期开始前就已经最终确认。
 
-- In the diagram above, blocks `a`, `b`, `c`, and `d` are the boundary blocks of epochs `0`, `1`, `2`, `3`, respectively.
+- 在上图中，区块 `a`、`b`、`c` 和 `d` 分别是时期 `0`、`1`、`2`、`3` 的边界区块。
 
-**C. Epoch delay period**: the period of time between a boundary block and the starting round of the next epoch, comprising `EPOCH_DELAY_PERIOD` rounds.
+**C. 时期延迟期（Epoch delay period）**：边界区块和下一个时期起始轮次之间的时间段，包含 `EPOCH_DELAY_PERIOD` 个轮次。
 
-- In the diagram above, the epoch delay period for epoch `0` is `[a, 1]`.
-- Note: the staking precompile has a boolean `in_epoch_delay_period` indicating whether the current round is within the epoch delay period.
+- 在上图中，时期 `0` 的时期延迟期是 `[a, 1]`。
+- 注意：质押预编译有一个布尔值 `in_epoch_delay_period`，指示当前轮次是否在时期延迟期内。
 
-**D. Snapshot interval:** the range between two consecutive boundary blocks. All staking requests in a snapshot interval take effect at the next epoch after the terminal boundary block.
+**D. 快照间隔（Snapshot interval）**：两个连续边界区块之间的范围。快照间隔中的所有质押请求在终端边界区块后的下一个时期生效。
 
-- In the diagram above, the snapshot intervals are `[a, b]`, `[b, c]`, `[c, d]`.
+- 在上图中，快照间隔是 `[a, b]`、`[b, c]`、`[c, d]`。
 
-The staking contract maintains three views of the validator set:
+质押合约维护验证者集合的三个视图：
 
-**A. Execution view**
+**A. 执行视图（Execution view）**
 
-- The Monad client's execution component is responsible for rewards and delegation. These actions are processed in real-time on every block, forming the execution view.
-- Actions in each snapshot interval are applied at the next boundary block.
+- Monad 客户端的执行组件负责奖励和委托。这些操作在每个区块上实时处理，形成执行视图。
+- 每个快照间隔中的操作在下一个边界区块时应用。
 
-**B. Consensus view**
+**B. 共识视图（Consensus view）**
 
-- The consensus view is a frozen copy of the execution view taken at the boundary block.
-- The static validator set of a consensus view formed at the boundary block of epoch `n` will be the effective validator set for epoch `n+1` that starts in `EPOCH_DELAY_PERIOD` rounds.
+- 共识视图是在边界区块拍摄的执行视图的冻结副本。
+- 在时期 `n` 的边界区块形成的共识视图的静态验证者集合将是在 `EPOCH_DELAY_PERIOD` 轮次后开始的时期 `n+1` 的有效验证者集合。
 
-**C. Snapshot view**
+**C. 快照视图（Snapshot view）**
 
-- The snapshot view is the previous consensus view. This is needed for consensus during the epoch delay period.
+- 快照视图是先前的共识视图。在时期延迟期间，这对于共识是必需的。
 
-### Intuition on State Changes
+### 状态变更直觉
 
-Below is an intuitive example of the lifecycle of a transaction in the staking module. Suppose we fix a snapshot interval `m` in epoch `n`.
+下面是质押模块中交易生命周期的直观示例。假设我们固定时期 `n` 中的快照间隔 `m`。
 
-**1. Prior to the boundary block**
+**1. 边界区块之前**
 
-- Prior to the boundary block, various transactions invoke the [`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator), [`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate), [`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate), [`syscallReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallreward), [`syscallOnEpochChange`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallonepochchange), and [`syscallSnapshot`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallsnapshot) operations.
-- These requests immediately update the execution view of the validator set.
-  - `addValidator`, `delegate` , `undelegate` , and `syscallSnapshot` affect consensus in the next epoch `n+1`.
-  - `syscallReward` and `syscallOnEpochChange` have an effect on execution in the current epoch `n`.
+- 在边界区块之前，各种交易调用 [`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator)、[`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate)、[`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate)、[`syscallReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallreward)、[`syscallOnEpochChange`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallonepochchange) 和 [`syscallSnapshot`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallsnapshot) 操作。
+- 这些请求立即更新验证者集合的执行视图。
+  - `addValidator`、`delegate`、`undelegate` 和 `syscallSnapshot` 影响下一个时期 `n+1` 的共识。
+  - `syscallReward` 和 `syscallOnEpochChange` 对当前时期 `n` 的执行产生影响。
 
-**2. Boundary block**
+**2. 边界区块**
 
-- At the boundary block, [`syscallSnapshot`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallsnapshot) is called, updating the consensus view of the validators.
-- This view is the set of validators which will be able to participate in consensus during epoch `n+1`.
+- 在边界区块时，调用 [`syscallSnapshot`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallsnapshot)，更新验证者的共识视图。
+- 该视图是能够在时期 `n+1` 期间参与共识的验证者集合。
 
-**3. During the epoch delay period**
+**3. 时期延迟期间**
 
-- During the epoch delay period, transactions can call [`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator), [`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate), [`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate), and [`syscallReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallreward)`.
-- These requests occur in snapshot interval `m+1`. So they will not have an effect on the Consensus View until epoch `n+2`.
+- 在时期延迟期间，交易可以调用 [`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator)、[`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate)、[`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate) 和 [`syscallReward`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallreward)。
+- 这些请求发生在快照间隔 `m+1` 中。因此它们直到时期 `n+2` 才会对共识视图产生影响。
 
-**4. `EPOCH_DELAY_PERIOD` rounds after the boundary block**
+**4. 边界区块后 `EPOCH_DELAY_PERIOD` 轮次**
 
-- Start of epoch `n+1`.
-- The consensus view of the validator set is now the consensus view from snapshot in epoch `n`.
-- The snapshot view of the validator set is now the consensus view of the validator set from epoch `n-1`.
-- Execution view of the validator set is up to date.
+- 时期 `n+1` 开始。
+- 验证者集合的共识视图现在是时期 `n` 中快照的共识视图。
+- 验证者集合的快照视图现在是时期 `n-1` 中验证者集合的共识视图。
+- 验证者集合的执行视图是最新的。
 
-## Slashing
+## 惩罚（Slashing）
 
-Robust logging provides accountability for malicious, slashable offenses. However, in-protocol, automated slashing is not currently implemented.
+强大的日志记录为恶意、可惩罚的违规行为提供了问责机制。但是，协议内的自动惩罚目前尚未实现。
 
-## Footnotes
+## 脚注
 
-1. testnet-2 currently runs with `EPOCH_LENGTH = 5000` [↩](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fnref-1)
-2. testnet-2 currently runs with `EPOCH_DELAY_PERIOD = 500` [↩](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fnref-2)
+1. testnet-2 目前运行 `EPOCH_LENGTH = 5000` [↩](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fnref-1)
+2. testnet-2 目前运行 `EPOCH_DELAY_PERIOD = 500` [↩](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#user-content-fnref-2)

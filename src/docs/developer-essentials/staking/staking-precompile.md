@@ -1,36 +1,36 @@
-# Staking Precompile
+# 质押预编译
 
-note
+注意
 
-This page is intended for developers looking to build smart contracts or interfaces that interact with the staking system.
+本页面针对希望构建与质押系统交互的智能合约或接口的开发者。
 
-The entrypoint to the staking system is the stateful staking precompile.
+质押系统的入口点是有状态的质押预编译。
 
-This precompile allows delegators and validators to take actions that affect the composition of the validator set.
+此预编译允许委托者和验证者执行影响验证者集合组成的操作。
 
-- **join** the validator set ([`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator))
-- **delegate** their stake to a validator ([`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate))
-- **undelegate** their stake from a validator (a multi-step process: [`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate), wait [`WITHDRAWAL_DELAY`](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#constants) epochs, then [`withdraw`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#withdraw))
-- **compound** the rewards they earned as a delegator (i.e. delegate the rewards) ([`compound`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#compound))
-- **claim** the rewards they earned as a delegator ([`claimRewards`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#claimrewards))
+- **加入**验证者集合（[`addValidator`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator)）
+- **委托**他们的质押给验证者（[`delegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate)）
+- **取消委托**他们从验证者的质押（多步过程：[`undelegate`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#undelegate)，等待 [`WITHDRAWAL_DELAY`](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#constants) 个时期，然后 [`withdraw`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#withdraw)）
+- **复投**他们作为委托者获得的奖励（即委托奖励）（[`compound`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#compound)）
+- **领取**他们作为委托者获得的奖励（[`claimRewards`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#claimrewards)）
 
-For ease of integration, please see the [Solidity Interface](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#solidity-staking-interface) and the [ABI JSON](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#staking-abi-json).
+为了便于集成，请参见 [Solidity 接口](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#solidity-staking-interface) 和 [ABI JSON](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#staking-abi-json)。
 
-Although users may delegate or undelegate at any time, stake weight changes only take effect at epoch boundaries, and stake weight changes made too close to the epoch boundary get queued until the next epoch boundary, as described in [Staking Behavior](https://docs.monad.xyz/developer-essentials/staking/staking-behavior). This is to allow for the separation of consensus and execution, one of Monad's core design attributes.
+尽管用户可以随时委托或取消委托，但质押权重变更只在时期边界生效，如 [质押行为](https://docs.monad.xyz/developer-essentials/staking/staking-behavior) 中所述，过于接近时期边界的质押权重变更会排队直到下一个时期边界。这是为了允许共识和执行的分离，这是 Monad 核心设计属性之一。
 
-note
+注意
 
-Only standard `CALL`s are allowed to the staking precompile. In particular, `STATICCALL` and `DELEGATECALL` are not allowed.
+只有标准的 `CALL` 被允许到质押预编译。特别是，不允许 `STATICCALL` 和 `DELEGATECALL`。
 
-Because the staking system is a precompile and not a smart contract, you cannot test against it in a forked environment.
+由于质押系统是预编译而不是智能合约，您无法在分叉环境中对其进行测试。
 
-## Precompile Address and Selectors
+## 预编译地址和选择器
 
-The contract address is `0x0000000000000000000000000000000000001000`.
+合约地址是 `0x0000000000000000000000000000000000001000`。
 
-The external functions are identified by the following 4-byte selectors.
+外部函数通过以下 4 字节选择器标识。
 
-External state-modifying methods:
+外部状态修改方法：
 
 1. [`addValidator(bytes,bytes,bytes)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#addvalidator) - `0xf145204c`
 2. [`delegate(uint64)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegate) - `0x84994fec`
@@ -41,7 +41,7 @@ External state-modifying methods:
 7. [`changeCommission(uint64,uint256)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#changecommission) - `0x9bdcc3c8`
 8. [`externalReward(uint64)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#externalreward) - `0xe4b3303b`
 
-External view methods:
+外部视图方法：
 
 1. [`getValidator(uint64)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getvalidator) - `0x2b6d639a`
 2. [`getDelegator(uint64,address)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getdelegator) - `0x573c1ce0`
@@ -53,17 +53,17 @@ External view methods:
 8. [`getDelegators(uint64,address)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getdelegators) - `0xa0843a26`
 9. [`getEpoch()`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#getepoch) - `0x757991a8`
 
-Syscalls:
+系统调用：
 
 - [`syscallOnEpochChange(uint64)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallonepochchange) - `0x1d4e9f02`
 - [`syscallReward(address)`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallreward) - `0x791bdcf3`
 - [`syscallSnapshot()`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallsnapshot) - `0x157eeb21`
 
-## External State-Modifying Methods
+## 外部状态修改方法
 
 ### `addValidator`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 addValidator(bytes,bytes,bytes) : 0xf145204c
@@ -71,7 +71,7 @@ addValidator(bytes,bytes,bytes) : 0xf145204c
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function addValidator(
@@ -83,7 +83,7 @@ function addValidator(
 
 
 
-#### Parameters
+#### 参数
 
 1. ```
    payload
@@ -91,7 +91,7 @@ function addValidator(
 
     
 
-   \- consists of the following fields, packed together in big endian (equivalent to
+   \- 包含以下字段，按大端序打包在一起（等同于
 
     
 
@@ -101,35 +101,35 @@ function addValidator(
 
     
 
-   in Solidity):
+   在 Solidity 中）：
 
-   - `bytes secpPubkey` (unique SECP public key used for consensus)
-   - `bytes blsPubkey` (unique BLS public key used for consensus)
-   - `address authAddress` (address used for the validator’s delegator account. This address has withdrawal authority for the validator's staked amount)
-   - `uint256 amount` (amount the validator is self-staking. Must equal `msg.value`)
-   - `uint256 commission` (commission charged to delegators multiplied by 1e18, e.g. `10% = 1e17`)
+   - `bytes secpPubkey`（用于共识的唯一 SECP 公钥）
+   - `bytes blsPubkey`（用于共识的唯一 BLS 公钥）
+   - `address authAddress`（用于验证者委托账户的地址。此地址对验证者质押金额具有提取权限）
+   - `uint256 amount`（验证者自质押的金额。必须等于 `msg.value`）
+   - `uint256 commission`（向委托者收取的佣金乘以 1e18，例如 `10% = 1e17`）
 
-2. `signedSecpMessage` - SECP signature over payload
+2. `signedSecpMessage` - payload 的 SECP 签名
 
-3. `signedBlsMessage` - BLS signature over payload
+3. `signedBlsMessage` - payload 的 BLS 签名
 
-#### Gas cost
+#### Gas 成本
 
 505,125
 
-#### Behavior
+#### 行为
 
-This creates a validator with an associated delegator account and returns the resultant `validatorId`. The method starts by unpacking the payload to retrieve the `secpPubkey`, `blsPubkey`, `authAddress`, `amount`, and `commission`, then verifying that the `signedSecpMessage` and `signedBlsMessage` correspond to the payload signed by the corresponding SECP and BLS private keys.
+这会创建一个带有关联委托账户的验证者，并返回结果 `validatorId`。该方法首先解包有效负载以检索 `secpPubkey`、`blsPubkey`、`authAddress`、`amount` 和 `commission`，然后验证 `signedSecpMessage` 和 `signedBlsMessage` 是否对应于由相应 SECP 和 BLS 私钥签名的有效负载。
 
-- The validator must provide both a unique BLS key and a unique SECP key. Submissions with any repeated public keys will revert.
+- 验证者必须提供唯一的 BLS 密钥和唯一的 SECP 密钥。任何重复公钥的提交都会回滚。
 
-- Both signatures (`signedSecpMessage` and `signedBlsMessage`) must be valid and must sign over the `payload`.
+- 两个签名（`signedSecpMessage` 和 `signedBlsMessage`）都必须有效，并且必须对 `payload` 进行签名。
 
-- Multiple validators may share the same `authAddress`.
+- 多个验证者可以共享相同的 `authAddress`。
 
-- `msg.value` must be equal or greater than `MIN_VALIDATE_STAKE` or the call will revert.
+- `msg.value` 必须等于或大于 `MIN_VALIDATE_STAKE`，否则调用会回滚。
 
-- If the
+- 如果
 
    
 
@@ -139,7 +139,7 @@ This creates a validator with an associated delegator account and returns the re
 
    
 
-  is also equal or greater than
+  也等于或大于
 
    
 
@@ -149,10 +149,10 @@ This creates a validator with an associated delegator account and returns the re
 
    
 
-  then the validator will become active in the future:
+  那么验证者将在未来变为活跃状态：
 
-  - If `addValidator` was called before the boundary block, then in epoch `n+1`;
-  - Otherwise it will become active in epoch `n+2`.
+  - 如果 `addValidator` 在边界区块之前被调用，则在时期 `n+1`；
+  - 否则它将在时期 `n+2` 变为活跃状态。
 
 <details class="details_lb9f isBrowser_bmU9 alert alert--info details_b_Ee" data-collapsed="false" open="" style="box-sizing: border-box; color: rgb(0, 0, 0); --ifm-alert-background-color: #fbfaf9; --ifm-alert-background-color-highlight: #54c7ec26; --ifm-alert-foreground-color: #000; --ifm-alert-border-color: #6247f5; --ifm-code-background: #54c7ec26; --ifm-link-color: #000; --ifm-link-hover-color: #000; --ifm-link-decoration: underline; --ifm-tabs-color: #000; --ifm-tabs-color-active: #000; --ifm-tabs-color-active-border: #6247f5; background-color: rgb(251, 250, 249); border-color: rgb(98, 71, 245); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch; border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; padding: 16px; transition: border-color 0.3s; --docusaurus-details-summary-arrow-size: 0.38rem; --docusaurus-details-transition: transform 200ms ease; --docusaurus-details-decoration-color: #6247f5; margin: 0px 0px 16px; font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, Ubuntu, Cantarell, &quot;Noto Sans&quot;, sans-serif, &quot;system-ui&quot;, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><summary style="box-sizing: border-box; cursor: pointer; list-style: none; padding-left: 1rem; position: relative;">Pseudocode</summary><div style="box-sizing: border-box; display: block; overflow: visible; height: auto; will-change: height; transition: height 500ms ease-in-out;"><div class="collapsibleContent_i85q" style="box-sizing: border-box; border-top: 1px solid rgb(98, 71, 245); margin-top: 1rem; padding-top: 1rem;"><div class="language-solidity codeBlockContainer_APcc theme-code-block" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); color: rgb(57, 58, 52); border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; margin-bottom: 20px; --prism-color: #393A34; --prism-background-color: #f6f8fa;"><div class="codeBlockContent_m3Ux" style="box-sizing: border-box; border-radius: inherit; direction: ltr; position: relative;"><pre tabindex="0" class="prism-code language-solidity codeBlock_qGQc thin-scrollbar" style="box-sizing: border-box; margin: 0px; background-color: rgb(246, 248, 250); border-radius: 6.4px; color: rgb(57, 58, 52); font: 400 15.2px / 1.45 SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; padding: 0px; overflow: unset; --ifm-pre-background: #f6f8fa; display: flex; position: relative; scrollbar-width: thin;"><code class="codeBlockLinesContainer_wQwV" style="box-sizing: border-box; vertical-align: middle; background-color: initial; border: none; border-top-left-radius: 0px !important; border-top-right-radius: 0px !important; border-bottom-right-radius: 6.4px; border-bottom-left-radius: 6.4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 15.2px; padding: 0px; overflow-x: scroll; position: relative; scrollbar-width: none; line-height: inherit; display: block; width: 924px;"><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-top: 0.5em; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">secp_pubkey</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> bls_pubkey</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> auth_address</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> amount</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> commission </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> payload</span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">assert</span><span class="token plain" style="box-sizing: border-box;"> amount </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">==</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value</span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
@@ -167,9 +167,9 @@ This creates a validator with an associated delegator account and returns the re
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">def </span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">set_flags</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">if</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+</span><span class="token plain" style="box-sizing: border-box;"> val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">last_val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">&gt;=</span><span class="token plain" style="box-sizing: border-box;"> ACTIVE_VALIDATOR_STAKE</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">return</span><span class="token plain" style="box-sizing: border-box;"> ValidatorFlagsOk</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">if</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+</span><span class="token plain" style="box-sizing: border-box;"> val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">last_val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">&gt;=</span><span class="token plain" style="box-sizing: border-box;"> MIN_VALIDATE_STAKE</span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">return</span><span class="token plain" style="box-sizing: border-box;"> ValidatorFlagsStakeTooLow</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">def </span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">set_stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">if</span><span class="token plain" style="box-sizing: border-box;"> in_epoch_delay_period</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        delta_stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">0</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        next_delta_stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        delta_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">0</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        next_delta_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> current_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">2</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">else</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        delta_stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        next_delta_stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">0</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        delta_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> current_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">1</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">        next_delta_epoch </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token number" style="box-sizing: border-box; color: rgb(54, 172, 170);">0</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-bottom: 0.5em; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">return</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">delta_stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> next_delta_stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> delta_epoch</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">,</span><span class="token plain" style="box-sizing: border-box;"> next_delta_epoch</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span></div></code></pre><div class="buttonGroup_6DOT" style="box-sizing: border-box; column-gap: 0.2rem; display: flex; position: absolute; right: 8px; top: 8px;"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); border-width: 1px; border-style: solid; border-color: rgb(218, 221, 225); border-image: none 100% / 1 / 0 stretch; color: rgb(57, 58, 52); cursor: pointer; font-family: inherit; padding: 0.4rem; align-items: center; border-radius: 6.4px; display: flex; line-height: 0; opacity: 0; transition: opacity 0.2s ease-in-out;"><span class="copyButtonIcons_FhaS" aria-hidden="true" style="box-sizing: border-box; height: 1.125rem; position: relative; width: 1.125rem;"><svg viewBox="0 0 24 24" class="copyButtonIcon_phi_"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_FfTR"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div></div></div></details>
 
-#### Usage
+#### 用法
 
-Here is an example of assembling the payload and signing:
+以下是组装有效负载和签名的示例：
 
 ```text
 def generate_add_validator_call_data_and_sign(
@@ -205,7 +205,7 @@ def generate_add_validator_call_data_and_sign(
 
 ### `delegate`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 delegate(uint64) : 0x84994fec
@@ -213,7 +213,7 @@ delegate(uint64) : 0x84994fec
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function delegate(
@@ -223,26 +223,26 @@ function delegate(
 
 
 
-#### Parameters
+#### 参数
 
-1. `validatorId` - id of the validator that delegator would like to delegate to
-2. `msg.value` - the amount to delegate
+1. `validatorId` - 委托者希望委托给的验证者 ID
+2. `msg.value` - 要委托的金额
 
-#### Gas cost
+#### Gas 成本
 
 260,850
 
-#### Behavior
+#### 行为
 
-This creates a delegator account if it does not exist and increases the delegator's balance.
+如果委托账户不存在，这会创建一个委托账户并增加委托者的余额。
 
-- The delegator account is determined by `msg.sender`.
-- `validatorId` must correspond to a valid validator.
-- `msg.value` must be > 0.
-- If this delegation causes the validator's total stake to exceed `ACTIVE_VALIDATOR_STAKE`, then the validator will be added to `execution_valset` if not already present.
-- The delegator stake becomes active
-  - in epoch `n+1` if the request is before the boundary block
-  - in epoch `n+2` otherwise
+- 委托账户由 `msg.sender` 确定。
+- `validatorId` 必须对应一个有效的验证者。
+- `msg.value` 必须 > 0。
+- 如果此委托导致验证者的总质押超过 `ACTIVE_VALIDATOR_STAKE`，那么如果验证者尚未存在，将被添加到 `execution_valset`。
+- 委托质押变为活跃状态
+  - 如果请求在边界区块之前，则在时期 `n+1`
+  - 否则在时期 `n+2`
 
 <details class="details_lb9f isBrowser_bmU9 alert alert--info details_b_Ee" data-collapsed="false" open="" style="box-sizing: border-box; color: rgb(0, 0, 0); --ifm-alert-background-color: #fbfaf9; --ifm-alert-background-color-highlight: #54c7ec26; --ifm-alert-foreground-color: #000; --ifm-alert-border-color: #6247f5; --ifm-code-background: #54c7ec26; --ifm-link-color: #000; --ifm-link-hover-color: #000; --ifm-link-decoration: underline; --ifm-tabs-color: #000; --ifm-tabs-color-active: #000; --ifm-tabs-color-active-border: #6247f5; background-color: rgb(251, 250, 249); border-color: rgb(98, 71, 245); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch; border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; padding: 16px; transition: border-color 0.3s; --docusaurus-details-summary-arrow-size: 0.38rem; --docusaurus-details-transition: transform 200ms ease; --docusaurus-details-decoration-color: #6247f5; margin: 0px 0px 16px; font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, Ubuntu, Cantarell, &quot;Noto Sans&quot;, sans-serif, &quot;system-ui&quot;, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><summary style="box-sizing: border-box; cursor: pointer; list-style: none; padding-left: 1rem; position: relative;">Pseudocode</summary><div style="box-sizing: border-box; display: block; overflow: visible; height: auto; will-change: height; transition: height 583ms ease-in-out;"><div class="collapsibleContent_i85q" style="box-sizing: border-box; border-top: 1px solid rgb(98, 71, 245); margin-top: 1rem; padding-top: 1rem;"><div class="language-solidity codeBlockContainer_APcc theme-code-block" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); color: rgb(57, 58, 52); border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; margin-bottom: 20px; --prism-color: #393A34; --prism-background-color: #f6f8fa;"><div class="codeBlockContent_m3Ux" style="box-sizing: border-box; border-radius: inherit; direction: ltr; position: relative;"><pre tabindex="0" class="prism-code language-solidity codeBlock_qGQc thin-scrollbar" style="box-sizing: border-box; margin: 0px; background-color: rgb(246, 248, 250); border-radius: 6.4px; color: rgb(57, 58, 52); font: 400 15.2px / 1.45 SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; padding: 0px; overflow: unset; --ifm-pre-background: #f6f8fa; display: flex; position: relative; scrollbar-width: thin;"><code class="codeBlockLinesContainer_wQwV" style="box-sizing: border-box; vertical-align: middle; background-color: initial; border: none; border-top-left-radius: 0px !important; border-top-right-radius: 0px !important; border-bottom-right-radius: 6.4px; border-bottom-left-radius: 6.4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 15.2px; padding: 0px; overflow-x: scroll; position: relative; scrollbar-width: none; line-height: inherit; display: block; width: 924px;"><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-top: 0.5em; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">validator_id </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">input</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token comment" style="box-sizing: border-box; color: rgb(153, 153, 136); font-style: italic;">// set validator information</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">validator_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token plain" style="box-sizing: border-box;"> </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;">  ValExecution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">{</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    </span><span class="token builtin" style="box-sizing: border-box;">uint256</span><span class="token plain" style="box-sizing: border-box;"> stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">value</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">}</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
@@ -267,7 +267,7 @@ This creates a delegator account if it does not exist and increases the delegato
 
 ### `undelegate`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 undelegate(uint64,uint256,uint8) : 0x5cf41514
@@ -275,7 +275,7 @@ undelegate(uint64,uint256,uint8) : 0x5cf41514
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function undelegate(
@@ -287,17 +287,17 @@ function undelegate(
 
 
 
-#### Parameters
+#### 参数
 
-1. `validatorId` - id of the validator to which sender previously delegated, from which we are removing delegation
-2. `amount` - amount to undelegate, in Monad wei
-3. `withdrawId` - integer between 0 and 255, inclusive, which serves as the identifier for a delegator's withdrawal. For each (validator, delegator) tuple, there can be a maximum of 256 in-flight withdrawal requests
+1. `validatorId` - 发送者之前委托的验证者 ID，我们要从中移除委托
+2. `amount` - 要取消委托的金额，以 Monad wei 为单位
+3. `withdrawId` - 0 到 255 之间的整数（包含），用作委托者提取的标识符。对于每个（验证者，委托者）元组，最多可以有 256 个正在进行的提取请求
 
-#### Gas cost
+#### Gas 成本
 
 147,750
 
-#### Behavior
+#### 行为
 
 This deducts `amount` from the delegator account and moves it to a withdrawal request object, where it remains in a pending state for [`WITHDRAWAL_DELAY`](https://docs.monad.xyz/developer-essentials/staking/staking-behavior#constants) epochs before the funds are claimable via the [`withdraw`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#withdraw) method.
 
@@ -315,7 +315,7 @@ This deducts `amount` from the delegator account and moves it to a withdrawal re
   - in epoch `n + 1 + WITHDRAWAL_DELAY` if the request is before the boundary block
   - in epoch `n + 2 + WITHDRAWAL_DELAY` otherwise
 
-![timeline of undelegation and withdrawal](https://docs.monad.xyz/img/developer-essentials/staking/undelegate-timeline.png)Timeline of withdrawability of stake relative to `undelegate` command
+![timeline of undelegation and withdrawal](/images/docs/staking-precompile.png)Timeline of withdrawability of stake relative to `undelegate` command
 
 <details class="details_lb9f isBrowser_bmU9 alert alert--info details_b_Ee" data-collapsed="false" open="" style="box-sizing: border-box; color: rgb(0, 0, 0); --ifm-alert-background-color: #fbfaf9; --ifm-alert-background-color-highlight: #54c7ec26; --ifm-alert-foreground-color: #000; --ifm-alert-border-color: #6247f5; --ifm-code-background: #54c7ec26; --ifm-link-color: #000; --ifm-link-hover-color: #000; --ifm-link-decoration: underline; --ifm-tabs-color: #000; --ifm-tabs-color-active: #000; --ifm-tabs-color-active-border: #6247f5; background-color: rgb(251, 250, 249); border-color: rgb(98, 71, 245); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch; border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; padding: 16px; transition: border-color 0.3s; --docusaurus-details-summary-arrow-size: 0.38rem; --docusaurus-details-transition: transform 200ms ease; --docusaurus-details-decoration-color: #6247f5; margin: 0px 0px 16px; font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, Ubuntu, Cantarell, &quot;Noto Sans&quot;, sans-serif, &quot;system-ui&quot;, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><summary style="box-sizing: border-box; cursor: pointer; list-style: none; padding-left: 1rem; position: relative;">Pseudocode</summary><div style="box-sizing: border-box; display: block; overflow: visible; height: auto; will-change: height; transition: height 427ms ease-in-out;"><div class="collapsibleContent_i85q" style="box-sizing: border-box; border-top: 1px solid rgb(98, 71, 245); margin-top: 1rem; padding-top: 1rem;"><div class="language-solidity codeBlockContainer_APcc theme-code-block" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); color: rgb(57, 58, 52); border-radius: 6.4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; margin-bottom: 20px; --prism-color: #393A34; --prism-background-color: #f6f8fa;"><div class="codeBlockContent_m3Ux" style="box-sizing: border-box; border-radius: inherit; direction: ltr; position: relative;"><pre tabindex="0" class="prism-code language-solidity codeBlock_qGQc thin-scrollbar" style="box-sizing: border-box; margin: 0px; background-color: rgb(246, 248, 250); border-radius: 6.4px; color: rgb(57, 58, 52); font: 400 15.2px / 1.45 SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; padding: 0px; overflow: unset; --ifm-pre-background: #f6f8fa; display: flex; position: relative; scrollbar-width: thin;"><code class="codeBlockLinesContainer_wQwV" style="box-sizing: border-box; vertical-align: middle; background-color: initial; border: none; border-top-left-radius: 0px !important; border-top-right-radius: 0px !important; border-bottom-right-radius: 6.4px; border-bottom-left-radius: 6.4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 15.2px; padding: 0px; overflow-x: scroll; position: relative; scrollbar-width: none; line-height: inherit; display: block; width: 924px;"><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-top: 0.5em; color: rgb(57, 58, 52);"><span class="token builtin" style="box-sizing: border-box;">uint64</span><span class="token plain" style="box-sizing: border-box;"> validator_id </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">input</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token builtin" style="box-sizing: border-box;">uint256</span><span class="token plain" style="box-sizing: border-box;"> amount </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">input</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">amount</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token builtin" style="box-sizing: border-box;">uint8</span><span class="token plain" style="box-sizing: border-box;"> withdraw_id </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">input</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">withdraw_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">ValExecution current_validator </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">validator_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
@@ -329,7 +329,7 @@ This deducts `amount` from the delegator account and moves it to a withdrawal re
 
 ### `withdraw`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 withdraw(uint64,uint8) : 0xaed2ee73
@@ -337,7 +337,7 @@ withdraw(uint64,uint8) : 0xaed2ee73
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function withdraw(
@@ -357,7 +357,7 @@ function withdraw(
 
 68,675
 
-#### Behavior
+#### 行为
 
 This completes an undelegation action (which started with a call to the `undelegate` function), sending the amount to `msg.sender`, provided that sufficient epochs have passed.
 
@@ -374,7 +374,7 @@ This completes an undelegation action (which started with a call to the `undeleg
 
 ### `compound`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 compound(uint64) : 0xb34fea67
@@ -382,7 +382,7 @@ compound(uint64) : 0xb34fea67
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function compound(
@@ -400,7 +400,7 @@ function compound(
 
 285,050
 
-#### Behavior
+#### 行为
 
 This precompile converts the delegator's accumulated rewards into additional stake.
 
@@ -423,7 +423,7 @@ This precompile converts the delegator's accumulated rewards into additional sta
 
 ### `claimRewards`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 claimRewards(uint64) : 0xa76e2ca5
@@ -431,7 +431,7 @@ claimRewards(uint64) : 0xa76e2ca5
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function claimRewards(
@@ -449,7 +449,7 @@ function claimRewards(
 
 155,375
 
-#### Behavior
+#### 行为
 
 This precompile allows a delegator to claim any rewards instead of [compounding](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#compound) them.
 
@@ -464,7 +464,7 @@ This precompile allows a delegator to claim any rewards instead of [compounding]
 
 ### `changeCommission`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 changeCommission(uint64,uint256) : 0x9bdcc3c8
@@ -472,7 +472,7 @@ changeCommission(uint64,uint256) : 0x9bdcc3c8
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function changeCommission(
@@ -492,11 +492,11 @@ function changeCommission(
 
 39,475
 
-#### Behavior
+#### 行为
 
-This allows the `authAddress` for a validator to modify the commission for the validator.
+这允许验证者的 `authAddress` 修改验证者的佣金。
 
-The commission cannot be set larger than `MAX_COMMISSION` (currently 100%).
+佣金不能设置为大于 `MAX_COMMISSION`（目前为 100%）。
 
 - The `msg.sender` must be the `authAddress` for the respective validator Id.
 - The commission cannot be set larger than `MAX_COMMISSION` (currently 100%).
@@ -512,7 +512,7 @@ The commission cannot be set larger than `MAX_COMMISSION` (currently 100%).
 
 ### `externalReward`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 externalReward(uint64) : 0xe4b3303b
@@ -520,7 +520,7 @@ externalReward(uint64) : 0xe4b3303b
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function externalReward(
@@ -539,7 +539,7 @@ function externalReward(
 
 62,300
 
-#### Behavior
+#### 行为
 
 This function allows anyone to send extra MON to the stakers of a particular validator. This typically will be called by the validator themselves to share extra tips to their delegators.
 
@@ -554,11 +554,11 @@ Notes:
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">validator_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">unclaimed_reward </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">acc </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">+=</span><span class="token plain" style="box-sizing: border-box;"> msg</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">value </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">/</span><span class="token plain" style="box-sizing: border-box;"> val_consensus</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">val_id</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token function" style="box-sizing: border-box; color: rgb(215, 58, 73);">stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">(</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">)</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-bottom: 0.5em; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div></code></pre><div class="buttonGroup_6DOT" style="box-sizing: border-box; column-gap: 0.2rem; display: flex; position: absolute; right: 8px; top: 8px;"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); border-width: 1px; border-style: solid; border-color: rgb(218, 221, 225); border-image: none 100% / 1 / 0 stretch; color: rgb(57, 58, 52); cursor: pointer; font-family: inherit; padding: 0.4rem; align-items: center; border-radius: 6.4px; display: flex; line-height: 0; opacity: 0; transition: opacity 0.2s ease-in-out;"><span class="copyButtonIcons_FhaS" aria-hidden="true" style="box-sizing: border-box; height: 1.125rem; position: relative; width: 1.125rem;"><svg viewBox="0 0 24 24" class="copyButtonIcon_phi_"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_FfTR"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div></div></div></details>
 
-## External View Methods
+## 外部视图方法
 
 ### `getValidator`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getValidator(uint64) : 0x2b6d639a
@@ -566,7 +566,7 @@ getValidator(uint64) : 0x2b6d639a
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getValidator(
@@ -597,7 +597,7 @@ function getValidator(
 
 97,200
 
-#### Behavior
+#### 行为
 
 This is the primary method to obtain information about a validator state. It provides a complete view of the validator’s state across execution, consensus, and snapshot contexts.
 
@@ -609,7 +609,7 @@ It returns:
 
 ### `getDelegator`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getDelegator(uint64,address) : 0x573c1ce0
@@ -617,7 +617,7 @@ getDelegator(uint64,address) : 0x573c1ce0
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getDelegator(
@@ -645,13 +645,13 @@ function getDelegator(
 
 184,900
 
-#### Behavior
+#### 行为
 
 This returns the delegator’s [`DelInfo`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegator-structs) for the specified validator, providing a view of the delegator’s stake, accumulated rewards and pending changes in stake.
 
 ### `getWithdrawalRequest`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getWithdrawalRequest(uint64,address,uint8) : 0x56fa2045
@@ -659,7 +659,7 @@ getWithdrawalRequest(uint64,address,uint8) : 0x56fa2045
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getWithdrawalRequest(
@@ -679,13 +679,13 @@ function getWithdrawalRequest(
 
 24,300
 
-#### Behavior
+#### 行为
 
 This returns the pending [`WithdrawalRequest`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#delegator-structs) for the `(validatorId, delegator, withdrawId)` tuple.
 
 ### `get*ValidatorSet`
 
-#### Function selectors
+#### 函数选择器s
 
 ```text
 getConsensusValidatorSet(uint32) : 0xfb29b729
@@ -695,7 +695,7 @@ getExecutionValidatorSet(uint32) : 0x7cb074df
 
 
 
-#### Function signatures
+#### 函数签名s
 
 ```solidity
 function getConsensusValidatorSet(
@@ -723,7 +723,7 @@ function getExecutionValidatorSet(
 
 814,000 gas (assuming `PAGINATED_RESULTS_SIZE = 100`).
 
-#### Behavior
+#### 行为
 
 These functions return the consensus, snapshot, and execution validator ids, respectively.
 
@@ -733,7 +733,7 @@ The `bool isDone` indicates whether the end of the list was reached. The `uint32
 
 ### `getDelegations`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getDelegations(address,uint64) : 0x4fd66050
@@ -741,7 +741,7 @@ getDelegations(address,uint64) : 0x4fd66050
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getDelegations(
@@ -761,7 +761,7 @@ function getDelegations(
 
 814,000
 
-#### Behavior
+#### 行为
 
 Each call retrieves up to `PAGINATED_RESULTS_SIZE` validator ids starting from `startValId` and returns a tuple `(bool isDone, uint64 nextValId, uint64[] valIds)` with delegation from the input `delegator` address.
 
@@ -773,7 +773,7 @@ To capture the full set, the make the first function call using `startValId = 0`
 
 ### `getDelegators`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getDelegators(uint64,address) : 0xa0843a26
@@ -781,7 +781,7 @@ getDelegators(uint64,address) : 0xa0843a26
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getDelegators(
@@ -801,7 +801,7 @@ function getDelegators(
 
 814,000
 
-#### Behavior
+#### 行为
 
 Each call retrieves up to `PAGINATED_RESULTS_SIZE` delegator addresses starting from `startDelegator` and returns a tuple `(bool isDone, address nextDelegator, address[] delegators)` with delegation to the input `validatorId`.
 
@@ -815,7 +815,7 @@ The number of delegators to a given validator can be very large, so it is recomm
 
 ### `getEpoch`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 getEpoch() : 0x757991a8
@@ -823,7 +823,7 @@ getEpoch() : 0x757991a8
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function getEpoch() external returns (uint64 epoch, bool inEpochDelayPeriod);
@@ -835,19 +835,19 @@ function getEpoch() external returns (uint64 epoch, bool inEpochDelayPeriod);
 
 16,200
 
-#### Behavior
+#### 行为
 
 This function is a handy utility to determine the current epoch and timing within the epoch (before or after the boundary block).
 
 If `inEpochDelayPeriod` is false, the boundary block has not been reached yet and write operations at that time should be effective for `epoch + 1`. If `inEpochDelayPeriod` is true, the network is past the boundary block and and write operations at that time should be effective for `epoch + 2`
 
-## Syscalls
+## 系统调用
 
 There are currently three syscalls. Users cannot invoke these directly. They are only triggered through special system transactions.
 
 ### `syscallOnEpochChange`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 syscallOnEpochChange(uint64) : 0x1d4e9f02
@@ -855,7 +855,7 @@ syscallOnEpochChange(uint64) : 0x1d4e9f02
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function syscallOnEpochChange(uint64 epoch) external;
@@ -867,7 +867,7 @@ function syscallOnEpochChange(uint64 epoch) external;
 
 1. `epoch` - the new consensus epoch being entered
 
-#### Behavior
+#### 行为
 
 This syscall is triggered at the end of the epoch delay period. It performs the following actions:
 
@@ -881,7 +881,7 @@ This syscall is triggered at the end of the epoch delay period. It performs the 
 
 ### `syscallReward`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 syscallReward(address) : 0x791bdcf3
@@ -889,7 +889,7 @@ syscallReward(address) : 0x791bdcf3
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function syscallReward(address blockAuthor) external;
@@ -901,7 +901,7 @@ function syscallReward(address blockAuthor) external;
 
 1. `blockAuthor` — the address of the validator that produced the block.
 
-#### Behavior
+#### 行为
 
 This syscall is invoked for every block. It rewards the block-producing validator (and their delegators) with the configured block reward:
 
@@ -923,7 +923,7 @@ Then the validator receives 10% of the total block reward as their commission. T
 
 ### `syscallSnapshot`
 
-#### Function selector
+#### 函数选择器
 
 ```text
 syscallSnapshot() : 0x157eeb21
@@ -931,7 +931,7 @@ syscallSnapshot() : 0x157eeb21
 
 
 
-#### Function signature
+#### 函数签名
 
 ```solidity
 function syscallSnapshot() external;
@@ -943,7 +943,7 @@ function syscallSnapshot() external;
 
 (none)
 
-#### Behavior
+#### 行为
 
 This syscall sorts the current execution-layer validator set. It selects the top `N` staked validators as the upcoming consensus validator set. The updated set is stored in state. The previous consensus set is cleared.
 
@@ -953,7 +953,7 @@ This syscall sorts the current execution-layer validator set. It selects the top
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">snapshot_valset </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> consensus_valset</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">consensus_valset </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> filter_top_n_validators</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box; display: inline-block;">
 </span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;"></span><span class="token keyword" style="box-sizing: border-box; color: rgb(0, 0, 159);">for</span><span class="token plain" style="box-sizing: border-box;"> i in filter_top_n_validators</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">:</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    val_consensus</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">i</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">stake </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">i</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">stake</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span><span class="token plain" style="box-sizing: border-box;"></span></div><div class="codeBlockLine_D75C" style="box-sizing: border-box; min-width: fit-content; padding-left: 0.7em; font-size: 1em; line-height: 1.5; padding-bottom: 0.5em; color: rgb(57, 58, 52);"><span class="token plain" style="box-sizing: border-box;">    val_consensus</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">i</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">commission </span><span class="token operator" style="box-sizing: border-box; color: rgb(57, 58, 52);">=</span><span class="token plain" style="box-sizing: border-box;"> val_execution</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">[</span><span class="token plain" style="box-sizing: border-box;">i</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">]</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">.</span><span class="token plain" style="box-sizing: border-box;">commission</span><span class="token punctuation" style="box-sizing: border-box; color: rgb(57, 58, 52);">;</span></div></code></pre><div class="buttonGroup_6DOT" style="box-sizing: border-box; column-gap: 0.2rem; display: flex; position: absolute; right: 8px; top: 8px;"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn" style="box-sizing: border-box; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(246, 248, 250); border-width: 1px; border-style: solid; border-color: rgb(218, 221, 225); border-image: none 100% / 1 / 0 stretch; color: rgb(57, 58, 52); cursor: pointer; font-family: inherit; padding: 0.4rem; align-items: center; border-radius: 6.4px; display: flex; line-height: 0; opacity: 0; transition: opacity 0.2s ease-in-out;"><span class="copyButtonIcons_FhaS" aria-hidden="true" style="box-sizing: border-box; height: 1.125rem; position: relative; width: 1.125rem;"><svg viewBox="0 0 24 24" class="copyButtonIcon_phi_"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_FfTR"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div></div></div></details>
 
-## Events
+## 事件
 
 The staking precompiles emit standard events that appear in transaction receipts. These events provide indexed information about validator and delegator actions.
 
@@ -1088,7 +1088,7 @@ Emitted when a validator changes commission via [`changeCommission`](https://doc
 
 Emitted when epoch changes via [`syscallOnEpochChange`](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#syscallOnEpochChange).
 
-## Precompile Internals
+## 预编译内部实现
 
 - [Constants](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#constants-1)
 - [Validator structs](https://docs.monad.xyz/developer-essentials/staking/staking-precompile#validator-structs)
@@ -1264,9 +1264,9 @@ mapping(uint64 => mapping(address => mapping (uint8 => WithdrawalRequest))) with
 
 
 
-## Solidity Staking Interface
+## Solidity 质押接口
 
-*To copy to clipboard, click the button in the top right of the code block.*
+*要复制到剪贴板，请点击代码块右上角的按钮。*
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1463,9 +1463,9 @@ interface IMonadStaking {
 
 
 
-## Staking ABI JSON
+## 质押 ABI JSON
 
-*To copy to clipboard, click the button in the top right of the code block.*
+*要复制到剪贴板，请点击代码块右上角的按钮。*
 
 ```json
 [
