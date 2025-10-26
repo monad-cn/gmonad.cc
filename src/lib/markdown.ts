@@ -1,4 +1,5 @@
 import {marked, Token} from 'marked';
+import katex from 'katex';
 
 interface MarkedToken {
   type: string;
@@ -72,7 +73,73 @@ const customLineBreakExtension = {
   }
 };
 
-marked.use({ extensions: [customLineBreakExtension] });
+// 2. 数学公式扩展 - 行内公式 $...$
+const inlineMathExtension = {
+  name: 'inlineMath',
+  level: 'inline',
+  start(src: string) {
+    return src.match(/\$/)?.index;
+  },
+  tokenizer(src: string) {
+    const rule = /^\$([^$\n]+?)\$/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'inlineMath',
+        raw: match[0],
+        text: match[1]
+      };
+    }
+  },
+  renderer(token: Token) {
+    try {
+      const html = katex.renderToString(token.text || '', {
+        displayMode: false,
+        throwOnError: false,
+        strict: false
+      });
+      return html;
+    } catch (error) {
+      console.error('KaTeX inline math rendering error:', error);
+      return `<code class="katex-error">${token.text}</code>`;
+    }
+  }
+};
+
+// 3. 数学公式扩展 - 块级公式 $$...$$
+const blockMathExtension = {
+  name: 'blockMath',
+  level: 'block',
+  start(src: string) {
+    return src.match(/\$\$/)?.index;
+  },
+  tokenizer(src: string) {
+    const rule = /^\$\$([\s\S]*?)\$\$/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'blockMath',
+        raw: match[0],
+        text: match[1].trim()
+      };
+    }
+  },
+  renderer(token: Token) {
+    try {
+      const html = katex.renderToString(token.text || '', {
+        displayMode: true,
+        throwOnError: false,
+        strict: false
+      });
+      return `<div class="katex-display">${html}</div>\n`;
+    } catch (error) {
+      console.error('KaTeX block math rendering error:', error);
+      return `<pre class="katex-error">${token.text}</pre>\n`;
+    }
+  }
+};
+
+marked.use({ extensions: [customLineBreakExtension, inlineMathExtension, blockMathExtension] });
 
 export async function parseMarkdown(content: string, options: MarkdownParseOptions = {}): Promise<string> {
   const config = { ...defaultOptions, ...options };
