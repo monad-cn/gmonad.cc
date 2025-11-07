@@ -225,7 +225,7 @@ export default function NewBlogPage() {
                   name="author"
                   rules={[{ required: true, message: '请输入作者姓名' }]}
                 >
-                  <Input placeholder="请输入作者" maxLength={10} showCount />
+                  <Input placeholder="请输入作者" maxLength={20} showCount />
                 </Form.Item>
               </div>
 
@@ -233,7 +233,7 @@ export default function NewBlogPage() {
                 <Form.Item label="翻译" name="translator">
                   <Input
                     placeholder="请输入翻译人员（可选）"
-                    maxLength={10}
+                    maxLength={20}
                     showCount
                   />
                 </Form.Item>
