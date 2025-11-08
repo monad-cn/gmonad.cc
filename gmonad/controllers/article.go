@@ -187,6 +187,7 @@ func UpdateArticle(c *gin.Context) {
 	article.CoverImg = req.CoverImg
 	article.Tags = req.Tags
 	article.Author = req.Author
+	article.Translator = req.Translator
 
 	article.PublishStatus = 1 // 更新后需要重新审核
 
