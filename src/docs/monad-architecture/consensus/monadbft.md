@@ -132,7 +132,7 @@ TC 中包含了所有贡献超时消息的验证者所提供的 Tip 信息，同
 
 当前处于[轮次](https://docs.monad.xyz/monad-arch/consensus/monad-bft#round) K，预定[领导者](https://docs.monad.xyz/monad-arch/consensus/monad-bft#leader)为 Alice。Bob 与 Charlie 是后续两个轮次的预定领导者。Alice 最新处理过的[区块](https://docs.monad.xyz/monad-arch/consensus/monad-bft#block)是 N-1，因此她将提议新区块 N。
 
-![MonadBFT Happy Path](./images/monadbft_happypath.png)
+![MonadBFT Happy Path](/images/docs/monadbft_happypath.png)
 
 MonadBFT 的运行流程如下：
 
@@ -158,7 +158,7 @@ MonadBFT 的运行流程如下：
 
 这凸显了 MonadBFT 的流水线化特性：每一轮都会共享新的有效负载和前一提案的 QC，使得父提案可被推测性最终确认，祖父提案可被完全最终确认。具体流程如下图所示：
 
-![MonadBFT pipelining](./images/monadbft_pipelining.png)
+![MonadBFT pipelining](/images/docs/monadbft_pipelining.png)
 *展现 MonadBFT 流水线化（交错推进）的特性。此图与前一图表相同，但通过拉远视角额外展示了一轮共识过程。*
 
 
@@ -175,7 +175,7 @@ MonadBFT 的运行流程如下：
 在本案例中，Alice在第`K`轮发出了区块`N`，但Bob在第`K+1`轮未能成功发出区块。这可能是因为他处于离线状态，也可能是因为Alice发出的区块无效，或是未获得足够多的投票支持。
 
 
-![MonadBFT Unhappy Path](./images/monadbft_unhappypath.png)
+![MonadBFT Unhappy Path](/images/docs/monadbft_unhappypath.png)
 
 #### 第 `K` 轮：Alice 的提案
 1. **提案阶段**：Alice 作为第 `K` 轮的指定领导者，选择有效负载并构建区块 `N`（该区块包含有效负载及前一轮提案的 [QC](https://docs.monad.xyz/monad-arch/consensus/monad-bft#quorum-certificate-qc)（同样暂不深究此细节））。

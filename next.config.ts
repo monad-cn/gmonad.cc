@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
         hostname: 'file-cdn.openbuild.xyz',
          pathname: '/**',
       },
+       {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+         pathname: '/**',
+      },
     ],
   },
 };
