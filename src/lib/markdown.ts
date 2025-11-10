@@ -9,6 +9,10 @@ interface MarkedToken {
   [key: string]: unknown;
 }
 
+type MathToken = Token & {
+  text: string;
+};
+
 export interface MarkdownParseOptions {
   breaks?: boolean;
   gfm?: boolean;
@@ -93,7 +97,8 @@ const inlineMathExtension = {
   },
   renderer(token: Token) {
     try {
-      const html = katex.renderToString(token.text || '', {
+      const mathToken = token as MathToken;
+      const html = katex.renderToString(mathToken.text || '', {
         displayMode: false,
         throwOnError: false,
         strict: false
@@ -101,7 +106,7 @@ const inlineMathExtension = {
       return html;
     } catch (error) {
       console.error('KaTeX inline math rendering error:', error);
-      return `<code class="katex-error">${token.text}</code>`;
+      return `<code class="katex-error">${(token as MathToken).text}</code>`;
     }
   }
 };
@@ -126,7 +131,8 @@ const blockMathExtension = {
   },
   renderer(token: Token) {
     try {
-      const html = katex.renderToString(token.text || '', {
+      const mathToken = token as MathToken;
+      const html = katex.renderToString(mathToken.text || '', {
         displayMode: true,
         throwOnError: false,
         strict: false
@@ -134,7 +140,7 @@ const blockMathExtension = {
       return `<div class="katex-display">${html}</div>\n`;
     } catch (error) {
       console.error('KaTeX block math rendering error:', error);
-      return `<pre class="katex-error">${token.text}</pre>\n`;
+      return `<pre class="katex-error">${(token as MathToken).text}</pre>\n`;
     }
   }
 };
@@ -280,5 +286,22 @@ export function getTableOfContents(content: string): Array<{ level: number; text
 }
 
 export async function sanitizeMarkdown(content: string): Promise<string> {
-  return await parseMarkdown(content, { sanitize: true });
+  // 处理从 API 返回的转义字符
+  // API 可能返回过度转义的 markdown（如 \$, \\, \_）
+  // 需要将它们还原为正常的 markdown 语法
+  let processedContent = content;
+
+  // 多次替换双反斜杠，直到没有变化（处理多层转义）
+  let prev;
+  do {
+    prev = processedContent;
+    processedContent = processedContent.replace(/\\\\/g, '\\');
+  } while (processedContent !== prev);
+
+  // 处理转义的美元符号和下划线
+  processedContent = processedContent
+    .replace(/\\\$/g, '$')    // \$ → $
+    .replace(/\\_/g, '_');    // \_ → _
+
+  return await parseMarkdown(processedContent, { sanitize: true });
 }
