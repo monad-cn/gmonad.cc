@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import Layout from '../components/Layout';
 import '../styles/globals.css';
+import 'katex/dist/katex.min.css'; // KaTeX CSS for mathematical formula rendering
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 import { ConfigProvider, App as AntdApp } from 'antd';
