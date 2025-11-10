@@ -166,6 +166,14 @@ export default function BlogDetailPage() {
                   作者：{blog.author || blog.publisher?.username || ''}
                 </div>
               </div>
+              {blog.translator && (
+                  <div className={styles.metaItem}>
+                    <User className={styles.metaIcon} />
+                    <div className={styles.metaText}>
+                      译者：{blog.translator}
+                    </div>
+                  </div>
+              )}
               <div className={styles.metaItem}>
                 <User className={styles.metaIcon} />
                 <div className={styles.metaText}>
