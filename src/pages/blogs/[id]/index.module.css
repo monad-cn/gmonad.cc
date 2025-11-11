@@ -130,6 +130,29 @@
   margin: 0;
 }
 
+.sourceLinkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+}
+
+.sourceLinkButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+}
+
 .metaInfo {
   display: flex;
   flex-direction: column;
@@ -869,6 +892,12 @@
 
   .title {
     font-size: 2rem;
+  }
+
+  .sourceLinkButton {
+    font-size: 0.8125rem;
+    padding: 0.3rem 0.65rem;
+    margin-bottom: 0.375rem;
   }
 
   .main {
