@@ -153,6 +153,19 @@ export default function BlogDetailPage() {
             </div>
             <h1 className={styles.title}>{blog.title}</h1>
             <h3 className={styles.description}>{blog.description}</h3>
+
+            {/* 原文链接按钮 */}
+            {blog.source_link && (
+              <a
+                href={blog.source_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.sourceLinkButton}
+              >
+                查看原文 →
+              </a>
+            )}
+
             <div className={styles.metaInfo}>
               <div className={styles.metaItem}>
                 <Calendar className={styles.metaIcon} />
