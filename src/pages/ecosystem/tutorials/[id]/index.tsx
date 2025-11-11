@@ -15,22 +15,27 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   getTutorialById,
   updateTutorialPublishStatus,
+  Tutorial,
 } from '@/pages/api/tutorial';
 import dayjs from 'dayjs';
 import { sanitizeMarkdown } from '@/lib/markdown';
+import SEO from '@/components/SEO';
+import { GetServerSideProps } from 'next';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
 }
 
-export default function TutorialDetailPage() {
+interface TutorialDetailPageProps {
+  initialTutorial: Tutorial | null;
+  error?: string;
+}
+
+export default function TutorialDetailPage({ initialTutorial, error }: TutorialDetailPageProps) {
   const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query;
-  const rId = Array.isArray(id) ? id[0] : id;
 
-  const [tutorial, setTutorial] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [tutorial] = useState<Tutorial | null>(initialTutorial);
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
 
@@ -46,8 +51,9 @@ export default function TutorialDetailPage() {
   }, [tutorial?.content]);
 
   const handleUpdatePublishStatus = async () => {
+    if (!tutorial) return;
     try {
-      const result = await updateTutorialPublishStatus(tutorial.ID, 2);
+      const result = await updateTutorialPublishStatus(tutorial.ID.toString(), 2);
       if (result.success) {
         router.reload();
         message.success(result.message);
@@ -58,35 +64,6 @@ export default function TutorialDetailPage() {
       message.error('审核出错，请重试');
     }
   };
-
-  useEffect(() => {
-    if (!router.isReady || !rId) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getTutorialById(rId);
-        console.log('获取教程详情:', response);
-        setTutorial(response?.data);
-      } catch (error) {
-        message.error('加载失败');
-        setTutorial(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router.isReady, id]);
-
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
 
   const isUnderReview = tutorial?.publish_status === 1;
   const isPublisher = tutorial?.publisher_id?.toString() === session?.user?.uid;
@@ -105,9 +82,20 @@ export default function TutorialDetailPage() {
   }
 
   return (
-    <div className={`${styles.container} nav-t-top`}>
-      {/* Header */}
-      <div className={styles.header}>
+    <>
+      <SEO
+        title={tutorial.title}
+        description={tutorial.description || tutorial.title}
+        type="article"
+        url={`/ecosystem/tutorials/${tutorial.ID}`}
+        image={tutorial.cover_img}
+        publishedTime={tutorial.publish_time || tutorial.CreatedAt}
+        author={tutorial.author || tutorial.publisher?.username || ''}
+        tags={tutorial.tags}
+      />
+      <div className={`${styles.container} nav-t-top`}>
+        {/* Header */}
+        <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link href="/ecosystem/tutorials" className={styles.backLink}>
             <ArrowLeft className={styles.backIcon} />
@@ -226,6 +214,65 @@ export default function TutorialDetailPage() {
           />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
+
+// 服务端渲染 - 在服务器端获取教程数据
+export const getServerSideProps: GetServerSideProps<TutorialDetailPageProps> = async (context) => {
+  const { id } = context.params as { id: string };
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    return {
+      props: {
+        initialTutorial: null,
+        error: 'API URL is not configured',
+      },
+    };
+  }
+
+  try {
+    // 直接在服务端调用 API
+    const response = await fetch(`${apiUrl}/tutorials/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        props: {
+          initialTutorial: null,
+          error: 'Tutorial not found',
+        },
+      };
+    }
+
+    const result = await response.json();
+    
+    if (result.code === 200 && result.data) {
+      return {
+        props: {
+          initialTutorial: result.data as Tutorial,
+        },
+      };
+    }
+
+    return {
+      props: {
+        initialTutorial: null,
+        error: result.message || 'Failed to fetch tutorial',
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching tutorial:', error);
+    return {
+      props: {
+        initialTutorial: null,
+        error: 'Failed to fetch tutorial data',
+      },
+    };
+  }
+};

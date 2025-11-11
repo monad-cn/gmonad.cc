@@ -23,20 +23,25 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { getEventById, updateEventPublishStatus } from '@/pages/api/event';
+import { getEventById, updateEventPublishStatus, Event } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
 import { getRecapByEventId } from '@/pages/api/recap';
 import { sanitizeMarkdown } from '@/lib/markdown';
+import SEO from '@/components/SEO';
+import { GetServerSideProps } from 'next';
 
-export default function EventDetailPage() {
+interface EventDetailPageProps {
+  initialEvent: Event | null;
+  initialRecap: any | null;
+  error?: string;
+}
+
+export default function EventDetailPage({ initialEvent, initialRecap, error }: EventDetailPageProps) {
   const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query; // 路由参数应该叫 id，不是 ids
-  const rId = Array.isArray(id) ? id[0] : id;
 
-  const [event, setEvent] = useState<any>(null);
-  const [recap, setRecap] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [event] = useState<Event | null>(initialEvent);
+  const [recap] = useState<any>(initialRecap);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -93,8 +98,9 @@ export default function EventDetailPage() {
   }, [recap?.content]);
 
   const handleUpdatePublishStatus = async () => {
+    if (!event) return;
     try {
-      const result = await updateEventPublishStatus(event.ID, 2);
+      const result = await updateEventPublishStatus(event.ID.toString(), 2);
       if (result.success) {
         router.reload();
         message.success(result.message);
@@ -105,38 +111,6 @@ export default function EventDetailPage() {
       message.error('审核出错，请重试');
     }
   };
-
-  useEffect(() => {
-    if (!router.isReady || !rId) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // 获取活动详情
-        const eventRes = await getEventById(rId);
-        console.log('获取活动详情:', eventRes);
-        setEvent(eventRes?.data ?? null);
-
-        // 获取活动回顾
-        const recapRes = await getRecapByEventId(rId);
-        console.log('获取活动回顾:', recapRes);
-
-        if (recapRes.success && recapRes.data) {
-          setRecap(recapRes.data);
-        } else {
-          setRecap(null); // 没有数据也清空
-        }
-      } catch (error) {
-        message.error('加载失败');
-        setEvent(null);
-        setRecap(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router.isReady, rId]);
 
   const handleRegister = () => {
     if (isRegistered) {
@@ -171,15 +145,6 @@ export default function EventDetailPage() {
       setShareModalVisible(true);
     }
   };
-
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
 
   if (
     !event ||
@@ -272,8 +237,23 @@ export default function EventDetailPage() {
   const startDateTime = formatDateTime(event.start_time);
   const endDateTime = formatDateTime(event.end_time);
 
+  // 生成活动描述用于 SEO
+  const eventDescription = `${event.event_mode} - ${dateTimeRange.date}${dateTimeRange.timeRange ? ' ' + dateTimeRange.timeRange : ''}${event.event_mode === '线下活动' && event.location ? ' @ ' + event.location : ''}`;
+
   return (
-    <div className={`${styles.container} nav-t-top`}>
+    <>
+      <SEO
+        title={event.title}
+        description={eventDescription}
+        type="event"
+        url={`/events/${event.ID}`}
+        image={event.cover_img}
+        eventStartTime={event.start_time}
+        eventEndTime={event.end_time}
+        eventLocation={event.event_mode === '线下活动' ? event.location : '线上活动'}
+        tags={event.tags}
+      />
+      <div className={`${styles.container} nav-t-top`}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
@@ -619,6 +599,70 @@ export default function EventDetailPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
+
+// 服务端渲染 - 在服务器端获取活动数据
+export const getServerSideProps: GetServerSideProps<EventDetailPageProps> = async (context) => {
+  const { id } = context.params as { id: string };
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    return {
+      props: {
+        initialEvent: null,
+        initialRecap: null,
+        error: 'API URL is not configured',
+      },
+    };
+  }
+
+  try {
+    // 并行获取活动详情和回顾
+    const [eventResponse, recapResponse] = await Promise.all([
+      fetch(`${apiUrl}/events/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      fetch(`${apiUrl}/recaps/event/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    ]);
+
+    let eventData = null;
+    let recapData = null;
+
+    // 处理活动数据
+    if (eventResponse.ok) {
+      const eventResult = await eventResponse.json();
+      if (eventResult.code === 200 && eventResult.data) {
+        eventData = eventResult.data as Event;
+      }
+    }
+
+    // 处理回顾数据（可选）
+    if (recapResponse.ok) {
+      const recapResult = await recapResponse.json();
+      if (recapResult.code === 200 && recapResult.data) {
+        recapData = recapResult.data;
+      }
+    }
+
+    return {
+      props: {
+        initialEvent: eventData,
+        initialRecap: recapData,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    return {
+      props: {
+        initialEvent: null,
+        initialRecap: null,
+        error: 'Failed to fetch event data',
+      },
+    };
+  }
+};

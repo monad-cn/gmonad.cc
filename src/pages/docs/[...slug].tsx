@@ -10,6 +10,7 @@ import { useDocExpansion } from '@/hooks/useDocExpansion';
 import { parseMarkdown } from '@/lib/markdown';
 import { getDocsByCategory, findDocCategory, DocCategory, DocGroup } from '@/lib/docsConfig';
 import styles from './[slug]/index.module.css';
+import SEO from '@/components/SEO';
 
 interface DocsPageProps {
   content: string;           // Markdown 文档内容
@@ -17,6 +18,7 @@ interface DocsPageProps {
   docsCategories: DocCategory[];  // 所有文档分类配置
   currentDocTitle: string;  // 当前文档标题
   currentCategory: string;  // 当前文档所属分类
+  description: string;      // 文档描述，用于 SEO
 }
 
 interface TocItem {
@@ -29,7 +31,7 @@ interface TocItem {
  * 文档页面主组件
  * 负责渲染文档内容、侧边栏导航和目录
  */
-export default function DocsPage({ content, slug, docsCategories, currentDocTitle, currentCategory }: DocsPageProps) {
+export default function DocsPage({ content, slug, docsCategories, currentDocTitle, currentCategory, description }: DocsPageProps) {
   const [htmlContent, setHtmlContent] = useState<string>('');
   const [toc, setToc] = useState<TocItem[]>([]);
   
@@ -90,8 +92,15 @@ export default function DocsPage({ content, slug, docsCategories, currentDocTitl
   }, [content]); 
 
   return (
-    <div className={`${styles.container} nav-t-top`}>
-      <div className={styles.layout}>
+    <>
+      <SEO
+        title={currentDocTitle}
+        description={description}
+        type="article"
+        url={`/docs/${slug}`}
+      />
+      <div className={`${styles.container} nav-t-top`}>
+        <div className={styles.layout}>
         
         {/* 左侧导航栏组件 */}
         <LeftSidebar 
@@ -127,8 +136,9 @@ export default function DocsPage({ content, slug, docsCategories, currentDocTitl
         {/* 右侧目录组件 */}
         <RightSidebar toc={toc} />
         
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -244,13 +254,25 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const titleMatch = content.match(/^#\s+(.+)$/m);
     const currentDocTitle = titleMatch ? titleMatch[1] : (docInfo?.doc.title || slug);
 
+    // 从 Markdown 内容中提取描述
+    // 移除标题，获取第一段文本内容
+    const contentWithoutTitle = content.replace(/^#\s+.+$/m, '').trim();
+    const firstParagraph = contentWithoutTitle.split('\n\n')[0];
+    // 移除 markdown 语法并截取前 160 个字符
+    const description = firstParagraph
+      .replace(/[#*_`\[\]()]/g, '')
+      .replace(/\n/g, ' ')
+      .substring(0, 160)
+      .trim() || `GMonad 文档 - ${currentDocTitle}`;
+
     return {
       props: {
         content,           
         slug,             
         docsCategories,   
         currentDocTitle,    
-        currentCategory  
+        currentCategory,
+        description
       }
     };
   } catch (error) {
