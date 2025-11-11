@@ -6,7 +6,6 @@ import {
   Calendar,
   CheckCircle,
   Edit,
-  ExternalLink,
   Eye,
   User,
 } from 'lucide-react';
@@ -163,7 +162,6 @@ export default function BlogDetailPage() {
                 rel="noopener noreferrer"
                 className={styles.sourceLinkButton}
               >
-                <ExternalLink size={14} />
                 查看原文 →
               </a>
             )}
