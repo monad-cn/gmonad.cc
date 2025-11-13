@@ -129,7 +129,7 @@ export default function NewBlogPage() {
                 <Input
                   placeholder="请输入博客标题"
                   className={styles.input}
-                  maxLength={30}
+                  maxLength={60}
                   showCount
                 />
               </Form.Item>
