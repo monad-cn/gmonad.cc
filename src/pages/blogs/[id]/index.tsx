@@ -3,11 +3,9 @@ import { useRouter } from 'next/router';
 import { Button, Tag, App as AntdApp, Image } from 'antd';
 import {
   ArrowLeft,
-  Calendar,
   CheckCircle,
   Edit,
   Eye,
-  User,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
@@ -166,46 +164,13 @@ export default function BlogDetailPage() {
               </a>
             )}
 
-            <div className={styles.metaInfo}>
-              <div className={styles.metaItem}>
-                <Calendar className={styles.metaIcon} />
-                <div className={styles.metaText}>
-                  发布时间：{formatTime(blog.publish_time || blog.CreatedAt)}
-                </div>
-              </div>
-              <div className={styles.metaItem}>
-                <User className={styles.metaIcon} />
-                <div className={styles.metaText}>
-                  作者：{blog.author || blog.publisher?.username || ''}
-                </div>
-              </div>
-              {blog.translator && (
-                  <div className={styles.metaItem}>
-                    <User className={styles.metaIcon} />
-                    <div className={styles.metaText}>
-                      译者：{blog.translator}
-                    </div>
-                  </div>
-              )}
-              <div className={styles.metaItem}>
-                <User className={styles.metaIcon} />
-                <div className={styles.metaText}>
-                  发布者：{blog.publisher?.username || ''}
-                </div>
-              </div>
-              <div className={styles.metaItem}>
-                <Eye className={styles.metaIcon} />
-                <div className={styles.metaText}>
-                  浏览量：{blog.view_count || '0'}
-                </div>
-              </div>
-              <div className={styles.tags}>
-                {blog.tags.map((tag: string, index: number) => (
-                  <Tag key={index} className={styles.tag}>
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
+            {/* 标签 */}
+            <div className={styles.tags}>
+              {blog.tags.map((tag: string, index: number) => (
+                <Tag key={index} className={styles.tag}>
+                  {tag}
+                </Tag>
+              ))}
             </div>
           </div>
 
@@ -214,8 +179,8 @@ export default function BlogDetailPage() {
               <Image
                 src={blog.cover_img || '/placeholder.svg'}
                 alt={blog.title}
-                width={400}
-                height={300}
+                width={350}
+                height={220}
                 className={styles.coverImage}
                 style={{ objectFit: 'cover' }}
               />
@@ -226,6 +191,24 @@ export default function BlogDetailPage() {
 
       <div className={styles.main}>
         <div className="marked-paper">
+          {/* 元信息 */}
+          <div className={styles.articleMeta}>
+            <span>{blog.author || blog.publisher?.username || ''}</span>
+            <span className={styles.metaSeparator}>·</span>
+            <span>{formatTime(blog.publish_time || blog.CreatedAt)}</span>
+            {blog.translator && (
+              <>
+                <span className={styles.metaSeparator}>·</span>
+                <span>译者：{blog.translator}</span>
+              </>
+            )}
+            <span className={styles.metaSeparator}>·</span>
+            <span className={styles.viewCount}>
+              <Eye size={14} />
+              {blog.view_count || '0'}
+            </span>
+          </div>
+
           {/* <h2 className={styles.sectionTitle}>{blog.title}</h2> */}
           <div
             className="prose"
