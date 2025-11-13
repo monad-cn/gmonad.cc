@@ -45,7 +45,10 @@ const Auth: React.FC = () => {
             message.success('登录成功');
           }
           // 清除 URL 中的 code 参数，NextAuth 会自动更新 session 状态
-          router.replace(router.pathname, undefined, { shallow: true });
+          // 只有当 URL 中确实包含 code 参数时才执行替换
+          if (router.asPath.includes('code=')) {
+            router.replace(router.pathname, undefined, { shallow: true });
+          }
         } else {
           message.warning('登录失败...');
           hasTriedLogin.current = false; // 允许重试
