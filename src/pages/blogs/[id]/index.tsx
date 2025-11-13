@@ -10,22 +10,26 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { getBlogById, updateBlogPublishStatus } from '@/pages/api/blog';
+import { getBlogById, updateBlogPublishStatus, Blog } from '@/pages/api/blog';
 import dayjs from 'dayjs';
 import { sanitizeMarkdown } from '@/lib/markdown';
+import SEO from '@/components/SEO';
+import { GetServerSideProps } from 'next';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
 }
 
-export default function BlogDetailPage() {
+interface BlogDetailPageProps {
+  initialBlog: Blog | null;
+  error?: string;
+}
+
+export default function BlogDetailPage({ initialBlog, error }: BlogDetailPageProps) {
   const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query; // 路由参数应该叫 id，不是 ids
-  const rId = Array.isArray(id) ? id[0] : id;
 
-  const [blog, setBlog] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [blog] = useState<Blog | null>(initialBlog);
   // 使用统一的认证上下文，避免重复调用 useSession
   const { session, status } = useAuth();
 
@@ -43,8 +47,9 @@ export default function BlogDetailPage() {
   }, [blog?.content]);
 
   const handleUpdatePublishStatus = async () => {
+    if (!blog) return;
     try {
-      const result = await updateBlogPublishStatus(blog.ID, 2);
+      const result = await updateBlogPublishStatus(blog.ID.toString(), 2);
       if (result.success) {
         router.reload();
         message.success(result.message);
@@ -55,34 +60,6 @@ export default function BlogDetailPage() {
       message.error('审核出错，请重试');
     }
   };
-
-  useEffect(() => {
-    if (!router.isReady || !rId) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getBlogById(rId);
-        setBlog(response?.data);
-      } catch (error) {
-        message.error('加载失败');
-        setBlog(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router.isReady, id]);
-
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
 
   const isUnderReview = blog?.publish_status === 1;
   const isPublisher = blog?.publisher_id?.toString() === session?.user?.uid;
@@ -101,9 +78,20 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className={`${styles.container} nav-t-top`}>
-      {/* Header */}
-      <div className={styles.header}>
+    <>
+      <SEO
+        title={blog.title}
+        description={blog.description || blog.title}
+        type="article"
+        url={`/blogs/${blog.ID}`}
+        image={blog.cover_img}
+        publishedTime={blog.publish_time || blog.CreatedAt}
+        author={blog.author || blog.publisher?.username || ''}
+        tags={blog.tags}
+      />
+      <div className={`${styles.container} nav-t-top`}>
+        {/* Header */}
+        <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link href="/blogs" className={styles.backLink}>
             <ArrowLeft className={styles.backIcon} />
@@ -216,6 +204,65 @@ export default function BlogDetailPage() {
           />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
+
+// 服务端渲染 - 在服务器端获取博客数据
+export const getServerSideProps: GetServerSideProps<BlogDetailPageProps> = async (context) => {
+  const { id } = context.params as { id: string };
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    return {
+      props: {
+        initialBlog: null,
+        error: 'API URL is not configured',
+      },
+    };
+  }
+
+  try {
+    // 直接在服务端调用 API
+    const response = await fetch(`${apiUrl}/blogs/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        props: {
+          initialBlog: null,
+          error: 'Blog not found',
+        },
+      };
+    }
+
+    const result = await response.json();
+    
+    if (result.code === 200 && result.data) {
+      return {
+        props: {
+          initialBlog: result.data as Blog,
+        },
+      };
+    }
+
+    return {
+      props: {
+        initialBlog: null,
+        error: result.message || 'Failed to fetch blog',
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching blog:', error);
+    return {
+      props: {
+        initialBlog: null,
+        error: 'Failed to fetch blog data',
+      },
+    };
+  }
+};
