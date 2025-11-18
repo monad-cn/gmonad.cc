@@ -1,21 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { useRouter } from 'next/router'
 import { Button, Input, Form, message } from "antd"
-import { ArrowLeft, Calendar, MapPin, Users, Video, Mic, Save } from "lucide-react"
+import { ArrowLeft, Calendar, Users, Video, Mic, Save } from "lucide-react"
 import styles from "./recap.module.css"
 import { SiX } from "react-icons/si"
 import dynamic from "next/dynamic"
 import { getEventById } from "@/pages/api/event"
-import { createRecap } from "@/pages/api/recap"
+import { createRecap, getRecapByEventId, updateRecap } from "@/pages/api/recap"
 import { useAuth } from "@/contexts/AuthContext"
 
 const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
-
-interface Event {
-    ID: string
-    title: string
-    description: string
-}
 
 interface RecapFormData {
     content: string
@@ -29,6 +23,10 @@ export default function EventRecap() {
     const [event, setEvent] = useState<any>(null);
     const [loading, setLoading] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+    
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [recapId, setRecapId] = useState<number | null>(null);
+
     const { status } = useAuth();
     const router = useRouter();
     const { id } = router.query;
@@ -39,7 +37,7 @@ export default function EventRecap() {
 
         if (status === 'unauthenticated') {
             message.warning('请先登录');
-            router.push(`/login?redirect=/events/${rId}/recap`);
+            router.push(`/login?redirect=/events/${id}/recap`);
         }
     }, [status, router, id]);
 
@@ -49,19 +47,40 @@ export default function EventRecap() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await getEventById(rId);
-                console.log('获取活动详情:', response);
-                setEvent(response?.data);
+                const [eventRes, recapRes] = await Promise.all([
+                    getEventById(rId),
+                    getRecapByEventId(rId)
+                ]);
+
+                if (eventRes?.data) {
+                    setEvent(eventRes.data);
+                } else {
+                    message.error('活动不存在');
+                }
+
+                if (recapRes?.success && recapRes?.data) {
+                    setIsEditMode(true);
+                    const data = recapRes.data;
+                    setRecapId(data.ID); // 保存 Recap ID 用于更新接口
+                    
+                    // 回显表单
+                    form.setFieldsValue({
+                        content: data.content,
+                        video: data.video,
+                        recording: data.recording,
+                        twitter: data.twitter
+                    });
+                }
             } catch (error) {
-                message.error('加载失败');
-                setEvent(null);
+                console.error(error);
+                message.error('加载数据失败');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [router.isReady, id]);
+    }, [router.isReady, id, form]);
 
     const handleSubmit = async (values: RecapFormData) => {
         if (status !== 'authenticated') {
@@ -71,19 +90,28 @@ export default function EventRecap() {
 
         setSubmitting(true);
         try {
-            const res = await createRecap({
-                event_id: Number(id),
-                ...values,
-            });
+            let res;
+            
+            if (isEditMode && recapId) {
+                res = await updateRecap(String(recapId), {
+                    ...values
+                });
+            } else {
+                res = await createRecap({
+                    ...values,
+                    event_id: Number(id),
+                });
+            }
 
             if (res.success) {
-                message.success("活动回顾发布成功！");
+                message.success(isEditMode ? "活动回顾更新成功！" : "活动回顾发布成功！");
                 router.push(`/events/${id}`);
             } else {
-                message.error(res.message || "发布失败，请重试");
+                message.error(res.message || "操作失败，请重试");
             }
         } catch (error) {
-            message.error("发布失败，请重试");
+            console.error(error);
+            message.error("操作异常，请重试");
         } finally {
             setSubmitting(false);
         }
@@ -121,7 +149,7 @@ export default function EventRecap() {
         [form]
     );
 
-    if (status === 'loading' || (loading && !event)) {
+    if (status === 'loading' || loading) {
         return (
             <div className={styles.container}>
                 <div className={styles.content}>
@@ -131,17 +159,7 @@ export default function EventRecap() {
         )
     }
 
-
-
-    if (!event) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.content}>
-                    <div className={styles.loading}>加载中...</div>
-                </div>
-            </div>
-        )
-    }
+    if (!event) return null;
 
     return (
         <div className={`${styles.container} nav-t-top`}>
@@ -187,7 +205,9 @@ export default function EventRecap() {
                 </div>
 
                 {/* 表单标题 */}
-                <h2 className={styles.formTitle}>添加活动回顾</h2>
+                <h2 className={styles.formTitle}>
+                    {isEditMode ? '编辑活动回顾' : '添加活动回顾'}
+                </h2>
 
                 {/* 两栏布局表单 */}
                 <Form form={form} layout="vertical" onFinish={handleSubmit} className={styles.form}>
@@ -276,7 +296,10 @@ export default function EventRecap() {
                                     size="large"
                                     block
                                 >
-                                    {submitting ? "发布中..." : "发布回顾"}
+                                    {submitting 
+                                        ? (isEditMode ? "更新中..." : "发布中...") 
+                                        : (isEditMode ? "更新回顾" : "发布回顾")
+                                    }
                                 </Button>
                             </div>
                         </div>
