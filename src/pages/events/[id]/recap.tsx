@@ -7,6 +7,7 @@ import { SiX } from "react-icons/si"
 import dynamic from "next/dynamic"
 import { getEventById } from "@/pages/api/event"
 import { createRecap } from "@/pages/api/recap"
+import { useAuth } from "@/contexts/AuthContext"
 
 const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
 
@@ -28,9 +29,19 @@ export default function EventRecap() {
     const [event, setEvent] = useState<any>(null);
     const [loading, setLoading] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+    const { status } = useAuth();
     const router = useRouter();
     const { id } = router.query;
     const rId = Array.isArray(id) ? id[0] : id;
+
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        if (status === 'unauthenticated') {
+            message.warning('请先登录');
+            router.push(`/login?redirect=/events/${rId}/recap`);
+        }
+    }, [status, router, id]);
 
     useEffect(() => {
         if (!router.isReady || !rId) return;
@@ -53,6 +64,11 @@ export default function EventRecap() {
     }, [router.isReady, id]);
 
     const handleSubmit = async (values: RecapFormData) => {
+        if (status !== 'authenticated') {
+            message.error('登录状态已失效，请重新登录');
+            return;
+        }
+
         setSubmitting(true);
         try {
             const res = await createRecap({
@@ -104,6 +120,16 @@ export default function EventRecap() {
         },
         [form]
     );
+
+    if (status === 'loading' || (loading && !event)) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.content}>
+                    <div className={styles.loading}>加载中...</div>
+                </div>
+            </div>
+        )
+    }
 
 
 
