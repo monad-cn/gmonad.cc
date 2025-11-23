@@ -111,6 +111,83 @@ export const docsCategories: DocCategory[] = [
     ],
   },
   {
+    id: 'guides',
+    title: '指南',
+    collapsed: false,
+    docs: [
+      { slug: 'guides/build-dapp', title: '使用 Scaffold-ETH 构建基础 dApp' },
+      { slug: 'guides/build-blink', title: '构建捐赠闪链' },
+      { slug: 'guides/connect-wallet', title: '使用 Reown AppKit 连接钱包到应用' },
+      { slug: 'guides/build-mcp', title: '构建与 Monad 测试网交互的 MCP 服务器' },
+      { slug: 'guides/use-deep-links-in-a-mobile-app', title: '在移动应用中使用深度链接' },
+    ],
+    groups: [
+      {
+        id: 'add-monad-to-wallet',
+        title: '添加 Monad 到钱包',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/add-monad-to-wallet/add-monad-mainnet-to-wallet', title: '添加 Monad 主网到钱包' },
+          { slug: 'guides/add-monad-to-wallet/add-monad-testnet-to-wallet', title: '添加 Monad 测试网到钱包' },
+        ],
+      },
+      {
+        id: 'deploy-a-contract',
+        title: '部署智能合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/deploy-a-contract/foundry', title: 'Foundry' },
+          { slug: 'guides/deploy-a-contract/hardhat', title: 'Hardhat' },
+          { slug: 'guides/deploy-a-contract/remix', title: 'Remix' },
+        ],
+      },
+      {
+        id: 'verify-a-contract',
+        title: '验证智能合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/verify-a-contract/foundry', title: 'Foundry' },
+          { slug: 'guides/verify-a-contract/hardhat', title: 'Hardhat' },
+        ],
+      },
+      {
+        id: 'use-an-indexer',
+        title: '使用索引器',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/use-an-indexer/index-token-transfers-with-ghostgraph', title: '使用 GhostGraph 索引代币转账' },
+          { slug: 'guides/use-an-indexer/build-a-transfer-notification-bot-with-envio-hyperindex', title: '使用 Envio Hyperindex 构建转账通知机器人' },
+          { slug: 'guides/use-an-indexer/index-every-wmon-transfer-using-quicknode-streams', title: '使用 QuickNode Streams 索引所有 WMON 转账' },
+        ],
+      },
+      {
+        id: 'evm-resources',
+        title: 'EVM 资源',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/evm-resources/evm-behavior', title: 'EVM 行为机制' },
+          { slug: 'guides/evm-resources/solidity-resources', title: 'Solidity 资源' },
+          {
+            id: 'other-languages',
+            title: '其他编程语言',
+            collapsed: false,
+            type: 'group',
+            children: [
+              { slug: 'guides/evm-resources/other-languages/vyper', title: 'Vyper' },
+              { slug: 'guides/evm-resources/other-languages/yul', title: 'Yul' },
+              { slug: 'guides/evm-resources/other-languages/huff', title: 'Huff' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'getting-started',
     title: '快速入门',
     collapsed: false,
@@ -149,52 +226,7 @@ export const docsCategories: DocCategory[] = [
       },
     ],
   },
-  {
-    id: 'guides',
-    title: '开发指南',
-    collapsed: false,
-    docs: [
-      {
-        slug: 'guides/scaffold-eth-monad',
-        title: '使用 Scaffold-Eth-Monad 构建 dApp',
-      },
-    ],
-    groups: [
-      {
-        id: 'evm-resources',
-        title: 'EVM 资源',
-        collapsed: false,
-        type: 'group',
-        children: [
-          { slug: 'guides/evm-resources/evm-behavior', title: 'EVM Behavior' },
-          {
-            slug: 'guides/evm-resources/solidity-resources',
-            title: 'Solidity 资源',
-          },
-          {
-            id: 'other-languages',
-            title: '其他编程语言',
-            collapsed: false,
-            type: 'group',
-            children: [
-              {
-                slug: 'guides/evm-resources/other-languages/yul',
-                title: 'Yul 语言',
-              },
-              {
-                slug: 'guides/evm-resources/other-languages/huff',
-                title: 'Huff 语言',
-              },
-              {
-                slug: 'guides/evm-resources/other-languages/vyper',
-                title: 'Vyper 语言',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+
   {
     id: 'monad-architecture',
     title: 'Monad 架构',
