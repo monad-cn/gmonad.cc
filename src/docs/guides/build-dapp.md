@@ -1,148 +1,148 @@
-# How to build a basic dApp with Scaffold-ETH
+# 如何使用 Scaffold-ETH 构建基础 dApp
 
 URL: https://docs.monad.xyz/guides/scaffold-eth
 
-In this guide, you will learn how to use Scaffold-ETH 2 to quickly build a new dapp project.
+在本指南中，您将学习如何使用 Scaffold-ETH 2 快速构建一个新的 dapp 项目。
 
-## Requirements
+## 环境要求
 
-Before you begin, you need to install the following tools:
+开始之前，您需要安装以下工具：
 
 - Node (>= v18.18)
-- Yarn (v1 or v2+)
+- Yarn (v1 或 v2+)
 - Git
 
-### Get funds on Monad Testnet
+### 获取 Monad 测试网资金
 
-You will need funds on Monad Testnet in order to deploy smart contracts, you can get funds from the [Monad Faucet](https://testnet.monad.xyz) .
+为了部署智能合约，您需要在 Monad 测试网上获得资金，可以从 [Monad 水龙头](https://testnet.monad.xyz) 获取资金。
 
-## Working with Scaffold-ETH
+## 使用 Scaffold-ETH
 
-Scaffold-ETH can have two different solidity development frameworks: Foundry and Hardhat.
+Scaffold-ETH 支持两种不同的 Solidity 开发框架：Foundry 和 Hardhat。
 
-In this guide you can choose between Foundry and Hardhat.
+在本指南中，您可以在 Foundry 和 Hardhat 之间进行选择。
 
 - Foundry
 - Hardhat
 
-### Clone the scaffold-monad-foundry repo
+### 克隆 scaffold-monad-foundry 仓库
 
 ```sh
 git clone https://github.com/monad-developers/scaffold-monad-foundry.git
 ```
 
-### Open the project directory and install dependencies
+### 打开项目目录并安装依赖
 
 ```sh
 cd scaffold-monad-foundry && yarn install
 ```
 
-### Start your local blockchain node
+### 启动本地区块链节点
 
 ```sh
 yarn chain
 ```
 
-### Deploy your smart contract to your local blockchain node
+### 将智能合约部署到本地区块链节点
 
 ```sh
 yarn deploy
 ```
 
-This command deploys `YourContract.sol` to your local blockchain node. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs.
+此命令将 `YourContract.sol` 部署到您的本地区块链节点。合约位于 `packages/foundry/contracts` 目录下，可根据需要进行修改。
 
-The `yarn deploy` command uses the deploy script located in `packages/foundry/deploy` to deploy the contract to the network. You can also customize the deploy script.
+`yarn deploy` 命令使用位于 `packages/foundry/deploy` 的部署脚本将合约部署到网络。您也可以自定义部署脚本。
 
-### Start your NextJS app
+### 启动 NextJS 应用
 
 ```sh
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000` .
+在以下地址访问您的应用：`http://localhost:3000`
 
-You can interact with your smart contract using the Debug Contracts page. You can tweak the app config in `packages/nextjs/scaffold.config.ts` .
+您可以使用调试合约页面与智能合约进行交互。您可以在 `packages/nextjs/scaffold.config.ts` 中调整应用配置。
 
-### Deploy your smart contract to Monad Testnet
+### 将智能合约部署到 Monad 测试网
 
 ```sh
 yarn deploy --network monadTestnet
 ```
 
-This command deploys `YourContract.sol` to Monad Testnet. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs.
+此命令将 `YourContract.sol` 部署到 Monad 测试网。合约位于 `packages/foundry/contracts` 目录下，可根据需要进行修改。
 
-### Verify your smart contract on Monad Testnet
+### 在 Monad 测试网上验证智能合约
 
 ```sh
 yarn verify --network monadTestnet
 ```
 
-This command verifies `YourContract.sol` on Monad Testnet.
+此命令在 Monad 测试网上验证 `YourContract.sol`。
 
-### Clone the scaffold-monad-hardhat repo
+### 克隆 scaffold-monad-hardhat 仓库
 
 ```sh
 git clone https://github.com/monad-developers/scaffold-monad-hardhat.git
 ```
 
-### Open the project directory and install dependencies
+### 打开项目目录并安装依赖
 
 ```sh
 cd scaffold-monad-hardhat && yarn install
 ```
 
-### Start your local blockchain node
+### 启动本地区块链节点
 
 ```sh
 yarn chain
 ```
 
-### Deploy your smart contract to your local blockchain node
+### 将智能合约部署到本地区块链节点
 
 ```sh
 yarn deploy
 ```
 
-This command deploys `YourContract.sol` to your local blockchain node. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs.
+此命令将 `YourContract.sol` 部署到您的本地区块链节点。合约位于 `packages/hardhat/contracts` 目录下，可根据需要进行修改。
 
-The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+`yarn deploy` 命令使用位于 `packages/hardhat/deploy` 的部署脚本将合约部署到网络。您也可以自定义部署脚本。
 
-### Start your NextJS app
+### 启动 NextJS 应用
 
 ```sh
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000` .
+在以下地址访问您的应用：`http://localhost:3000`
 
-You can interact with your smart contract using the Debug Contracts page. You can tweak the app config in `packages/nextjs/scaffold.config.ts` .
+您可以使用调试合约页面与智能合约进行交互。您可以在 `packages/nextjs/scaffold.config.ts` 中调整应用配置。
 
-### Generate a deployer account
+### 生成部署者账户
 
 ```sh
 yarn generate
 ```
 
-This command will create a new deployer account. **Remember the password you create** as you'll need it for deployments.
+此命令将创建一个新的部署者账户。**请记住您创建的密码**，因为部署时需要用到。
 
-### Deploy your smart contract to Monad Testnet
+### 将智能合约部署到 Monad 测试网
 
 ```sh
 yarn deploy --network monadTestnet
 ```
 
-This command deploys `YourContract.sol` to Monad Testnet. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs.
+此命令将 `YourContract.sol` 部署到 Monad 测试网。合约位于 `packages/hardhat/contracts` 目录下，可根据需要进行修改。
 
-### Verify your smart contract on Monad Testnet
+### 在 Monad 测试网上验证智能合约
 
 ```sh
 yarn verify --network monadTestnet
 ```
 
-This command verifies `YourContract.sol` on Monad Testnet.
+此命令在 Monad 测试网上验证 `YourContract.sol`。
 
-## Next steps
+## 下一步
 
-- Explore the Debug Contracts page to interact with your deployed contract.
-- Modify `YourContract.sol` to build your own functionality.
-- Learn more about [Scaffold-ETH](https://docs.scaffoldeth.io/) .
+- 探索调试合约页面与您部署的合约进行交互。
+- 修改 `YourContract.sol` 以构建您自己的功能。
+- 了解更多关于 [Scaffold-ETH](https://docs.scaffoldeth.io/) 的信息。

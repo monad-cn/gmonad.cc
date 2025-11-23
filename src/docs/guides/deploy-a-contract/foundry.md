@@ -1,16 +1,16 @@
-# Deploy a smart contract on Monad using Foundry
+# 使用 Foundry 在 Monad 上部署智能合约
 
-[Foundry](https://book.getfoundry.sh/) is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.
+[Foundry](https://book.getfoundry.sh/) 是一个用 Rust 编写的超快、可移植和模块化的以太坊应用开发工具包。
 
-## Requirements
+## 环境要求
 
-Before you begin, you need to install the following tools:
+开始之前，您需要安装以下工具：
 
 - [Rust](https://www.rust-lang.org/)
 
-## 1. Installing `foundryup`
+## 1. 安装 `foundryup`
 
-Foundryup is the official installer for the Foundry toolchain.
+Foundryup 是 Foundry 工具链的官方安装程序。
 
 ```sh
 curl -L https://foundry.paradigm.xyz | bash
@@ -18,9 +18,9 @@ curl -L https://foundry.paradigm.xyz | bash
 
 
 
-This will install Foundryup. Simply follow the on-screen instructions, and the `foundryup` command will become available in your CLI.
+这将安装 Foundryup。只需按照屏幕上的说明操作，`foundryup` 命令将在您的 CLI 中可用。
 
-## 2. Installing `forge`, `cast`, `anvil` and `chisel` binaries
+## 2. 安装 `forge`、`cast`、`anvil` 和 `chisel` 二进制文件
 
 ```sh
 foundryup
@@ -28,19 +28,19 @@ foundryup
 
 
 
-note
+注意
 
-If you're on Windows, you'll need to use WSL, since Foundry currently doesn't work natively on Windows. Please follow [this link](https://learn.microsoft.com/en-us/windows/wsl/install) to learn more about WSL.
+如果您使用 Windows，则需要使用 WSL，因为 Foundry 目前无法在 Windows 上原生运行。请访问[此链接](https://learn.microsoft.com/en-us/windows/wsl/install)了解更多有关 WSL 的信息。
 
-## 3. Create a new foundry project
+## 3. 创建新的 Foundry 项目
 
-tip
+提示
 
-You can use `foundry-monad` template to create a new project.
+您可以使用 `foundry-monad` 模板创建新项目。
 
-*[Foundry-Monad](https://github.com/monad-developers/foundry-monad) is a Foundry template with Monad configuration.*
+*[Foundry-Monad](https://github.com/monad-developers/foundry-monad) 是一个带有 Monad 配置的 Foundry 模板。*
 
-The below command uses `foundry-monad` to create a new foundry project:
+以下命令使用 `foundry-monad` 创建新的 foundry 项目：
 
 ```sh
 forge init --template monad-developers/foundry-monad [project_name]
@@ -48,7 +48,7 @@ forge init --template monad-developers/foundry-monad [project_name]
 
 
 
-Alternatively, you can create a foundry project using the command below:
+或者，您可以使用以下命令创建 foundry 项目：
 
 ```sh
 forge init [project_name]
@@ -56,9 +56,9 @@ forge init [project_name]
 
 
 
-## 4. Modify Foundry configuration
+## 4. 修改 Foundry 配置
 
-Update the `foundry.toml` file to add Monad Testnet configuration.
+更新 `foundry.toml` 文件以添加 Monad 测试网配置。
 
 foundry.toml
 
@@ -67,16 +67,16 @@ foundry.toml
 src = "src"
 out = "out"
 libs = ["lib"]
-# Monad Testnet Configuration
+# Monad 测试网配置
 eth-rpc-url="https://testnet-rpc.monad.xyz"
 chain_id = 10143
 ```
 
 
 
-## 5. Write a smart contract
+## 5. 编写智能合约
 
-You can write your smart contracts under the `src` folder. There is already a `Counter` contract in the project located at `src/Counter.sol`.
+您可以在 `src` 文件夹下编写智能合约。项目中已经有一个 `Counter` 合约，位于 `src/Counter.sol`。
 
 Counter.solsrc
 
@@ -102,7 +102,7 @@ contract Counter {
 
 
 
-## 6. Compile the smart contract
+## 6. 编译智能合约
 
 ```sh
 forge compile
@@ -110,21 +110,21 @@ forge compile
 
 
 
-Compilation process output can be found in the newly created `out` directory, which includes contract ABI and bytecode.
+编译过程的输出可以在新创建的 `out` 目录中找到，其中包括合约 ABI 和字节码。
 
-## 7. Deploy the smart contract
+## 7. 部署智能合约
 
-⚠️For deploying contracts, we recommend using keystores instead of private keys.
+⚠️在部署合约时，我们建议使用密钥库而不是私钥。
 
-### Get testnet funds
+### 获取测试网资金
 
-Deploying smart contracts requires testnet funds. Claim testnet funds via a [faucet](https://testnet.monad.xyz/).
+部署智能合约需要测试网资金。通过[水龙头](https://testnet.monad.xyz/)申请测试网资金。
 
-### Deploy smart contract
+### 部署智能合约
 
-Using a keystore is much safer than using a private key because keystore encrypts the private key and can later be referenced in any commands that require a private key.
+使用密钥库比使用私钥更安全，因为密钥库会加密私钥，并可以在以后需要私钥的任何命令中引用。
 
-Create a new keystore by importing a newly generated private key with the command below.
+使用以下命令导入新生成的私钥来创建新的密钥库。
 
 ```sh
 cast wallet import monad-deployer --private-key $(cast wallet new | grep 'Private key:' | awk '{print $3}')
@@ -132,13 +132,13 @@ cast wallet import monad-deployer --private-key $(cast wallet new | grep 'Privat
 
 
 
-Here is what the command above does, step by step:
+以上命令的作用分步骤如下：
 
-- Generates a new private key
-- Imports the private key into a keystore file named `monad-deployer`
-- Prints the address of the newly created wallet to the console
+- 生成新的私钥
+- 将私钥导入名为 `monad-deployer` 的密钥库文件
+- 将新创建的钱包地址打印到控制台
 
-After creating the keystore, you can read its address using:
+创建密钥库后，您可以使用以下命令读取其地址：
 
 ```sh
 cast wallet address --account monad-deployer
@@ -146,9 +146,9 @@ cast wallet address --account monad-deployer
 
 
 
-Provide a password to encrypt the keystore file when prompted and do not forget it.
+在提示时提供密码来加密密钥库文件，请不要忘记密码。
 
-Run the below command to deploy your smart contracts
+运行以下命令部署您的智能合约
 
 ```sh
 forge create src/Counter.sol:Counter --account monad-deployer --broadcast
@@ -156,7 +156,7 @@ forge create src/Counter.sol:Counter --account monad-deployer --broadcast
 
 
 
-On successful deployment of the smart contract, the output should be similar to the following:
+成功部署智能合约后，输出应类似于以下内容：
 
 ```sh
 [⠊] Compiling...

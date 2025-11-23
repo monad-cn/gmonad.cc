@@ -1,30 +1,30 @@
-# How to build custom deep links in an Expo-based mobile app
+# 如何在基于 Expo 的移动应用中构建自定义深链接
 
 URL: https://docs.monad.xyz/guides/deeplinks-using-expo
 
-Deep links are URLs that take users directly to specific content within a mobile app or website, rather than just launching the app's home screen. They work like shortcuts, enabling smoother navigation and improving user experience.
+深链接是将用户直接带到移动应用或网站内特定内容的 URL，而不仅仅是启动应用的主屏幕。它们像快捷方式一样工作，能够实现更流畅的导航并改善用户体验。
 
-In this guide, you will learn the basics of adding deep links into your [Expo](https://docs.expo.dev/) -based mobile app.
+在本指南中，你将学习将深链接添加到基于 [Expo](https://docs.expo.dev/) 的移动应用的基础知识。
 
-## What are deep links?
+## 什么是深链接？
 
-Deep link is constructed by three parts:
+深链接由三部分构成：
 
-- **Scheme** : The URL scheme that identifies the app that should open the URL (example: myapp://). It can also be https or http for non-standard deep links.
-- **Host** : The domain name of the app that should open the URL (example: web-app.com).
-- **Path** : The path to the screen that should be opened (example: /product). If the path isn't specified, the user is taken to the home screen of the app.
-Deep links can also have params just like web links!
+- **方案（Scheme）**：标识应该打开 URL 的应用的 URL 方案（示例：myapp://）。对于非标准深链接，它也可以是 https 或 http。
+- **主机（Host）**：应该打开 URL 的应用的域名（示例：web-app.com）。
+- **路径（Path）**：应该打开的屏幕路径（示例：/product）。如果未指定路径，用户将被带到应用的主屏幕。
+深链接也可以像网页链接一样拥有参数！
 
-Example:
+示例：
 
 ```text
 rnwalletapp://swap?from={token}&to={token}&amount={amount}
 ```
 
-## Building a deep link
+## 构建深链接
 
-note
-If you'd like to try a deep link demo you can do by cloning [this](https://github.com/monad-developers/expo-swap-template/tree/branch/deeplink?tab=readme-ov-file) repo and switching to the `branch/deeplink` branch:
+注意提示  
+如果你想尝试深链接演示，可以通过克隆[此](https://github.com/monad-developers/expo-swap-template/tree/branch/deeplink?tab=readme-ov-file)仓库并切换到 `branch/deeplink` 分支来完成：
 
 ```bash
 git clone https://github.com/monad-developers/expo-swap-template.git
@@ -34,39 +34,39 @@ git clone https://github.com/monad-developers/expo-swap-template.git
 git checkout branch/deeplink
 ```
 
-### Defining the scheme
+### 定义方案
 
-The first step is to define a scheme; you can do so by editing the `app.json` file in the Expo project.
+第一步是定义一个方案；你可以通过编辑 Expo 项目中的 `app.json` 文件来完成。
 
 app.json
 
 ```json
 {
   "expo": {
-    "scheme": "myapp" // or your preferred scheme
+    "scheme": "myapp" // 或你偏好的方案
   }
 }
 ```
 
-warning
-Custom schemes like `myapp://` are not unique across Android or iOS. If two apps register the same scheme, the system won't know which one to launch, or it might launch the wrong one. Use something app-specific and hard to accidentally duplicate.
+警告提示  
+像 `myapp://` 这样的自定义方案在 Android 或 iOS 中并不唯一。如果两个应用注册相同的方案，系统将不知道启动哪一个，或者可能启动错误的应用。使用应用特定且难以意外重复的内容。
 
-### Listening for deep link events
+### 监听深链接事件
 
-In your app entrypoint (e.g., `_layout.tsx` or a provider), add logic to:
+在你的应用入口点（例如，`_layout.tsx` 或提供者）中，添加逻辑以：
 
-- Handle initial deep link
-- Listen for deep link changes
-A good practice is to create a `DeepLinkHandler` and wrap the entire app with it.
+- 处理初始深链接
+- 监听深链接变化
+一个好的实践是创建一个 `DeepLinkHandler` 并用它包装整个应用。
 
-Example (in an Expo project using File-based routing):
+示例（在使用基于文件路由的 Expo 项目中）：
 
 _layout.tsx app
 
 ```tsx
 ...
 
-// Function to parse the deep link and get the hostname and queryParams
+// 解析深链接并获取主机名和查询参数的函数
 function parseSwapDeeplink(url: string): SwapDeeplinkParams | null {
   try {
     const { hostname, queryParams } = Linking.parse(url);
@@ -92,23 +92,23 @@ function DeeplinkHandler({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     
     const handleDeeplink = (url: string) => {
-      // Parse the deep link and get the params (host, path, params etc...)
+      // 解析深链接并获取参数（主机、路径、参数等...）
       const params = parseSwapDeeplink(url);
       if (params) {
-        // The example here makes the params globally accessible in the app, however you can use React Context or similar to make the params accessible from anywhere in the app.
+        // 此处的示例使参数在应用中全局可访问，但是你可以使用 React Context 或类似的方式使参数从应用中的任何地方都可访问。
         (global as any).swapDeeplinkParams = params;
-        // Based on the path or host you can redirect the user to the respective screen in the app 
+        // 基于路径或主机，你可以将用户重定向到应用中的相应屏幕
         router.replace('/');
       }
     };
 
-    // Handle initial URL
+    // 处理初始 URL
     Linking.getInitialURL().then(url => url && handleDeeplink(url));
 
-    // Create an event listener and handle URL changes while app is open
+    // 创建事件监听器并处理应用打开时的 URL 变化
     const subscription = Linking.addEventListener('url', event => handleDeeplink(event.url));
 
-    // Removes the event listener when the component is destroyed (avoids memory leaks)
+    // 当组件销毁时删除事件监听器（避免内存泄漏）
     return () => subscription.remove();
   }, [router]);
 
@@ -126,57 +126,57 @@ export default function Layout() {
  }
 ```
 
-That's it, your app is ready to handle deep links based on the `hostname` and `queryParams` you can redirect the user to the respective screens.
+就是这样，你的应用已准备好处理基于 `hostname` 和 `queryParams` 的深链接，你可以将用户重定向到相应的屏幕。
 
-Additionally if you make the `queryParams` accessible globally (via context or some other way) you can prefill input values too!
+此外，如果你使 `queryParams` 全局可访问（通过上下文或其他方式），你也可以预填充输入值！
 
-**Example: Prefilling token swap amounts!**
+**示例：预填充代币交换金额！**
 
-## Testing the deep link
+## 测试深链接
 
-Here's a demo of how deep links work in a mobile app:
+以下是深链接在移动应用中如何工作的演示：
 
-### Testing on iOS simulator
+### 在 iOS 模拟器上测试
 
 ```bash
 xcrun simctl openurl booted [deeplink]
 ```
 
-Example:
+示例：
 
 ```bash
 xcrun simctl openurl booted "rnwalletapp://swap?from=MON&to=USDC&amount=100"
 ```
 
-### Testing on Android emulator
+### 在 Android 模拟器上测试
 
 ```bash
 adb shell am start -W -a android.intent.action.VIEW -d [deeplink]
 ```
 
-Example:
+示例：
 
 ```bash
-# Important: Use single quotes to wrap the entire command to prevent shell from parsing & symbols
+# 重要：使用单引号包装整个命令以防止 shell 解析 & 符号
 adb shell 'am start -W -a android.intent.action.VIEW -d "rnwalletapp://swap?from=MON&to=USDC&amount=100"'
 ```
 
-warning
-If you don't use single quotes, the shell will interpret `&` as a command separator, and only the first parameter will be passed to the app.
+警告提示  
+如果你不使用单引号，shell 将把 `&` 解释为命令分隔符，只有第一个参数会传递给应用。
 
-### Testing on a physical device
+### 在物理设备上测试
 
-You can create a simple HTML page with links.
+你可以创建一个带有链接的简单 HTML 页面。
 
-Example:
+示例：
 
 ```html
 <a href="rnwalletapp://swap?from=MON&to=USDC&amount=100">Swap MON to USDC</a>
 ```
 
-## Try out the demo
+## 尝试演示
 
-If you'd like to try a deep link demo you can do by setting up [this](https://github.com/monad-developers/expo-swap-template/tree/branch/deeplink?tab=readme-ov-file) repo and switch to the `branch/deeplink` branch.
+如果你想尝试深链接演示，可以通过设置[此](https://github.com/monad-developers/expo-swap-template/tree/branch/deeplink?tab=readme-ov-file)仓库并切换到 `branch/deeplink` 分支来完成。
 
 ```bash
 git clone https://github.com/monad-developers/expo-swap-template.git
@@ -186,21 +186,21 @@ git clone https://github.com/monad-developers/expo-swap-template.git
 git checkout branch/deeplink
 ```
 
-Here are some deep links you can try:
+以下是一些你可以尝试的深链接：
 
-1. Swap MON to USDC
+1. 将 MON 交换为 USDC
 
 ```text
 rnwalletapp://swap?from=MON&to=USDC
 ```
 
-1. Swap 100 MON to USDC
+1. 将 100 MON 交换为 USDC
 
 ```text
 rnwalletapp://swap?from=MON&to=USDC&amount=100
 ```
 
-1. Swap USDC to WMON
+1. 将 USDC 交换为 WMON
 
 ```text
 rnwalletapp://swap?from=USDC&to=WMON&amount=1000

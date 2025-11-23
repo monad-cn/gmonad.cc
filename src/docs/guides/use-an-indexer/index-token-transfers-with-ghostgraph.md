@@ -1,38 +1,38 @@
-# How to index token transfers with GhostGraph
+# 如何使用 GhostGraph 索引代币转账
 
 URL: https://docs.monad.xyz/guides/indexers/ghost
 
-## Introduction
+## 介绍
 
-In this guide, you will create an ERC20 token on Monad Testnet and index its transfers with [GhostGraph](https://docs.tryghost.xyz/) . You'll learn how to:
+在本指南中，您将在 Monad 测试网上创建一个 ERC20 代币并使用 [GhostGraph](https://docs.tryghost.xyz/) 索引其转账。您将学习如何：
 
-- Deploy a basic ERC20 token contract
-- Test the contract locally
-- Deploy to Monad Testnet
-- Set up event tracking with GhostGraph
+- 部署基本的 ERC20 代币合约
+- 本地测试合约
+- 部署到 Monad 测试网
+- 使用 GhostGraph 设置事件跟踪
 
-## Prerequisites
+## 前置条件
 
-Before starting, ensure you have:
+开始之前，请确保您拥有：
 
-- Node.js installed (v16 or later)
-- Git installed
-- [Foundry](https://github.com/foundry-rs/foundry) installed
-- Some MONAD testnet tokens (for gas fees)
-- Basic knowledge of Solidity and ERC20 tokens
+- 已安装 Node.js（v16 或更新版本）
+- 已安装 Git
+- 已安装 [Foundry](https://github.com/foundry-rs/foundry)
+- 一些 MONAD 测试网代币（用于gas费）
+- Solidity 和 ERC20 代币的基础知识
 
-## Project Setup
+## 项目设置
 
-First, clone the starter repository:
+首先，克隆启动仓库：
 
 ```sh
 git clone https://github.com/chrischang/cat-token-tutorial.git
 cd cat-token-tutorial
 ```
 
-## CatToken Contract Implementation
+## CatToken 合约实现
 
-The `src/CatToken.sol` contract implements a basic ERC20 token with a fixed supply. Here's the code:
+`src/CatToken.sol` 合约实现了具有固定供应量的基本 ERC20 代币。代码如下：
 
 CatToken.sol src
 
@@ -44,26 +44,26 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract CatToken is ERC20 {
     /**
-     * @dev Constructor that gives msg.sender all existing tokens.
-     * Initial supply is 1 billion tokens.
+     * @dev 构造函数将所有现有代币分配给 msg.sender。
+     * 初始供应量为 10 亿代币。
      */
     constructor() ERC20("CatToken", "CAT") {
-        // Mint initial supply of 1 billion tokens to deployer
-        // This will emit a Transfer event that GhostGraph   can index
+        // 向部署者铸造 10 亿代币的初始供应量
+        // 这将发出 GhostGraph 可以索引的 Transfer 事件
         _mint(msg.sender, 1_000_000_000 * 10 ** decimals());
     }
 }
 ```
 
-This implementation:
+此实现：
 
-- Creates a token with name "CatToken" and symbol "CAT"
-- Mints 1 billion tokens to the deployer's address
-- Uses OpenZeppelin's battle-tested ERC20 implementation
+- 创建名称为"CatToken"、符号为"CAT"的代币
+- 向部署者地址铸造 10 亿代币
+- 使用 OpenZeppelin 经过实战测试的 ERC20 实现
 
-## Testing the Contract
+## 测试合约
 
-Navigate to the test file `test/CatToken.t.sol` :
+导航到测试文件 `test/CatToken.t.sol`：
 
 CatToken.t.sol test
 
@@ -100,28 +100,28 @@ contract CatTokenTest is Test {
 }
 ```
 
-Run the tests:
+运行测试：
 
 ```sh
 forge test -vv
 ```
 
-## Deployment Setup
+## 部署设置
 
-### 1. Create a `.env` file:
+### 1. 创建 `.env` 文件：
 
 ```sh
 cp .env.example .env
 ```
 
-### 2. Add your credentials to `.env` file:
+### 2. 将您的凭据添加到 `.env` 文件：
 
 ```sh
 PRIVATE_KEY=your_private_key_here
 MONAD_TESTNET_RPC=https://testnet-rpc.monad.xyz
 ```
 
-### 3. Create deployment script `script/DeployCatToken.s.sol` :
+### 3. 创建部署脚本 `script/DeployCatToken.s.sol`：
 
 DeployCatToken.s.sol script
 
@@ -134,28 +134,28 @@ import "../src/CatToken.sol";
 
 contract DeployCatToken is Script {
     function run() external {
-        // Retrieve private key from environment
+        // 从环境中检索私钥
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
 
         vm.startBroadcast(deployerPrivateKey);
         CatToken token = new CatToken();
         vm.stopBroadcast();
 
-        // Log the token address - this will be needed for GhostGraph indexing and submit transactions
+        // 记录代币地址 - GhostGraph 索引和提交交易将需要此地址
         console.log("CatToken deployed to:", address(token));
     }
 }
 ```
 
-## Deploying CatToken on Monad Testnet
+## 在 Monad 测试网上部署 CatToken
 
-### 1. Load environment variables:
+### 1. 加载环境变量：
 
 ```sh
 source .env
 ```
 
-### 2. Deploy the contract:
+### 2. 部署合约：
 
 ```sh
 forge script script/DeployCatToken.s.sol \
@@ -163,11 +163,11 @@ forge script script/DeployCatToken.s.sol \
 --broadcast
 ```
 
-Save the deployed contract address for the next steps.
+保存部署的合约地址以供下一步使用。
 
-Remember to add `TOKEN_ADDRESS` into your `.env` file
+记住将 `TOKEN_ADDRESS` 添加到您的 `.env` 文件中
 
-You should now have
+您现在应该有
 
 ```sh
 PRIVATE_KEY=your_private_key_here
@@ -175,15 +175,15 @@ MONAD_TESTNET_RPC=https://testnet-rpc.monad.xyz
 TOKEN_ADDRESS=0x...
 ```
 
-## Verify Smart Contract
+## 验证智能合约
 
-### 1. Load environment variables:
+### 1. 加载环境变量：
 
 ```sh
 source .env
 ```
 
-### 2. Verify the contract:
+### 2. 验证合约：
 
 ```sh
 forge verify-contract \
@@ -194,15 +194,15 @@ forge verify-contract \
   src/CatToken.sol:CatToken
 ```
 
-After verification, you should see the contract verified on the [MonadVision](https://testnet.monadvision.com) . You should see a checkmark and the banner stating the contract source code verified.
+验证后，您应该在 [MonadVision](https://testnet.monadvision.com) 上看到合约已验证。您应该看到复选标记和表明合约源代码已验证的横幅。
 
-![Verified Contract](/assets/images/verified-contract-82a14c97a8ec3bed742cbc412cb301e1.png)
+![已验证的合约](https://docs.monad.xyz/assets/images/verified-contract-82a14c97a8ec3bed742cbc412cb301e1.png)
 
-## Script for Token Transfers Transactions Onchain
+## 链上代币转账交易脚本
 
-We perform some token transfer transactions onchain to trigger the `Transfer` event that GhostGraph will index.
+我们在链上执行一些代币转账交易以触发 GhostGraph 将索引的 `Transfer` 事件。
 
-View the transfer script `script/TransferCatTokens.s.sol` :
+查看转账脚本 `script/TransferCatTokens.s.sol`：
 
 TransferCatTokens.s.sol script
 
@@ -220,7 +220,7 @@ contract TransferCatTokens is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // Send tokens to test addresses
+        // 向测试地址发送代币
         CatToken(token).transfer(address(0x1), 1000 * 10**18);
         CatToken(token).transfer(address(0x2), 2000 * 10**18);
         CatToken(token).transfer(address(0x3), 3000 * 10**18);
@@ -230,7 +230,7 @@ contract TransferCatTokens is Script {
 }
 ```
 
-Run the below command to execute transfers:
+运行以下命令执行转账：
 
 ```sh
 forge script script/TransferCatTokens.s.sol \
@@ -238,15 +238,15 @@ forge script script/TransferCatTokens.s.sol \
 --broadcast
 ```
 
-You have now deployed your ERC-20 contract and submitted transactions on the Monad testnet. Let's track these onchain events with GhostGraph.
+您现在已经部署了您的 ERC-20 合约并在 Monad 测试网上提交了交易。让我们使用 GhostGraph 跟踪这些链上事件。
 
-## Setting Up GhostGraph Indexing
+## 设置 GhostGraph 索引
 
-1. Visit [GhostGraph](https://tryghost.xyz/) and click sign up for an account
-2. Create a new GhostGraph
-![create_ghost_graph](/assets/images/create_ghost_graph-c09a4e7281041e387a6464e752caa8a5.png)
+1. 访问 [GhostGraph](https://tryghost.xyz/) 并点击注册账户
+2. 创建新的 GhostGraph
+![创建 ghost graph](https://docs.monad.xyz/assets/images/create_ghost_graph-c09a4e7281041e387a6464e752caa8a5.png)
 
-1. Copy and paste this into `events.sol` file. We are interested in tracking token flow. Let's insert this event here. To learn more about events: [https://docs.tryghost.xyz/ghostgraph/getting-started/define-events](https://docs.tryghost.xyz/ghostgraph/getting-started/define-events)
+1. 将此内容复制粘贴到 `events.sol` 文件中。我们有兴趣跟踪代币流。让我们在这里插入此事件。要了解更多关于事件的信息：[https://docs.tryghost.xyz/ghostgraph/getting-started/define-events](https://docs.tryghost.xyz/ghostgraph/getting-started/define-events)
 events.sol
 
 ```solidity
@@ -255,7 +255,7 @@ interface Events {
 }
 ```
 
-1. Copy and paste this into `schema.sol` file. In this case, we are creating a few struct which we will use to save entity into the Ghost database. To learn more about schema: [https://docs.tryghost.xyz/ghostgraph/getting-started/define-schema](https://docs.tryghost.xyz/ghostgraph/getting-started/define-schema)
+1. 将此内容复制粘贴到 `schema.sol` 文件中。在这种情况下，我们正在创建一些结构，我们将使用它们将实体保存到 Ghost 数据库中。要了解更多关于架构的信息：[https://docs.tryghost.xyz/ghostgraph/getting-started/define-schema](https://docs.tryghost.xyz/ghostgraph/getting-started/define-schema)
 schema.sol
 
 ```solidity
@@ -284,8 +284,8 @@ struct Transfer {
 }
 ```
 
-1. Click on `generate code` button to generate `indexer.sol` file along with some other readonly files. This file will be where the logic and transformations resides.
-2. Copy and paste this into `indexer.sol` be sure to insert your token address to the `CAT_TESTNET_TOKEN_CONTRACT_ADDRESS` variable.
+1. 点击 `generate code` 按钮生成 `indexer.sol` 文件以及一些其他只读文件。此文件将是逻辑和转换所在的地方。
+2. 将此内容复制粘贴到 `indexer.sol` 中，确保将您的代币地址插入到 `CAT_TESTNET_TOKEN_CONTRACT_ADDRESS` 变量中。
 indexer.sol
 
 ```solidity
@@ -302,47 +302,47 @@ contract MyIndex is GhostGraph {
     using StringHelpers for uint256;
     using StringHelpers for address;
 
-    address constant CAT_TESTNET_TOKEN_CONTRACT_ADDRESS = <INSERT YOUR TOKEN ADDRESS>;
+    address constant CAT_TESTNET_TOKEN_CONTRACT_ADDRESS = <插入您的代币地址>;
 
     function registerHandles() external {
         graph.registerHandle(CAT_TESTNET_TOKEN_CONTRACT_ADDRESS);
     }
 
     function onTransfer(EventDetails memory details, TransferEvent memory ev) external {
-        // Get global state to track holder count
+        // 获取全局状态以跟踪持有者数量
         Global memory global = graph.getGlobal("1");
 
-        // Handle sender balance
+        // 处理发送者余额
         if (ev.from != address(0)) {
-            // Skip if minting
+            // 如果是铸造则跳过
             User memory sender = graph.getUser(ev.from);
             if (sender.balance == ev.value) {
-                // User is transferring their entire balance
-                global.totalHolders -= 1; // Decrease holder count
+                // 用户正在转账他们的全部余额
+                global.totalHolders -= 1; // 减少持有者数量
             }
             sender.balance -= ev.value;
             graph.saveUser(sender);
         }
 
-        // Handle receiver balance
+        // 处理接收者余额
         User memory receiver = graph.getUser(ev.to);
         if (receiver.balance == 0 && ev.value > 0) {
-            // New holder
-            global.totalHolders += 1; // Increase holder count
+            // 新持有者
+            global.totalHolders += 1; // 增加持有者数量
         }
         receiver.balance += ev.value;
         graph.saveUser(receiver);
 
-        // Save global state
+        // 保存全局状态
         graph.saveGlobal(global);
 
-        // Create and save transfer record
+        // 创建并保存转账记录
         Transfer memory transfer = graph.getTransfer(details.uniqueId());
         transfer.from = ev.from;
         transfer.to = ev.to;
         transfer.amount = ev.value;
         
-        // Store transaction metadata
+        // 存储交易元数据
         transfer.block = details.block;
         transfer.emitter = details.emitter;
         transfer.logIndex = details.logIndex;
@@ -355,11 +355,11 @@ contract MyIndex is GhostGraph {
 }
 ```
 
-1. Compile and deploy your GhostGraph. After a few seconds, you should see GhostGraph has successfully indexed your contract.
-![ghostgraph_playground](/assets/images/ghostgraph_playground-59cc4d3df1d49432301ac0761c7b659b.png)
+1. 编译并部署您的 GhostGraph。几秒钟后，您应该看到 GhostGraph 已成功索引您的合约。
+![ghostgraph 游乐场](https://docs.monad.xyz/assets/images/ghostgraph_playground-59cc4d3df1d49432301ac0761c7b659b.png)
 
-1. Clicking on the playground will take you to the GraphQL playground, where you can ensure the data is indexed correctly. Let's copy and paste this into our playground and click the play button to fetch the data from GhostGraph.
-GraphQL Playground
+1. 点击游乐场将带您到 GraphQL 游乐场，您可以在那里确保数据被正确索引。让我们将此内容复制粘贴到我们的游乐场中，并点击播放按钮从 GhostGraph 获取数据。
+GraphQL 游乐场
 
 ```graphql
 query FetchRecentTransfers {
@@ -384,13 +384,12 @@ query FetchRecentTransfers {
 }
 ```
 
-![graphql_playground](/assets/images/graphql_playground-d1197eff8e49c2d20f9ca64296d39294.png)
+![graphql 游乐场](https://docs.monad.xyz/assets/images/graphql_playground-d1197eff8e49c2d20f9ca64296d39294.png)
 
-tip
-Try submitting additional transactions by running the transfer script again. You should see that GhostGraph automatically indexes the new transactions.
+提示：尝试再次运行转账脚本提交额外的交易。您应该看到 GhostGraph 自动索引新交易。
 
-## Conclusion
+## 结论
 
-You have now successfully created a GhostGraph to track onchain data for your contract. The next step is to connect it to your frontend.
+您现在已经成功创建了一个 GhostGraph 来跟踪合约的链上数据。下一步是将其连接到您的前端。
 
-The Ghost team has created end-to-end tutorials on how to do just that [here](https://docs.tryghost.xyz/blog/connect_ghost_graph_to_frontend/)
+Ghost 团队已经创建了端到端教程，介绍如何做到这一点，请点击[这里](https://docs.tryghost.xyz/blog/connect_ghost_graph_to_frontend/)

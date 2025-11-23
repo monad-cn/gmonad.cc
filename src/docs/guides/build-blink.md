@@ -1,76 +1,76 @@
-# How to build a donation blink
+# 如何构建捐赠 Blink
 
 URL: https://docs.monad.xyz/guides/blinks-guide
 
-In this guide, you will learn how to build a [Blink](https://www.dialect.to/) that allows people to donate MON with a single click.
+在本指南中，你将学习如何构建一个允许人们一键捐赠 MON 的 [Blink](https://www.dialect.to/)。
 
-## Prerequisites
+## 先决条件
 
-- Code Editor of your choice ( [Cursor](https://www.cursor.com/) or [Visual Studio Code](https://code.visualstudio.com/) recommended).
-- [Node](https://nodejs.org/en/download) 18.x.x or above.
-- Basic TypeScript knowledge.
-- Testnet MON ( [Faucet](https://testnet.monad.xyz) ).
+- 你选择的代码编辑器（推荐 [Cursor](https://www.cursor.com/) 或 [Visual Studio Code](https://code.visualstudio.com/)）
+- [Node](https://nodejs.org/en/download) 18.x.x 或更高版本
+- 基础 TypeScript 知识
+- 测试网 MON（[水龙头](https://testnet.monad.xyz)）
 
-## Initial setup
+## 初始设置
 
-### Initialize the project
+### 初始化项目
 
 ```bash
 npx create-next-app@14 blink-starter-monad && cd blink-starter-monad
 ```
 
-**When prompted, configure your project with these settings:**
+**出现提示时，使用以下设置配置你的项目：**
 
-- 鉁� Ok to proceed? 鈫� Yes
-- 鉁� Would you like to use TypeScript? 鈫� Yes
-- 鉁� Would you like to use ESLint? 鈫� Yes
-- 鉁� Would you like to use Tailwind CSS? 鈫� Yes
-- 鉁� Would you like your code inside a `src/` directory? 鈫� Yes
-- 鉁� Would you like to use App Router? 鈫� Yes
-- 鉁� Would you like to customize the import alias ( `@/*` by default)? 鈫� No
+- ✔ Ok to proceed? → Yes
+- ✔ Would you like to use TypeScript? → Yes
+- ✔ Would you like to use ESLint? → Yes
+- ✔ Would you like to use Tailwind CSS? → Yes
+- ✔ Would you like your code inside a `src/` directory? → Yes
+- ✔ Would you like to use App Router? → Yes
+- ✔ Would you like to customize the import alias ( `@/*` by default)? → No
 
-### Install dependencies
+### 安装依赖项
 
 ```bash
 npm install @solana/actions wagmi viem@2.x
 ```
 
-### Start development server
+### 启动开发服务器
 
-The development server is used to start a local test environment that runs on your computer. It is perfect to test and develop your blink, before you ship it to production.
+开发服务器用于启动在你的计算机上运行的本地测试环境。它非常适合在发布到生产环境之前测试和开发你的 blink。
 
 ```bash
 npm run dev
 ```
 
-## Building the Blink
+## 构建 Blink
 
-Now that we have our basic setup finished, it is time to start building the blink.
+现在我们已经完成了基本设置，是时候开始构建 blink 了。
 
-### Create an endpoint
+### 创建端点
 
-To write a blink provider, you have to create an endpoint. Thanks to NextJS, this all works pretty straightforward. All you have to do is to create the following folder structure:
+要编写 blink 提供者，你必须创建一个端点。由于有 NextJS，这一切都非常简单。你所要做的就是创建以下文件夹结构：
 
 ```text
 src/
-鈹斺攢鈹€ app/
-    鈹斺攢鈹€ api/
-            鈹斺攢鈹€ actions/
-                鈹斺攢鈹€ donate-mon/
-                    鈹斺攢鈹€ route.ts
+├─── app/
+    ├─── api/
+            ├─── actions/
+                ├─── donate-mon/
+                    ├─── route.ts
 ```
 
-### Create actions.json
+### 创建 actions.json
 
-Create a route in `app` folder for the `actions.json` file which will be hosted in the root directory of our application. This file is needed to tell other applications which blink providers are available on your website. **Think of it as a sitemap for blinks.**
+在 `app` 文件夹中为 `actions.json` 文件创建一个路由，该文件将托管在我们应用程序的根目录中。此文件需要告诉其他应用程序你的网站上有哪些 blink 提供者可用。**将其视为 blink 的站点地图。**
 
-You can read more about the [actions.json](https://docs.dialect.to/documentation/actions/specification/actions.json) in the official [Dialect documentation](https://docs.dialect.to/documentation/actions/specification/actions.json) .
+你可以在官方 [Dialect 文档](https://docs.dialect.to/documentation/actions/specification/actions.json) 中阅读更多关于 [actions.json](https://docs.dialect.to/documentation/actions/specification/actions.json) 的信息。
 
 ```text
 src/
-鈹斺攢鈹€ app/
-    鈹斺攢鈹€ actions.json/
-        鈹斺攢鈹€ route.ts
+├─── app/
+    ├─── actions.json/
+        ├─── route.ts
 ```
 
 route.ts src > app > actions.json
@@ -81,12 +81,12 @@ import { ACTIONS_CORS_HEADERS, ActionsJson } from "@solana/actions";
 export const GET = async () => {
   const payload: ActionsJson = {
     rules: [
-      // map all root level routes to an action
+      // 将所有根级路由映射到一个操作
       {
         pathPattern: "/*",
         apiPath: "/api/actions/*",
       },
-      // idempotent rule as the fallback
+      // 幂等规则作为回退
       {
         pathPattern: "/api/actions/**",
         apiPath: "/api/actions/**",
@@ -99,32 +99,32 @@ export const GET = async () => {
   });
 };
 
-// DO NOT FORGET TO INCLUDE THE `OPTIONS` HTTP METHOD
-// THIS WILL ENSURE CORS WORKS FOR BLINKS
+// 不要忘记包含 `OPTIONS` HTTP 方法
+// 这将确保 CORS 对 BLINKS 有效
 export const OPTIONS = GET;
 ```
 
-### Add an image for the blink
+### 为 blink 添加图片
 
-Every blink has an image that is rendered on top. If you have your image already hosted somewhere, you can skip this step but if you haven't you can just create a `public` folder in your `NextJS` project and paste an image there.
+每个 blink 都有一个在顶部渲染的图片。如果你的图片已经托管在某处，你可以跳过此步骤，但如果没有，你可以在你的 `NextJS` 项目中创建一个 `public` 文件夹并将图片粘贴到那里。
 
-In our example we will paste a file called `donate-mon.png` into this public folder. You can right-click and save the image below.
+在我们的示例中，我们将把一个名为 `donate-mon.png` 的文件粘贴到此 public 文件夹中。你可以右键单击并保存下面的图片。
 
-![donate-mon](/assets/images/donate-mon-edb8311848894b2ec7edae30bcaadaad.png)
+![donate-mon](https://docs.monad.xyz/assets/images/donate-mon-edb8311848894b2ec7edae30bcaadaad.png)
 
-![image](/assets/images/1-c444ef3a9462501ae42703a600d0e3ee.png)
+![image](https://docs.monad.xyz/assets/images/1-c444ef3a9462501ae42703a600d0e3ee.png)
 
-### OPTIONS endpoint and headers
+### OPTIONS 端点和请求头
 
-This enables CORS for cross-origin requests and standard headers for the API endpoints. This is standard configuration you do for every Blink.
+这为跨源请求和 API 端点启用 CORS 标准请求头。这是你为每个 Blink 进行的标准配置。
 
 route.ts src > app > api > actions > donate-mon
 
 ```js
-// CAIP-2 format for Monad
+// Monad 的 CAIP-2 格式
 const blockchain = `eip155:10143`;
 
-// Create headers with CAIP blockchain ID
+// 使用 CAIP 区块链 ID 创建请求头
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -135,22 +135,23 @@ const headers = {
   "x-action-version": "2.0",
 };
 
-// OPTIONS endpoint is required for CORS preflight requests
-// Your Blink won't render if you don't add this
+// CORS 预检请求需要 OPTIONS 端点
+// 如果你不添加这个，你的 Blink 将无法渲染
 export const OPTIONS = async () => {
   return new Response(null, { headers });
 };
 ```
 
-### GET endpoint
+### GET 端点
 
-`GET` returns the Blink metadata and UI configuration.
+`GET` 返回 Blink 元数据和 UI 配置。
 
-It describes:
+它描述：
 
-- How the Action appears in Blink clients
-- What parameters users need to provide
-- How the Action should be executed
+- Action 在 Blink 客户端中的显示方式
+- 用户需要提供的参数
+- Action 应该如何执行
+
 route.ts src > app > api > actions > donate-mon
 
 ```js
@@ -158,9 +159,9 @@ import {
   ActionGetResponse,
 } from "@solana/actions";
 
-// GET endpoint returns the Blink metadata (JSON) and UI configuration
+// GET 端点返回 Blink 元数据（JSON）和 UI 配置
 export const GET = async (req: Request) => {
-  // This JSON is used to render the Blink UI
+  // 此 JSON 用于渲染 Blink UI
   const response: ActionGetResponse = {
     type: "action",
     icon: `${new URL("/donate-mon.png", req.url).toString()}`,
@@ -168,14 +169,14 @@ export const GET = async (req: Request) => {
     title: "Donate MON",
     description:
       "This Blink demonstrates how to donate MON on the Monad blockchain. It is a part of the official Blink Starter Guides by Dialect Labs.  \n\nLearn how to build this Blink: https://dialect.to/docs/guides/donate-mon",
-    // Links is used if you have multiple actions or if you need more than one params
+    // Links 用于当你有多个操作或需要多个参数时
     links: {
       actions: [
         {
-          // Defines this as a blockchain transaction
+          // 将此定义为区块链交易
           type: "transaction",
           label: "0.01 MON",
-          // This is the endpoint for the POST request
+          // 这是 POST 请求的端点
           href: `/api/actions/donate-mon?amount=0.01`,
         },
         {
@@ -189,7 +190,7 @@ export const GET = async (req: Request) => {
           href: `/api/actions/donate-mon?amount=0.1`,
         },
         {
-          // Example for a custom input field
+          // 自定义输入字段示例
           type: "transaction",
           href: `/api/actions/donate-mon?amount={amount}`,
           label: "Donate",
@@ -205,7 +206,7 @@ export const GET = async (req: Request) => {
     },
   };
 
-  // Return the response with proper headers
+  // 使用适当的请求头返回响应
   return new Response(JSON.stringify(response), {
     status: 200,
     headers,
@@ -213,42 +214,42 @@ export const GET = async (req: Request) => {
 };
 ```
 
-### Testing the Blink
+### 测试 Blink
 
-Visit [dial.to](https://dial.to) and type in the link to your blink to see if it works. If your server runs on localhost:3000 the url should be like this: `http://localhost:3000/api/actions/donate-mon`
+访问 [dial.to](https://dial.to) 并输入你的 blink 链接，看看它是否有效。如果你的服务器在 localhost:3000 上运行，URL 应该是这样的：`http://localhost:3000/api/actions/donate-mon`
 
-info
-[dial.to](https://dial.to) currently supports only GET previews for EVM. To test your POST endpoint, we need to build a Blink Client.
+信息提示  
+[dial.to](https://dial.to) 目前只支持 EVM 的 GET 预览。要测试你的 POST 端点，我们需要构建一个 Blink 客户端。
 
-![testing blink](/assets/images/2-45cfc9833636a2f6c3123d5267cd9cf8.png)
+![testing blink](https://docs.monad.xyz/assets/images/2-45cfc9833636a2f6c3123d5267cd9cf8.png)
 
-### POST endpoint
+### POST 端点
 
-`POST` handles the actual MON transfer transaction.
+`POST` 处理实际的 MON 转账交易。
 
-#### POST request to the endpoint
+#### 发送 POST 请求到端点
 
-Create the post request structure and add the necessary imports as well as the `donationWallet` on top of the file.
+创建 post 请求结构并添加必要的导入以及文件顶部的 `donationWallet`。
 
 route.ts src > app > api > actions > donate-mon
 
 ```js
-// Update the imports
+// 更新导入
 import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
 import { serialize } from "wagmi";
 import { parseEther } from "viem";
 
-// Wallet address that will receive the donations
+// 将接收捐赠的钱包地址
 const donationWallet = `<RECEIVER_ADDRESS>`;
 
-// POST endpoint handles the actual transaction creation
+// POST 端点处理实际的交易创建
 export const POST = async (req: Request) => {
   try {
   
-  // Code that goes here is in the next step
+  // 下一步的代码放在这里
   
   } catch (error) {
-    // Log and return an error response
+    // 记录并返回错误响应
     console.error("Error processing request:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
@@ -258,18 +259,18 @@ export const POST = async (req: Request) => {
 };
 ```
 
-#### Extract data from request
+#### 从请求中提取数据
 
-The request contains the URL and the account (PublicKey) from the payer.
+请求包含 URL 和付款人的账户（PublicKey）。
 
 route.ts src > app > api > actions > donate-mon
 
 ```js
-// POST endpoint handles the actual transaction creation
+// POST 端点处理实际的交易创建
 export const POST = async (req: Request) => {
   try {
-    // Step 1
-    // Extract amount from URL
+    // 步骤 1
+    // 从 URL 提取数量
     const url = new URL(req.url);
     const amount = url.searchParams.get("amount");
 
@@ -278,25 +279,25 @@ export const POST = async (req: Request) => {
     }
 
   } catch (error) {
-    // Error handling
+    // 错误处理
   }
 }
 ```
 
-#### Create the transaction
+#### 创建交易
 
-Create a new transaction with all the necessary data and add it below in the `POST` request.
+使用所有必要数据创建新交易并将其添加到 `POST` 请求下方。
 
 route.ts src > app > api > actions > donate-mon
 
 ```js
-// POST endpoint handles the actual transaction creation
+// POST 端点处理实际的交易创建
 export const POST = async (req: Request) => {
   try {
 
-    // ... previous code from step
+    // ... 步骤中的前一个代码
     
-    // Build the transaction
+    // 构建交易
     const transaction = {
         to: donationWallet,
         value: parseEther(amount).toString(),
@@ -306,42 +307,42 @@ export const POST = async (req: Request) => {
     const transactionJson = serialize(transaction);
   
   } catch (error) {
-    // Error handling
+    // 错误处理
   }
 }
 ```
 
-#### Return the transaction in response.
+#### 在响应中返回交易
 
-Create `ActionPostResponse` and return it to the client.
+创建 `ActionPostResponse` 并将其返回给客户端。
 
 route.ts src > app > api > actions > donate-mon
 
 ```ts
 export const POST = async (req: Request) => {
   try {
-    // ... previous code from step 1 and 2
+    // ... 步骤 1 和 2 的前一个代码
     
-    // Build ActionPostResponse
+    // 构建 ActionPostResponse
     const response: ActionPostResponse = {
         type: "transaction",
         transaction: transactionJson,
         message: "Donate MON",
     };
 
-    // Return the response with proper headers
+    // 使用适当的请求头返回响应
     return new Response(JSON.stringify(response), {
         status: 200,
         headers,
     });
 
   } catch (error) {
-    // Error handling
+    // 错误处理
   }
 }
 ```
 
-### Full code in `route.ts`
+### `route.ts` 中的完整代码
 
 route.ts src > app > api > actions > donate-mon
 
@@ -350,13 +351,13 @@ import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
 import { serialize } from "wagmi";
 import { parseEther } from "viem";
 
-// CAIP-2 format for Monad
+// Monad 的 CAIP-2 格式
 const blockchain = `eip155:10143`;
 
-// Wallet address that will receive the donations
+// 将接收捐赠的钱包地址
 const donationWallet = `<RECEIVER_ADDRESS>`;
 
-// Create headers with CAIP blockchain ID
+// 使用 CAIP 区块链 ID 创建请求头
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -367,15 +368,15 @@ const headers = {
   "x-action-version": "2.0",
 };
 
-// OPTIONS endpoint is required for CORS preflight requests
-// Your Blink won't render if you don't add this
+// CORS 预检请求需要 OPTIONS 端点
+// 如果你不添加这个，你的 Blink 将无法渲染
 export const OPTIONS = async () => {
   return new Response(null, { headers });
 };
 
-// GET endpoint returns the Blink metadata (JSON) and UI configuration
+// GET 端点返回 Blink 元数据（JSON）和 UI 配置
 export const GET = async (req: Request) => {
-  // This JSON is used to render the Blink UI
+  // 此 JSON 用于渲染 Blink UI
   const response: ActionGetResponse = {
     type: "action",
     icon: `${new URL("/donate-mon.png", req.url).toString()}`,
@@ -383,14 +384,14 @@ export const GET = async (req: Request) => {
     title: "Donate MON",
     description:
       "This Blink demonstrates how to donate MON on the Monad blockchain. It is a part of the official Blink Starter Guides by Dialect Labs.  \n\nLearn how to build this Blink: https://dialect.to/docs/guides/donate-mon",
-    // Links is used if you have multiple actions or if you need more than one params
+    // Links 用于当你有多个操作或需要多个参数时
     links: {
       actions: [
         {
-          // Defines this as a blockchain transaction
+          // 将此定义为区块链交易
           type: "transaction",
           label: "0.01 MON",
-          // This is the endpoint for the POST request
+          // 这是 POST 请求的端点
           href: `/api/actions/donate-mon?amount=0.01`,
         },
         {
@@ -404,7 +405,7 @@ export const GET = async (req: Request) => {
           href: `/api/actions/donate-mon?amount=0.1`,
         },
         {
-          // Example for a custom input field
+          // 自定义输入字段示例
           type: "transaction",
           href: `/api/actions/donate-mon?amount={amount}`,
           label: "Donate",
@@ -420,17 +421,17 @@ export const GET = async (req: Request) => {
     },
   };
 
-  // Return the response with proper headers
+  // 使用适当的请求头返回响应
   return new Response(JSON.stringify(response), {
     status: 200,
     headers,
   });
 };
 
-// POST endpoint handles the actual transaction creation
+// POST 端点处理实际的交易创建
 export const POST = async (req: Request) => {
     try {
-      // Extract amount from URL
+      // 从 URL 提取数量
       const url = new URL(req.url);
       const amount = url.searchParams.get("amount");
 
@@ -438,7 +439,7 @@ export const POST = async (req: Request) => {
           throw new Error("Amount is required");
       }
 
-      // Build the transaction
+      // 构建交易
       const transaction = {
           to: donationWallet,
           value: parseEther(amount).toString(),
@@ -447,20 +448,20 @@ export const POST = async (req: Request) => {
 
       const transactionJson = serialize(transaction);
 
-      // Build ActionPostResponse
+      // 构建 ActionPostResponse
       const response: ActionPostResponse = {
           type: "transaction",
           transaction: transactionJson,
           message: "Donate MON",
       };
 
-      // Return the response with proper headers
+      // 使用适当的请求头返回响应
       return new Response(JSON.stringify(response), {
           status: 200,
           headers,
       });
     } catch (error) {
-      // Log and return an error response
+      // 记录并返回错误响应
       console.error("Error processing request:", error);
       return new Response(JSON.stringify({ error: "Internal server error" }), {
         status: 500,
@@ -470,25 +471,25 @@ export const POST = async (req: Request) => {
 };
 ```
 
-At this point the Blink is ready, but we need a Blink client since [dial.to](https://dial.to) does not support EVM wallets.
+此时 Blink 已准备就绪，但我们需要一个 Blink 客户端，因为 [dial.to](https://dial.to) 不支持 EVM 钱包。
 
-## Implementing the Blink client
+## 实现 Blink 客户端
 
-In this step you will learn to implement the blink client, which is the visual representation of a blink.
+在此步骤中，你将学习实现 blink 客户端，这是 blink 的可视化表示。
 
-### Install dependencies
+### 安装依赖项
 
 ```bash
 npm install connectkit @tanstack/react-query @dialectlabs/blinks
 ```
 
-### Implement the provider
+### 实现提供者
 
-The provider is necessary to trigger wallet actions in the blink.
+提供者是在 blink 中触发钱包操作所必需的。
 
-### Create config for `WagmiProvider`
+### 为 `WagmiProvider` 创建配置
 
-This file is used to set the proper configurations for the `WagmiProvider` in the next step.
+此文件用于在下一步为 `WagmiProvider` 设置适当的配置。
 
 config.ts src
 
@@ -504,12 +505,12 @@ export const config = createConfig({
 });
 ```
 
-### Create the wallet connection context providers
+### 创建钱包连接上下文提供者
 
-Create the provider that we can use to wrap around our app. Don't forget to use the `"use client";` at the top of the file if you are in a NextJS project.
+创建我们可以用来包装应用程序的提供者。如果你在 NextJS 项目中，不要忘记在文件顶部使用 `"use client";`。
 
-info
-In this project, we are using [ConnectKit](https://docs.family.co/connectkit) but you can use other alternatives as well (Eg: [RainbowKit](https://www.rainbowkit.com/) )
+信息提示  
+在这个项目中，我们使用 [ConnectKit](https://docs.family.co/connectkit)，但你也可以使用其他替代方案（例如：[RainbowKit](https://www.rainbowkit.com/)）
 
 provider.tsx src
 
@@ -535,17 +536,17 @@ export const Providers = ({ children }: PropsWithChildren) => {
 };
 ```
 
-### Wrap the app with context provider
+### 使用上下文提供者包装应用
 
-If you want your provider to be accessible throughout your app, it is recommended to wrap it around the `children` element in your `layout.tsx` .
+如果你希望你的提供者在整个应用程序中可访问，建议在你的 `layout.tsx` 中围绕 `children` 元素进行包装。
 
 layout.tsx src > app
 
 ```tsx
-// additional import
+// 额外的导入
 import { Providers } from "@/provider";
 
-// other code in the file ...
+// 文件中的其他代码...
 
 export default function RootLayout({
   children,
@@ -564,9 +565,9 @@ export default function RootLayout({
 }
 ```
 
-### Using the `Blink` component
+### 使用 `Blink` 组件
 
-Now that we have everything wrapped, we can start with the implementation of the blink renderer. To do so open the `page.tsx` file in your `/src/app` folder.
+现在我们已经包装了所有内容，我们可以开始实现 blink 渲染器。为此，打开你的 `/src/app` 文件夹中的 `page.tsx` 文件。
 
 page.tsx src > app
 
@@ -586,20 +587,20 @@ import { useEvmWagmiAdapter } from "@dialectlabs/blinks/hooks/evm";
 import { ConnectKitButton, useModal } from "connectkit";
 
 export default function Home() {
-  // Actions registry interval
+  // Actions 注册表间隔
   useActionsRegistryInterval();
 
-  // ConnectKit modal
+  // ConnectKit 模态框
   const { setOpen } = useModal();
 
-  // Wagmi adapter, used to connect to the wallet
+  // Wagmi 适配器，用于连接钱包
   const { adapter } = useEvmWagmiAdapter({
     onConnectWalletRequest: async () => {
       setOpen(true);
     },
   });
 
-  // Action we want to execute in the Blink
+  // 我们想要在 Blink 中执行的操作
   const { blink, isLoading } = useBlink({
     url: "evm-action:http://localhost:3000/api/actions/donate-mon",
   });
@@ -611,7 +612,7 @@ export default function Home() {
         {isLoading || !blink ? (
           <span>Loading</span>
         ) : (
-          // Blink component, used to execute the action
+          // Blink 组件，用于执行操作
           <Blink blink={blink} adapter={adapter} securityLevel="all" />
         )}
       </div>
@@ -620,18 +621,18 @@ export default function Home() {
 }
 ```
 
-### Make a transaction
+### 进行交易
 
-That's it. To test it, visit [localhost:3000](http://localhost:3000) and click on a button or enter a custom amount that you want to donate.
+就是这样。要测试它，访问 [localhost:3000](http://localhost:3000) 并点击按钮或输入你想要捐赠的自定义金额。
 
-![blink client](/assets/images/3-d36ed0ec501b4e794e39389b9c8a6c93.png)
+![blink client](https://docs.monad.xyz/assets/images/3-d36ed0ec501b4e794e39389b9c8a6c93.png)
 
-## Conclusion
+## 结论
 
-In this tutorial, you learned how you can create a blink that sends MON to another wallet from scratch using a `NextJS` project. Besides the basic project setup there were two important things that we built.
+在本教程中，你学会了如何使用 `NextJS` 项目从头创建一个向另一个钱包发送 MON 的 blink。除了基本的项目设置之外，我们还构建了两个重要的东西。
 
-The first thing was the blink provider. This provider works as an API for the blink and handles how the blink is rendered in the fronend ( `GET` request) and executes the blockchain transaction ( `POST` request).
+第一个是 blink 提供者。此提供者作为 blink 的 API，处理 blink 在前端中的渲染方式（`GET` 请求）并执行区块链交易（`POST` 请求）。
 
-The second implementation was the blink client. This client serves as the visual representation of the blink and is what the user sees and uses to interact with the blink provider.
+第二个实现是 blink 客户端。此客户端作为 blink 的可视化表示，是用户看到并用于与 blink 提供者交互的内容。
 
-These are two separate parts, which means you can build a blink without worrying about the client implementation and you can implement clients for existing blinks without the need to build your own blink.
+这是两个独立的部分，这意味着你可以构建 blink 而无需担心客户端实现，你也可以为现有的 blink 实现客户端而无需构建自己的 blink。

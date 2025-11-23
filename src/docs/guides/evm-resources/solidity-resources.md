@@ -1,67 +1,67 @@
-# Solidity Resources
+# Solidity 资源
 
 URL: https://docs.monad.xyz/guides/evm-resources/solidity-resources
 
-Monad is fully EVM bytecode-compatible, with all supported opcodes and precompiles as of the [Cancun fork](https://www.evm.codes/?fork=cancun) . Monad also preserves the standard Ethereum JSON-RPC interfaces.
+Monad 完全兼容 EVM 字节码，支持截至 [Cancun 分叉](https://www.evm.codes/?fork=cancun) 的所有操作码和预编译合约。Monad 还保留了标准的以太坊 JSON-RPC 接口。
 
-As such, most development resources for Ethereum Mainnet apply to development on Monad.
+因此，大多数以太坊主网的开发资源同样适用于 Monad 上的开发。
 
-This page suggests a **minimal** set of resources for getting started with building a decentralized app for Ethereum. Child pages provide additional detail or options.
+本页面建议了一套用于构建以太坊去中心化应用的**基本**资源。子页面提供了额外的详细信息或选择。
 
-As [Solidity](https://docs.soliditylang.org/) is the most popular language for Ethereum smart contracts, the resources on this page focus on Solidity; alternatively see resources on [Vyper](/guides/evm-resources/other-languages/vyper) or [Huff](/guides/evm-resources/other-languages/huff) . Note that since smart contracts are composable, contracts originally written in one language can still make calls to contracts in another language.
+由于 [Solidity](https://docs.soliditylang.org/) 是以太坊智能合约最流行的语言，本页面的资源主要关注 Solidity；或者查看关于 [Vyper](/guides/evm-resources/other-languages/vyper) 或 [Huff](/guides/evm-resources/other-languages/huff) 的资源。请注意，由于智能合约是可组合的，最初用一种语言编写的合约仍然可以调用用另一种语言编写的合约。
 
-## **IDEs**
+## **IDE**
 
-- [Remix](https://remix.ethereum.org/#lang=en&optimize=false&runs=200&evmVersion=null) is an interactive Solidity IDE. It is the easiest and fastest way to get started coding and compiling Solidity smart contracts without the need for additional tool installations.
-- [VSCode](https://code.visualstudio.com/) + [Solidity extension](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity)
+- [Remix](https://remix.ethereum.org/#lang=en&optimize=false&runs=200&evmVersion=null) 是一个交互式 Solidity IDE。它是开始编码和编译 Solidity 智能合约最简单、最快速的方式，无需安装额外工具。
+- [VSCode](https://code.visualstudio.com/) + [Solidity 扩展](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity)
 
-## **Basic Solidity**
+## **基础 Solidity**
 
-- [CryptoZombies](https://cryptozombies.io/en/course) is a great end-to-end introduction to building dApps on the EVM. It provides resources and lessons for anyone from someone who has never coded before, to experienced developers in other disciplines looking to explore blockchain development.
-- [Solidity by Example](https://solidity-by-example.org/) introduces concepts progressively through simple examples; best for developers who already have basic experience with other languages.
-- [Blockchain Basics course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/blockchain-basics) teaches the fundamentals of blockchain, DeFi, and smart contracts.
-- [Solidity Smart Contract Development by Cyfrin Updraft](https://updraft.cyfrin.io/courses/solidity) will teach you how to become a smart contract developer. Learn to build with projects and get hands-on experience.
-- [Ethereum Developer Degree by LearnWeb3](https://learnweb3.io/degrees/ethereum-developer-degree/) is the a good course to go from no background knowledge in web3 to being able to build multiple applications and understanding several key protocols, frameworks, and concepts in the web3 space.
+- [CryptoZombies](https://cryptozombies.io/en/course) 是构建 EVM 上 dApps 的优秀端到端入门教程。它为从未编程过的人到希望探索区块链开发的其他学科经验丰富的开发者提供资源和课程。
+- [Solidity by Example](https://solidity-by-example.org/) 通过简单示例逐步介绍概念；最适合已有其他语言基础经验的开发者。
+- [Cyfrin Updraft 区块链基础课程](https://updraft.cyfrin.io/courses/blockchain-basics) 教授区块链、DeFi 和智能合约的基础知识。
+- [Cyfrin Updraft Solidity 智能合约开发](https://updraft.cyfrin.io/courses/solidity) 将教你如何成为智能合约开发者。通过项目学习构建并获得实践经验。
+- [LearnWeb3 以太坊开发者学位](https://learnweb3.io/degrees/ethereum-developer-degree/) 是一个很好的课程，可以从没有 web3 背景知识开始，到能够构建多个应用程序并理解 web3 领域的几个关键协议、框架和概念。
 
-## **Intermediate Solidity**
+## **中级 Solidity**
 
-- [The Solidity Language](https://docs.soliditylang.org/en/v0.8.21/introduction-to-smart-contracts.html) official documentation is an end-to-end description of Smart Contracts and blockchain basics centered on EVM environments. In addition to Solidity Language documentation, it covers the basics of compiling your code for deployment on an EVM as well as the basic components relevant to deploying a Smart Contract on an EVM.
-- [Solidity Patterns](https://github.com/fravoll/solidity-patterns) repository provides a library of code templates and explanation of their usage.
-- The [Uniswap V2](https://github.com/Uniswap/v2-core) contract is a professional yet easy to digest smart contract that provides a great overview of an in-production Solidity dApp. A guided walkthrough of the contract can be found [here](https://ethereum.org/en/developers/tutorials/uniswap-v2-annotated-code/) .
-- [Cookbook.dev](https://www.cookbook.dev/search?q=cookbook&categories=Contracts&sort=popular&filter=&page=1) provides a set of interactive example template contracts with live editing, one-click deploy, and an AI chat integration to help with code questions.
-- [OpenZeppelin](https://www.openzeppelin.com/contracts) provides customizable template contract library for common Ethereum token deployments such as ERC20, ERC712, and ERC1155. Note, they are not gas optimized.
-- [Rareskills Blog](https://www.rareskills.io/category/solidity) has some great in-depth articles on various concepts in Solidity.
-- [Foundry Fundamentals course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/foundry) is a comprehensive web3 development course designed to teach you about Foundry the industry-standard framework to build, deploy, and test your smart contracts.
-- [Smart Contract Programmer YT channel](https://www.youtube.com/@smartcontractprogrammer) has a plenty of in-depth videos about various Solidity concepts like ABI encoding, EVM memory, and many more.
+- [Solidity 语言](https://docs.soliditylang.org/en/v0.8.21/introduction-to-smart-contracts.html) 官方文档是以 EVM 环境为中心的智能合约和区块链基础的端到端描述。除了 Solidity 语言文档外，还涵盖了为在 EVM 上部署编译代码的基础知识以及在 EVM 上部署智能合约相关的基本组件。
+- [Solidity 模式](https://github.com/fravoll/solidity-patterns) 仓库提供了代码模板库和使用说明。
+- [Uniswap V2](https://github.com/Uniswap/v2-core) 合约是一个专业但易于理解的智能合约，提供了生产环境中 Solidity dApp 的绝佳概览。合约的指导性演练可以在[这里](https://ethereum.org/en/developers/tutorials/uniswap-v2-annotated-code/)找到。
+- [Cookbook.dev](https://www.cookbook.dev/search?q=cookbook&categories=Contracts&sort=popular&filter=&page=1) 提供了一套交互式示例模板合约，具有实时编辑、一键部署和 AI 聊天集成，可帮助解决代码问题。
+- [OpenZeppelin](https://www.openzeppelin.com/contracts) 为常见的以太坊代币部署（如 ERC20、ERC712 和 ERC1155）提供可定制的模板合约库。注意，它们没有进行 gas 优化。
+- [Rareskills 博客](https://www.rareskills.io/category/solidity) 有一些关于 Solidity 各种概念的优秀深度文章。
+- [Cyfrin Updraft Foundry 基础课程](https://updraft.cyfrin.io/courses/foundry) 是一个全面的 web3 开发课程，旨在教你 Foundry 这个行业标准框架，用于构建、部署和测试你的智能合约。
+- [Smart Contract Programmer YT 频道](https://www.youtube.com/@smartcontractprogrammer) 有很多关于各种 Solidity 概念的深度视频，如 ABI 编码、EVM 内存等。
 
-## **Advanced Solidity**
+## **高级 Solidity**
 
-- The [Solmate repository](https://github.com/transmissions11/solmate) and [Solady repository](https://github.com/Vectorized/solady/tree/main) provide gas-optimized contracts utilizing Solidity or Yul.
-- [Yul](https://docs.soliditylang.org/en/latest/yul.html) is a intermediate language for Solidity that can generally be thought of as inline assembly for the EVM. It is not quite pure assembly, providing control flow constructs and abstracting away the inner working of the stack while still exposing the raw memory backend to developers. Yul is targeted at developers needing exposure to the EVM's raw memory backend to build high performance gas optimized EVM code.
-- [Huff](https://docs.huff.sh/get-started/overview/) is most closely described as EVM assembly. Unlike Yul, Huff does not provide control flow constructs or abstract away the inner working of the program stack. Only the most upmost performance sensitive applications take advantage of Huff, however it is a great educational tool to learn how the EVM interprets instructions its lowest level.
-- [Advanced Foundry course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/advanced-foundry) teaches you about Foundry, how to develop a DeFi protocol and a stablecoin, how to develop a DAO, advanced smart contract development, advanced smart contracts testing and fuzzing and manual verification.
-- [Smart Contract Security course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/security) will teach you everything you need to know to get started auditing and writing secure protocols.
-- [Assembly and Formal Verification course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/formal-verification) teaches you about Assembly, writing smart contracts using Huff and Yul, Ethereum Virtual Machine OPCodes, Formal verification testing, Smart contract invariant testing and tools like Halmos, Certora, Kontrol.
-- [Smart Contract DevOps course by Cyfrin Updraft](https://updraft.cyfrin.io/courses/wallets) teaches about access control best practices when working with wallets, post-deployment security, smart contract and web3 devOps and live protocols maintenance and monitoring.
-- [Secureum YT Channel](https://www.youtube.com/@SecureumVideos/videos) has plenty videos about Solidity from Solidity Basics to all the way to advanced concepts like Fuzzing and Solidity auditing.
+- [Solmate 仓库](https://github.com/transmissions11/solmate) 和 [Solady 仓库](https://github.com/Vectorized/solady/tree/main) 提供使用 Solidity 或 Yul 的 gas 优化合约。
+- [Yul](https://docs.soliditylang.org/en/latest/yul.html) 是 Solidity 的中间语言，通常可以被认为是 EVM 的内联汇编。它不是纯汇编，提供控制流构造并抽象出栈的内部工作，同时仍然向开发者暴露原始内存后端。Yul 针对需要访问 EVM 原始内存后端以构建高性能 gas 优化 EVM 代码的开发者。
+- [Huff](https://docs.huff.sh/get-started/overview/) 最贴切地描述为 EVM 汇编。与 Yul 不同，Huff 不提供控制流构造或抽象出程序栈的内部工作。只有最注重性能的应用才会利用 Huff，但它是学习 EVM 如何在最低级别解释指令的绝佳教育工具。
+- [Cyfrin Updraft 高级 Foundry 课程](https://updraft.cyfrin.io/courses/advanced-foundry) 教你关于 Foundry、如何开发 DeFi 协议和稳定币、如何开发 DAO、高级智能合约开发、高级智能合约测试和模糊测试以及手动验证。
+- [Cyfrin Updraft 智能合约安全课程](https://updraft.cyfrin.io/courses/security) 将教你开始审计和编写安全协议所需了解的一切。
+- [Cyfrin Updraft 汇编和形式验证课程](https://updraft.cyfrin.io/courses/formal-verification) 教你汇编、使用 Huff 和 Yul 编写智能合约、以太坊虚拟机操作码、形式验证测试、智能合约不变量测试和 Halmos、Certora、Kontrol 等工具。
+- [Cyfrin Updraft 智能合约 DevOps 课程](https://updraft.cyfrin.io/courses/wallets) 教授使用钱包时的访问控制最佳实践、部署后安全、智能合约和 web3 DevOps 以及实时协议维护和监控。
+- [Secureum YT 频道](https://www.youtube.com/@SecureumVideos/videos) 有很多关于 Solidity 的视频，从 Solidity 基础一直到模糊测试和 Solidity 审计等高级概念。
 
-## Tutorials
+## 教程
 
-- [Ethernaut](https://ethernaut.openzeppelin.com/) : learn by solving puzzles
-- [Damn Vulnerable DeFi](https://www.damnvulnerabledefi.xyz) : DVD is a series of smart contract challenges which consists of vulnerable contracts and you are supposed to be able to hack it. These challenges are a good way to practice and apply the Solidity skills you have acquired.
+- [Ethernaut](https://ethernaut.openzeppelin.com/)：通过解决谜题学习
+- [Damn Vulnerable DeFi](https://www.damnvulnerabledefi.xyz)：DVD 是一系列智能合约挑战，包含有漏洞的合约，你应该能够破解它。这些挑战是练习和应用你已掌握的 Solidity 技能的好方法。
 
-## Best practices/patterns
+## 最佳实践/模式
 
-- [DeFi developer roadmap](https://github.com/OffcierCia/DeFi-Developer-Road-Map)
-- [RareSkills Book of Gas Optimization](https://www.rareskills.io/post/gas-optimization)
+- [DeFi 开发者路线图](https://github.com/OffcierCia/DeFi-Developer-Road-Map)
+- [RareSkills Gas 优化手册](https://www.rareskills.io/post/gas-optimization)
 
-## Testing
+## 测试
 
-- [Echidna](https://github.com/crytic/echidna) : fuzz testing
-- [Slither](https://github.com/crytic/slither) : static analysis for vulnerability detection
-- [solidity-coverage](https://github.com/sc-forks/solidity-coverage/tree/master) : code coverage for Solidity testing
+- [Echidna](https://github.com/crytic/echidna)：模糊测试
+- [Slither](https://github.com/crytic/slither)：漏洞检测静态分析
+- [solidity-coverage](https://github.com/sc-forks/solidity-coverage/tree/master)：Solidity 测试代码覆盖率
 
-## Smart contract archives
+## 智能合约存档
 
-- [Smart contract sanctuary](https://github.com/tintinweb/smart-contract-sanctuary) - contracts verified on Etherscan
-- [EVM function signature database](https://www.4byte.directory/)
+- [智能合约保护区](https://github.com/tintinweb/smart-contract-sanctuary) - 在 Etherscan 上验证的合约
+- [EVM 函数签名数据库](https://www.4byte.directory/)

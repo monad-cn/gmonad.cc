@@ -1,24 +1,24 @@
-# EVM Behavior
+# EVM 行为
 
 URL: https://docs.monad.xyz/guides/evm-resources/evm-behavior
 
-## EVM Behavioral Specification
+## EVM 行为规范
 
-- [Notes on the EVM](https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md) : straightforward technical specification of the EVM plus some behavioral examples
-- [EVM: From Solidity to bytecode, memory and storage](https://www.youtube.com/watch?v=RxL_1AfV7N4) : a 90-minute talk from Peter Robinson and David Hyland-Wood
-- [EVM illustrated](https://takenobu-hs.github.io/downloads/ethereum_evm_illustrated.pdf) : an excellent set of diagrams for confirming your mental model
-- [EVM Deep Dives: The Path to Shadowy Super-Coder](https://noxx.substack.com/p/evm-deep-dives-the-path-to-shadowy)
+- [EVM 注释](https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md)：EVM 的直接技术规范以及一些行为示例
+- [EVM：从 Solidity 到字节码、内存和存储](https://www.youtube.com/watch?v=RxL_1AfV7N4)：Peter Robinson 和 David Hyland-Wood 的 90 分钟讲座
+- [EVM 图解](https://takenobu-hs.github.io/downloads/ethereum_evm_illustrated.pdf)：一套优秀的图表，用于确认你的心理模型
+- [EVM 深度解析：通往影子超级程序员的道路](https://noxx.substack.com/p/evm-deep-dives-the-path-to-shadowy)
 
-## Opcode Reference
+## 操作码参考
 
-note
-Opcode pricing on Monad has been changed to reflect their relative costs in execution, learn more about it [here](/developer-essentials/opcode-pricing)
+注意提示  
+Monad 上的操作码定价已更改，以反映其在执行中的相对成本，在[此处](/developer-essentials/opcode-pricing)了解更多信息
 
-[evm.codes](https://www.evm.codes/) : opcode reference and an interactive sandbox for stepping through bytecode execution
+[evm.codes](https://www.evm.codes/)：操作码参考和用于逐步执行字节码的交互式沙盒
 
-## Solidity Storage Layout
+## Solidity 存储布局
 
-The EVM allows smart contracts to store data in 32-byte words ("storage slots"), however the details of how complex datastructures such as lists or mappings is left as an implementation detail to the higher-level language. Solidity has a specific way of assigning variables to storage slots, described below:
+EVM 允许智能合约将数据存储在 32 字节字（"存储插槽"）中，但是复杂数据结构（如列表或映射）的详细信息留给高级语言作为实现细节。Solidity 有一种将变量分配给存储插槽的特定方式，如下所述：
 
-- [Official docs on storage layout](https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html)
-- [Storage patterns in Solidity](https://programtheblockchain.com/posts/2018/03/09/understanding-ethereum-smart-contract-storage/)
+- [存储布局官方文档](https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html)
+- [Solidity 中的存储模式](https://programtheblockchain.com/posts/2018/03/09/understanding-ethereum-smart-contract-storage/)

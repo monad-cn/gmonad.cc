@@ -1,5 +1,5 @@
 # Huff
 
-[Huff](https://docs.huff.sh/) is most closely described as EVM assembly. Unlike Yul, Huff does not provide control flow constructs or abstract away the inner working of the program stack. Only the most upmost performance sensitive applications take advantage of Huff, however it is a great educational tool to learn how the EVM interprets instructions its lowest level.
+[Huff](https://docs.huff.sh/) 最贴切地描述为 EVM 汇编。与 Yul 不同，Huff 不提供控制流构造或抽象出程序栈的内部工作。只有最注重性能的应用才会利用 Huff，但它是学习 EVM 如何在最低级别解释指令的绝佳教育工具。
 
-- [Huff resources](https://docs.huff.sh/resources/overview/) provides additional resources
+- [Huff 资源](https://docs.huff.sh/resources/overview/) 提供了额外的资源

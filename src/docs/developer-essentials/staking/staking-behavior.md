@@ -44,7 +44,7 @@ Monad 节点分为共识和执行组件。验证者集合由执行组件维护�
 
 考虑下面的时间线，它跨越数十万个[轮次](https://docs.monad.xyz/monad-arch/consensus/monad-bft#round)（MonadBFT 中每轮次为 400 毫秒）：
 
-![显示边界区块在时期内放置的时间线](https://docs.monad.xyz/assets/images/staking-timeline-d66f162b241ec5402250e8bca4777e80.png)
+![显示边界区块在时期内放置的时间线](https://docs.monad.xyzhttps://docs.monad.xyz/assets/images/staking-timeline-d66f162b241ec5402250e8bca4777e80.png)
 
 **A. 时期（Epoch）**：验证者集合保持不变的轮次范围。
 

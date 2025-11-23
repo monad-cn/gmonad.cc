@@ -116,7 +116,7 @@ export const docsCategories: DocCategory[] = [
     collapsed: false,
     docs: [
       { slug: 'guides/build-dapp', title: '使用 Scaffold-ETH 构建基础 dApp' },
-      { slug: 'guides/build-blink', title: '构建捐赠闪链' },
+      { slug: 'guides/build-blink', title: '构建 blink' },
       { slug: 'guides/connect-wallet', title: '使用 Reown AppKit 连接钱包到应用' },
       { slug: 'guides/build-mcp', title: '构建与 Monad 测试网交互的 MCP 服务器' },
       { slug: 'guides/use-deep-links-in-a-mobile-app', title: '在移动应用中使用深度链接' },
