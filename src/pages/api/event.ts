@@ -69,6 +69,29 @@ export interface Event {
   registration_deadline: string;
 }
 
+export interface EventWithDetails extends Event {
+  publish_status?: number;
+  status?: number;
+  agenda?: {
+    time: string;
+    title: string;
+    description: string;
+    speaker: string;
+  }[];
+  requirements?: string[];
+  benefits?: string[];
+  organizer?: {
+    name: string;
+    title: string;
+    company: string;
+    avatar: string;
+    bio: string;
+    email: string;
+    twitter: string;
+  };
+  max_participants?: number;
+}
+
 // 分页返回数据结构
 export interface PaginatedEventData {
   events: Event[];
