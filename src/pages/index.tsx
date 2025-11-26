@@ -214,25 +214,25 @@ export default function Home() {
       title: '开发文档',
       description: '完整的API文档和开发指南',
       icon: <BookOpen className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://docs.monad.xyz/',
     },
     {
       title: '代码示例',
       description: '丰富的智能合约示例代码',
       icon: <Code className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://docs.monad.xyz/guides/',
     },
     {
       title: '开发工具',
       description: '专业的开发工具和SDK',
       icon: <Cpu className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://developers.monad.xyz/#quick-start',
     },
     {
       title: '测试网络',
       description: '免费的测试网络环境',
       icon: <Globe className={styles.resourceIcon} />,
-      link: '#',
+      link: '/testnet',
     },
   ];
 
@@ -643,7 +643,18 @@ export default function Home() {
           </div>
           <div className={styles.resourcesGrid}>
             {resources.map((resource, index) => (
-              <div key={`resource-${index}`} className={styles.resourceCard}>
+              <div
+                key={`resource-${index}`}
+                className={styles.resourceCard}
+                onClick={() => {
+                  if (resource.link.startsWith('http')) {
+                    window.open(resource.link, '_blank');
+                  } else {
+                    router.push(resource.link);
+                  }
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles.resourceCardGlow}></div>
                 <div className={styles.resourceCardHeader}>
                   <div className={styles.resourceIconWrapper}>
