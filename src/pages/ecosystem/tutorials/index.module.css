@@ -130,9 +130,14 @@
   gap: 1.5rem;
 }
 
+.tutorialWrapper {
+  position: relative;
+}
+
 .tutorialLink {
   text-decoration: none;
   color: inherit;
+  display: block;
 }
 
 .tutorialCard {
@@ -262,6 +267,38 @@
   font-size: 0.75rem !important;
   font-weight: 600 !important;
   white-space: nowrap;
+}
+
+.cardActions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tutorialWrapper:hover .cardActions {
+  opacity: 1;
+}
+
+.deleteBtn {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+}
+
+.deleteBtn:hover {
+  background: #fff !important;
+  transform: scale(1.05) !important;
 }
 
 .emptyState {

@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Input, Select, Card, Tag, Empty, Spin, Image, Pagination } from 'antd';
-import { Search, BookOpen,   Filter, Plus } from 'lucide-react';
+import { Input, Select, Card, Tag, Empty, Spin, Image, Pagination, Button, Popconfirm, App as AntdApp } from 'antd';
+import { Search, BookOpen, Filter, Plus, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import styles from './index.module.css';
-import { getTutorials } from '@/pages/api/tutorial';
+import { getTutorials, deleteTutorial } from '@/pages/api/tutorial';
 import { useAuth } from '@/contexts/AuthContext';
 
 const { Option } = Select;
 
 export default function TutorialsPage() {
+  const { message } = AntdApp.useApp();
   const [tutorials, setTutorials] = useState<any[]>([]);
   // const [selectedCategory, setSelectedCategory] = useState('all');
   // const [selectedDifficulty, setSelectedDifficulty] = useState('all');
@@ -92,6 +93,20 @@ export default function TutorialsPage() {
     },
     [debouncedSearchKeyword, sortOrder, currentPage, pageSize]
   );
+
+  const handleDeleteTutorial = async (id: number) => {
+    try {
+      const result = await deleteTutorial(id);
+      if (result.success) {
+        message.success('教程删除成功！');
+        fetchData(publishStatus);
+      } else {
+        message.error('删除出错');
+      }
+    } catch (error) {
+      message.error('删除失败，请重试');
+    }
+  };
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -191,52 +206,72 @@ export default function TutorialsPage() {
         ) : tutorials.length > 0 ? (
           <div className={styles.tutorialGrid}>
             {tutorials.map((tutorial) => (
-              <Link
-                key={tutorial.ID}
-                href={`/ecosystem/tutorials/${tutorial.ID}`}
-                className={styles.tutorialLink}
-              >
-                <Card
-                  hoverable
-                  className={styles.tutorialCard}
-                  cover={
-                    <div className={styles.cardImage}>
-                      <Image
-                        src={tutorial.cover_img || '/placeholder.svg'}
-                        alt={tutorial.title}
-                        className={styles.image}
-                        preview={false}
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                  }
+              <div key={tutorial.ID} className={styles.tutorialWrapper}>
+                <Link
+                  href={`/ecosystem/tutorials/${tutorial.ID}`}
+                  className={styles.tutorialLink}
                 >
-                  <div className={styles.cardContent}>
-                    <div className={styles.cardHeader}>
-                      <h3 className={styles.cardTitle}>{tutorial.title}</h3>
-                      <div className={styles.cardMeta}>
-                        <span className={styles.dappName}>
-                          {tutorial.dapp?.name}
-                        </span>
+                  <Card
+                    hoverable
+                    className={styles.tutorialCard}
+                    cover={
+                      <div className={styles.cardImage}>
+                        <Image
+                          src={tutorial.cover_img || '/placeholder.svg'}
+                          alt={tutorial.title}
+                          className={styles.image}
+                          preview={false}
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    }
+                  >
+                    <div className={styles.cardContent}>
+                      <div className={styles.cardHeader}>
+                        <h3 className={styles.cardTitle}>{tutorial.title}</h3>
+                        <div className={styles.cardMeta}>
+                          <span className={styles.dappName}>
+                            {tutorial.dapp?.name}
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className={styles.cardDescription}>
+                        {tutorial.description}
+                      </p>
+
+                      <div className={styles.cardFooter}>
+                        <div className={styles.tags}>
+                          {tutorial.tags?.slice(0, 2).map((tag: any) => (
+                            <Tag key={tag} className={styles.tag}>
+                              {tag}
+                            </Tag>
+                          ))}
+                        </div>
                       </div>
                     </div>
-
-                    <p className={styles.cardDescription}>
-                      {tutorial.description}
-                    </p>
-
-                    <div className={styles.cardFooter}>
-                      <div className={styles.tags}>
-                        {tutorial.tags?.slice(0, 2).map((tag: any) => (
-                          <Tag key={tag} className={styles.tag}>
-                            {tag}
-                          </Tag>
-                        ))}
-                      </div>
-                    </div>
+                  </Card>
+                </Link>
+                {status === 'authenticated' && permissions.includes('tutorial:delete') && (
+                  <div className={styles.cardActions}>
+                    <Popconfirm
+                      title="删除教程"
+                      description="你确定删除这个教程吗？"
+                      okText="是"
+                      cancelText="否"
+                      onConfirm={() => handleDeleteTutorial(tutorial.ID)}
+                    >
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        icon={<Trash2 size={16} />}
+                        className={styles.deleteBtn}
+                      />
+                    </Popconfirm>
                   </div>
-                </Card>
-              </Link>
+                )}
+              </div>
             ))}
           </div>
         ) : (
