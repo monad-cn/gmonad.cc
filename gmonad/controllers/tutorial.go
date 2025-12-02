@@ -128,17 +128,17 @@ func DeleteTutorial(c *gin.Context) {
 		return
 	}
 
-	uid, ok := c.Get("uid")
-	if !ok {
-		utils.ErrorResponse(c, http.StatusUnauthorized, "unauthorized", nil)
-		return
-	}
+	// uid, ok := c.Get("uid")
+	// if !ok {
+	// 	utils.ErrorResponse(c, http.StatusUnauthorized, "unauthorized", nil)
+	// 	return
+	// }
 
-	userId, _ := uid.(uint)
-	if tutorial.PublisherId != userId {
-		utils.ErrorResponse(c, http.StatusUnauthorized, "not author", nil)
-		return
-	}
+	// userId, _ := uid.(uint)
+	// if tutorial.PublisherId != userId {
+	// 	utils.ErrorResponse(c, http.StatusUnauthorized, "not author", nil)
+	// 	return
+	// }
 
 	if err := tutorial.Delete(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to delete tutorial", nil)
