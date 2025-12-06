@@ -8,8 +8,6 @@ import {
   Popconfirm,
   Modal,
   Image,
-  Row,
-  Col,
   App as AntdApp,
 } from 'antd';
 import dayjs from 'dayjs';
@@ -22,47 +20,42 @@ import {
   Share2,
   LayoutGrid,
   List,
-  BookOpenText,
-  Languages,
-  TypeOutline,
   Eye,
+  UserRound,
 } from 'lucide-react';
-import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { getEvents, deleteEvent } from '../api/event';
+
 import router from 'next/router';
-import { useSession } from 'next-auth/react';
-import { getBlogs } from '../api/blog';
+import { useAuth } from '@/contexts/AuthContext';
+import { getBlogs,deleteBlog } from '../api/blog';
 
 const { Search: AntSearch } = Input;
 
 type ViewMode = 'grid' | 'list';
 
 export function formatTime(isoTime: string): string {
-  return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
+  return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
 }
 
 export default function BlogsPage() {
-  const [viewMode, setViewMode] = useState<ViewMode>('grid'); // 视图模式
-  const [currentPage, setCurrentPage] = useState(1); // 当前页码
-  const [pageSize, setPageSize] = useState(6); // 每页条数
-  const [blogs, setBlogs] = useState<any[]>([]); // 博客列表
-  const [total, setTotal] = useState(0); // 总条数
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState(''); // 搜索关键词
-  const [selectedTag, setSelectedTag] = useState(''); // 标签
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc'); // 排序方式
-  const [wechatModalVisible, setWechatModalVisible] = useState(false); // 微信二维码弹窗
-  const [publishStatus, setPublishStatus] = useState(2); // 发布状态
-  const [readyToLoad, setReadyToLoad] = useState(false); // 是否加载
-  const { data: session, status } = useSession(); // 用户会话
-  const permissions = session?.user?.permissions || []; // 权限
-  const { message } = AntdApp.useApp();
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [wechatModalVisible, setWechatModalVisible] = useState(false);
+  const [publishStatus, setPublishStatus] = useState(2);
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
-  // 新增筛选状态
-  const [locationKeyword, setLocationKeyword] = useState(''); // 地点
-  const [blogModeFilter, setEventModeFilter] = useState(''); // 博客类型
+  const permissions = session?.user?.permissions || [];
+
+  const { message } = AntdApp.useApp();
 
   // 加载博客列表
   const loadBlogs = async (params?: {
@@ -71,66 +64,21 @@ export default function BlogsPage() {
     order?: 'asc' | 'desc';
     page?: number;
     page_size?: number;
+    publish_status?: number;
   }) => {
     try {
       setLoading(true);
 
       const queryParams = {
-        keyword: params?.keyword || searchKeyword,
-        tag: params?.tag || selectedTag,
-        order: params?.order || sortOrder,
-        page: params?.page || currentPage,
-        page_size: params?.page_size || pageSize,
+        keyword: params?.keyword ?? searchKeyword,
+        tag: params?.tag ?? selectedTag,
+        order: params?.order ?? sortOrder,
+        page: params?.page ?? currentPage,
+        page_size: params?.page_size ?? pageSize,
+        publish_status: params?.publish_status ?? publishStatus,
       };
 
-      // const result = await getBlogs(queryParams);
-      const result = {
-        success: true,
-        message: 'success',
-        data: {
-          blogs: [
-            {
-              ID: 1,
-              CreatedAt: '2025-06-24T02:04:51.570294+08:00',
-              UpdatedAt: '2025-06-24T02:04:51.570294+08:00',
-              DeletedAt: null,
-              title: 'Monad vs Rollups',
-              description:
-                'Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,0',
-              content:
-                '<p><span style="background-color: rgb(255, 255, 255); color: rgb(31, 35, 40);">Monad 是一个兼容以太坊的高性能 L1 区块链，旨在解决传统区块链的性能瓶颈，其设计目标是实现每秒可 处理 10,000 笔交易（TPS）的吞吐量，并在 1 秒内生成新的区块，提供单时隙最终性。</span></p>',
-              source_link: 'https://www.monad.xyz/post/monad-vs-rollups',
-              cover_img:
-                'https://res.cloudinary.com/gmonad/image/upload/v1750701711/monad_img/nu1t0aen0gxi2ak8msor.jpg',
-              tags: ['Rolluos', 'Monad', '并行执行'],
-              category: 'blog',
-              author: '小符',
-              translator: '',
-              publisher_id: 2,
-              publisher: {
-                ID: 2,
-                CreatedAt: '2025-06-21T20:40:55.271972+08:00',
-                UpdatedAt: '2025-06-24T19:44:20.010582+08:00',
-                DeletedAt: null,
-                email: 'smallfu666@gmail.com',
-                username: 'Phoouze',
-                avatar:
-                  'https://file-cdn.openbuild.xyz/users/36689/avatar/7012805-958944400.jpg',
-                github: 'phoouze',
-                events: null,
-                articles: null,
-              },
-              publish_time: null,
-              publish_status: 1,
-            },
-          ],
-          guides: null,
-          page: 1,
-          page_size: 6,
-          total: 1,
-        },
-      };
-
+      const result = await getBlogs(queryParams);
       if (result.success && result.data) {
         // 处理后端返回的数据结构
         if (result.data.blogs && Array.isArray(result.data.blogs)) {
@@ -183,10 +131,10 @@ export default function BlogsPage() {
 
   const currentBlogs = blogs; // 服务端已经处理了分页
 
-  const handleDeleteEvent = async (id: number) => {
+  const handleDeleteBlog = async (id: number) => {
     // 调用创建博客接口
     try {
-      const result = await deleteEvent(id);
+      const result = await deleteBlog(id);
       if (result.success) {
         message.success(result.message);
         loadBlogs();
@@ -198,17 +146,28 @@ export default function BlogsPage() {
     }
   };
 
+  const handleSwitchViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    setCurrentPage(1);
+  };
+
   useEffect(() => {
-    loadBlogs();
-  }, [status, searchKeyword]);
+    if (status === 'loading') return; // 等待认证状态确定
+    const newPublishStatus =
+      status === 'authenticated' && permissions.includes('blog:review') ? 0 : 2;
+    setPublishStatus(newPublishStatus);
+
+    // 直接调用 loadBlogs，避免 publishStatus 状态更新延迟
+    loadBlogs({ publish_status: newPublishStatus });
+  }, [status, permissions.length]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Title Section */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.titleSection}>
-            <h1 className={styles.title}>社区博客</h1>
+            <h1 className={styles.title}>博客</h1>
             <p className={styles.subtitle}>写下所思所感，遇见共鸣之人</p>
           </div>
           {status === 'authenticated' && permissions.includes('blog:write') ? (
@@ -242,21 +201,30 @@ export default function BlogsPage() {
         <div className={styles.viewModeToggle}>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'grid' ? styles.active : ''}`}
-            onClick={() => setViewMode('grid')}
+            onClick={() => handleSwitchViewMode('grid')}
           >
             <LayoutGrid className={styles.viewModeIcon} />
             卡片视图
           </button>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'list' ? styles.active : ''}`}
-            onClick={() => setViewMode('list')}
+            onClick={() => handleSwitchViewMode('list')}
           >
             <List className={styles.viewModeIcon} />
             列表视图
           </button>
         </div>
         <div className={styles.resultsInfo}>
-          显示 {startIndex}-{endIndex} 项，共 {total} 项
+          <Pagination
+            current={currentPage}
+            total={total}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) =>
+              `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
+            }
+            className={styles.fullPagination}
+          />
         </div>
       </div>
 
@@ -270,11 +238,11 @@ export default function BlogsPage() {
           <div className={styles.emptyIcon}>📖</div>
           <div className={styles.emptyTitle}>暂无博客</div>
           <div className={styles.emptyDescription}>
-            {searchKeyword || selectedTag || locationKeyword || blogModeFilter
+            {searchKeyword || selectedTag
               ? '没有找到符合条件的博客'
               : '还没有创建任何博客'}
           </div>
-          {!searchKeyword && !selectedTag && !blogModeFilter && (
+          {!searchKeyword && !selectedTag && (
             <Link href="/blogs/new" className={styles.createButton}>
               <Plus className={styles.buttonIcon} />
               创建第一个博客
@@ -307,18 +275,9 @@ export default function BlogsPage() {
                         <Tag className={styles.noPublishStatus}>待审核</Tag>
                       )}
                       <div className={styles.cardActions}>
-                        <Button
-                          className={styles.actionIconButton}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            router.push(`/blogs/${blog.ID}/edit`);
-                          }}
-                          icon={<Edit className={styles.actionIcon} />}
-                          title="编辑活动"
-                        />
-
-                        {/* {status === 'authenticated' &&
-                        blog.publisher_id.toString() === session.user?.uid ? (
+                        {/* 只有博客作者才可以编辑 */}
+                        {status === 'authenticated' &&
+                        blog.publisher_id.toString() === session?.user?.uid ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
@@ -329,6 +288,7 @@ export default function BlogsPage() {
                             title="编辑活动"
                           />
                         ) : null}
+
                         <Button
                           className={styles.actionIconButton}
                           onClick={(e) => {
@@ -340,7 +300,7 @@ export default function BlogsPage() {
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享博客"
-                        /> */}
+                        />
                       </div>
                     </div>
                   </div>
@@ -361,6 +321,7 @@ export default function BlogsPage() {
                         height={32}
                         preview={false}
                         className={styles.avatar}
+                        referrerPolicy="no-referrer"
                       />
                       <div className={styles.authorText}>
                         <span className={styles.authorName}>
@@ -392,8 +353,8 @@ export default function BlogsPage() {
           <div className={styles.blogsList}>
             <div className={styles.listHeader}>
               <div className={styles.listHeaderCell}>博客信息</div>
+              <div className={styles.listHeaderCell}>作者</div>
               <div className={styles.listHeaderCell}>时间</div>
-              <div className={styles.listHeaderCell}>发布者</div>
               <div className={styles.listHeaderCell}>浏览量</div>
               <div className={styles.listHeaderCell}>状态</div>
               <div className={styles.listHeaderCell}>操作</div>
@@ -412,7 +373,12 @@ export default function BlogsPage() {
                     {blog.featured && (
                       <Star className={styles.listFeaturedIcon} />
                     )}
-                    <p className={styles.listEventDescription}>{blog.desc}</p>
+                  </div>
+                </div>
+                <div className={styles.listCell}>
+                  <div className={styles.publisherInfo}>
+                    <UserRound className={styles.listIcon} />
+                    <span>{blog.author}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -421,16 +387,6 @@ export default function BlogsPage() {
                       <Calendar className={styles.listIcon} />
                       <span>{formatTime(blog.start_time)}</span>
                     </div>
-                    {/* {blog.end_time && (
-                      <div className={styles.time}>
-                        至 {formatTime(blog.end_time)}
-                      </div>
-                    )} */}
-                  </div>
-                </div>
-                <div className={styles.listCell}>
-                  <div className={styles.publisherInfo}>
-                    <span>{blog.publisher.username}</span>
                   </div>
                 </div>
                 <div className={styles.listCell}>
@@ -454,14 +410,9 @@ export default function BlogsPage() {
 
                 <div className={styles.listCell}>
                   <div className={styles.listActions}>
-                    {/* <Button
-                      type="text"
-                      size="small"
-                      icon={<Eye className={styles.listActionIcon} />}
-                      title="查看详情"
-                    /> */}
+                    {/* 只有博客发布者才可以编辑 */}
                     {status === 'authenticated' &&
-                    permissions.includes('blog:write') ? (
+                    blog.publisher_id.toString() === session?.user?.uid ? (
                       <Button
                         type="text"
                         size="small"
@@ -483,14 +434,15 @@ export default function BlogsPage() {
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
+                    {/* 只有博客发布者才可以删除*/}
                     {status === 'authenticated' &&
-                    permissions.includes('blog:delete') ? (
+                    blog.publisher_id?.toString() === session?.user?.uid ? (
                       <Popconfirm
                         title="删除博客"
                         description="你确定删除这个博客吗？"
                         okText="是"
                         cancelText="否"
-                        onConfirm={() => handleDeleteEvent(blog.ID)}
+                        onConfirm={() => handleDeleteBlog(blog.ID)}
                       >
                         <Button
                           type="text"
@@ -516,7 +468,7 @@ export default function BlogsPage() {
             total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
-            showQuickJumper={true}
+            // showQuickJumper={true}
             showTotal={(total, range) =>
               `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
             }

@@ -1,12 +1,13 @@
 .container {
   min-height: 100vh;
-  background-color: #f9fafb;
-  padding: 3rem 1rem;
+  padding: 0rem 1rem;
+  padding-top: 6.5rem;
+  background: linear-gradient(to bottom right, #faf5ff, #e1dbfe);
 }
 
 .header {
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 3rem auto 3rem;
 }
 
 .headerContent {
@@ -18,8 +19,8 @@
 
 .titleSection {
   max-width: 1200px;
-  margin: 0 auto;
   margin-bottom: 2rem;
+  text-align: left;
 }
 
 .titleHeader {
@@ -53,7 +54,7 @@
   font-size: 1.125rem;
   color: #6b7280;
   max-width: 32rem;
-  margin: 0 auto;
+  margin: 0;
   line-height: 1.6;
 }
 
@@ -66,7 +67,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #8b5cf6;
+  background-color: #6366f1;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -79,9 +80,9 @@
 }
 
 .createButton:hover {
-  background-color: #7c3aed;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
   color: white;
 }
 
@@ -100,7 +101,7 @@
 
 .settingsButton:hover {
   background-color: #f9fafb;
-  border-color: #8b5cf6;
+  border-color: #6366f1;
   transform: translateY(-1px);
 }
 
@@ -116,6 +117,16 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+
+.draftTableSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.draftTableSection h3 {
+  padding-left: 0.5rem;
 }
 
 /* Search Section */
@@ -214,7 +225,7 @@
 }
 
 .viewModeButton.active {
-  background-color: #8b5cf6;
+  background-color: #6366f1;
   color: white;
 }
 
@@ -260,11 +271,6 @@
 .resultsInfo {
   font-size: 0.875rem;
   color: #6b7280;
-}
-
-.resultInfo {
-  font-size: 0.875rem;
-  color: #666;
 }
 
 /* Loading */
@@ -388,13 +394,13 @@
 }
 
 /* 为单个卡片设置最大宽度，避免过宽 */
-.grid>* {
+.grid > * {
   max-width: 600px;
   margin: 0 auto;
 }
 
 /* 当有多个卡片时，移除最大宽度限制 */
-.grid:has(> :nth-child(2))>* {
+.grid:has(> :nth-child(2)) > * {
   max-width: none;
   margin: 0;
 }
@@ -466,13 +472,15 @@
 }
 
 .actionIconButton:hover .actionIcon {
-  color: #8b5cf6;
+  color: #6366f1;
 }
 
 .eventCard {
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: 1px solid #f1f5f9 !important;
   background: white !important;
@@ -480,9 +488,9 @@
 }
 
 .eventCard:hover {
-  transform: translateY(-8px) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  border-color: #e2e8f0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .eventCard .ant-card-body {
@@ -496,12 +504,12 @@
   margin: 0 !important;
 }
 
-.eventCard .ant-card-actions>li {
+.eventCard .ant-card-actions > li {
   margin: 0 !important;
   padding: 0 0.25rem !important;
 }
 
-.eventCard .ant-card-actions>li:not(:last-child) {
+.eventCard .ant-card-actions > li:not(:last-child) {
   border-right: none !important;
 }
 
@@ -517,11 +525,40 @@
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: block !important;
+}
+
+/* 强化覆盖 Ant Design Image 组件的所有可能元素 */
+.coverImage img,
+.coverImage :global(.ant-image),
+.coverImage :global(.ant-image-img),
+.coverImage :global(.ant-image-preview-img) {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
+/* 确保容器内的任何图片元素都完全填充 */
+.cardCover img {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 384px !important;
+  min-height: 200px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
 }
 
 .eventCard:hover .coverImage {
   transform: scale(1.08) !important;
+  transition: all 0.6s;
 }
 
 .coverOverlay {
@@ -606,6 +643,9 @@
   overflow: hidden !important;
   flex: 1;
   margin-right: 0.75rem;
+  /* 固定高度确保统一 */
+  height: 3.5rem; /* 1.25rem * 1.4 * 2 = 3.5rem (两行高度) */
+  min-height: 3.5rem;
 }
 
 .menuButton {
@@ -668,7 +708,7 @@
 .metaIcon {
   width: 1rem;
   height: 1rem;
-  color: #8b5cf6;
+  color: #6366f1;
   flex-shrink: 0;
 }
 
@@ -745,7 +785,7 @@
 /* Action Buttons */
 .primaryAction {
   flex: 1 !important;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  background: linear-gradient(135deg, #6366f1 0%, #6e54ff 100%) !important;
   border: none !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
@@ -755,7 +795,7 @@
 }
 
 .primaryAction:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  background: linear-gradient(135deg, #6e54ff 0%, #4338ca 100%) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3) !important;
   color: white !important;
@@ -775,8 +815,8 @@
 
 .secondaryAction:hover {
   background: #f8fafc !important;
-  border-color: #8b5cf6 !important;
-  color: #8b5cf6 !important;
+  border-color: #6366f1 !important;
+  color: #6366f1 !important;
   transform: translateY(-1px) !important;
 }
 
@@ -845,7 +885,7 @@
 .listLink {
   display: block;
   padding: 0.75rem 1rem;
-  color: #8b5cf6;
+  color: #6366f1;
   text-decoration: none;
   align-items: center;
   border-left: 3px solid transparent;
@@ -853,7 +893,7 @@
 }
 
 .listLink:hover {
-  color: #8b5cf6;
+  color: #6366f1;
   font-weight: bold;
 }
 
@@ -875,12 +915,11 @@
 
 .listBottomControls {
   max-width: 1200px;
-  margin: 0 auto;
-  margin-bottom: 2rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 1rem 0.5rem 0 0.5rem;
+  margin: 0 auto;
+  padding: 1rem 0.5rem 2rem 0.5rem;
   border-top: 1px solid #f3f4f6;
 }
 
@@ -946,9 +985,9 @@
 }
 
 .nameColumn {
-  width: 400px; 
-  min-width: 300px; 
-  max-width: 500px; 
+  width: 400px;
+  min-width: 300px;
+  max-width: 500px;
   flex-grow: 1;
 }
 
@@ -1193,7 +1232,7 @@
 .statIconSvg {
   width: 1.5rem;
   height: 1.5rem;
-  color: #8b5cf6;
+  color: #6366f1;
 }
 
 .statInfo {
@@ -1215,7 +1254,6 @@
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-
   .listHeader,
   .listRow {
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1242,6 +1280,7 @@
 @media (max-width: 768px) {
   .container {
     padding: 2rem 1rem;
+    padding-top: 4.5rem; /* 移动端调整 */
   }
 
   .titleHeader {
@@ -1340,6 +1379,10 @@
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding-top: 4rem; /* 小屏幕调整 */
+  }
+
   .cardBody {
     padding: 1rem !important;
   }
@@ -1379,7 +1422,6 @@
   }
 }
 
-
 /* New styles for header right actions and social links */
 .headerRightActions {
   display: flex;
@@ -1418,15 +1460,14 @@
 }
 
 .socialButton:hover {
-  background-color: #f7f7f7;
-  /* Lighter hover */
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+  background-color: #f3f4f6;
+  border-color: #374151;
+  color: #374151;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
-.socialIcon {}
+/* socialIcon styles inherited */
 
 .socialButtonText {
   line-height: 1;
@@ -1487,12 +1528,11 @@
   }
 
   .titleSection {
-    text-align: center;
+    text-align: left;
   }
 
   .subtitle {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
   }
 
   .createButton {

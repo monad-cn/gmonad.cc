@@ -24,7 +24,8 @@ import {
 import Link from 'next/link';
 import styles from './edit.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
 import { getBlogById, updateBlog } from '@/pages/api/blog';
@@ -57,8 +58,8 @@ export default function EditBlogPage() {
     return `${dateStr} ${timeStr}`;
   };
 
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  // 编辑器处理
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('content', value);
     },
@@ -81,7 +82,7 @@ export default function EditBlogPage() {
         content: values.content || '',
         source_link: values.source || '',
         category: 'blog',
-        cover_img: cloudinaryImg?.secure_url || '',
+        cover_img: cloudinaryImg?.secure_url || previewUrl, // 当用户未修改封面则使用详情返回的previewUrl
         tags: tags,
         author: values.author || '',
         translator: values.translator || '',
@@ -164,7 +165,7 @@ export default function EditBlogPage() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
@@ -220,9 +221,10 @@ export default function EditBlogPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入博客内容' }]}
               >
-                <QuillEditor
+                <VditorEditor
                   value={form.getFieldValue('content')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
+                  height={700}
                 />
               </Form.Item>
               <Form.Item
@@ -252,7 +254,7 @@ export default function EditBlogPage() {
                   name="author"
                   rules={[{ required: true, message: '请输入作者姓名' }]}
                 >
-                  <Input placeholder="请输入作者" maxLength={10} showCount />
+                  <Input placeholder="请输入作者" maxLength={20} showCount />
                 </Form.Item>
               </div>
 
@@ -260,7 +262,7 @@ export default function EditBlogPage() {
                 <Form.Item label="翻译" name="translator">
                   <Input
                     placeholder="请输入翻译人员（可选）"
-                    maxLength={10}
+                    maxLength={20}
                     showCount
                   />
                 </Form.Item>
@@ -348,9 +350,9 @@ export default function EditBlogPage() {
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
-          </Link>
+          </Button>
           <Button
             type="primary"
             htmlType="submit"

@@ -1,0 +1,307 @@
+import {marked, Token} from 'marked';
+import katex from 'katex';
+
+interface MarkedToken {
+  type: string;
+  text?: string;
+  depth?: number;
+  items?: MarkedToken[];
+  [key: string]: unknown;
+}
+
+type MathToken = Token & {
+  text: string;
+};
+
+export interface MarkdownParseOptions {
+  breaks?: boolean;
+  gfm?: boolean;
+  headerIds?: boolean;
+  mangle?: boolean;
+  pedantic?: boolean;
+  sanitize?: boolean;
+  silent?: boolean;
+  smartLists?: boolean;
+  smartypants?: boolean;
+  xhtml?: boolean;
+}
+
+export const defaultOptions: MarkdownParseOptions = {
+  breaks: true,
+  gfm: true,
+  headerIds: true,
+  mangle: false,
+  pedantic: false,
+  sanitize: false,
+  silent: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false,
+};
+
+// 1. 自定义换行扩展【默认换行有2个/n标识，解析器会识别到，只有3个以上多行换行才会被合并，因此正则影爱匹配3个以上/n】
+const customLineBreakExtension = {
+  name: 'customLineBreak',
+  level: 'block',
+  start(src: string) {
+    // 寻找任意连续两个或以上换行符的位置
+    return src.match(/\n{3,}/)?.index;
+  },
+  tokenizer(src: string) {
+    // 正则表达式：匹配行首的 2 个或更多换行符
+    const rule = /^\n{3,}/;
+    const match = rule.exec(src);
+
+    if (match) {
+      // 如果匹配成功
+      return {
+        type: 'customLineBreak', // 自定义 token 类型
+        raw: match[0],           // 原始匹配文本，例如 "\n\n" 或 "\n\n\n"
+      };
+    }
+  },
+  renderer(token: Token) {
+    // 1. 获取原始文本中换行符的数量
+    const newlineCount = (token.raw.match(/\n/g) || []).length;
+
+    // 2. 计算需要生成多少个 <p> 标签
+    const pTagCount = newlineCount - 2;
+
+    // 3. 如果需要生成的标签数量大于0，就生成它们
+    if (pTagCount > 0) {
+      const pTag = '<p class="extra-break"></p>\n';
+      return pTag.repeat(pTagCount);
+    }
+
+    return '';
+  }
+};
+
+// 2. 数学公式扩展 - 行内公式 $...$
+const inlineMathExtension = {
+  name: 'inlineMath',
+  level: 'inline',
+  start(src: string) {
+    return src.match(/\$/)?.index;
+  },
+  tokenizer(src: string) {
+    const rule = /^\$([^$\n]+?)\$/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'inlineMath',
+        raw: match[0],
+        text: match[1]
+      };
+    }
+  },
+  renderer(token: Token) {
+    try {
+      const mathToken = token as MathToken;
+      const html = katex.renderToString(mathToken.text || '', {
+        displayMode: false,
+        throwOnError: false,
+        strict: false
+      });
+      return html;
+    } catch (error) {
+      console.error('KaTeX inline math rendering error:', error);
+      return `<code class="katex-error">${(token as MathToken).text}</code>`;
+    }
+  }
+};
+
+// 3. 数学公式扩展 - 块级公式 $$...$$
+const blockMathExtension = {
+  name: 'blockMath',
+  level: 'block',
+  start(src: string) {
+    return src.match(/\$\$/)?.index;
+  },
+  tokenizer(src: string) {
+    const rule = /^\$\$([\s\S]*?)\$\$/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'blockMath',
+        raw: match[0],
+        text: match[1].trim()
+      };
+    }
+  },
+  renderer(token: Token) {
+    try {
+      const mathToken = token as MathToken;
+      const html = katex.renderToString(mathToken.text || '', {
+        displayMode: true,
+        throwOnError: false,
+        strict: false
+      });
+      return `<div class="katex-display">${html}</div>\n`;
+    } catch (error) {
+      console.error('KaTeX block math rendering error:', error);
+      return `<pre class="katex-error">${(token as MathToken).text}</pre>\n`;
+    }
+  }
+};
+
+marked.use({ extensions: [customLineBreakExtension, inlineMathExtension, blockMathExtension] });
+
+export async function parseMarkdown(content: string, options: MarkdownParseOptions = {}): Promise<string> {
+  const config = { ...defaultOptions, ...options };
+
+  marked.setOptions(config);
+
+  // 处理相对路径的图片引用，转换为 API 路由
+  const processedContent = content.replace(
+    /!\[([^\]]*)\]\((\.\/)?images\/([^)]+)\)/g,
+    '![$1](/api/docs/images/$3)'
+  );
+
+  return await marked(processedContent);
+}
+
+export function parseMarkdownToTokens(content: string): MarkedToken[] {
+  return marked.lexer(content) as MarkedToken[];
+}
+
+export function extractHeadings(content: string): Array<{ level: number; text: string; id?: string }> {
+  const tokens = parseMarkdownToTokens(content);
+  const headings: Array<{ level: number; text: string; id?: string }> = [];
+  const idCounts = new Map<string, number>();
+
+  tokens.forEach(token => {
+    if (token.type === 'heading' && token.text && token.depth) {
+      // 清理标题文本中的 HTML 标签和 markdown 语法
+      let cleanText = token.text.replace(/<[^>]*>/g, '').trim();
+      // 移除 markdown 粗体/斜体语法
+      cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '$1'); // **粗体**
+      cleanText = cleanText.replace(/\*(.*?)\*/g, '$1');     // *斜体*
+      cleanText = cleanText.replace(/__(.*?)__/g, '$1');     // __粗体__
+      cleanText = cleanText.replace(/_(.*?)_/g, '$1');       // _斜体_
+      // 移除代码块语法
+      cleanText = cleanText.replace(/`(.*?)`/g, '$1');       // `代码`
+      // 移除其他可能的特殊字符
+      cleanText = cleanText.replace(/&#x20;/g, ' ').trim();  // HTML 实体
+
+      // 使用与 marked 相同的 ID 生成逻辑
+      let baseId = cleanText
+        .toLowerCase()
+        .trim()
+        .replace(/[\s]+/g, '-')        // 空格替换为连字符
+        .replace(/[^\w\-\u4e00-\u9fa5]/g, ''); // 只保留字母、数字、连字符和中文字符
+
+      // 处理空 ID
+      if (!baseId) {
+        baseId = 'heading';
+      }
+
+      // 处理重复 ID (marked 的方式)
+      const count = idCounts.get(baseId) || 0;
+      idCounts.set(baseId, count + 1);
+
+      const finalId = count > 0 ? `${baseId}-${count}` : baseId;
+
+      headings.push({
+        level: token.depth,
+        text: cleanText,
+        id: finalId
+      });
+    }
+  });
+
+  return headings;
+}
+
+export function extractText(content: string): string {
+  const tokens = parseMarkdownToTokens(content);
+  let text = '';
+
+  const extractTokenText = (token: MarkedToken): string => {
+    let result = '';
+
+    switch (token.type) {
+      case 'text':
+        result = token.text || '';
+        break;
+      case 'paragraph':
+        result = token.text || '';
+        break;
+      case 'heading':
+        result = token.text || '';
+        break;
+      case 'code':
+        result = token.text || '';
+        break;
+      case 'codespan':
+        result = token.text || '';
+        break;
+      case 'list':
+        if ('items' in token && token.items) {
+          result = token.items.map((item: MarkedToken) => extractTokenText(item)).join(' ');
+        }
+        break;
+      case 'list_item':
+        if ('text' in token) {
+          result = token.text || '';
+        }
+        break;
+      case 'blockquote':
+        if ('text' in token) {
+          result = token.text || '';
+        }
+        break;
+      default:
+        if ('text' in token) {
+          result = token.text || '';
+        }
+    }
+
+    return result;
+  };
+
+  tokens.forEach(token => {
+    text += extractTokenText(token) + ' ';
+  });
+
+  return text.trim();
+}
+
+export function getTableOfContents(content: string): Array<{ level: number; text: string; id: string }> {
+  const headings = extractHeadings(content);
+  const toc: Array<{ level: number; text: string; id: string }> = [];
+
+  headings.forEach(heading => {
+    // 处理 2-4 级标题
+    if (heading.level >= 2 && heading.level <= 4) {
+      toc.push({
+        level: heading.level,
+        text: heading.text,
+        id: heading.id || ''
+      });
+    }
+  });
+
+  return toc;
+}
+
+export async function sanitizeMarkdown(content: string): Promise<string> {
+  // 处理从 API 返回的转义字符
+  // API 可能返回过度转义的 markdown（如 \$, \\, \_）
+  // 需要将它们还原为正常的 markdown 语法
+  let processedContent = content;
+
+  // 多次替换双反斜杠，直到没有变化（处理多层转义）
+  let prev;
+  do {
+    prev = processedContent;
+    processedContent = processedContent.replace(/\\\\/g, '\\');
+  } while (processedContent !== prev);
+
+  // 处理转义的美元符号和下划线
+  processedContent = processedContent
+    .replace(/\\\$/g, '$')    // \$ → $
+    .replace(/\\_/g, '_');    // \_ → _
+
+  return await parseMarkdown(processedContent, { sanitize: true });
+}

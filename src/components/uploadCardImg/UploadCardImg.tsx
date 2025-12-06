@@ -23,30 +23,42 @@ export default function UploadCardImg(props: {
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   const handleImageChange = async (info: any) => {
-    const { file, fileList } = info;
+    // const { file, fileList } = info;
+
+    // // 只处理上传完成的文件
+    // if (file.status === 'done') {
+    //   const latestFile = fileList[fileList.length - 1];
+    //   setCoverImage(latestFile);
+
+    //   if (latestFile.originFileObj) {
+    //     try {
+    //       setIsImageLoading(true);
+    //       const res = await uploadImgToCloud(latestFile.originFileObj);
+    //       if (res && res.secure_url) {
+    //         setCloudinaryImg(res);
+    //         setPreviewUrl(res.secure_url);
+    //         form?.setFieldValue('cover', res.secure_url);
+    //       } else {
+    //         message.error('图片上传失败，请重试');
+    //       }
+    //     } catch (error) {
+    //       message.error('图片上传失败，请检查网络连接');
+    //     } finally {
+    //       setIsImageLoading(false);
+    //     }
+    //   }
+    // } else if (file.status === 'error') {
+    //   message.error('图片上传失败，请检查网络连接');
+    //   setIsImageLoading(false);
+    // }
+     const { file, fileList } = info;
+     console.log(info);
+     
 
     // 只处理上传完成的文件
     if (file.status === 'done') {
       const latestFile = fileList[fileList.length - 1];
       setCoverImage(latestFile);
-
-      if (latestFile.originFileObj) {
-        try {
-          setIsImageLoading(true);
-          const res = await uploadImgToCloud(latestFile.originFileObj);
-          if (res && res.secure_url) {
-            setCloudinaryImg(res);
-            setPreviewUrl(res.secure_url);
-            form?.setFieldValue('cover', res.secure_url);
-          } else {
-            message.error('图片上传失败，请重试');
-          }
-        } catch (error) {
-          message.error('图片上传失败，请检查网络连接');
-        } finally {
-          setIsImageLoading(false);
-        }
-      }
     } else if (file.status === 'error') {
       message.error('图片上传失败，请检查网络连接');
       setIsImageLoading(false);
@@ -121,6 +133,7 @@ export default function UploadCardImg(props: {
     multiple: false,
     accept: 'image/*',
     showUploadList: false,
+    action: '', // 设置为空，阻止默认上传请求
     beforeUpload: async (file) => {
       const isImage = file.type.startsWith('image/');
       if (!isImage) {
@@ -133,6 +146,28 @@ export default function UploadCardImg(props: {
         message.error('图片大小不能超过 5MB!');
         return false;
       }
+
+      return true; // 始终返回 false，阻止默认上传
+    },
+    customRequest: async ({ file, onSuccess, onError }:any) => {
+      try {
+        setIsImageLoading(true);
+        const res = await uploadImgToCloud(file);
+        if (res && res.secure_url) {
+          setCloudinaryImg(res);
+          setPreviewUrl(res.secure_url);
+          form?.setFieldValue('cover', res.secure_url);
+          onSuccess?.(res); // 通知 Upload 组件上传成功
+        } else {
+          message.error('图片上传失败，请重试');
+          onError?.(new Error('Upload failed'));
+        }
+      } catch (error) {
+        message.error('图片上传失败，请检查网络连接');
+        onError?.(error as Error);
+      } finally {
+        setIsImageLoading(false);
+      }
     },
     onChange: handleImageChange,
   };
@@ -143,7 +178,7 @@ export default function UploadCardImg(props: {
         <div className={styles.imagePreviewContainer}>
           <img
             src={previewUrl || '/placeholder.svg'}
-            alt="活动封面预览"
+            alt="图片预览"
             className={styles.previewImage}
           />
           {isImageLoading && (
@@ -195,7 +230,7 @@ export default function UploadCardImg(props: {
           ) : (
             <>
               <ImageIcon className={styles.imageIcon} />
-              <p className={styles.imageText}>点击或拖拽上传活动封面</p>
+              <p className={styles.imageText}>点击或拖拽上传图片</p>
               <p className={styles.imageHint}>
                 建议尺寸: 1200x630px，支持 JPG、PNG 格式，最大 5MB
               </p>

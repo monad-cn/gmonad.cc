@@ -11,7 +11,7 @@ export default function Footer() {
         <div className={styles.footerContent}>
           <div className={styles.footerSection}>
             <div className={styles.footerLogo}>
-                <Image preview={false} width={24} src="/logo.png" className={styles.logo} />
+              <Image preview={false} width={24} src="/logo.png" className={styles.logo} />
               <span className={styles.footerLogoTitle}>Monad 中文社区</span>
             </div>
             <p className={styles.footerDescription}>Monad 中文社区是连接生态参与者的桥梁，在这里，与 Nads 一起交流、分享、 建设 Monad。</p>
@@ -20,50 +20,58 @@ export default function Footer() {
             <h3 className={styles.footerSectionTitle}>生态系统</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  DeFi协议
-                </a>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=DeFi" className={styles.footerLink}>
+                  DeFi 协议
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  NFT市场
-                </a>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=NFT" className={styles.footerLink}>
+                  NFT 市场
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=App&sub_category=Gaming" className={styles.footerLink}>
                   游戏应用
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <Link href="/ecosystem/dapps?main_category=Infra" className={styles.footerLink}>
                   基础设施
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
           <div className={styles.footerSection}>
-            <h3 className={styles.footerSectionTitle}>开发者</h3>
+            <h3 className={styles.footerSectionTitle}>开发者支持</h3>
             <ul className={styles.footerLinks}>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <Link href="https://docs.monad.xyz/" target="_blank" className={styles.footerLink}>
                   开发文档
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  API参考
-                </a>
+                <Link href="https://developers.monad.xyz/#quick-start" target="_blank" className={styles.footerLink}>
+                  开发指南
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
-                  SDK工具
-                </a>
+                <Link href="https://docs.monad.xyz/guides/" target="_blank" className={styles.footerLink}>
+                  示例代码
+                </Link>
               </li>
               <li>
-                <a href="#" className={styles.footerLink}>
+                <Link href="/testnet" className={styles.footerLink}>
                   测试网络
-                </a>
+                </Link>
               </li>
+            </ul>
+          </div>
+          <div className={styles.footerSection}>
+            <h3 className={styles.footerSectionTitle}>社区</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link href="/events" className={styles.footerLink}>社区活动</Link></li>
+              <li><Link href="/posts" className={styles.footerLink}>社区帖子</Link></li>
+              <li><Link href="/feedback" className={styles.footerLink}>反馈与建议</Link></li>
             </ul>
           </div>
           <div className={styles.footerSection}>

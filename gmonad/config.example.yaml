@@ -17,3 +17,20 @@ database:
   dbname:       
   sslmode:      
 
+oauth:
+  clientId: 
+  clientSecret: 
+  accessApi: 
+  getUser: 
+
+timer:
+  sse: 3
+  validatorIntervalSeconds: 
+  testnetIntervalSeconds: 
+
+rpc:
+  monadTestnet: 
+
+validator:
+  url: 
+

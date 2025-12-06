@@ -1,0 +1,40 @@
+name: CI Build Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend-build:
+    name: Build Next.js Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.19
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Build Next.js
+        run: npm run build
+
+  backend-build:
+    name: Build Go Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Build Go Backend
+        working-directory: ./gmonad
+        run: go build -v .
+

@@ -1,19 +1,27 @@
 package controllers
 
-import "gmonad/models"
+import (
+	"encoding/json"
+	"fmt"
+	"gmonad/models"
+	"log"
+)
 
 // event
 type CreateEventRequest struct {
-	Title     string   `json:"title" binding:"required"`
-	Desc      string   `json:"desc" binding:"required"`
-	EventMode string   `json:"event_mode" binding:"required"`
-	Location  string   `json:"location"`
-	Link      string   `json:"link"`
-	StartTime string   `json:"start_time" binding:"required"`
-	EndTime   string   `json:"end_time" binding:"required"`
-	CoverImg  string   `json:"cover_img" binding:"required"`
-	Tags      []string `json:"tags"`
-	Twitter   string   `json:"twitter" binding:"required"`
+	Title                string   `json:"title" binding:"required"`
+	Desc                 string   `json:"desc" binding:"required"`
+	EventMode            string   `json:"event_mode" binding:"required"`
+	EventType            string   `json:"event_type" binding:"required"`
+	Location             string   `json:"location"`
+	Link                 string   `json:"link"`
+	RegistrationLink     string   `json:"registration_link"`
+	RegistrationDeadline string   `json:"registration_deadline"`
+	StartTime            string   `json:"start_time" binding:"required"`
+	EndTime              string   `json:"end_time" binding:"required"`
+	CoverImg             string   `json:"cover_img" binding:"required"`
+	Tags                 []string `json:"tags"`
+	Twitter              string   `json:"twitter" binding:"required"`
 }
 
 type QueryEventsResponse struct {
@@ -24,16 +32,19 @@ type QueryEventsResponse struct {
 }
 
 type UpdateEventRequest struct {
-	Title     string   `json:"title" binding:"required"`
-	Desc      string   `json:"desc" binding:"required"`
-	EventMode string   `json:"event_mode" binding:"required"`
-	Location  string   `json:"location"`
-	Link      string   `json:"link"`
-	StartTime string   `json:"start_time" binding:"required"`
-	EndTime   string   `json:"end_time" binding:"required"`
-	CoverImg  string   `json:"cover_img" binding:"required"`
-	Tags      []string `json:"tags"`
-	Twitter   string   `json:"twitter" binding:"required"`
+	Title                string   `json:"title" binding:"required"`
+	Desc                 string   `json:"desc" binding:"required"`
+	EventMode            string   `json:"event_mode" binding:"required"`
+	EventType            string   `json:"event_type" binding:"required"`
+	Location             string   `json:"location"`
+	Link                 string   `json:"link"`
+	StartTime            string   `json:"start_time" binding:"required"`
+	EndTime              string   `json:"end_time" binding:"required"`
+	CoverImg             string   `json:"cover_img" binding:"required"`
+	Tags                 []string `json:"tags"`
+	Twitter              string   `json:"twitter" binding:"required"`
+	RegistrationLink     string   `json:"registration_link"`
+	RegistrationDeadline string   `json:"registration_deadline"`
 }
 
 type UpdateEventPublishStatusRequest struct {
@@ -107,6 +118,7 @@ type CreateArticleRequest struct {
 	Content    string   `json:"content" binding:"required"`
 	Category   string   `json:"category" binding:"required"`
 	SourceLink string   `json:"source_link"`
+	SourceType string   `json:"source_type"`
 	CoverImg   string   `json:"cover_img" binding:"required"`
 	Tags       []string `json:"tags"`
 	Author     string   `json:"author" binding:"required"`
@@ -138,4 +150,150 @@ type UpdateArticleRequest struct {
 	Tags       []string `json:"tags"`
 	Author     string   `json:"author" binding:"required"`
 	Translator string   `json:"translator"`
+}
+
+type UpdateBlogPublishStatusRequest struct {
+	PublishStatus uint `json:"publish_status"`
+}
+
+// statistic
+type StatisticResponse struct {
+	BlockNum     uint64 `json:"block_num"`
+	AvgBlockTime string `json:"avg_block_time"`
+	Validators   uint   `json:"validators"`
+	Timestamp    int64  `json:"timestamp"`
+}
+
+func (s *StatisticResponse) ToSSE() string {
+	data, err := json.Marshal(s)
+	if err != nil {
+		log.Println("json marshal error:", err)
+		return ""
+	}
+	// 按照 SSE 协议格式：data: <json>\n\n
+	return fmt.Sprintf("data: %s\n\n", data)
+}
+
+// Dapp
+type CreateDappRequest struct {
+	Name        string   `json:"name" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	X           string   `json:"x" binding:"required"`
+	Logo        string   `json:"logo" binding:"required"`
+	Site        string   `json:"site" binding:"required"`
+	CoverImg    string   `json:"cover_img" binding:"required"`
+	CategoryId  uint     `json:"category_id" binding:"required"`
+	Tags        []string `json:"tags"`
+}
+
+type QueryDappsResponse struct {
+	Dapps    []models.Dapp `json:"dapps"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+	Total    int64         `json:"total"`
+}
+
+// category
+type QueryCategoriesResponse struct {
+	Categories []models.Category `json:"categories"`
+	Page       int               `json:"page"`
+	PageSize   int               `json:"page_size"`
+	Total      int64             `json:"total"`
+}
+
+// tutorial
+type CreateTutorialRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	Author     string   `json:"author" binding:"required"`
+	DappId     uint     `json:"dapp_id"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+}
+
+type QueryTutorialsResponse struct {
+	Tutorials []models.Tutorial `json:"tutorials"`
+	Page      int               `json:"page"`
+	PageSize  int               `json:"page_size"`
+	Total     int64             `json:"total"`
+}
+
+type UpdateTutorialRequest struct {
+	Title      string   `json:"title" binding:"required"`
+	Desc       string   `json:"desc" binding:"required"`
+	Content    string   `json:"content" binding:"required"`
+	Author     string   `json:"author" binding:"required"`
+	DappId     uint     `json:"dapp_id"`
+	SourceLink string   `json:"source_link"`
+	CoverImg   string   `json:"cover_img" binding:"required"`
+	Tags       []string `json:"tags"`
+}
+
+type UpdateTutorialPublishStatusRequest struct {
+	PublishStatus uint `json:"publish_status" binding:"required"`
+}
+
+// feedback
+type CreateFeedbackRequest struct {
+	Content string `json:"content" binding:"required"`
+	Url     string `json:"url"`
+	Email   string `json:"email"`
+}
+
+type QueryFeedbackResponse struct {
+	Feedbacks []models.Feedback `json:"feedbacks"`
+	Page      int               `json:"page"`
+	PageSize  int               `json:"page_size"`
+	Total     int64             `json:"total"`
+}
+
+// Post
+type CreatePostRequest struct {
+	Title       string   `json:"title" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	Tags        []string `json:"tags"`
+	Twitter     string   `json:"twitter"`
+}
+
+type UpdatePostRequest struct {
+	Title       string   `json:"title" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	Tags        []string `json:"tags"`
+	Twitter     string   `json:"twitter"`
+}
+
+type QueryPostsResponse struct {
+	Posts    []models.Post `json:"posts"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+	Total    int64         `json:"total"`
+}
+
+// recap
+type CreateRecapRequest struct {
+	Content   string `json:"content" binding:"required"`
+	Video     string `json:"video"`
+	Recording string `json:"recording"`
+	Twitter   string `json:"twitter"`
+	EventId   uint   `json:"event_id"`
+}
+
+type UpdateRecapRequest struct {
+	Content   string `json:"content" binding:"required"`
+	Video     string `json:"video"`
+	Recording string `json:"recording"`
+	Twitter   string `json:"twitter"`
+}
+
+type UpdateUserRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Avatar   string `json:"avatar" binding:"required"`
+	Github   string `json:"github"`
+}
+
+type FollowStatesRequest struct {
+	UserIDs []uint `json:"user_ids" binding:"required"`
 }

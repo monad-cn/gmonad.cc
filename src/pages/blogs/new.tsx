@@ -1,15 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  Form,
-  Input,
-  Checkbox,
-  Upload,
-  Button,
-  Card,
-  Tag,
-  App as AntdApp,
-} from 'antd';
-import type { UploadProps, UploadFile } from 'antd';
+import { Form, Input, Button, Card, Tag, App as AntdApp, Select } from 'antd';
 import {
   ArrowLeft,
   Users,
@@ -17,21 +7,18 @@ import {
   ImageIcon,
   Save,
   Plus,
-  X,
-  RotateCcw,
+  Link as LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 
-import QuillEditor from '@/components/quillEditor/QuillEditor';
+import VditorEditor from '@/components/vditorEditor/VditorEditor';
+// import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { uploadImgToCloud, deleteImgFromCloud } from '@/lib/cloudinary';
 import { createBlog } from '../api/blog';
 import router from 'next/router';
 
-const { Dragger } = Upload;
 const { TextArea } = Input;
 
 export default function NewBlogPage() {
@@ -41,27 +28,18 @@ export default function NewBlogPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [coverImage, setCoverImage] = useState<UploadFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cloudinaryImg, setCloudinaryImg] = useState<any>();
 
-  // 格式化时间为字符串
-  const formatDateTime = (date: any, time: any) => {
-    if (!date || !time) return '';
-
-    const dateStr = date.format('YYYY-MM-DD');
-    const timeStr = time.format('HH:mm:ss');
-    return `${dateStr} ${timeStr}`;
-  };
-
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  // 编辑器处理
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('content', value);
     },
     [form]
   );
+
   const handleSubmit = async (values: any) => {
     try {
       console.log(values);
@@ -72,6 +50,7 @@ export default function NewBlogPage() {
         description: values.description || '',
         content: values.content || '',
         source_link: values.source || '',
+        source_type: values.sourceType,
         category: 'blog',
         cover_img: cloudinaryImg?.secure_url || '',
         tags: tags,
@@ -111,9 +90,9 @@ export default function NewBlogPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
-        <Link href="/new" className={styles.backButton}>
+        <Link href="/blogs" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
           返回博客列表
         </Link>
@@ -150,7 +129,7 @@ export default function NewBlogPage() {
                 <Input
                   placeholder="请输入博客标题"
                   className={styles.input}
-                  maxLength={30}
+                  maxLength={60}
                   showCount
                 />
               </Form.Item>
@@ -171,51 +150,16 @@ export default function NewBlogPage() {
                 name="content"
                 rules={[{ required: true, message: '请输入博客内容' }]}
               >
-                <QuillEditor
+                {/* <QuillEditor
                   value={form.getFieldValue('content')}
                   onChange={handleQuillEditorChange}
+                /> */}
+                <VditorEditor
+                  value={form.getFieldValue('content')}
+                  onChange={handleVditorEditorChange}
+                  height={720}
                 />
               </Form.Item>
-              <Form.Item
-                label="原文链接"
-                name="source"
-                rules={[
-                  {
-                    type: 'url',
-                    message: '请输入有效的链接地址',
-                  },
-                ]}
-              >
-                <Input placeholder="请输入原文链接" className={styles.input} />
-              </Form.Item>
-            </Card>
-
-            {/* 参与人员 */}
-            <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>
-                <Users className={styles.sectionIcon} />
-                作者与协作者
-              </h2>
-
-              <div className={styles.formRow}>
-                <Form.Item
-                  label="作者"
-                  name="author"
-                  rules={[{ required: true, message: '请输入作者姓名' }]}
-                >
-                  <Input placeholder="请输入作者" maxLength={10} showCount />
-                </Form.Item>
-              </div>
-
-              <div className={styles.formRow}>
-                <Form.Item label="翻译" name="translator">
-                  <Input
-                    placeholder="请输入翻译人员（可选）"
-                    maxLength={10}
-                    showCount
-                  />
-                </Form.Item>
-              </div>
             </Card>
           </div>
 
@@ -239,6 +183,61 @@ export default function NewBlogPage() {
                   form={form}
                 />
               </Form.Item>
+            </Card>
+
+            {/* 原文链接 */}
+            <Card className={styles.section}>
+              <Form.Item
+                label="原文链接"
+                name="source"
+                rules={[
+                  {
+                    type: 'url',
+                    message: '请输入有效的链接地址',
+                  },
+                ]}
+              >
+                <Input placeholder="请输入原文链接" className={styles.input} />
+              </Form.Item>
+
+              <Form.Item
+                label="类型"
+                name="sourceType"
+                rules={[{ required: true, message: '请选择类型' }]}
+              >
+                <Select placeholder="请选择类型">
+                  <Select.Option value="official">官方</Select.Option>
+                  <Select.Option value="community">社区解读</Select.Option>
+                </Select>
+              </Form.Item>
+            </Card>
+
+            {/* 参与人员 */}
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Users className={styles.sectionIcon} />
+                作者与协作者
+              </h2>
+
+              <div className={styles.formRow}>
+                <Form.Item
+                  label="作者"
+                  name="author"
+                  rules={[{ required: true, message: '请输入作者姓名' }]}
+                >
+                  <Input placeholder="请输入作者" maxLength={20} showCount />
+                </Form.Item>
+              </div>
+
+              <div className={styles.formRow}>
+                <Form.Item label="翻译" name="translator">
+                  <Input
+                    placeholder="请输入翻译人员（可选）"
+                    maxLength={20}
+                    showCount
+                  />
+                </Form.Item>
+              </div>
             </Card>
 
             {/* 标签 */}
@@ -282,24 +281,12 @@ export default function NewBlogPage() {
                 )}
               </div>
             </Card>
-
-            {/* 其他设置 */}
-            <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>其他设置</h2>
-              <Form.Item
-                name="publishImmediately"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>立即发布博客</Checkbox>
-              </Form.Item>
-            </Card>
           </div>
         </div>
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Link href="/blogs" className={styles.cancelButton}>
             取消
           </Link>
           <Button

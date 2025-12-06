@@ -1,135 +1,97 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
+import { Button, Tag, App as AntdApp, Image } from 'antd';
 import {
   ArrowLeft,
-  Calendar,
+  CheckCircle,
   Edit,
   Eye,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { useSession } from 'next-auth/react';
-import { updateEventPublishStatus } from '@/pages/api/event';
-import { SiX } from 'react-icons/si';
-import { getBlogById } from '@/pages/api/blog';
+import { useAuth } from '@/contexts/AuthContext';
+import { getBlogById, updateBlogPublishStatus, Blog } from '@/pages/api/blog';
 import dayjs from 'dayjs';
-
+import { sanitizeMarkdown } from '@/lib/markdown';
+import SEO from '@/components/SEO';
+import { GetServerSideProps } from 'next';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
 }
 
-export default function BlogDetailPage() {
+interface BlogDetailPageProps {
+  initialBlog: Blog | null;
+  error?: string;
+}
+
+export default function BlogDetailPage({ initialBlog, error }: BlogDetailPageProps) {
   const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query; // 路由参数应该叫 id，不是 ids
-  const rId = Array.isArray(id) ? id[0] : id;
 
-  const [blog, setBlog] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [shareModalVisible, setShareModalVisible] = useState(false);
-  const { data: session, status } = useSession();
+  const [blog] = useState<Blog | null>(initialBlog);
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 
-  // const handleUpdatePublishStatus = async () => {
-  //   try {
-  //     const result = await updateEventPublishStatus(blog.ID, 2);
-  //     if (result.success) {
-  //       router.reload();
-  //       message.success(result.message);
-  //     } else {
-  //       message.error(result.message || '审核出错');
-  //     }
-  //   } catch (error) {
-  //     message.error('审核出错，请重试');
-  //   }
-  // };
+  // parseMarkdown将返回的markdown转为html展示
+  const [blogContent, setBlogContent] = useState<string>('');
 
   useEffect(() => {
-    if (!router.isReady || !rId) return;
+    if (blog?.content) {
+      sanitizeMarkdown(blog.content).then((htmlContent) => {
+        setBlogContent(htmlContent);
+      });
+    }
+  }, [blog?.content]);
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getBlogById(rId);
-        console.log('获取活动详情:', response);
-        setBlog(response?.data);
-      } catch (error) {
-        message.error('加载失败');
-        setBlog(null);
-      } finally {
-        setLoading(false);
+  const handleUpdatePublishStatus = async () => {
+    if (!blog) return;
+    try {
+      const result = await updateBlogPublishStatus(blog.ID.toString(), 2);
+      if (result.success) {
+        router.reload();
+        message.success(result.message);
+      } else {
+        message.error(result.message || '审核出错');
       }
-    };
-
-    fetchData();
-  }, [router.isReady, id]);
-
-
-
-  const handleShare = (platform?: string) => {
-    if (platform === 'copy') {
-      navigator.clipboard.writeText(window.location.href);
-      message.success('链接已复制到剪贴板');
-    } else if (platform === 'twitter') {
-      const text = `${blog.title} - ${window.location.href}`;
-      window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
-      );
-    } else {
-      setShareModalVisible(true);
+    } catch (error) {
+      message.error('审核出错，请重试');
     }
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
+  const isUnderReview = blog?.publish_status === 1;
+  const isPublisher = blog?.publisher_id?.toString() === session?.user?.uid;
+  const canReview = permissions.includes('blog:review');
 
-  if (
-    !blog ||
-    (blog.publish_status === 1 && !permissions.includes('blog:write'))
-  ) {
+  if (!blog || (isUnderReview && !isPublisher && !canReview)) {
     return (
       <div className={styles.error}>
         <h2>博客不存在</h2>
-        <p>抱歉，找不到您要查看的活动</p>
-        <Link href="/events" className={styles.backButton}>
-          返回活动列表
+        <p>抱歉，找不到您要查看的博客</p>
+        <Link href="/blogs" className={styles.backButton}>
+          返回博客列表
         </Link>
       </div>
     );
   }
 
-
-  const formatDateTime = (dateTime: string) => {
-    const date = new Date(dateTime);
-    return {
-      date: date.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long',
-      }),
-      time: date.toLocaleTimeString('zh-CN', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
-  };
-
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
+    <>
+      <SEO
+        title={blog.title}
+        description={blog.description || blog.title}
+        type="article"
+        url={`/blogs/${blog.ID}`}
+        image={blog.cover_img}
+        publishedTime={blog.publish_time || blog.CreatedAt}
+        author={blog.author || blog.publisher?.username || ''}
+        tags={blog.tags}
+      />
+      <div className={`${styles.container} nav-t-top`}>
+        {/* Header */}
+        <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link href="/blogs" className={styles.backLink}>
             <ArrowLeft className={styles.backIcon} />
@@ -137,7 +99,7 @@ export default function BlogDetailPage() {
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&
-              permissions.includes('blog:write') ? (
+            blog.publisher_id.toString() === session?.user?.uid ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -146,9 +108,9 @@ export default function BlogDetailPage() {
                 编辑
               </Button>
             ) : null}
-            {/* {event.publish_status === 1 &&
+            {blog.publish_status === 1 &&
             status === 'authenticated' &&
-            permissions.includes('event:review') ? (
+            permissions.includes('blog:review') ? (
               <Button
                 icon={<CheckCircle size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -156,7 +118,7 @@ export default function BlogDetailPage() {
               >
                 审核通过
               </Button>
-            ) : null} */}
+            ) : null}
           </div>
         </div>
       </div>
@@ -165,8 +127,7 @@ export default function BlogDetailPage() {
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.heroLeft}>
-            {/* <div style={{ display: 'flex', gap: '0.5rem' }}>
-
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               {blog.publish_status === 1 && (
                 <div
                   className={styles.statusBadge}
@@ -175,25 +136,29 @@ export default function BlogDetailPage() {
                   待审核
                 </div>
               )}
-            </div> */}
+            </div>
             <h1 className={styles.title}>{blog.title}</h1>
             <h3 className={styles.description}>{blog.description}</h3>
-            <div className={styles.metaInfo}>
-              <div className={styles.metaItem}>
-                <Calendar className={styles.metaIcon} />
-                <div className={styles.metaText}>{formatTime(blog.CreatedAt)}</div>
-              </div>
-              <div className={styles.metaItem}>
-                <Eye className={styles.metaIcon} />
-                <div className={styles.metaText}>{blog.view_count || '0'}</div>
-              </div>
-              <div className={styles.tags}>
-                {blog.tags.map((tag: string, index: number) => (
-                  <Tag key={index} className={styles.tag}>
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
+
+            {/* 原文链接按钮 */}
+            {blog.source_link && (
+              <a
+                href={blog.source_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.sourceLinkButton}
+              >
+                查看原文 →
+              </a>
+            )}
+
+            {/* 标签 */}
+            <div className={styles.tags}>
+              {blog.tags.map((tag: string, index: number) => (
+                <Tag key={index} className={styles.tag}>
+                  {tag}
+                </Tag>
+              ))}
             </div>
           </div>
 
@@ -202,53 +167,102 @@ export default function BlogDetailPage() {
               <Image
                 src={blog.cover_img || '/placeholder.svg'}
                 alt={blog.title}
-                width={400}
-                height={300}
+                width={350}
+                height={220}
                 className={styles.coverImage}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className={styles.main}>
-        <div className={styles.content}>
-          {/* Left Column */}
-          <div className={styles.leftColumn}>
-            {/* Description */}
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>{blog.title}</h2>
-              <div
-                className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: blog.content }}
-              />
-            </section>
+        <div className="marked-paper">
+          {/* 元信息 */}
+          <div className={styles.articleMeta}>
+            <span>{blog.author || blog.publisher?.username || ''}</span>
+            <span className={styles.metaSeparator}>·</span>
+            <span>{formatTime(blog.publish_time || blog.CreatedAt)}</span>
+            {blog.translator && (
+              <>
+                <span className={styles.metaSeparator}>·</span>
+                <span>译者：{blog.translator}</span>
+              </>
+            )}
+            <span className={styles.metaSeparator}>·</span>
+            <span className={styles.viewCount}>
+              <Eye size={14} />
+              {blog.view_count || '0'}
+            </span>
           </div>
+
+          {/* <h2 className={styles.sectionTitle}>{blog.title}</h2> */}
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: blogContent }}
+          />
         </div>
-
-
-
-        {/* <div className={styles.shareCard}>
-          <h3 className={styles.cardTitle}>分享活动</h3>
-          <div className={styles.shareButtons}>
-            <Button
-              icon={<Copy size={16} />}
-              className={styles.shareButton}
-              onClick={() => handleShare('copy')}
-            >
-              复制链接
-            </Button>
-            <Button
-              icon={<SiX size={16} />}
-              className={styles.shareButton}
-              onClick={() => handleShare('twitter')}
-            >
-              分享到 X
-            </Button>
-          </div> */}
-        {/* </div> */}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
+
+// 服务端渲染 - 在服务器端获取博客数据
+export const getServerSideProps: GetServerSideProps<BlogDetailPageProps> = async (context) => {
+  const { id } = context.params as { id: string };
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    return {
+      props: {
+        initialBlog: null,
+        error: 'API URL is not configured',
+      },
+    };
+  }
+
+  try {
+    // 直接在服务端调用 API
+    const response = await fetch(`${apiUrl}/blogs/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        props: {
+          initialBlog: null,
+          error: 'Blog not found',
+        },
+      };
+    }
+
+    const result = await response.json();
+    
+    if (result.code === 200 && result.data) {
+      return {
+        props: {
+          initialBlog: result.data as Blog,
+        },
+      };
+    }
+
+    return {
+      props: {
+        initialBlog: null,
+        error: result.message || 'Failed to fetch blog',
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching blog:', error);
+    return {
+      props: {
+        initialBlog: null,
+        error: 'Failed to fetch blog data',
+      },
+    };
+  }
+};

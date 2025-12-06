@@ -11,6 +11,7 @@ import {
   Card,
   Tag,
   App as AntdApp,
+  Select,
 } from 'antd';
 
 import {
@@ -21,6 +22,7 @@ import {
   Video,
   Globe,
   FileText,
+  NotepadTextDashed,
   Save,
   Plus,
   ImageIcon,
@@ -30,8 +32,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
 import { createEvent } from '../api/event';
-import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
+import dynamic from 'next/dynamic';
+
+// const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });
+const   VditorEditor  = dynamic(()=>import('@/components/vditorEditor/VditorEditor'), { ssr: false })
 
 export default function NewEventPage() {
   const { message } = AntdApp.useApp();
@@ -44,6 +49,7 @@ export default function NewEventPage() {
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   // 封面图片
   const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -58,8 +64,7 @@ export default function NewEventPage() {
     return `${dateStr} ${timeStr}`;
   };
 
-  // 富文本处理
-  const handleQuillEditorChange = useCallback(
+  const handleVditorEditorChange = useCallback(
     (value: string) => {
       form.setFieldValue('description', value);
     },
@@ -73,25 +78,29 @@ export default function NewEventPage() {
       const createEventRequest = {
         title: values.title || '',
         description: values.description || '',
-        event_mode: eventMode, // online 或 offline
+        event_mode: values.eventMode, // online 或 offline
+        event_type: values.eventType,
         location: eventMode === '线下活动' ? values.location || '' : '',
         link: eventMode === '线上活动' ? values.location || '' : '',
         start_time: formatDateTime(values.startDate, values.startTime),
         end_time: formatDateTime(values.endDate, values.endTime),
-        // cover_img: coverImage,
         cover_img: cloudinaryImg?.secure_url || '',
         tags: tags,
         twitter: values.twitter,
+        registration_link: values.registrationLink,
+        registration_deadline: values.registrationDeadline
+          ? values.registrationDeadline.format('YYYY-MM-DD HH:mm:ss')
+          : '',
       };
 
       // 调用创建事件接口
       const result = await createEvent(createEventRequest);
 
       if (result.success) {
-        message.success(result.message);
+        message.success("活动创建成功！");
         router.push('/events');
       } else {
-        message.error(result.message || '创建活动失败');
+        message.error('活动创建出错');
       }
     } catch (error) {
       console.error('创建活动失败:', error);
@@ -118,7 +127,7 @@ export default function NewEventPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       <div className={styles.header}>
         <Link href="/events" className={styles.backButton}>
           <ArrowLeft className={styles.backIcon} />
@@ -163,35 +172,57 @@ export default function NewEventPage() {
                 name="description"
                 rules={[{ required: true, message: '请输入活动描述' }]}
               >
-                <QuillEditor
+                <VditorEditor
+                  height={400}
                   value={form.getFieldValue('description')}
-                  onChange={handleQuillEditorChange}
+                  onChange={handleVditorEditorChange}
                 />
               </Form.Item>
-              <Form.Item
-                label="活动形式"
-                name="eventMode"
-                rules={[{ required: true, message: '请选择活动形式' }]}
-              >
-                <Radio.Group
-                  onChange={(e) => setEventMode(e.target.value)}
-                  className={styles.radioGroup}
-                >
-                  <Radio value="线上活动" className={styles.radioOption}>
-                    <div className={styles.radioContent}>
-                      <Video className={styles.radioIcon} />
-                      <span className={styles.radioText}>线上活动</span>
-                    </div>
-                  </Radio>
-                  <Radio value="线下活动" className={styles.radioOption}>
-                    <div className={styles.radioContent}>
-                      <MapPin className={styles.radioIcon} />
-                      <span className={styles.radioText}>线下活动</span>
-                    </div>
-                  </Radio>
-                </Radio.Group>
-              </Form.Item>
             </Card>
+            <Card className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Users className={styles.sectionIcon} />
+                活动形式 & 类型
+              </h2>
+
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                {/* 活动形式 Select */}
+                <Form.Item
+                  label="活动形式"
+                  name="eventMode"
+                  rules={[{ required: true, message: '请选择活动形式' }]}
+                  style={{ flex: 1 }}
+                >
+                  <Select
+                    placeholder="请选择活动形式"
+                    options={[
+                      { label: '线上活动', value: '线上活动' },
+                      { label: '线下活动', value: '线下活动' },
+                    ]}
+                    onChange={(value) => setEventMode(value)}
+                  />
+                </Form.Item>
+
+                {/* 活动类型 Select */}
+                <Form.Item
+                  label="活动类型"
+                  name="eventType"
+                  rules={[{ required: true, message: '请选择活动类型' }]}
+                  style={{ flex: 1 }}
+                >
+                  <Select
+                    placeholder="请选择活动类型"
+                    options={[
+                      { label: 'AMA', value: 'ama' },
+                      { label: '黑客松', value: 'hackathon' },
+                      { label: '社区聚会', value: 'meetup' },
+                      { label: 'Workshop', value: 'workshop' },
+                    ]}
+                  />
+                </Form.Item>
+              </div>
+            </Card>
+
 
             {/* 时间和地点 */}
             <Card className={styles.section}>
@@ -218,10 +249,10 @@ export default function NewEventPage() {
               </div>
 
               <div className={styles.formRow}>
-                <Form.Item label="结束日期" name="endDate">
+                <Form.Item label="结束日期" name="endDate" rules={[{ required: true, message: '请选择结束日期' }]}>
                   <DatePicker className={styles.input} />
                 </Form.Item>
-                <Form.Item label="结束时间" name="endTime">
+                <Form.Item label="结束时间" name="endTime" rules={[{ required: true, message: '请选择结束时间' }]}>
                   <TimePicker className={styles.input} format="HH:mm" />
                 </Form.Item>
               </div>
@@ -269,43 +300,6 @@ export default function NewEventPage() {
                     className={styles.inputWithIconField}
                   />
                 </div>
-              </Form.Item>
-            </Card>
-
-            {/* 参与设置 */}
-            <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>
-                <Users className={styles.sectionIcon} />
-                参与设置
-              </h2>
-
-              <div className={styles.formRow}>
-                <Form.Item label="最大参与人数" name="maxParticipants">
-                  <InputNumber
-                    placeholder="不限制请留空"
-                    min={1}
-                    className={styles.input}
-                  />
-                </Form.Item>
-                <Form.Item label="报名截止时间" name="registrationDeadline">
-                  <DatePicker showTime className={styles.input} />
-                </Form.Item>
-              </div>
-
-              <Form.Item
-                name="requireApproval"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>需要审核报名</Checkbox>
-              </Form.Item>
-
-              <Form.Item
-                name="allowWaitlist"
-                valuePropName="checked"
-                className={styles.formGroup}
-              >
-                <Checkbox className={styles.checkbox}>允许候补报名</Checkbox>
               </Form.Item>
             </Card>
           </div>
@@ -374,25 +368,57 @@ export default function NewEventPage() {
               </div>
             </Card>
 
-            {/* 其他设置 */}
             <Card className={styles.section}>
-              <h2 className={styles.sectionTitle}>其他设置</h2>
+              <h2 className={styles.sectionTitle}>
+                <Users className={styles.sectionIcon} />
+                报名设置
+              </h2>
+
               <Form.Item
-                name="publishImmediately"
-                valuePropName="checked"
-                className={styles.formGroup}
+                label="报名链接"
+                name="registrationLink"
+                rules={[
+                  {
+                    type: 'url',
+                    message: '请输入有效的链接地址',
+                  },
+                ]}
               >
-                <Checkbox className={styles.checkbox}>立即发布活动</Checkbox>
+                <Input
+                  placeholder="请输入报名链接（可选）"
+                  className={styles.input}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="报名截止时间"
+                name="registrationDeadline"
+              >
+                <DatePicker
+                  showTime
+                  placeholder="请选择报名截止时间（可选）"
+                  className={styles.input}
+                />
               </Form.Item>
             </Card>
+
           </div>
         </div>
 
         {/* 提交按钮 */}
         <div className={styles.submitSection}>
-          <Link href="/" className={styles.cancelButton}>
+          <Button onClick={() => router.back()} className={styles.cancelButton}>
             取消
-          </Link>
+          </Button>
+          {/* <Button
+            className={styles.submitButton}
+            loading={isSavingDraft}
+            disabled={isSavingDraft}
+            onClick={handleSaveDraft}
+          >
+            <NotepadTextDashed className={styles.submitIcon} />
+            {isSavingDraft ? '保存中...' : '保存草稿'}
+          </Button> */}
           <Button
             type="primary"
             htmlType="submit"

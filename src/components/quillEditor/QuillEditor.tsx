@@ -1,10 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+'use client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { App as AntdApp } from 'antd';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import styles from './QuillEditor.module.css';
+import type ReactQuillType from 'react-quill-new';
 
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-type ReactQuillProps = React.ComponentProps<typeof ReactQuill>;
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false }); // 直接引入ReactQuill在SSR情况下会报错
+type ReactQuillProps = React.ComponentProps<typeof ReactQuillType>;
+
+interface QuillEditorProps extends ReactQuillProps {
+  height?: number | string;
+  minHeight?: number | string;
+  autoHeight?: boolean;
+}
 
 const FULLSCREEN_ICONS = {
   ENTER: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -22,8 +31,67 @@ const FULLSCREEN_ICONS = {
   </svg>`,
 };
 
-function QuillEditor(props: ReactQuillProps) {
+function QuillEditor(props: QuillEditorProps) {
+  const { height, minHeight, autoHeight, ...restProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { message } = AntdApp.useApp();
+
+  // 图片上传错误处理
+  const handleImageError = useCallback(
+    (error: string) => {
+      message.error(error);
+    },
+    [message]
+  );
+
+  // 高度样式计算
+  const getContainerStyle = useCallback(() => {
+    if (isFullscreen) return {};
+
+    const style: React.CSSProperties = {};
+
+    if (autoHeight) {
+      style.height = '100%';
+    } else if (height !== undefined) {
+      style.height = typeof height === 'number' ? `${height}px` : height;
+    }
+
+    if (minHeight !== undefined) {
+      style.minHeight =
+        typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+    }
+
+    return style;
+  }, [height, minHeight, autoHeight, isFullscreen]);
+
+  const getEditorStyle = useCallback(() => {
+    if (isFullscreen) return {};
+
+    const style: React.CSSProperties = {};
+
+    if (autoHeight) {
+      style.height = '100%';
+      style.display = 'flex';
+      style.flexDirection = 'column';
+    } else if (height !== undefined) {
+      const containerHeight =
+        typeof height === 'number' ? `${height}px` : height;
+      style.height = containerHeight;
+      style.display = 'flex';
+      style.flexDirection = 'column';
+    }
+
+    if (minHeight !== undefined) {
+      style.minHeight =
+        typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
+      if (!style.display) {
+        style.display = 'flex';
+        style.flexDirection = 'column';
+      }
+    }
+
+    return style;
+  }, [height, minHeight, autoHeight, isFullscreen]);
 
   useEffect(() => {
     let fullscreenBtn: HTMLButtonElement | null = null;
@@ -176,76 +244,104 @@ function QuillEditor(props: ReactQuillProps) {
     };
   }, [isFullscreen]);
 
-  // 重点：handler 用 function，不要用箭头函数
-  const modulesDefault = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, 4, 5, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [
-          { list: 'ordered' },
-          { list: 'bullet' },
-          { indent: '-1' },
-          { indent: '+1' },
+  // 状态管理模块注册
+  const [isModuleRegistered, setIsModuleRegistered] = useState(false);
+  const [isEditorReady, setIsEditorReady] = useState(false);
+
+  // 动态注册Cloudinary模块到Quill
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeModule = async () => {
+      try {
+        // 使用单例模式的注册管理器
+        const QuillModuleRegistry = (await import('./QuillModuleRegistry'))
+          .default;
+        const registry = QuillModuleRegistry.getInstance();
+
+        const registered = await registry.ensureModuleRegistered();
+
+        if (mounted) {
+          setIsModuleRegistered(registered);
+          setIsEditorReady(true);
+        }
+      } catch (error) {
+        console.warn('Failed to initialize Quill module:', error);
+        if (mounted) {
+          setIsEditorReady(true); // 即使失败也允许编辑器加载
+        }
+      }
+    };
+
+    initializeModule();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Quill模块配置中包含Cloudinary上传模块
+  const modulesWithCloudinary = useCallback(() => {
+    const defaultModules = restProps.modules || {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, false] }],
+
+          [
+            'bold',
+            'italic',
+            'underline',
+            'strike',
+            'blockquote',
+            'formula',
+            { align: [] },
+            { color: [] },
+            { background: [] },
+          ],
+          [
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { indent: '-1' },
+            { indent: '+1' },
+            'link',
+            'image',
+            'clean',
+          ],
         ],
-        ['link', 'image'],
-        ['clean'],
-      ],
-      // TODO 图片上传, 插入图片后输入文字导致图片重载，页面闪动。 复制粘贴图片上传cloudinary 还没处理
-      // handlers: {
-      //   image: async function imageHandler(this: any) {
-      //     console.log('this', this);
-      //     const input = document.createElement('input');
-      //     input.setAttribute('type', 'file');
-      //     input.setAttribute('accept', 'image/*');
-      //     input.click();
+      },
+    };
 
-      //     input.onchange = async () => {
-      //       const file = input.files?.[0];
-      //       if (file) {
-      //         const { uploadImgToCloud } = await import('@/lib/cloudinary');
+    // 只有在模块注册成功后才添加cloudinaryUploader配置
+    if (isModuleRegistered) {
+      return {
+        ...defaultModules,
+        cloudinaryUploader: {
+          onError: handleImageError,
+        },
+      };
+    }
 
-      //         let hideLoading: any;
-      //         try {
-      //           hideLoading = message.loading('图片上传中...', 0);
-      //           const result = await uploadImgToCloud(file);
-      //           if (result && result.secure_url) {
-      //             const range = this.quill.getSelection();
-      //             this.quill.insertEmbed(
-      //               range.index,
-      //               'image',
-      //               result.secure_url
-      //             );
-      //             this.quill.setSelection(range.index + 1);
-      //             hideLoading();
-
-      //             message.success('图片上传成功');
-      //           } else {
-      //             hideLoading();
-      //             message.error('图片上传失败，请重试');
-      //           }
-      //         } catch (error) {
-      //           if (hideLoading) hideLoading();
-
-      //           message.error('图片上传失败，请检查网络连接');
-      //         }
-      //       }
-      //     };
-      //   },
-      // },
-    },
-  };
+    return defaultModules;
+  }, [restProps.modules, handleImageError, isModuleRegistered]);
 
   return (
     <div
-      className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''}`}
+      className={`${styles.editorContainer} ${isFullscreen ? styles.fullscreenContainer : ''} ${autoHeight ? styles.autoHeightContainer : ''}`}
+      style={getContainerStyle()}
     >
-      <ReactQuill
-        placeholder="请输入..."
-        {...props}
-        modules={props.modules || modulesDefault}
-        className={isFullscreen ? styles.fullscreenEditor : ''}
-      />
+      {isEditorReady ? (
+        <ReactQuill
+          placeholder="请输入..."
+          {...restProps}
+          modules={modulesWithCloudinary()}
+          className={`${isFullscreen ? styles.fullscreenEditor : ''} ${height !== undefined || minHeight !== undefined || autoHeight ? styles.heightControlledEditor : ''}`}
+          style={getEditorStyle()}
+        />
+      ) : (
+        <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+          正在加载编辑器...
+        </div>
+      )}
     </div>
   );
 }

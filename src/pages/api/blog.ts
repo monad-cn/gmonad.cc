@@ -8,6 +8,7 @@ export interface CreateBlogParams {
   category: string;
   cover_img: string;
   source_link: string;
+  source_type: string;
   tags: string[];
   author: string;
   translator: string;
@@ -30,6 +31,7 @@ export interface GetBlogsParams {
   tag?: string;
   order?: 'asc' | 'desc';
   page?: number;
+  user_id?: number;
   page_size?: number;
   category?: string;
   author?: string;
@@ -46,7 +48,6 @@ export interface User {
   github: string;
 }
 
-
 export interface Blog {
   ID: number;
   title: string;
@@ -62,8 +63,9 @@ export interface Blog {
   tags: string[];
   publish_status?: number;
   publish_time?: string;
-  publisher?: User; 
+  publisher?: User;
   publisher_id?: number;
+  view_count?: number;
 }
 
 // 分页返回数据结构
@@ -97,6 +99,7 @@ export const createBlog = async (
       content: params.content,
       category: 'blog',
       source_link: params.source_link,
+      source_type: params.source_type,
       cover_img: params.cover_img,
       tags: params.tags ?? [],
       author: params.author ?? '',
@@ -113,7 +116,7 @@ export const createBlog = async (
       };
     }
 
-    return { success: false, message:  '博客创建出错' };
+    return { success: false, message: '博客创建出错' };
   } catch (error: any) {
     console.error('博客活动异常:', error);
     return {
@@ -173,6 +176,8 @@ export const getBlogs = async (
     if (params.tag?.trim()) query.append('tag', params.tag.trim());
     if (params.publish_status != null)
       query.append('publish_status', params.publish_status.toString());
+    if (params.user_id != null)
+      query.append('user_id', params.user_id.toString());
 
     query.append('category', 'blog');
     query.append('order', params.order ?? 'desc');
@@ -231,10 +236,7 @@ export const getBlogById = async (blogId: string): Promise<BlogResult> => {
 // 删除事件
 export const deleteBlog = async (blogId: number): Promise<BlogResult> => {
   try {
-    const response = await apiRequest<BlogResult>(
-      `/blogs/${blogId}`,
-      'DELETE'
-    );
+    const response = await apiRequest<BlogResult>(`/blogs/${blogId}`, 'DELETE');
 
     if (response.code === 200) {
       return { success: true, message: response.message ?? '删除成功' };
@@ -276,5 +278,37 @@ export const formatDateTime = (date: any, time: any): string => {
   } catch (error) {
     console.error('格式化日期时间失败:', error);
     return '';
+  }
+};
+
+export const updateBlogPublishStatus = async (
+  blogId: string,
+  publishStatus: number
+): Promise<BlogResult> => {
+  try {
+    const body = {
+      publish_status: publishStatus,
+    };
+
+    const response = await apiRequest<BlogResult>(
+      `/blogs/${blogId}/status`,
+      'PUT',
+      body
+    );
+
+    if (response.code === 200 && response.data) {
+      return {
+        success: true,
+        message: response.message ?? '博客状态更新成功',
+        data: response.data as unknown as Blog,
+      };
+    }
+
+    return { success: false, message: response.message ?? '博客状态更新失败' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message ?? '网络错误，请稍后重试',
+    };
   }
 };

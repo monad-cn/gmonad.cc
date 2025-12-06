@@ -16,8 +16,8 @@ type Event struct {
 	EventType            string         `json:"event_type"`
 	Location             string         `json:"location"`
 	Link                 string         `json:"link"`
-	RequiresRegistration bool           `json:"requires_registration"`
-	RegistrationUrl      string         `json:"registration_url"`
+	RegistrationDeadline *time.Time     `json:"registration_deadline"`
+	RegistrationLink     string         `json:"registration_link"`
 	StartTime            time.Time      `json:"start_time"`
 	EndTime              time.Time      `json:"end_time"`
 	CoverImg             string         `json:"cover_img"`
@@ -25,9 +25,10 @@ type Event struct {
 	Participants         uint           `json:"participants"`
 	Status               uint           `gorm:"default:0" json:"status"`         // 0: 未开始，1: 进行中 2: 已结束 TODO: 定时器更新状态？
 	PublishStatus        uint           `gorm:"default:1" json:"publish_status"` // 0: 所有  1: 待审核 2: 已发布
+	PublishTime          *time.Time     `json:"publish_time"`
 	Twitter              string         `json:"twitter"`
 	UserId               uint           `json:"user_id"`
-	User                 User           `gorm:"foreignKey:UserId"`
+	User                 *User          `gorm:"foreignKey:UserId"`
 }
 
 func (e *Event) Create() error {
@@ -57,11 +58,14 @@ type EventFilter struct {
 	Tag           string // 包含某个 tag
 	Location      string
 	EventMode     string
+	EventType     string
 	OrderDesc     bool // 是否按创建时间倒序
 	Page          int  // 当前页码，从 1 开始
 	PageSize      int  // 每页数量，建议默认 10
 	Status        int
 	PublishStatus int
+	StartDate     *time.Time
+	EndDate       *time.Time
 }
 
 func QueryEvents(filter EventFilter) ([]Event, int64, error) {
@@ -83,6 +87,10 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 		query = query.Where("event_mode = ?", filter.EventMode)
 	}
 
+	if filter.EventType != "" {
+		query = query.Where("event_type = ?", filter.EventType)
+	}
+
 	if filter.Status != 3 {
 		query = query.Where("status = ?", filter.Status)
 	}
@@ -93,6 +101,10 @@ func QueryEvents(filter EventFilter) ([]Event, int64, error) {
 
 	if filter.Location != "" {
 		query = query.Where("location LIKE  ?", "%"+filter.Location+"%")
+	}
+
+	if filter.StartDate != nil {
+		query = query.Where("events.created_at BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
 	}
 
 	// 统计总数（不加 limit 和 offset）

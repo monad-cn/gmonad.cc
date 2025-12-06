@@ -1,0 +1,928 @@
+/* 容器和布局 */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 100%);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* 页面标题 */
+.header {
+  margin-bottom: 2rem;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.titleIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #8b5cf6;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleIconSvg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #fff;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* 控制区域 */
+.controlSection {
+  margin-bottom: 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dateDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dateIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+
+.dateText {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* 日历选择器 */
+.calendarPicker {
+  position: relative;
+}
+
+.calendarButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendarButton:hover {
+  background-color: #f9fafb;
+}
+
+.calendarIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+
+.calendarButtonText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.calendarChevron {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+  transition: transform 0.2s;
+}
+
+.calendarChevronOpen {
+  transform: rotate(180deg);
+}
+
+.calendarDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  padding: 1rem;
+  min-width: 20rem;
+}
+
+.calendarQuickSelect {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.quickSelectButton {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quickSelectButton:hover {
+  background-color: #e5e7eb;
+}
+
+.calendarNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.navButton {
+  padding: 0.25rem;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navButton:hover {
+  background-color: #f3f4f6;
+}
+
+.navIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.monthTitle {
+  font-weight: 500;
+  margin: 0;
+}
+
+.calendarWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 0.5rem;
+}
+
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.dayButton {
+  position: relative;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: none;
+  color: #111827;
+}
+
+.dayButton:hover {
+  background-color: #f3f4f6;
+}
+
+.dayButtonInactive {
+  color: #d1d5db;
+}
+
+.dayButtonToday {
+  background-color: #ede9fe;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.dayButtonSelected {
+  background-color: #8b5cf6;
+  color: #fff;
+}
+
+/* 分区标题 */
+.sectionHeader {
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.sectionSubtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.dataSource {
+  color: #059669;
+  font-weight: 500;
+}
+
+/* 统计卡片网格 */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* 运营数据网格 */
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* 统计卡片 */
+.statsCard {
+  background: #fff;
+  border-radius: 0.5rem;
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+  min-height: 180px;
+}
+
+.statsCard:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 运营数据卡片 */
+.analyticsCard {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding-bottom: 3rem !important;
+}
+
+.analyticsCardShot {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding-bottom: 1rem !important;
+}
+
+.analyticsCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px);
+}
+
+.analyticsCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--card-color, #3b82f6) 0%,
+    transparent 100%
+  );
+  border-radius: 12px 12px 0 0;
+}
+
+.cardDetails {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.analyticsCard:hover .cardDetails {
+  color: #3b82f6;
+}
+
+.detailsIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.cardIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardIconSvg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #fff;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.infoIcon {
+  color: #6b7280;
+  cursor: help;
+  transition: color 0.2s ease;
+}
+
+.infoIcon:hover {
+  color: #374151;
+}
+
+.cardTotal {
+  margin-bottom: 1rem;
+}
+
+.totalNumber {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.totalLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.cardNew {
+  margin-bottom: 1rem;
+}
+
+.newNumber {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.newLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.cardGrowth {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.analyticsCardGrowth {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trendIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #10b981;
+}
+
+.growthText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.growthText.positive {
+  color: #059669;
+}
+
+.growthText.negative {
+  color: #dc2626;
+}
+
+.growthLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.125rem;
+}
+
+.analyticsGrowthLabel {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-left: 0.125rem;
+}
+
+/* 图表区域 */
+.chartSection {
+  margin-bottom: 2rem;
+}
+
+.chartContainer {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.chartHeader {
+  margin-bottom: 1.5rem;
+}
+
+.chartTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.chartLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legendColor {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.legendLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.chartWrapper {
+  position: relative;
+}
+
+.chart {
+  width: 100%;
+  height: 320px;
+}
+
+/* 加载和错误状态 */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText,
+.errorText {
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  padding: 0.5rem 1rem;
+  background-color: #8b5cf6;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background-color: #7c3aed;
+}
+
+/* 空状态 */
+.emptyText {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* 响应式设计 */
+@media (min-width: 640px) {
+  .controls {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 2rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .statsGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 自定义工具提示样式 */
+.customTooltip {
+  max-width: 400px !important;
+}
+
+.tooltipContent {
+  padding: 0.75rem;
+  background: #fff;
+}
+
+.tooltipTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.tooltipList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltipItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+}
+
+.tooltipIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.tooltipPath {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.tooltipValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tooltipFooter {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 模态框样式 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modalHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.closeButton {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.modalBody {
+  padding: 1.5rem;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
+}
+
+.pageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pageItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s;
+}
+
+.pageItem:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pageItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* margin-bottom: 0.75rem; */
+}
+
+.pageIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #3b82f6;
+}
+
+.pagePath {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+.pageStats {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem; */
+  /* display: flex;
+  padding: 0 2rem 0 0;
+  align-items: center;
+  justify-content: flex-end; */
+}
+
+.pageStat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.25rem;
+}
+
+@media (min-width: 1536px) {
+  .analyticsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 图表 Tooltip 样式 */
+.chartTooltip {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.tooltipHeader {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tooltipColor {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .statsCard {
+    padding: 1rem;
+    min-height: 160px;
+  }
+
+  .cardGrowth {
+    bottom: 0.75rem;
+    right: 0.75rem;
+    gap: 0.125rem;
+  }
+
+  .growthText {
+    font-size: 0.75rem;
+  }
+
+  .growthLabel {
+    font-size: 0.6875rem;
+  }
+
+  .chartContainer {
+    padding: 1rem;
+  }
+
+  .chartLegend {
+    gap: 0.5rem;
+  }
+
+  .legendLabel {
+    font-size: 0.75rem;
+  }
+
+  .modalContent {
+    max-height: 90vh;
+    margin: 0.5rem;
+  }
+
+  .pageStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tooltipContent {
+    padding: 0.5rem;
+  }
+
+  .chartTooltip {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    min-width: 160px;
+  }
+}

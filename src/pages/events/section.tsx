@@ -5,26 +5,7 @@ import { Key, useEffect, useState } from 'react';
 import { getEvents } from '../api/event';
 import dayjs from 'dayjs';
 import { Tag } from 'antd';
-
-
-const activities = [
-    {
-        title: 'Web3 开发者工作坊',
-        description: '探索 Solidity 和链上交互的实践技巧。',
-        status: '即将开始',
-        participants: '25人已报名',
-        date: '2025年6月25日',
-        location: '线上 Zoom',
-    },
-    {
-        title: '社区AMA：以太坊未来发展',
-        description: '与核心开发者畅聊 Ethereum 的未来。',
-        status: '已结束',
-        participants: '78人参与',
-        date: '2025年5月15日',
-        location: 'Twitter Space',
-    },
-];
+import { useAuth } from '@/contexts/AuthContext';
 
 export function formatTime(isoTime: string): string {
     return dayjs(isoTime).format('YYYY年M月D日');
@@ -32,6 +13,8 @@ export function formatTime(isoTime: string): string {
 
 
 export default function EventSection() {
+    // 使用统一的认证上下文，避免重复调用 useSession
+    const { status } = useAuth();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [events, setEvents] = useState<any[]>([])
 
@@ -56,6 +39,7 @@ export default function EventSection() {
                 status: 3,
                 location: '',
                 event_mode: '',
+                evnet_type: '',
                 publish_status: 2,
             }
 
@@ -80,10 +64,12 @@ export default function EventSection() {
         }
     }
 
-    // 组件挂载时加载数据
+    // 组件挂载时加载数据，但避免在认证过程中重复请求
     useEffect(() => {
-        loadEvents()
-    }, [])
+        if (!status || status !== 'loading') {
+            loadEvents()
+        }
+    }, [status])
 
     return (
         <section className={styles.activities}>

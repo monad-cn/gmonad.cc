@@ -1,0 +1,258 @@
+.container {
+  min-height: 100vh;
+  padding: 0rem 1rem;
+  background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
+}
+
+.header {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 20px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.backButton:hover {
+  color: #6366F1;
+}
+
+.backIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.titleSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.form {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section {
+  background-color: white !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+}
+
+.section .ant-card-body {
+  padding: 1.5rem !important;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sectionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6366F1;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tag {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background-color: #f3f4f6 !important;
+  color: #374151 !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border: none !important;
+  margin: 0 !important;
+}
+
+.tag .ant-tag-close-icon {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+}
+
+.tag .ant-tag-close-icon:hover {
+  color: #374151 !important;
+}
+
+.tagInput {
+  width: 80px !important;
+  height: 28px !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.addTagButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #6366F1;
+  border: 1px dashed #6366F1;
+  border-radius: 9999px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addTagButton:hover {
+  background-color: #faf5ff;
+}
+
+.addTagIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.submitSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cancelButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: auto;
+  line-height: normal;
+}
+
+.cancelButton:hover {
+  background-color: #f9fafb;
+  border-color: #6366F1;
+  color: #6366F1;
+}
+
+.submitButton {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  background-color: #6366F1 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  height: auto !important;
+  line-height: normal !important;
+}
+
+.submitButton:hover {
+  background-color: #6E54FF !important;
+  transform: translateY(-1px) !important;
+}
+
+.submitButton:focus {
+  background-color: #6E54FF !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.submitIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .rightColumn {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .section .ant-card-body {
+    padding: 1rem !important;
+  }
+
+  .submitSection {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

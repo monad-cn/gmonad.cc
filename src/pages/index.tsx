@@ -20,23 +20,95 @@ import {
   Server,
   ServerCog,
   ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import styles from './index.module.css';
-import { SiDiscord, SiTelegram } from 'react-icons/si';
-import { Avatar } from 'antd';
+import { SiTelegram, SiX } from 'react-icons/si';
+import { Avatar, Image } from 'antd';
 import EventSection from './events/section';
+import { getDapps } from './api/dapp';
+import ClientOnly from '../components/ClientOnly';
 
 export default function Home() {
+  const router = useRouter();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
-  const [stats, setStats] = useState({
-    members: 1000,
-    activities: 50,
-    projects: 20,
-    commits: 1250,
-  });
+  const [dapps, setDapps] = useState<any[]>([]);
+  const pageSize = 20;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+
+  // Removed stats - currently not used as the stats section is commented out
+  const [particleStyles, setParticleStyles] = useState<Array<React.CSSProperties>>([]);
+
+  const scrollGallery = (direction: 'left' | 'right') => {
+    const container = document.querySelector(`.${styles.galleryContainer}`) as HTMLElement;
+    if (container) {
+      const scrollAmount = 312; // Width of one image (280px) plus gap (32px)
+      const currentScroll = container.scrollLeft;
+
+      let targetScroll;
+      if (direction === 'left') {
+        // Scroll to absolute left if we're close to the beginning
+        if (currentScroll <= scrollAmount) {
+          targetScroll = 0;
+        } else {
+          targetScroll = currentScroll - scrollAmount;
+        }
+      } else {
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        targetScroll = Math.min(maxScroll, currentScroll + scrollAmount);
+      }
+
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchDapps = async () => {
+      try {
+        const params = {
+          is_feature: 1,
+          page: 1,
+          page_size: pageSize,
+        };
+        const result = await getDapps(params);
+        if (result.success && result.data && Array.isArray(result.data.dapps)) {
+          setDapps(result.data.dapps);
+        }
+      } catch (error) {
+        console.error("获取 DApps 列表失败:", error);
+      }
+    };
+    fetchDapps();
+  }, []);
+
+  useEffect(() => {
+    let animationFrame: number;
+    const scrollContainer = scrollRef.current;
+
+    const scroll = () => {
+      if (scrollContainer && !isHovering) {
+        scrollContainer.scrollLeft += 0.5; // 每帧增加 0.5px，可根据需要调整
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+          scrollContainer.scrollLeft = 0; // 回到开头循环滚动
+        }
+      }
+      animationFrame = requestAnimationFrame(scroll);
+    };
+
+    animationFrame = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isHovering]);
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -46,19 +118,17 @@ export default function Home() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // 模拟实时数据更新
-    const interval = setInterval(() => {
-      setStats((prev) => ({
-        members: prev.members + Math.floor(Math.random() * 3),
-        activities: prev.activities,
-        projects: prev.projects,
-        commits: prev.commits + Math.floor(Math.random() * 5),
-      }));
-    }, 5000);
+    // 生成粒子样式（客户端挂载后）
+    const styles = [...Array(30)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      animationDuration: `${2 + Math.random() * 3}s`,
+    }));
+    setParticleStyles(styles);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      clearInterval(interval);
     };
   }, []);
 
@@ -66,7 +136,7 @@ export default function Home() {
     {
       icon: <Zap className={styles.featureIcon} />,
       title: '极致性能',
-      description: '并行执行引擎，TPS达到10,000+',
+      description: '并行执行引擎，TPS达到10,000+, 出块时间达0.5s',
     },
     {
       icon: <Shield className={styles.featureIcon} />,
@@ -144,29 +214,49 @@ export default function Home() {
       title: '开发文档',
       description: '完整的API文档和开发指南',
       icon: <BookOpen className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://docs.monad.xyz/',
     },
     {
       title: '代码示例',
       description: '丰富的智能合约示例代码',
       icon: <Code className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://docs.monad.xyz/guides/',
     },
     {
       title: '开发工具',
       description: '专业的开发工具和SDK',
       icon: <Cpu className={styles.resourceIcon} />,
-      link: '#',
+      link: 'https://developers.monad.xyz/#quick-start',
     },
     {
       title: '测试网络',
       description: '免费的测试网络环境',
       icon: <Globe className={styles.resourceIcon} />,
-      link: '#',
+      link: '/testnet',
     },
   ];
 
   const members = [
+    {
+      name: 'luluisangry',
+      twitter: 'https://x.com/lulu70191243',
+      avatar: "lulu.jpg",
+    },
+    {
+      name: 'Harvey C',
+      twitter: 'https://x.com/Harveycww',
+      avatar: "harvey.jpg",
+    },
+    {
+      name: 'Michael',
+      twitter: 'https://x.com/michael_lwy',
+      avatar: "michael.jpg",
+    },
+    {
+      name: 'Box',
+      twitter: 'https://x.com/BoxMrChen',
+      avatar: "box.jpg",
+    },
     {
       name: 'Seven',
       twitter: 'https://x.com/_Seven7777777',
@@ -204,51 +294,172 @@ export default function Home() {
               background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.15), transparent 40%)`,
             }}
           ></div>
-          <div className={styles.particles}>
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className={styles.particle}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 3}s`,
-                }}
-              ></div>
-            ))}
-          </div>
         </div>
 
         <div className={styles.container}>
           <div
             className={`${styles.heroContent} ${isVisible ? styles.heroVisible : ''}`}
           >
-            <div className={styles.heroBadge}>🚀 下一代区块链技术</div>
             <h1 className={styles.heroTitle}>
               <span className={styles.heroTitleSecondary}>Monad中文社区</span>
             </h1>
+
+            {/* 标题装饰 */}
+            <div className={styles.titleDecoration}>
+              <div className={styles.decorationGradient}></div>
+              <div className={styles.decorationLine}></div>
+            </div>
             <p className={styles.heroSubtitle}>
               <span className={styles.heroHighlight}>
                 加入我们，和 Nads 一起了解、参与、构建 Monad
               </span>
             </p>
+            {/* 图片画廊 */}
+            <div className={styles.heroGallery}>
+              <button
+                className={`${styles.galleryNavigation} ${styles.galleryNavPrev}`}
+                onClick={() => scrollGallery('left')}
+                aria-label="Previous images"
+              >
+                <ChevronLeft className={styles.galleryNavIcon} />
+              </button>
+
+              <div className={styles.galleryContainer}>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp1.jpg" 
+                    alt="Monad社区活动1" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp2.jpg" 
+                    alt="Monad社区活动2" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp3.jpg" 
+                    alt="Monad社区活动3" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp4.jpg" 
+                    alt="Monad社区活动4" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp6.jpg" 
+                    alt="Monad社区活动5" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp7.jpg" 
+                    alt="Monad社区活动6" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp8.jpg" 
+                    alt="Monad社区活动7" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp9.jpg" 
+                    alt="Monad社区活动8" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+                <div className={styles.galleryImage}>
+                  <Image 
+                    src="/community/cp10.jpg" 
+                    alt="Monad社区活动9" 
+                    width={300}
+                    height={195}
+                    style={{ borderRadius: '14px' }}
+                    preview={{
+                      mask: false
+                    }}
+                  />
+                </div>
+              </div>
+
+              <button
+                className={`${styles.galleryNavigation} ${styles.galleryNavNext}`}
+                onClick={() => scrollGallery('right')}
+                aria-label="Next images"
+              >
+                <ChevronRight className={styles.galleryNavIcon} />
+              </button>
+            </div>
+
             <div className={styles.heroButtons}>
-              <Link href="/events" className={styles.heroPrimaryButton}>
+              <Link href="/monad" className={styles.heroPrimaryButton}>
+                <Globe className={styles.buttonIcon} />
+                了解 Monad
+              </Link>
+              <Link href="/events" className={styles.heroSecondaryButton}>
                 <Users className={styles.buttonIcon} />
                 加入社区
               </Link>
-              <button className={styles.heroSecondaryButton}>
-                <Globe className={styles.buttonIcon} />
-                体验测试网
-              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className={styles.stats}>
+      {/* <section className={styles.stats}>
         <div className={styles.container}>
           <div className={styles.statsGrid}>
             {[
@@ -286,7 +497,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Activities Section */}
       <EventSection />
@@ -295,13 +506,13 @@ export default function Home() {
       <section className={styles.milestones}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>里程碑</h2>
+            <h2 className={styles.sectionTitle}>Monad 里程碑</h2>
           </div>
           <div className={styles.timeline}>
             <div className={styles.timelineLine}></div>
             {milestones.map((milestone, index) => (
               <div
-                key={index}
+                key={`milestone-${index}`}
                 className={`${styles.milestoneItem} ${index % 2 === 0 ? styles.milestoneLeft : styles.milestoneRight}`}
               >
                 <div className={styles.milestoneContent}>
@@ -337,12 +548,12 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>技术特色</h2>
             <p className={styles.sectionDescription}>
-              Monad采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
+              Monad 采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
             </p>
           </div>
           <div className={styles.featuresGrid}>
             {features.map((feature, index) => (
-              <div key={index} className={styles.featureCard}>
+              <div key={`feature-${index}`} className={styles.featureCard}>
                 <div className={styles.featureCardGlow}></div>
                 <div className={styles.featureCardContent}>
                   <div className={styles.featureIconWrapper}>
@@ -359,6 +570,68 @@ export default function Home() {
         </div>
       </section>
 
+      {/* DApp Showcase Section */}
+      <section className={styles.dappShowcase}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>生态 DApps</h2>
+            <p className={styles.sectionDescription}>
+              探索正在 Monad 测试网构建和活跃的优秀 DApp 项目
+            </p>
+          </div>
+          <div className={styles.dappsScrollContainer}
+            ref={scrollRef}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            {dapps.map((dapp) => (
+              <div 
+                key={dapp.ID} 
+                className={styles.dappCard} 
+                onClick={() => router.push(`/ecosystem/dapps/${dapp.ID}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.coverContainer}>
+                  <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                  <div className={styles.cardTop}>
+                    <div className={styles.cardActions}>
+                      {dapp.featured && (
+                        <div className={styles.featuredBadge}>
+                          <Star className={styles.featuredIcon} />
+                        </div>
+                      )}
+                      {dapp.x && (
+                        <Link href={dapp.x} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                          <SiX className={styles.actionIcon} />
+                        </Link>
+                      )}
+                      {dapp.site && (
+                        <Link href={dapp.site} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                          <Globe className={styles.actionIcon} />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.logoContainer}>
+                  <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+                </div>
+                <div className={styles.cardContent}>
+                  <h3 className={styles.dappName}>{dapp.name}</h3>
+                  <p className={styles.dappDescription}>{dapp.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={styles.viewMoreWrapper}>
+            <Link href="/ecosystem/dapps" className={styles.viewMoreButton}>
+              查看更多 DApps →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+
       {/* Resources Section */}
       <section className={styles.resources}>
         <div className={styles.container}>
@@ -370,7 +643,18 @@ export default function Home() {
           </div>
           <div className={styles.resourcesGrid}>
             {resources.map((resource, index) => (
-              <div key={index} className={styles.resourceCard}>
+              <div
+                key={`resource-${index}`}
+                className={styles.resourceCard}
+                onClick={() => {
+                  if (resource.link.startsWith('http')) {
+                    window.open(resource.link, '_blank');
+                  } else {
+                    router.push(resource.link);
+                  }
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles.resourceCardGlow}></div>
                 <div className={styles.resourceCardHeader}>
                   <div className={styles.resourceIconWrapper}>
@@ -404,14 +688,15 @@ export default function Home() {
             <div className={styles.membersGradientLeft}></div>
             <div className={styles.membersGradientRight}></div>
             <div
-              className={
-                duplicatedMembers.length <= 6
-                  ? styles.membersScrollStatic
-                  : styles.membersScrollAuto
-              }
+              // className={
+              //   duplicatedMembers.length <= 6
+              //     ? styles.membersScrollStatic
+              //     : styles.membersScrollAuto
+              // }
+              className={styles.membersScrollStatic}
             >
               {duplicatedMembers.map((member, index) => (
-                <div key={index} className={styles.memberItem}>
+                <div key={`member-${index}`} className={styles.memberItem}>
                   <a
                     href={member.twitter}
                     target="_blank"
@@ -438,38 +723,42 @@ export default function Home() {
       {/* CTA Section */}
       <section className={styles.cta}>
         <div className={styles.ctaBackground}>
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className={styles.ctaParticle}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            ></div>
-          ))}
+          <ClientOnly fallback={
+            <div className={styles.particleFallback}>
+              {/* 静态占位粒子，避免布局偏移 */}
+              {[...Array(30)].map((_, i) => (
+                <div key={`particle-static-${i}`} className={styles.ctaParticleStatic}></div>
+              ))}
+            </div>
+          }>
+            {particleStyles.map((style, i) => (
+              <div
+                key={`particle-${i}`}
+                className={styles.ctaParticle}
+                style={style}
+              ></div>
+            ))}
+          </ClientOnly>
         </div>
         <div className={styles.container}>
           <div className={styles.ctaContent}>
             <h2 className={styles.ctaTitle}>准备好加入 Monad 中文社区了吗？</h2>
             <div className={styles.ctaButtons}>
               <Link
-                href="https://discord.gg/monad"
+                href="https://x.com/monad_zw"
                 target="_blank"
                 className={styles.ctaPrimaryButton}
               >
-                <SiDiscord className={styles.buttonIcon} />
-                加入 Discord
+                <SiX className={styles.buttonIconX}  />
+                关注 X
               </Link>
               <Link
-                href="https://www.monad.xyz/"
+                href="https://t.me/Chinads"
                 target="_blank"
                 className={styles.ctaSecondaryButton}
               >
-                <Globe className={styles.buttonIcon} />
-                访问官方网站
+                <SiTelegram className={styles.buttonIcon} />
+                加入 Telegram
               </Link>
             </div>
           </div>

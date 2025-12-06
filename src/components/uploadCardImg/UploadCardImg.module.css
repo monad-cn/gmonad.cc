@@ -7,7 +7,7 @@
 }
 
 .imageUpload:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
 }
 
@@ -22,7 +22,7 @@
 .uploadIconSvg {
   width: 3rem;
   height: 3rem;
-  color: #8b5cf6;
+  color: #6366F1;
 }
 
 .uploadText {
@@ -63,7 +63,7 @@
 }
 
 .imagePreviewContainer:hover {
-  border-color: #8b5cf6;
+  border-color: #6366F1;
 }
 
 .previewImage {
@@ -180,14 +180,14 @@
   width: 2rem;
   height: 2rem;
   border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid #8b5cf6;
+  border-top: 3px solid #6366F1;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 0.5rem;
 }
 
 .loadingText {
-  color: #8b5cf6;
+  color: #6366F1;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -232,7 +232,7 @@
 }
 
 .imagePreview:hover {
-  border-color: #8b5cf6 !important;
+  border-color: #6366F1 !important;
   background-color: #faf5ff !important;
 }
 

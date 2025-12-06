@@ -1,0 +1,336 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%);
+  color: #1f2937;
+}
+
+.header {
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #6366F1 0%, #6366F1 50%, #c084fc 100%);
+  color: white;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 20px;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.backIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.formContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.formCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.form {
+  padding: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #6366F1;
+}
+
+.formItem {
+  margin-bottom: 1.5rem;
+}
+
+/* Ant Design 组件样式覆盖 */
+.input,
+.textarea,
+.select {
+  border-radius: 0.5rem !important;
+  border: 2px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+.input:hover,
+.textarea:hover,
+.select:hover {
+  border-color: #6366F1 !important;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: #374151 !important;
+}
+
+.ant-form-item-label > label.ant-form-item-required::before {
+  color: #ef4444 !important;
+}
+
+.uploadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.uploadWrapper {
+  width: 100%;
+}
+
+/* Upload 组件样式 */
+.ant-upload-wrapper {
+  width: 100%;
+}
+
+.ant-upload-list {
+  width: 100%;
+}
+
+.ant-upload-select {
+  width: 100% !important;
+  height: 120px !important;
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.75rem !important;
+  background: #f9fafb !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-upload-select:hover {
+  border-color: #6366F1 !important;
+  background: #faf5ff !important;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.uploadIcon {
+  font-size: 2rem !important;
+  color: #6b7280;
+}
+
+.uploadText {
+  text-align: center;
+  color: #374151;
+}
+
+.uploadText > div:first-child {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.uploadHint {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.ant-upload-list-item {
+  border-radius: 0.5rem !important;
+}
+
+.ant-upload-list-item-thumbnail {
+  border-radius: 0.25rem !important;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Tag 组件样式 */
+.tag {
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 1rem !important;
+  color: #374151 !important;
+  transition: all 0.3s ease !important;
+}
+
+.tag:hover {
+  background: #e5e7eb !important;
+}
+
+.tagInput {
+  width: 150px !important;
+  border: 2px solid #6366F1 !important;
+  border-radius: 1rem !important;
+}
+
+.addTag {
+  background: #f3f4f6 !important;
+  border: 1px dashed #6366F1 !important;
+  border-radius: 1rem !important;
+  color: #6366F1 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.addTag:hover {
+  background: #faf5ff !important;
+}
+
+.addIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.25rem;
+}
+
+.predefinedTags {
+  margin-top: 1rem;
+}
+
+.predefinedLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.predefinedTag {
+  background: #f9fafb !important;
+  border: 1px dashed #6366F1 !important;
+  border-radius: 1rem !important;
+  color: #374151 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.predefinedTag:hover {
+  background: #faf5ff !important;
+  color: #6366F1 !important;
+}
+
+.predefinedIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.25rem;
+}
+
+.submitSection {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Button 组件样式 */
+.submitButton {
+  background: #6366F1 !important;
+  border-color: #6366F1 !important;
+  border-radius: 0.75rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  min-width: 200px !important;
+  height: 48px !important;
+  transition: all 0.3s ease !important;
+}
+
+.submitButton:hover {
+  background: #6E54FF !important;
+  border-color: #6E54FF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3) !important;
+}
+
+.submitButton:focus {
+  background: #6E54FF !important;
+  border-color: #6E54FF !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* 错误状态样式 */
+.ant-form-item-has-error .ant-input,
+.ant-form-item-has-error .ant-input-affix-wrapper,
+.ant-form-item-has-error .ant-select-selector {
+  border-color: #ef4444 !important;
+}
+
+.ant-form-item-explain-error {
+  color: #ef4444 !important;
+  font-size: 0.875rem !important;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .uploadGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .formContainer {
+    padding: 1rem;
+  }
+
+  .form {
+    padding: 1.5rem;
+  }
+
+  .tagContainer {
+    gap: 0.25rem;
+  }
+}

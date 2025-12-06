@@ -1,0 +1,416 @@
+/**
+ * 文档项接口定义
+ * 表示单个文档页面的配置信息
+ */
+export interface DocItem {
+  slug: string; // 文档的唯一标识符，对应文件路径（不含扩展名）
+  title: string; // 文档显示标题
+  hasArrow?: boolean; // 是否显示外链箭头图标（可选）
+}
+
+/**
+ * 文档分组接口定义
+ * 用于将相关文档组织在一起，支持嵌套结构
+ */
+export interface DocGroup {
+  id: string; // 分组的唯一标识符
+  title: string; // 分组显示标题
+  collapsed?: boolean; // 是否默认折叠状态（可选）
+  type: 'group'; // 类型标识符，用于区分分组和文档项
+  children: (DocItem | DocGroup)[]; // 子项数组，可以包含文档项或嵌套分组
+}
+
+/**
+ * 文档分类接口定义
+ * 顶级分类，用于组织整个文档结构
+ */
+export interface DocCategory {
+  id: string; // 分类的唯一标识符
+  title: string; // 分类显示标题
+  collapsed?: boolean; // 是否默认折叠状态（可选）
+  docs?: DocItem[]; // 直属于该分类的文档列表（可选）
+  groups?: DocGroup[]; // 该分类下的分组列表（可选）
+}
+
+/**
+ * 文档分类配置数据
+ * 定义了整个文档站点的结构和组织方式
+ *
+ * 配置说明：
+ * - 每个分类可以包含直接的文档（docs）和分组（groups）
+ * - 分组支持嵌套，可以创建多层级的文档结构
+ * - collapsed 属性控制初始展开/折叠状态
+ */
+export const docsCategories: DocCategory[] = [
+  {
+    id: 'introduction',
+    title: '介绍',
+    collapsed: false,
+    docs: [
+      { slug: 'introduction/README', title: '引言' },
+      { slug: 'introduction/why-blockchain', title: '为什么选择区块链？' },
+      {
+        slug: 'introduction/why-monad',
+        title: '为什么选择 Monad: 去中心化+性能',
+      },
+      { slug: 'introduction/monad-for-users', title: '面向用户的 Monad' },
+      {
+        slug: 'introduction/monad-for-developers',
+        title: '面向开发人员的 Monad',
+      },
+    ],
+  },
+  {
+    id: 'developer-essentials',
+    title: '开发人员必备',
+    collapsed: true,
+    docs: [
+      {
+        slug: 'developer-essentials/network-information',
+        title: '网络信息:主网',
+      },
+      { slug: 'developer-essentials/testnets', title: '网络信息:测试网' },
+      { slug: 'developer-essentials/summary', title: '部署摘要' },
+      {
+        slug: 'developer-essentials/differences',
+        title: 'Monad 与以太坊的差异',
+      },
+      { slug: 'developer-essentials/transactions', title: '交易' },
+      { slug: 'developer-essentials/gas-pricing', title: 'Gas 定价' },
+      { slug: 'developer-essentials/opcode-pricing', title: '操作码定价' },
+      { slug: 'developer-essentials/precompiles', title: '预编译合约' },
+      { slug: 'developer-essentials/reserve-balance', title: '储备余额' },
+      { slug: 'developer-essentials/eip-7702', title: 'EIP-7702 支持' },
+      { slug: 'developer-essentials/historical-data', title: '历史数据' },
+      { slug: 'developer-essentials/best-practices', title: '最佳实践' },
+    ],
+    groups: [
+      {
+        id: 'staking',
+        title: '质押机制',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'developer-essentials/staking/index', title: '质押机制概览' },
+          { slug: 'developer-essentials/staking/staking-behavior', title: '质押行为机制' },
+          { slug: 'developer-essentials/staking/staking-precompile', title: '质押预编译合约' },
+        ],
+      },
+      {
+        id: 'changelog',
+        title: '更新日志',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'developer-essentials/changelog/index', title: '更新日志概览' },
+          { slug: 'developer-essentials/changelog/releases', title: '版本发布记录' },
+          { slug: 'developer-essentials/changelog/testnet', title: 'Testnet 更新日志' },
+          { slug: 'developer-essentials/changelog/testnet-2', title: 'Testnet-2 更新日志' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'guides',
+    title: '指南',
+    collapsed: false,
+    docs: [
+      { slug: 'guides/build-dapp', title: '使用 Scaffold-ETH 构建基础 dApp' },
+      { slug: 'guides/build-blink', title: '构建 blink' },
+      { slug: 'guides/connect-wallet', title: '使用 Reown AppKit 连接钱包到应用' },
+      { slug: 'guides/build-mcp', title: '构建与 Monad 测试网交互的 MCP 服务器' },
+      { slug: 'guides/use-deep-links-in-a-mobile-app', title: '在移动应用中使用深度链接' },
+    ],
+    groups: [
+      {
+        id: 'add-monad-to-wallet',
+        title: '添加 Monad 到钱包',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/add-monad-to-wallet/add-monad-mainnet-to-wallet', title: '添加 Monad 主网到钱包' },
+          { slug: 'guides/add-monad-to-wallet/add-monad-testnet-to-wallet', title: '添加 Monad 测试网到钱包' },
+        ],
+      },
+      {
+        id: 'deploy-a-contract',
+        title: '部署智能合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/deploy-a-contract/foundry', title: 'Foundry' },
+          { slug: 'guides/deploy-a-contract/hardhat', title: 'Hardhat' },
+          { slug: 'guides/deploy-a-contract/remix', title: 'Remix' },
+        ],
+      },
+      {
+        id: 'verify-a-contract',
+        title: '验证智能合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/verify-a-contract/foundry', title: 'Foundry' },
+          { slug: 'guides/verify-a-contract/hardhat', title: 'Hardhat' },
+        ],
+      },
+      {
+        id: 'use-an-indexer',
+        title: '使用索引器',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/use-an-indexer/index-token-transfers-with-ghostgraph', title: '使用 GhostGraph 索引代币转账' },
+          { slug: 'guides/use-an-indexer/build-a-transfer-notification-bot-with-envio-hyperindex', title: '使用 Envio Hyperindex 构建转账通知机器人' },
+          { slug: 'guides/use-an-indexer/index-every-wmon-transfer-using-quicknode-streams', title: '使用 QuickNode Streams 索引所有 WMON 转账' },
+        ],
+      },
+      {
+        id: 'evm-resources',
+        title: 'EVM 资源',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'guides/evm-resources/evm-behavior', title: 'EVM 行为机制' },
+          { slug: 'guides/evm-resources/solidity-resources', title: 'Solidity 资源' },
+          {
+            id: 'other-languages',
+            title: '其他编程语言',
+            collapsed: false,
+            type: 'group',
+            children: [
+              { slug: 'guides/evm-resources/other-languages/vyper', title: 'Vyper' },
+              { slug: 'guides/evm-resources/other-languages/yul', title: 'Yul' },
+              { slug: 'guides/evm-resources/other-languages/huff', title: 'Huff' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'getting-started',
+    title: '快速入门',
+    collapsed: false,
+    groups: [
+      {
+        id: 'deploy-contract',
+        title: '部署合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          {
+            slug: 'getting-started/deploy-contract/foundry',
+            title: '使用 Foundry 部署合约',
+          },
+          {
+            slug: 'getting-started/deploy-contract/hardhat',
+            title: '使用 Hardhat 部署合约',
+          },
+        ],
+      },
+      {
+        id: 'verify-contract',
+        title: '验证合约',
+        collapsed: false,
+        type: 'group',
+        children: [
+          {
+            slug: 'getting-started/deploy-contract/verify-contract/foundry',
+            title: '验证合约 (Foundry)',
+          },
+          {
+            slug: 'getting-started/deploy-contract/verify-contract/hardhat',
+            title: '验证合约 (Hardhat)',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'monad-architecture',
+    title: 'Monad 架构',
+    collapsed: false,
+    docs: [
+      {
+        slug: 'monad-architecture/transaction-lifecycle-in-monad',
+        title: 'Monad 的交易生命周期',
+      },
+      { slug: 'monad-architecture/hardware-requirements', title: '硬件要求' },
+      { slug: 'monad-architecture/other-details', title: '其他详细信息' },
+    ],
+    groups: [
+      {
+        id: 'concepts',
+        title: '相关概念',
+        collapsed: false,
+        type: 'group',
+        children: [
+          {
+            slug: 'monad-architecture/concepts/asynchronous-i-o',
+            title: 'Asynchronous I/O',
+          },
+          {
+            slug: 'monad-architecture/concepts/pipelining',
+            title: 'Pipelining',
+          },
+        ],
+      },
+      {
+        id: 'consensus',
+        title: '共识机制',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'monad-architecture/consensus/monadbft', title: 'MonadBFT' },
+          { slug: 'monad-architecture/consensus/raptorcast', title: 'RaptorCast' },
+          { slug: 'monad-architecture/consensus/asynchrodnous-execution', title: '异步执行' },
+          { slug: 'monad-architecture/consensus/block-states', title: '区块状态' },
+          { slug: 'monad-architecture/consensus/local-mempool', title: '本地内存池' },
+          { slug: 'monad-architecture/consensus/statesync', title: '状态同步' },
+          { slug: 'monad-architecture/consensus/blocksync', title: '区块同步' },
+          { slug: 'monad-architecture/consensus/peer-discovery', title: '节点发现' },
+          { slug: 'monad-architecture/consensus/authentication', title: '消息认证' },
+          { slug: 'monad-architecture/consensus/transport-protocols', title: '传输协议的使用' },
+          { slug: 'monad-architecture/consensus/carriage-cost-and-reserve-balance', title: '传输成本和储备余额' },
+        ]
+      },
+      {
+        id: 'execution',
+        title: '执行机制',
+        collapsed: false,
+        type: 'group',
+        children: [
+          {
+            slug: 'monad-architecture/execution/parallel-execution',
+            title: '并行执行',
+          },
+          {
+            slug: 'monad-architecture/execution/monaddb',
+            title: 'MonadDb 数据库',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'reference',
+    title: 'RPC 参考',
+    collapsed: true,
+    docs: [
+      { slug: 'reference/rpc-differences', title: 'RPC 差异' },
+      { slug: 'reference/rpc-limits', title: 'RPC 限制' },
+      { slug: 'reference/rpc-error-codes', title: 'RPC 错误代码' },
+      { slug: 'reference/websockets', title: 'WebSocket 指南' },
+    ],
+  },
+  {
+    id: 'node-ops',
+    title: '节点操作',
+    collapsed: false,
+    docs: [
+      { slug: 'node-ops/hardware-requirements', title: '硬件要求' },
+      { slug: 'node-ops/full-node-configurations', title: '全节点配置' },
+      { slug: 'node-ops/archive-data', title: '归档数据' },
+    ],
+  },
+  {
+    id: 'execution-events',
+    title: '执行事件',
+    collapsed: true,
+    docs: [
+      { slug: 'execution-events/release-notes', title: '发布说明' },
+      { slug: 'execution-events/overview', title: '概览' },
+      { slug: 'execution-events/event-ring', title: '事件环详解' },
+      { slug: 'execution-events/c-api', title: 'C API' },
+      { slug: 'execution-events/rust-api', title: 'Rust API' },
+      { slug: 'execution-events/consensus-events', title: '共识事件' },
+      { slug: 'execution-events/advanced', title: '高级主题' },
+    ],
+    groups: [
+      {
+        id: 'getting-started',
+        title: '快速入门',
+        collapsed: false,
+        type: 'group',
+        children: [
+          { slug: 'execution-events/getting-started/c', title: '构建 C 示例程序' },
+          { slug: 'execution-events/getting-started/rust', title: '构建 Rust 示例程序' },
+          { slug: 'execution-events/getting-started/snapshot', title: '在快照数据上运行示例程序' },
+          { slug: 'execution-events/getting-started/setup-node', title: '设置 Monad 节点' },
+          { slug: 'execution-events/getting-started/final', title: '在实时数据上运行示例程序及后续步骤' },
+        ]
+      }
+    ],
+  },
+
+  {
+    id: 'developer-essentials',
+    title: '开发人员必备',
+    collapsed: true,
+    docs: [{ slug: 'developer/network-info', title: '网络信息' }],
+  },
+];
+
+/**
+ * 获取所有文档分类配置
+ * @returns 文档分类配置数组
+ */
+export function getDocsByCategory(): DocCategory[] {
+  return docsCategories;
+}
+
+/**
+ * 根据文档 slug 查找对应的分类和文档信息
+ * 支持在所有分类和嵌套分组中递归搜索
+ *
+ * @param slug 文档的唯一标识符
+ * @returns 包含分类和文档信息的对象，如果未找到则返回 null
+ */
+export function findDocCategory(
+    slug: string
+): { category: DocCategory; doc: DocItem } | null {
+  for (const category of docsCategories) {
+    // 首先搜索分类下直接的文档
+    if (category.docs) {
+      const doc = category.docs.find((d) => d.slug === slug);
+      if (doc) {
+        return { category, doc };
+      }
+    }
+
+    // 然后递归搜索分类下的分组中的文档
+    if (category.groups) {
+      const result = searchInGroups(category.groups, slug);
+      if (result) {
+        return { category, doc: result };
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * 在分组中递归搜索指定 slug 的文档
+ * 支持多层嵌套的分组结构
+ *
+ * @param groups 要搜索的分组数组
+ * @param slug 要查找的文档 slug
+ * @returns 找到的文档项，如果未找到则返回 null
+ */
+function searchInGroups(groups: DocGroup[], slug: string): DocItem | null {
+  for (const group of groups) {
+    for (const child of group.children) {
+      // 如果子项是文档项且 slug 匹配
+      if ('slug' in child && child.slug === slug) {
+        return child;
+      }
+      // 如果子项是嵌套分组，递归搜索
+      if ('type' in child && child.type === 'group') {
+        const result = searchInGroups([child], slug);
+        if (result) return result;
+      }
+    }
+  }
+  return null;
+}

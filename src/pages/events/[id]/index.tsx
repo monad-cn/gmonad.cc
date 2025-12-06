@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Tag, Avatar, Modal, App as AntdApp, Image } from 'antd';
+import { Button, Tag, Avatar, App as AntdApp, Image, Popconfirm } from 'antd';
 import {
   ArrowLeft,
   Calendar,
@@ -8,41 +8,97 @@ import {
   MapPin,
   Users,
   Globe,
-  Share2,
-  Heart,
-  ExternalLink,
+  CheckCircle,
   Edit,
-  Star,
-  User,
   Mail,
   Copy,
-  Download,
-  CheckCircle,
+  Trash2,
+  User,
+  ExternalLink,
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { useSession } from 'next-auth/react';
-import { getEventById, updateEventPublishStatus } from '@/pages/api/event';
+import { useAuth } from '@/contexts/AuthContext';
+import { updateEventPublishStatus, EventWithDetails } from '@/pages/api/event';
 import { SiX } from 'react-icons/si';
 
-export default function EventDetailPage() {
+import { deleteRecap } from '@/pages/api/recap';
+import { sanitizeMarkdown } from '@/lib/markdown';
+import SEO from '@/components/SEO';
+import { GetServerSideProps } from 'next';
+
+interface EventDetailPageProps {
+  initialEvent: EventWithDetails | null;
+  initialRecap: any | null;
+  error?: string;
+}
+
+export default function EventDetailPage({
+  initialEvent,
+  initialRecap,
+}: EventDetailPageProps) {
   const { message } = AntdApp.useApp();
   const router = useRouter();
-  const { id } = router.query; // 路由参数应该叫 id，不是 ids
-  const rId = Array.isArray(id) ? id[0] : id;
 
-  const [event, setEvent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [event] = useState<EventWithDetails | null>(initialEvent);
+  const [recap, setRecap] = useState<any>(initialRecap);
   const [shareModalVisible, setShareModalVisible] = useState(false);
-  const { data: session, status } = useSession();
+  const [activeTab, setActiveTab] = useState<'intro' | 'recap'>('intro');
+  const [backLink, setBackLink] = useState('/events');
+  const [backText, setBackText] = useState('返回活动列表');
+
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 
+  // 检测入口来源并设置返回链接
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const referrer = document.referrer;
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+
+      // 优先检查 URL 参数
+      if (fromParam === 'calendar') {
+        setBackLink('/events/calendar');
+        setBackText('返回活动日历');
+      } else if (referrer.includes('/events/calendar')) {
+        // 检查 referrer 是否来自日历页面
+        setBackLink('/events/calendar');
+        setBackText('返回活动日历');
+      } else {
+        // 默认返回活动列表
+        setBackLink('/events');
+        setBackText('返回活动列表');
+      }
+    }
+  }, []);
+
+  // parseMarkdown将返回的markdown转为html展示
+  const [eventContent, setEventContent] = useState<string>('');
+  const [recapContent, setRecapContent] = useState<string>('');
+
+  useEffect(() => {
+    if (event?.description) {
+      sanitizeMarkdown(event.description).then((htmlContent) => {
+        setEventContent(htmlContent);
+      });
+    }
+  }, [event?.description]);
+
+  useEffect(() => {
+    if (recap?.content) {
+      sanitizeMarkdown(recap.content).then((htmlContent) => {
+        setRecapContent(htmlContent);
+      });
+    }
+  }, [recap?.content]);
+
   const handleUpdatePublishStatus = async () => {
+    if (!event) return;
     try {
-      const result = await updateEventPublishStatus(event.ID, 2);
+      const result = await updateEventPublishStatus(event.ID.toString(), 2);
       if (result.success) {
         router.reload();
         message.success(result.message);
@@ -54,47 +110,8 @@ export default function EventDetailPage() {
     }
   };
 
-  useEffect(() => {
-    if (!router.isReady || !rId) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getEventById(rId);
-        console.log('获取活动详情:', response);
-        setEvent(response?.data);
-      } catch (error) {
-        message.error('加载失败');
-        setEvent(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router.isReady, id]);
-
-  const handleRegister = () => {
-    if (isRegistered) {
-      message.success('已取消报名');
-      setIsRegistered(false);
-    } else {
-      message.success('报名成功！');
-      setIsRegistered(true);
-    }
-  };
-
-  const handleFavorite = () => {
-    if (isFavorited) {
-      message.success('已取消收藏');
-      setIsFavorited(false);
-    } else {
-      message.success('已添加到收藏');
-      setIsFavorited(true);
-    }
-  };
-
   const handleShare = (platform?: string) => {
+    if (!event) return;
     if (platform === 'copy') {
       navigator.clipboard.writeText(window.location.href);
       message.success('链接已复制到剪贴板');
@@ -108,14 +125,21 @@ export default function EventDetailPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>加载中...</p>
-      </div>
-    );
-  }
+  // 处理删除回顾
+  const handleDeleteRecap = async () => {
+    if (!recap || !recap.ID) return;
+    try {
+      const result = await deleteRecap(recap.ID);
+      if (result.success) {
+        message.success('活动回顾已删除');
+        setRecap(null);
+      } else {
+        message.error(result.message || '删除失败');
+      }
+    } catch (error) {
+      message.error('删除出错，请重试');
+    }
+  };
 
   if (
     !event ||
@@ -125,8 +149,8 @@ export default function EventDetailPage() {
       <div className={styles.error}>
         <h2>活动不存在</h2>
         <p>抱歉，找不到您要查看的活动</p>
-        <Link href="/events" className={styles.backButton}>
-          返回活动列表
+        <Link href={backLink} className={styles.backButton}>
+          {backText}
         </Link>
       </div>
     );
@@ -158,351 +182,547 @@ export default function EventDetailPage() {
     };
   };
 
+  const formatDateTimeRange = (startTime: string, endTime: string) => {
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+
+    // 检查是否跨天
+    const startDay = startDate.toDateString();
+    const endDay = endDate.toDateString();
+    const isSameDay = startDay === endDay;
+
+    if (isSameDay) {
+      // 同一天：显示日期和时间范围
+      return {
+        date: startDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long',
+        }),
+        timeRange: `${startDate.toLocaleTimeString('zh-CN', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })} - ${endDate.toLocaleTimeString('zh-CN', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })}`,
+        isSameDay: true,
+      };
+    } else {
+      // 跨天：只显示日期范围
+      return {
+        date: `${startDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })} - ${endDate.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}`,
+        timeRange: '',
+        isSameDay: false,
+      };
+    }
+  };
+
   const eventStatus = getEventStatus();
-  const startDateTime = formatDateTime(event.start_time);
-  const endDateTime = formatDateTime(event.end_time);
+  const dateTimeRange = formatDateTimeRange(event.start_time, event.end_time);
+
+  // 生成活动描述用于 SEO
+  const eventDescription = `${event.event_mode} - ${dateTimeRange.date}${dateTimeRange.timeRange ? ' ' + dateTimeRange.timeRange : ''}${event.event_mode === '线下活动' && event.location ? ' @ ' + event.location : ''}`;
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
-          <Link href="/events" className={styles.backLink}>
-            <ArrowLeft className={styles.backIcon} />
-            返回活动列表
-          </Link>
-          <div className={styles.headerActions}>
-            {status === 'authenticated' &&
-            permissions.includes('event:write') ? (
-              <Button
-                icon={<Edit size={16} className={styles.actionIcon} />}
-                className={styles.actionButton}
-                onClick={() => router.push(`/events/${event.ID}/edit`)}
-              >
-                编辑
-              </Button>
-            ) : null}
-            {event.publish_status === 1 &&
-            status === 'authenticated' &&
-            permissions.includes('event:review') ? (
-              <Button
-                icon={<CheckCircle size={16} className={styles.actionIcon} />}
-                className={styles.actionButton}
-                onClick={() => handleUpdatePublishStatus()}
-              >
-                审核通过
-              </Button>
-            ) : null}
+    <>
+      <SEO
+        title={event.title}
+        description={eventDescription}
+        type="event"
+        url={`/events/${event.ID}`}
+        image={event.cover_img}
+        eventStartTime={event.start_time}
+        eventEndTime={event.end_time}
+        eventLocation={
+          event.event_mode === '线下活动' ? event.location : '线上活动'
+        }
+        tags={event.tags}
+      />
+      <div className={`${styles.container} nav-t-top`}>
+        {/* Header */}
+        <div className={styles.header}>
+          <div className={styles.headerContent}>
+            <Link href={backLink} className={styles.backLink}>
+              <ArrowLeft className={styles.backIcon} />
+              {backText}
+            </Link>
+            <div className={styles.headerActions}>
+              {status === 'authenticated' &&
+              permissions.includes('event:write') ? (
+                <Button
+                  icon={<Edit size={16} className={styles.actionIcon} />}
+                  className={styles.actionButton}
+                  onClick={() => router.push(`/events/${event.ID}/edit`)}
+                >
+                  编辑
+                </Button>
+              ) : null}
+              {event.publish_status === 1 &&
+              status === 'authenticated' &&
+              permissions.includes('event:review') ? (
+                <Button
+                  icon={<CheckCircle size={16} className={styles.actionIcon} />}
+                  className={styles.actionButton}
+                  onClick={() => handleUpdatePublishStatus()}
+                >
+                  审核通过
+                </Button>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Hero Section */}
-      <div className={styles.hero}>
-        <div className={styles.heroContent}>
-          <div className={styles.heroLeft}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <div
-                className={styles.statusBadge}
-                style={{ backgroundColor: eventStatus.color }}
-              >
-                {eventStatus.text}
-              </div>
-              {event.publish_status === 1 && (
+        {/* Hero Section */}
+        <div className={styles.hero}>
+          <div className={styles.heroContent}>
+            <div className={styles.heroLeft}>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <div
                   className={styles.statusBadge}
-                  style={{ backgroundColor: '#af78e7' }}
+                  style={{ backgroundColor: eventStatus.color }}
                 >
-                  待审核
+                  {eventStatus.text}
                 </div>
-              )}
-            </div>
-            <h1 className={styles.title}>{event.title}</h1>
-            <div className={styles.metaInfo}>
-              <div className={styles.metaItem}>
-                <Calendar className={styles.metaIcon} />
-                <div>
-                  <div className={styles.metaText}>{startDateTime.date}</div>
-                  <div className={styles.metaSubtext}>
-                    {startDateTime.time} - {endDateTime.time}
+                {event.publish_status === 1 && (
+                  <div
+                    className={styles.statusBadge}
+                    style={{ backgroundColor: '#af78e7' }}
+                  >
+                    待审核
                   </div>
-                </div>
-              </div>
-              <div className={styles.metaItem}>
-                {event.event_mode === '线上活动' ? (
-                  <Globe className={styles.metaIcon} />
-                ) : (
-                  <MapPin className={styles.metaIcon} />
                 )}
-                <div>
-                  <div className={styles.metaText}>
-                    {event.event_mode === '线上活动'
-                      ? '线上活动'
-                      : event.location}
+              </div>
+              <h1 className={styles.title}>{event.title}</h1>
+              <div className={styles.metaInfo}>
+                <div className={styles.metaItem}>
+                  <Calendar className={styles.metaIcon} />
+                  <div>
+                    <div className={styles.metaText}>{dateTimeRange.date}</div>
+                    {dateTimeRange.timeRange && (
+                      <div className={styles.metaSubtext}>
+                        {dateTimeRange.timeRange}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.metaItem}>
+                  {event.event_mode === '线上活动' ? (
+                    <Globe className={styles.metaIcon} />
+                  ) : (
+                    <MapPin className={styles.metaIcon} />
+                  )}
+                  <div>
+                    <div className={styles.metaText}>
+                      {event.event_mode === '线上活动'
+                        ? '线上活动'
+                        : event.location}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.metaItem}>
+                  <Users className={styles.metaIcon} />
+                  <div>
+                    <div className={styles.metaText}>
+                      {event.participants} 人
+                    </div>
+                    {/* <div className={styles.metaSubtext}>已报名参与</div> */}
                   </div>
                 </div>
               </div>
-              <div className={styles.metaItem}>
-                <Users className={styles.metaIcon} />
-                <div>
-                  <div className={styles.metaText}>{event.participants} 人</div>
-                  {/* <div className={styles.metaSubtext}>已报名参与</div> */}
-                </div>
+              <div className={styles.tags}>
+                {event.tags.map((tag: string, index: number) => (
+                  <Tag key={index} className={styles.tag}>
+                    {tag}
+                  </Tag>
+                ))}
               </div>
             </div>
-            <div className={styles.tags}>
-              {event.tags.map((tag: string, index: number) => (
-                <Tag key={index} className={styles.tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-          </div>
-          <div className={styles.heroRight}>
-            <div className={styles.coverContainer}>
-              <Image
-                src={event.cover_img || '/placeholder.svg'}
-                alt={event.title}
-                width={400}
-                height={300}
-                className={styles.coverImage}
-              />
+            <div className={styles.heroRight}>
+              <div className={styles.coverContainer}>
+                <Image
+                  src={event.cover_img || '/placeholder.svg'}
+                  alt={event.title}
+                  width={400}
+                  height={300}
+                  className={styles.coverImage}
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className={styles.main}>
-        <div className={styles.content}>
-          {/* Left Column */}
-          <div className={styles.leftColumn}>
-            {/* Description */}
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>活动介绍</h2>
-              <div
-                className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: event.description }}
-              />
-            </section>
-
-            {/* Agenda */}
-            {event.agenda && event.agenda.length > 0 && (
+        {/* Main Content */}
+        <div className={styles.main}>
+          <div className={styles.content}>
+            {/* Left Column */}
+            <div className={styles.leftColumn}>
+              {/* Description */}
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>活动议程</h2>
-                <div className={styles.agenda}>
-                  {event.agenda.map((item: any, index: number) => (
-                    <div key={index} className={styles.agendaItem}>
-                      <div className={styles.agendaTime}>
-                        <Clock size={16} />
-                        {item.time}
+                <div className={styles.titleTabRow}>
+                  <div className={styles.sectionTabs}>
+                    <Button
+                      type="text"
+                      className={`${styles.sectionTab} ${activeTab === 'intro' ? styles.activeTab : ''}`}
+                      onClick={() => setActiveTab('intro')}
+                    >
+                      活动介绍
+                    </Button>
+                    <Button
+                      type="text"
+                      className={`${styles.sectionTab} ${activeTab === 'recap' ? styles.activeTab : ''}`}
+                      onClick={() => setActiveTab('recap')}
+                    >
+                      活动回顾
+                    </Button>
+                  </div>
+
+                  {/* 当处于回顾 Tab 且有回顾内容时，显示编辑/删除按钮 */}
+                  {activeTab === 'recap' &&
+                    recap &&
+                    status === 'authenticated' &&
+                    permissions.includes('blog:write') && (
+                      <div
+                        className={styles.tabActions}
+                        style={{
+                          marginLeft: 'auto',
+                          display: 'flex',
+                          gap: '8px',
+                        }}
+                      >
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<Edit size={14} />}
+                          onClick={() =>
+                            router.push(`/events/${event.ID}/recap`)
+                          }
+                          style={{ color: '#666' }}
+                        >
+                          编辑
+                        </Button>
+                        <Popconfirm
+                          title="删除回顾"
+                          description="确定要删除这篇活动回顾吗？此操作不可恢复。"
+                          onConfirm={handleDeleteRecap}
+                          okText="确定"
+                          cancelText="取消"
+                        >
+                          <Button
+                            type="text"
+                            size="small"
+                            danger
+                            icon={<Trash2 size={14} />}
+                          >
+                            删除
+                          </Button>
+                        </Popconfirm>
                       </div>
-                      <div className={styles.agendaContent}>
-                        <h4 className={styles.agendaTitle}>{item.title}</h4>
-                        <p className={styles.agendaDescription}>
-                          {item.description}
-                        </p>
-                        <div className={styles.agendaSpeaker}>
-                          <User size={14} />
-                          {item.speaker}
+                    )}
+                </div>
+
+                {activeTab === 'intro' ? (
+                  <div
+                    className={`${styles.richText} prose`}
+                    dangerouslySetInnerHTML={{ __html: eventContent }}
+                  />
+                ) : recap?.content ? (
+                  <div
+                    className={`${styles.richText} prose`}
+                    dangerouslySetInnerHTML={{ __html: recapContent }}
+                  />
+                ) : (
+                  <div className={styles.richText}>
+                    <p>暂无活动回顾内容</p>
+                    {/* 如果无内容但有权限，显示引导按钮 */}
+                    {status === 'authenticated' &&
+                      permissions.includes('blog:write') &&
+                      event.status === 2 && (
+                        <div style={{ marginTop: '1rem' }}>
+                          <Button
+                            type="dashed"
+                            onClick={() =>
+                              router.push(`/events/${event.ID}/recap`)
+                            }
+                          >
+                            + 点击添加活动回顾
+                          </Button>
+                        </div>
+                      )}
+                  </div>
+                )}
+              </section>
+
+              {/* Agenda */}
+              {event.agenda && event.agenda.length > 0 && (
+                <section className={styles.section}>
+                  <h2 className={styles.sectionTitle}>活动议程</h2>
+                  <div className={styles.agenda}>
+                    {event.agenda.map((item: any, index: number) => (
+                      <div key={index} className={styles.agendaItem}>
+                        <div className={styles.agendaTime}>
+                          <Clock size={16} />
+                          {item.time}
+                        </div>
+                        <div className={styles.agendaContent}>
+                          <h4 className={styles.agendaTitle}>{item.title}</h4>
+                          <p className={styles.agendaDescription}>
+                            {item.description}
+                          </p>
+                          <div className={styles.agendaSpeaker}>
+                            <User size={14} />
+                            {item.speaker}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {/* Requirements & Benefits */}
-            <div className={styles.requirementsBenefits}>
-              {event.requirements && event.requirements.length > 0 && (
-                <div className={styles.requirements}>
-                  <h3 className={styles.subsectionTitle}>参与要求</h3>
-                  <ul className={styles.list}>
-                    {event.requirements.map((req: string, index: number) => (
-                      <li key={index}>{req}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {event.benefits && event.benefits.length > 0 && (
-                <div className={styles.benefits}>
-                  <h3 className={styles.subsectionTitle}>你将获得</h3>
-                  <ul className={styles.list}>
-                    {event.benefits.map((benefit: string, index: number) => (
-                      <li key={index}>{benefit}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {/* Requirements & Benefits */}
+              <div className={styles.requirementsBenefits}>
+                {event.requirements && event.requirements.length > 0 && (
+                  <div className={styles.requirements}>
+                    <h3 className={styles.subsectionTitle}>参与要求</h3>
+                    <ul className={styles.list}>
+                      {event.requirements.map((req: string, index: number) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {event.benefits && event.benefits.length > 0 && (
+                  <div className={styles.benefits}>
+                    <h3 className={styles.subsectionTitle}>你将获得</h3>
+                    <ul className={styles.list}>
+                      {event.benefits.map((benefit: string, index: number) => (
+                        <li key={index}>{benefit}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Right Column */}
-          <div className={styles.rightColumn}>
-            {/* Registration Card */}
-            {event.status === 3 && (
-              <div className={styles.registrationCard}>
-                <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>参与活动</h3>
-                  <div className={styles.price}>免费</div>
-                </div>
-                <div className={styles.cardContent}>
-                  <div className={styles.participantCount}>
-                    <Users size={20} />
-                    <span>
-                      {event.participants} 人已报名
-                      {event.max_participants &&
-                        ` / ${event.max_participants} 人`}
-                    </span>
+            {/* Right Column */}
+            <div className={styles.rightColumn}>
+              {/* Registration Card */}
+              {event.status !== 2 && (
+                <div className={styles.registrationCard}>
+                  <div className={styles.cardHeader}>
+                    <h3 className={styles.cardTitle}>参与活动</h3>
+                    <div className={styles.price}>免费</div>
                   </div>
-                  {event.registration_deadline && (
-                    <div className={styles.deadline}>
-                      <Clock size={16} />
-                      报名截止：
-                      {formatDateTime(event.registration_deadline).date}
+                  <div className={styles.cardContent}>
+                    {event.event_mode === '线下活动' &&
+                      event.registration_link && (
+                        <>
+                          <div className={styles.participantCount}>
+                            <Users size={20} />
+                            <span>
+                              {event.participants} 人已报名
+                              {/* {event.max_participants &&
+                        ` / ${event.max_participants} 人`} */}
+                            </span>
+                          </div>
+                          {event.registration_deadline && (
+                            <div className={styles.deadline}>
+                              <Clock size={16} />
+                              报名截止：
+                              {formatDateTime(event.registration_deadline).date}
+                            </div>
+                          )}
+                          <Button
+                            type="primary"
+                            size="large"
+                            className={styles.registerButton}
+                            onClick={() => {
+                              window.open(event.registration_link, '_blank');
+                            }}
+                          >
+                            立即报名
+                          </Button>
+                        </>
+                      )}
+                    {event.event_mode === '线上活动' && event.link && (
+                      <Button
+                        icon={<ExternalLink size={16} />}
+                        className={styles.joinButton}
+                        onClick={() => window.open(event.link, '_blank')}
+                        // disabled={eventStatus.type !== 'ongoing'}
+                      >
+                        加入会议
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+              {/* Organizer Card */}
+              {event.status === 3 && (
+                <div className={styles.organizerCard}>
+                  <h3 className={styles.cardTitle}>主办方</h3>
+                  <div className={styles.organizerInfo}>
+                    <Avatar
+                      size={64}
+                      src={event.organizer?.avatar}
+                      className={styles.organizerAvatar}
+                    />
+                    <div className={styles.organizerDetails}>
+                      <h4 className={styles.organizerName}>
+                        {event.organizer?.name}
+                      </h4>
+                      <p className={styles.organizerTitle}>
+                        {event.organizer?.title} @ {event.organizer?.company}
+                      </p>
+                      <p className={styles.organizerBio}>
+                        {event.organizer?.bio}
+                      </p>
+                      <div className={styles.organizerContact}>
+                        {event.organizer?.email && (
+                          <a
+                            href={`mailto:${event.organizer?.email}`}
+                            className={styles.contactLink}
+                            title="发送邮件"
+                          >
+                            <Mail size={16} />
+                          </a>
+                        )}
+                        {event.organizer?.twitter && (
+                          <a
+                            href={`https://twitter.com/${event.organizer?.twitter.replace('@', '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.contactLink}
+                            title="Twitter"
+                          >
+                            <SiX size={16} />
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  )}
+                  </div>
+                </div>
+              )}
+              {/* Share Card */}
+              <div className={styles.shareCard}>
+                <h3 className={styles.cardTitle}>分享活动</h3>
+                <div className={styles.shareButtons}>
                   <Button
-                    type="primary"
-                    size="large"
-                    className={`${styles.registerButton} ${isRegistered ? styles.registered : ''}`}
-                    onClick={handleRegister}
-                    disabled={eventStatus.type === 'ended'}
+                    icon={<Copy size={16} />}
+                    className={styles.shareButton}
+                    onClick={() => handleShare('copy')}
                   >
-                    {eventStatus.type === 'ended'
-                      ? '活动已结束'
-                      : isRegistered
-                        ? '取消报名'
-                        : '立即报名'}
+                    复制链接
                   </Button>
-                  {event.categary === 'online' && event.link && (
+                  <Button
+                    icon={<SiX size={16} />}
+                    className={styles.shareButton}
+                    onClick={() => handleShare('twitter')}
+                  >
+                    分享到 X
+                  </Button>
+                </div>
+              </div>
+              {status === 'authenticated' &&
+                permissions.includes('blog:write') &&
+                !recap &&
+                event.status === 2 && ( // 用户默认拥有博客创作权限，默认用户都可以添加活动回顾
+                  <div className={styles.recapCard}>
+                    <h3 className={styles.cardTitle}>活动回顾</h3>
+                    <p className={styles.description}>
+                      你可以为本次活动添加活动回顾。
+                    </p>
                     <Button
-                      icon={<ExternalLink size={16} />}
-                      className={styles.joinButton}
-                      onClick={() => window.open(event.link, '_blank')}
-                      disabled={eventStatus.type !== 'ongoing'}
+                      type="primary"
+                      className={styles.actionButton}
+                      onClick={() => {
+                        router.push(`/events/${event.ID}/recap`);
+                      }}
                     >
-                      {eventStatus.type === 'ongoing' ? '加入会议' : '会议链接'}
+                      添加活动回顾
                     </Button>
-                  )}
-                </div>
-              </div>
-            )}
-            {/* Organizer Card */}
-            {event.status === 3 && (
-              <div className={styles.organizerCard}>
-                <h3 className={styles.cardTitle}>主办方</h3>
-                <div className={styles.organizerInfo}>
-                  <Avatar
-                    size={64}
-                    src={event.organizer?.avatar}
-                    className={styles.organizerAvatar}
-                  />
-                  <div className={styles.organizerDetails}>
-                    <h4 className={styles.organizerName}>
-                      {event.organizer?.name}
-                    </h4>
-                    <p className={styles.organizerTitle}>
-                      {event.organizer?.title} @ {event.organizer?.company}
-                    </p>
-                    <p className={styles.organizerBio}>
-                      {event.organizer?.bio}
-                    </p>
-                    <div className={styles.organizerContact}>
-                      {event.organizer?.email && (
-                        <a
-                          href={`mailto:${event.organizer?.email}`}
-                          className={styles.contactLink}
-                          title="发送邮件"
-                        >
-                          <Mail size={16} />
-                        </a>
-                      )}
-                      {event.organizer?.twitter && (
-                        <a
-                          href={`https://twitter.com/${event.organizer?.twitter.replace('@', '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.contactLink}
-                          title="Twitter"
-                        >
-                          <Twitter size={16} />
-                        </a>
-                      )}
-                    </div>
                   </div>
-                </div>
-              </div>
-            )}
-            {/* Share Card */}
-            <div className={styles.shareCard}>
-              <h3 className={styles.cardTitle}>分享活动</h3>
-              <div className={styles.shareButtons}>
-                <Button
-                  icon={<Copy size={16} />}
-                  className={styles.shareButton}
-                  onClick={() => handleShare('copy')}
-                >
-                  复制链接
-                </Button>
-                <Button
-                  icon={<SiX size={16} />}
-                  className={styles.shareButton}
-                  onClick={() => handleShare('twitter')}
-                >
-                  分享到 X
-                </Button>
-              </div>
+                )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Share Modal */}
-      <Modal
-        title="分享活动"
-        open={shareModalVisible}
-        onCancel={() => setShareModalVisible(false)}
-        footer={null}
-        className={styles.shareModal}
-      >
-        <div className={styles.shareModalContent}>
-          <div className={styles.sharePreview}>
-            <Image
-              src={event.cover_img || '/placeholder.svg'}
-              alt={event.title}
-              width={300}
-              height={150}
-            />
-            <h4>{event.title}</h4>
-            <p>{startDateTime.date}</p>
-          </div>
-          <div className={styles.shareOptions}>
-            <Button
-              icon={<Copy size={16} />}
-              onClick={() => handleShare('copy')}
-              className={styles.shareOptionButton}
-            >
-              复制链接
-            </Button>
-            <Button
-              icon={<SiX size={16} />}
-              onClick={() => handleShare('twitter')}
-              className={styles.shareOptionButton}
-            >
-              分享到 Twitter
-            </Button>
-            <Button
-              icon={<Download size={16} />}
-              className={styles.shareOptionButton}
-              onClick={() => message.info('下载功能开发中')}
-            >
-              下载海报
-            </Button>
-          </div>
-        </div>
-      </Modal>
-    </div>
+    </>
   );
 }
+
+// 服务端渲染 - 在服务器端获取活动数据
+export const getServerSideProps: GetServerSideProps<
+  EventDetailPageProps
+> = async (context) => {
+  const { id } = context.params as { id: string };
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    return {
+      props: {
+        initialEvent: null,
+        initialRecap: null,
+        error: 'API URL is not configured',
+      },
+    };
+  }
+
+  try {
+    // 并行获取活动详情和回顾
+    const [eventResponse, recapResponse] = await Promise.all([
+      fetch(`${apiUrl}/events/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      fetch(`${apiUrl}/recaps/event/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    ]);
+
+    let eventData = null;
+    let recapData = null;
+
+    // 处理活动数据
+    if (eventResponse.ok) {
+      const eventResult = await eventResponse.json();
+      if (eventResult.code === 200 && eventResult.data) {
+        eventData = eventResult.data as EventWithDetails;
+      }
+    }
+
+    // 处理回顾数据（可选）
+    if (recapResponse.ok) {
+      const recapResult = await recapResponse.json();
+      if (recapResult.code === 200 && recapResult.data) {
+        recapData = recapResult.data;
+      }
+    }
+
+    return {
+      props: {
+        initialEvent: eventData,
+        initialRecap: recapData,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    return {
+      props: {
+        initialEvent: null,
+        initialRecap: null,
+        error: 'Failed to fetch event data',
+      },
+    };
+  }
+};

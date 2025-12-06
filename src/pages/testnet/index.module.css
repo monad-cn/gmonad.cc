@@ -1,0 +1,985 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
+    position: relative;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 600px;
+    background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
+    opacity: 0.03;
+    z-index: 0;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.heroSection {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    padding: 60px 0;
+}
+
+.heroBackground {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+}
+
+.heroTitle {
+    color: #1f2937 !important;
+    margin-bottom: 24px !important;
+    font-size: 48px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+.titleGradient {
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.heroDescription {
+    font-size: 18px;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    line-height: 1.6;
+}
+
+.heroActions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.primaryButton {
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.primaryButton:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4) !important;
+}
+
+.secondaryButton {
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+    border-color: #6366F1;
+    color: #6366F1;
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.statusSection {
+    margin-bottom: 48px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px !important;
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+}
+
+.statusCard {
+    height: 100%;
+    position: relative;
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+
+    .externalIcon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        cursor: pointer;
+    }
+
+    .externalIcon:hover {
+        color: #6366F1;
+    }
+}
+
+
+
+.statusCard::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366F1, #6E54FF);
+}
+
+.statusCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+}
+
+.statusCardGreen::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.statusCardPurple::before {
+    background: linear-gradient(90deg, #6366F1, #6E54FF);
+}
+
+.statusCardBlue::before {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.statusCardOrange::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.statusCardContent {
+    text-align: center;
+    padding: 24px 16px;
+}
+
+.statusIconWrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.statusIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.1);
+    color: #6366F1;
+    position: relative;
+    z-index: 2;
+}
+
+.statusCardGreen .statusIcon {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.statusCardBlue .statusIcon {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.statusCardOrange .statusIcon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.validatorTag {
+    border-color: #6366F1;
+    color: #6366F1;
+    font-size: 10px;
+}
+
+.statusPulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+.statusTag {
+    margin-top: 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.infoSection {
+    margin-bottom: 48px;
+}
+
+.infoCard {
+    height: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.infoCard:hover {
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.1);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.cardIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6366F1, #6E54FF);
+    color: white;
+}
+
+.infoItem {
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.02);
+    border: 1px solid rgba(139, 92, 246, 0.05);
+}
+
+.infoItemHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #6366F1;
+}
+
+.phaseText {
+    font-size: large;
+}
+
+.phaseTime {
+    color: #6366F1;
+}
+
+.launchInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.launchDate {
+    font-size: 16px;
+    font-weight: 600;
+    color: #6366F1;
+}
+
+.phaseTag {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 12px;
+}
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #10b981;
+    font-size: 13px;
+}
+
+.configItem {
+    margin-bottom: 5px;
+}
+
+.configLabel {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 13px;
+}
+
+.blockexplorerLink {
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.configRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.configCode {
+    flex: 1;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #374151;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.configCodeBlock {
+    display: block;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #374151;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.copyButton {
+    border: 1px solid #e2e8f0;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.copyButton:hover {
+    border-color: #6366F1;
+    color: #6366F1;
+}
+
+.walletButton {
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+    transition: all 0.3s ease !important;
+    margin-top: 8px;
+}
+
+.walletButton:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4) !important;
+}
+
+.faucetCard {
+    margin-bottom: 48px;
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.faucetItem {
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.faucetItem:hover {
+    border-color: #6366F1;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+.faucetItemRecommended {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(59, 130, 246, 0.01));
+}
+
+.faucetContent {
+    padding: 16px;
+}
+
+.faucetHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.faucetText {
+    font-size: large;
+}
+
+.faucetDescription {
+    font-size: 12px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.recommendedTag {
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #6366F1;
+    border-color: #6366F1;
+}
+
+.communityTag,
+.devTag {
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.faucetButton {
+    background: #6366F1 !important;
+    border: none !important;
+    margin-top: 10px;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+}
+
+.faucetButtonSecondary {
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.faucetButtonSecondary:hover {
+    border-color: #6366F1;
+    color: #6366F1;
+}
+
+.ecosystemCard {
+    margin-bottom: 48px;
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.projectCard {
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.projectCard:hover {
+    border-color: #6366F1;
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.15);
+    transform: translateY(-4px);
+}
+
+.projectContent {
+    padding: 16px;
+}
+
+.projectHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.projectIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.projectInfo {
+    flex: 1;
+}
+
+.projectName {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.projectDescription {
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.projectFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.projectMetric {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.projectButton {
+    font-size: 11px;
+    padding: 0;
+    height: auto;
+    color: #6366F1;
+}
+
+.ctaSection {
+    margin: 60px calc(-50vw + 50%) 0 calc(-50vw + 50%);
+    background: linear-gradient(135deg, #6366F1 0%, #6E54FF 50%, #4338CA 100%);
+    padding: 80px 24px;
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+}
+
+.ctaStars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle 3s infinite;
+}
+
+.star:nth-child(2n) {
+    width: 1px;
+    height: 1px;
+    opacity: 0.4;
+}
+
+.star:nth-child(3n) {
+    width: 3px;
+    height: 3px;
+}
+
+.starStatic {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.starsFallback {
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+.ctaContent {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ctaTitle {
+    color: white !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+    font-size: 32px !important;
+}
+
+.ctaDescription {
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-bottom: 40px !important;
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+}
+
+.ctaActions {
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ctaWhiteButton {
+    background: white !important;
+    border: none !important;
+    color: #6366F1 !important;
+    font-weight: 500 !important;
+    padding: 0 32px !important;
+    height: 48px !important;
+    border-radius: 24px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ctaWhiteButton:hover {
+    background: #f8fafc !important;
+    color: #6E54FF !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.ctaTransparentButton {
+    background: transparent !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    font-weight: 500 !important;
+    padding: 0 32px !important;
+    height: 48px !important;
+    border-radius: 24px !important;
+    transition: all 0.3s ease !important;
+}
+
+.ctaTransparentButton:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+}
+
+/* 移除原来的CTA卡片样式 */
+.ctaCard {
+    display: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .ctaSection {
+        margin: 40px calc(-50vw + 50%) 0 calc(-50vw + 50%);
+        padding: 60px 16px;
+        width: 100vw;
+    }
+
+    .ctaTitle {
+        font-size: 24px !important;
+    }
+
+    .ctaDescription {
+        font-size: 16px !important;
+    }
+
+    .ctaActions {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .ctaWhiteButton,
+    .ctaTransparentButton {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .content {
+        padding: 24px 16px 0 16px;
+    }
+
+    .heroSection {
+        padding: 40px 0;
+        margin-bottom: 40px;
+    }
+
+    .heroTitle {
+        font-size: 32px !important;
+    }
+
+    .heroDescription {
+        font-size: 16px;
+    }
+
+    .heroActions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .heroActions .primaryButton,
+    .heroActions .secondaryButton {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .featureGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .configRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .copyButton {
+        align-self: flex-end;
+        width: fit-content;
+    }
+}
+
+
+/* 横向滚动容器 */
+.dappsScrollContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.dappsScrollContainer::-webkit-scrollbar {
+    display: none;
+}
+
+/* DApp 卡片 */
+.dappCard {
+    flex: 0 0 auto;
+    width: 300px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease;
+}
+
+.dappCard:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.coverContainer {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardTop {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+.cardActions {
+    display: flex;
+    gap: 6px;
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.actionButton:hover {
+    color: #ffffff;
+}
+
+.featuredBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #facc15;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.featuredIcon {
+    width: 16px;
+    height: 16px;
+    color: #000;
+}
+
+.logoContainer {
+    position: relative;
+    margin-left: 20px;
+    margin-top: -32px;
+    width: 64px;
+    height: 64px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cardContent {
+    padding: 16px;
+    flex-grow: 1;
+}
+
+.dappName {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.dappDescription {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #6b7280;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.category {
+    margin-top: auto;
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.tutorialsInfo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.tutorialsButton {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6366F1;
+    text-decoration: none;
+}
+
+.tutorialsButton:hover {
+    color: #6366F1;
+}
+
+.cardHeaderWithButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cardHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.viewMoreButton {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6366F1;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #6366F1;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.viewMoreButton:hover {
+    background: #6366F1;
+    color: #fff;
+}

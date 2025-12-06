@@ -1,4 +1,5 @@
 import { getSession, signOut } from 'next-auth/react';
+import { message } from 'antd';
 
 export interface ApiResponse<T> {
   code: number;
@@ -34,6 +35,7 @@ export const apiRequest = async <T>(
     const response = await fetch(`${apiUrl}${endpoint}`, options);
     // 捕获 401 和 403
     if (response.status === 401 || response.status === 403) {
+      message.error('登录信息已过期，请重新登录');
       // await signOut({ redirect: true, callbackUrl: '/' });
 
       return {
@@ -54,9 +56,14 @@ export const apiRequest = async <T>(
     };
   } catch (error) {
     console.error('API 请求错误:', error);
+    const errorMessage = error instanceof Error ? error.message : '服务器错误';
+    message.error(errorMessage);
     return {
       code: 500,
-      message: error instanceof Error ? error.message : '服务器错误',
+      message: errorMessage,
     };
   }
 };
+
+
+export const StatisticsUrl = process.env.NEXT_PUBLIC_API_URL + "/statistics/stream"

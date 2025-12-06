@@ -30,8 +30,8 @@ import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
 import { getEvents, deleteEvent } from '../api/event';
-import router from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useAuth } from '@/contexts/AuthContext';
 
 const { Search: AntSearch } = Input;
 const { Option } = Select;
@@ -41,6 +41,8 @@ type ViewMode = 'grid' | 'list';
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD');
 }
+
+const allowedEventTypes = ['meetup', 'ama', 'hackathon', 'workshop'];
 
 export default function EventsPage() {
   const { message } = AntdApp.useApp();
@@ -55,9 +57,11 @@ export default function EventsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [wechatModalVisible, setWechatModalVisible] = useState(false);
   const [publishStatus, setPublishStatus] = useState(2);
+  const [initialized, setInitialized] = useState(false);
 
-  const [readyToLoad, setReadyToLoad] = useState(false);
-  const { data: session, status } = useSession();
+  const router = useRouter();
+  // 使用统一的认证上下文，避免重复调用 useSession
+  const { session, status } = useAuth();
 
   const permissions = session?.user?.permissions || [];
 
@@ -65,6 +69,7 @@ export default function EventsPage() {
   const [statusFilter, setStatusFilter] = useState('3');
   const [locationKeyword, setLocationKeyword] = useState('');
   const [eventModeFilter, setEventModeFilter] = useState('');
+  const [eventTypeFilter, setEventTypeFilter] = useState('');
 
   // 加载事件列表
   const loadEvents = async (params?: {
@@ -76,6 +81,7 @@ export default function EventsPage() {
     status?: string | number;
     location?: string;
     event_mode?: string;
+    event_type?: string;
     publish_status?: number;
   }) => {
     try {
@@ -90,6 +96,7 @@ export default function EventsPage() {
         status: params?.status || statusFilter,
         location: params?.location || locationKeyword,
         event_mode: params?.event_mode || eventModeFilter,
+        event_type: params?.event_type || eventTypeFilter,
         publish_status: params?.publish_status || publishStatus,
       };
 
@@ -160,13 +167,17 @@ export default function EventsPage() {
     setCurrentPage(1);
   };
 
+  const handleEventTypeFilter = async (event_type: string) => {
+    setEventTypeFilter(event_type);
+    setCurrentPage(1);
+  };
+
   // 分页处理
   const handlePageChange = async (page: number, size?: number) => {
     setCurrentPage(page);
     if (size && size !== pageSize) {
       setPageSize(size);
     }
-    await loadEvents({ page, page_size: size || pageSize });
   };
 
   // 清除筛选
@@ -177,6 +188,12 @@ export default function EventsPage() {
     setStatusFilter('3');
     setLocationKeyword('');
     setEventModeFilter('');
+    setEventTypeFilter('');
+    setCurrentPage(1);
+  };
+
+  const handleSwitchViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
     setCurrentPage(1);
   };
 
@@ -188,11 +205,6 @@ export default function EventsPage() {
 
   // 获取事件状态显示文本
   const getStatusText = (event: any) => {
-    // const now = dayjs()
-    // const startTime = dayjs(event.start_time)
-    // const endTime = event.end_time ? dayjs(event.end_time) : null
-
-    // if (endTime && now.isAfter(endTime)) {
     if (event.status === 0) {
       return '未开始';
     } else if (event.status === 1) {
@@ -229,21 +241,63 @@ export default function EventsPage() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (!router.isReady) return;
+
+    const queryEventType = router.query.type as string;
+
+    if (
+      queryEventType &&
+      allowedEventTypes.includes(queryEventType) &&
+      queryEventType !== eventTypeFilter
+    ) {
+      // 更新筛选条件
+      setEventTypeFilter(queryEventType);
+      setCurrentPage(1);
+
+      loadEvents({ event_type: queryEventType, page: 1 });
+
+      // 清空 URL 参数
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: {},
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [router.isReady, router.query.type]);
+
+  // 根据登录状态更新 publishStatus
+  useEffect(() => {
+    if (status === 'authenticated' && permissions.includes('event:review')) {
       setPublishStatus(0);
     } else if (status === 'unauthenticated') {
       setPublishStatus(2);
     }
-  });
+  }, [status, permissions]);
 
   useEffect(() => {
-    // 如果需要根据登录状态传递 publish_status，可在 loadEvents 内部处理
-    loadEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKeyword, selectedTag, sortOrder, currentPage, pageSize, statusFilter, locationKeyword, eventModeFilter, publishStatus]);
+    if (!router.isReady) return;
+
+    if (!router.query.type) {
+      loadEvents();
+    }
+  }, [
+    searchKeyword,
+    selectedTag,
+    sortOrder,
+    currentPage,
+    pageSize,
+    statusFilter,
+    locationKeyword,
+    eventModeFilter,
+    eventTypeFilter,
+    publishStatus,
+  ]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} nav-t-top`}>
       {/* Title Section */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
@@ -290,7 +344,7 @@ export default function EventsPage() {
               </button>
             </div>
             {status === 'authenticated' &&
-              permissions.includes('event:write') ? (
+            permissions.includes('event:write') ? (
               <Link href="/events/new" className={styles.createButton}>
                 <Plus size={20} />
                 创建活动
@@ -316,20 +370,20 @@ export default function EventsPage() {
           />
         </div>
         <div className={styles.filterButtons}>
-          {/* <Select
-            size="small"
-            placeholder="选择标签"
+          <Select
+            size="large"
+            placeholder="活动类型"
             allowClear
             style={{ width: 120 }}
-            value={selectedTag || undefined}
-            onChange={handleTagFilter}
+            value={eventTypeFilter}
+            onChange={handleEventTypeFilter}
           >
             <Option value="">所有</Option>
-            <Option value="技术分享">技术分享</Option>
-            <Option value="工作坊">工作坊</Option>
-            <Option value="AMA问答">AMA问答</Option>
-            <Option value="社区活动">社区活动</Option>
-          </Select> */}
+            <Option value="hackathon">黑客松</Option>
+            <Option value="workshop">Workshop</Option>
+            <Option value="ama">AMA</Option>
+            <Option value="meetup">社区聚会</Option>
+          </Select>
           <Select
             size="large"
             value={sortOrder}
@@ -387,21 +441,30 @@ export default function EventsPage() {
         <div className={styles.viewModeToggle}>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'grid' ? styles.active : ''}`}
-            onClick={() => setViewMode('grid')}
+            onClick={() => handleSwitchViewMode('grid')}
           >
             <LayoutGrid className={styles.viewModeIcon} />
             卡片视图
           </button>
           <button
             className={`${styles.viewModeButton} ${viewMode === 'list' ? styles.active : ''}`}
-            onClick={() => setViewMode('list')}
+            onClick={() => handleSwitchViewMode('list')}
           >
             <List className={styles.viewModeIcon} />
             列表视图
           </button>
         </div>
         <div className={styles.resultsInfo}>
-          显示 {startIndex}-{endIndex} 项，共 {total} 项
+          <Pagination
+            current={currentPage}
+            total={total}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) =>
+              `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
+            }
+            className={styles.fullPagination}
+          />
         </div>
       </div>
 
@@ -416,10 +479,10 @@ export default function EventsPage() {
           <div className={styles.emptyTitle}>暂无活动</div>
           <div className={styles.emptyDescription}>
             {searchKeyword ||
-              selectedTag ||
-              statusFilter ||
-              locationKeyword ||
-              eventModeFilter
+            selectedTag ||
+            statusFilter ||
+            locationKeyword ||
+            eventModeFilter
               ? '没有找到符合条件的活动'
               : '还没有创建任何活动'}
           </div>
@@ -466,12 +529,12 @@ export default function EventsPage() {
                       )}
                       <div className={styles.cardActions}>
                         {status === 'authenticated' &&
-                          permissions.includes('event:write') ? (
+                        permissions.includes('event:write') ? (
                           <Button
                             className={styles.actionIconButton}
                             onClick={(e) => {
-                              e.preventDefault()
-                              router.push(`/events/${event.ID}/edit`)
+                              e.preventDefault();
+                              router.push(`/events/${event.ID}/edit`);
                             }}
                             icon={<Edit className={styles.actionIcon} />}
                             title="编辑活动"
@@ -481,8 +544,10 @@ export default function EventsPage() {
                           className={styles.actionIconButton}
                           onClick={(e) => {
                             e.preventDefault();
-                            navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
-                            message.success("链接已复制到剪贴板")
+                            navigator.clipboard.writeText(
+                              `${window.location.href}/${event.ID}`
+                            );
+                            message.success('链接已复制到剪贴板');
                           }}
                           icon={<Share2 className={styles.actionIcon} />}
                           title="分享活动"
@@ -492,7 +557,7 @@ export default function EventsPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             if (event.twitter) {
-                              window.open(event.twitter, '_blank'); // 打开外部链接
+                              window.open(event.twitter, '_blank');
                             }
                           }}
                           icon={<SiX className={styles.actionIcon} />}
@@ -502,7 +567,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 }
-              // variant={false}
+                // variant={false}
               >
                 <div className={styles.cardBody}>
                   <h3 className={styles.eventTitle}>{event.title}</h3>
@@ -527,12 +592,12 @@ export default function EventsPage() {
                         </>
                       )}
                     </div>
-                    {event.participants !== 0 &&
+                    {event.participants !== 0 && (
                       <div className={styles.metaItem}>
                         <Users className={styles.metaIcon} />
                         <span>{event.participants || ''}</span>
                       </div>
-                    }
+                    )}
                   </div>
                   {event.tags && event.tags.length > 0 && (
                     <div className={styles.cardTags}>
@@ -642,7 +707,7 @@ export default function EventsPage() {
                       title="查看详情"
                     /> */}
                     {status === 'authenticated' &&
-                      permissions.includes('event:write') ? (
+                    permissions.includes('event:write') ? (
                       <Button
                         type="text"
                         size="small"
@@ -656,14 +721,16 @@ export default function EventsPage() {
                       size="small"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(`${window.location.href}/${event.ID}`)
-                        message.success("链接已复制到剪贴板")
+                        navigator.clipboard.writeText(
+                          `${window.location.href}/${event.ID}`
+                        );
+                        message.success('链接已复制到剪贴板');
                       }}
                       icon={<Share2 className={styles.listActionIcon} />}
                       title="分享活动"
                     />
                     {status === 'authenticated' &&
-                      permissions.includes('event:delete') ? (
+                    permissions.includes('event:delete') ? (
                       <Popconfirm
                         title="删除活动"
                         description="你确定删除这个活动吗？"
@@ -695,7 +762,7 @@ export default function EventsPage() {
             total={total}
             pageSize={pageSize}
             onChange={handlePageChange}
-            showQuickJumper={true}
+            // showQuickJumper={true}
             showTotal={(total, range) =>
               `显示 ${startIndex}-${endIndex} 项，共 ${total} 项`
             }
@@ -704,7 +771,7 @@ export default function EventsPage() {
         </div>
       </div>
       {/* Stats Section */}
-      <div className={styles.statsSection}>
+      {/* <div className={styles.statsSection}>
         <Card className={styles.statCard}>
           <div className={styles.statContent}>
             <div className={styles.statIcon}>
@@ -749,7 +816,7 @@ export default function EventsPage() {
             </div>
           </div>
         </Card>
-      </div>
+      </div> */}
       <Modal
         open={wechatModalVisible}
         onCancel={() => setWechatModalVisible(false)}

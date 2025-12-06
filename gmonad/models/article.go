@@ -14,15 +14,17 @@ type Article struct {
 	Description   string         `json:"description"`
 	Content       string         `gorm:"type:text" json:"content"`
 	SourceLink    string         `json:"source_link"`
+	SourceType    string         `json:"source_type"`
 	CoverImg      string         `json:"cover_img"`
 	Tags          pq.StringArray `gorm:"type:text[]" json:"tags"`
 	Category      string         `json:"category"`
 	Author        string         `json:"author"`
 	Translator    string         `json:"translator"`
 	PublisherId   uint           `json:"publisher_id"`
-	Publisher     User           `gorm:"foreignKey:PublisherId" json:"publisher"`
+	Publisher     *User          `gorm:"foreignKey:PublisherId" json:"publisher"`
 	PublishTime   *time.Time     `json:"publish_time"`
 	PublishStatus uint           `gorm:"default:1" json:"publish_status"` // 0:全部 1:待审核 2:已发布
+	ViewCount     uint           `gorm:"default:0" json:"view_count"`
 }
 
 func (a *Article) Create() error {
@@ -30,7 +32,13 @@ func (a *Article) Create() error {
 }
 
 func (a *Article) GetByID(id uint) error {
-	return db.First(a, id).Error
+	if err := db.Preload("Publisher").First(a, id).Error; err != nil {
+		return err
+	}
+
+	// 更新浏览量（+1）
+	// TODO: handle in controller
+	return db.Model(a).Update("view_count", gorm.Expr("view_count + ?", 1)).Error
 }
 
 func (a *Article) Update() error {
@@ -54,8 +62,9 @@ type ArticleFilter struct {
 	Category      string // 分类
 	OrderDesc     bool   // 是否按发布时间排序
 	PublishStatus int    // 发布状态
-	Page          int    // 当前页码，从 1 开始
-	PageSize      int    // 每页数量，建议默认 10
+	PublisherId   int
+	Page          int // 当前页码，从 1 开始
+	PageSize      int // 每页数量，建议默认 10
 }
 
 func QueryArticles(filter ArticleFilter) ([]Article, int64, error) {
@@ -79,6 +88,10 @@ func QueryArticles(filter ArticleFilter) ([]Article, int64, error) {
 
 	if filter.PublishStatus != 0 {
 		query = query.Where("publish_status = ?", filter.PublishStatus)
+	}
+
+	if filter.PublisherId != 0 {
+		query = query.Where("publisher_id = ?", filter.PublisherId)
 	}
 
 	// 统计总数（不加 limit 和 offset）

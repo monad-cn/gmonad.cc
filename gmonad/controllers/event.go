@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"gmonad/models"
 	"gmonad/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,24 +16,41 @@ func CreateEvent(c *gin.Context) {
 
 	// 将 JSON 请求体绑定到 event 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		fmt.Println(err)
+		utils.ErrorResponse(c, http.StatusBadRequest, "invalid args", nil)
 		return
 	}
 
-	startT, _ := utils.ParseTime(req.StartTime)
-	endT, _ := utils.ParseTime(req.EndTime)
+	startT, err1 := utils.ParseTime(req.StartTime)
+	endT, err2 := utils.ParseTime(req.EndTime)
+	if err1 != nil || err2 != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "invalid args", nil)
+		return
+	}
 
 	var event = models.Event{
-		Title:       req.Title,
-		Description: req.Desc,
-		EventMode:   req.EventMode,
-		Location:    req.Location,
-		Link:        req.Link,
-		StartTime:   startT,
-		EndTime:     endT,
-		CoverImg:    req.CoverImg,
-		Tags:        req.Tags,
-		Twitter:     req.Twitter,
+		Title:            req.Title,
+		Description:      req.Desc,
+		EventMode:        req.EventMode,
+		EventType:        req.EventType,
+		Location:         req.Location,
+		Link:             req.Link,
+		RegistrationLink: req.RegistrationLink,
+		StartTime:        startT,
+		EndTime:          endT,
+		CoverImg:         req.CoverImg,
+		Tags:             req.Tags,
+		Twitter:          req.Twitter,
+	}
+
+	if req.RegistrationDeadline != "" {
+		regisDeadline, err := utils.ParseTime(req.RegistrationDeadline)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "invalid args", nil)
+			return
+		}
+		event.RegistrationDeadline = &regisDeadline
+
 	}
 
 	uid, ok := c.Get("uid")
@@ -80,7 +99,10 @@ func QueryEvents(c *gin.Context) {
 	tag := c.Query("tag")
 	location := c.Query("location")
 	eventMode := c.Query("event_mode")
+	eventType := c.Query("event_type")
 	order := c.DefaultQuery("order", "desc")
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
@@ -94,11 +116,22 @@ func QueryEvents(c *gin.Context) {
 		Tag:           tag,
 		Location:      location,
 		EventMode:     eventMode,
+		EventType:     eventType,
 		OrderDesc:     order == "desc",
 		Page:          page,
 		PageSize:      pageSize,
 		Status:        status,
 		PublishStatus: publishStatus,
+	}
+
+	var start, end time.Time
+	start, _ = time.Parse("2006-01-02", startDate)
+	end, _ = time.Parse("2006-01-02", endDate)
+
+	if !start.IsZero() && !end.IsZero() {
+		newEnd := end.AddDate(0, 0, 1)
+		filter.StartDate = &start
+		filter.EndDate = &newEnd
 	}
 
 	events, total, err := models.QueryEvents(filter)
@@ -167,6 +200,7 @@ func UpdateEvent(c *gin.Context) {
 	event.Title = req.Title
 	event.Description = req.Desc
 	event.EventMode = req.EventMode
+	event.EventType = req.EventType
 	event.Location = req.Location
 	event.Link = req.Link
 	event.StartTime = startT
@@ -174,6 +208,15 @@ func UpdateEvent(c *gin.Context) {
 	event.CoverImg = req.CoverImg
 	event.Tags = req.Tags
 	event.Twitter = req.Twitter
+	event.RegistrationLink = req.RegistrationLink
+	if req.RegistrationDeadline != "" {
+		regisDeadline, err := utils.ParseTime(req.RegistrationDeadline)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusBadRequest, "Invalid arg", nil)
+			return
+		}
+		event.RegistrationDeadline = &regisDeadline
+	}
 
 	if err := event.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)
@@ -210,7 +253,9 @@ func UpdateEventPublishStatus(c *gin.Context) {
 	}
 
 	// TODO: 2 -> 1 ?
+	now := time.Now()
 	event.PublishStatus = req.PublishStatus
+	event.PublishTime = &now
 
 	if err := event.Update(); err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to update event", nil)

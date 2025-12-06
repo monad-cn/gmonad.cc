@@ -14,6 +14,7 @@ declare module 'next-auth' {
       avatar?: string;
       permissions?: string[];
       token?: string;
+      introduction?: string;
     };
   }
 }
@@ -25,6 +26,7 @@ declare module 'next-auth/jwt' {
     avatar?: string;
     permissions?: string[];
     token?: string;
+    introduction?: string;
   }
 }
 
@@ -62,15 +64,33 @@ export default NextAuth({
 
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 1 day - 减少 session 更新频率
+  },
+
+  // 优化客户端配置，减少不必要的请求
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  
+  // 配置 JWT 和 session 的缓存策略
+  jwt: {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   },
 
   pages: {
     signIn: '/login',
   },
 
+  // 减少不必要的请求
+  events: {
+    async signIn(message) {
+      // 登录成功时的处理
+      console.log('User signed in:', message.user.email);
+    },
+  },
+
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // 首次登录时保存用户信息到token
       if (user) {
         token.uid = (user as any).id;
         token.username = (user as any).username;
@@ -79,7 +99,18 @@ export default NextAuth({
         token.avatar = (user as any).avatar;
         token.permissions = (user as any).permissions;
         token.token = (user as any).token;
+        token.introduction = (user as any).introduction;
       }
+      
+      // 当触发update()时，更新token中的用户信息
+      if (trigger === 'update' && session?.user) {
+        token.username = session.user.username || token.username;
+        token.avatar = session.user.avatar || token.avatar;
+        token.email = session.user.email || token.email;
+        token.github = session.user.github || token.github;
+        token.introduction = session.user.introduction ?? token.introduction;
+      }
+      
       return token;
     },
 
@@ -92,6 +123,7 @@ export default NextAuth({
         session.user.avatar = token.avatar as string;
         session.user.permissions = token.permissions as string[];
         session.user.token = token.token as string;
+        session.user.introduction = token.introduction;
       }
       return session;
     },
