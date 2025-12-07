@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Input, Select, Card, Tag, Empty, Spin, Image, Pagination, Button, Popconfirm, App as AntdApp } from 'antd';
+import {
+  Input,
+  Select,
+  Card,
+  Tag,
+  Empty,
+  Spin,
+  Image,
+  Pagination,
+  Button,
+  Popconfirm,
+  App as AntdApp,
+} from 'antd';
 import { Search, BookOpen, Filter, Plus, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import styles from './index.module.css';
@@ -12,8 +24,6 @@ const { Option } = Select;
 export default function TutorialsPage() {
   const { message } = AntdApp.useApp();
   const [tutorials, setTutorials] = useState<any[]>([]);
-  // const [selectedCategory, setSelectedCategory] = useState('all');
-  // const [selectedDifficulty, setSelectedDifficulty] = useState('all');
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
@@ -26,9 +36,6 @@ export default function TutorialsPage() {
 
   const { session, status } = useAuth();
   const permissions = session?.user?.permissions || [];
-
-  // const categories = ['all', 'DeFi', 'NFT', '钱包', '游戏', '工具'];
-  // const difficulties = ['all', 'beginner', 'intermediate', 'advanced'];
 
   const handlePageChange = (page: number, size?: number) => {
     setCurrentPage(page);
@@ -179,23 +186,6 @@ export default function TutorialsPage() {
                 <Option value="asc">最早</Option>
               </Select>
             </div>
-
-            {/* <div className={styles.filterItem}>
-                            <Star size={16} className={styles.filterIcon} />
-                            <span className={styles.filterLabel}>难度：</span>
-                            <Select
-                                value={selectedDifficulty}
-                                onChange={setSelectedDifficulty}
-                                className={styles.select}
-                                size="middle"
-                            >
-                                {difficulties.map((difficulty) => (
-                                    <Option key={difficulty} value={difficulty}>
-                                        {difficulty === "all" ? "全部难度" : difficulty}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div> */}
           </div>
         </Card>
 
@@ -228,7 +218,7 @@ export default function TutorialsPage() {
                   >
                     <div className={styles.cardContent}>
                       <div className={styles.cardHeader}>
-                        <h3 className={styles.cardTitle}>{tutorial.title}</h3>
+                        <h3 className={styles.cardTitle}>{tutorial.title} </h3>
                         <div className={styles.cardMeta}>
                           <span className={styles.dappName}>
                             {tutorial.dapp?.name}
@@ -247,30 +237,32 @@ export default function TutorialsPage() {
                               {tag}
                             </Tag>
                           ))}
+
                         </div>
                       </div>
                     </div>
                   </Card>
                 </Link>
-                {status === 'authenticated' && permissions.includes('tutorial:delete') && (
-                  <div className={styles.cardActions}>
-                    <Popconfirm
-                      title="删除教程"
-                      description="你确定删除这个教程吗？"
-                      okText="是"
-                      cancelText="否"
-                      onConfirm={() => handleDeleteTutorial(tutorial.ID)}
-                    >
-                      <Button
-                        type="text"
-                        size="small"
-                        danger
-                        icon={<Trash2 size={16} />}
-                        className={styles.deleteBtn}
-                      />
-                    </Popconfirm>
-                  </div>
-                )}
+                {status === 'authenticated' &&
+                  permissions.includes('tutorial:delete') && (
+                    <div className={styles.cardActions}>
+                      <Popconfirm
+                        title="删除教程"
+                        description="你确定删除这个教程吗？"
+                        okText="是"
+                        cancelText="否"
+                        onConfirm={() => handleDeleteTutorial(tutorial.ID)}
+                      >
+                        <Button
+                          type="text"
+                          size="small"
+                          danger
+                          icon={<Trash2 size={16} />}
+                          className={styles.deleteBtn}
+                        />
+                      </Popconfirm>
+                    </div>
+                  )}
               </div>
             ))}
           </div>
