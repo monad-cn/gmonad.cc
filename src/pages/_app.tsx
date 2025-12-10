@@ -4,6 +4,9 @@ import '../styles/globals.css';
 import 'katex/dist/katex.min.css'; // KaTeX CSS for mathematical formula rendering
 import { GoogleAnalytics } from '@next/third-parties/google';
 
+// React 19 兼容性补丁
+import '@ant-design/v5-patch-for-react-19';
+
 import { ConfigProvider, App as AntdApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { SessionProvider } from 'next-auth/react';
