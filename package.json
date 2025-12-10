@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/third-parties": "^15.3.3",
+    "@ant-design/v5-patch-for-react-19": "1.0.3",
+    "@next/third-parties": "^16.0.8",
     "@types/katex": "^0.16.7",
     "antd": "^5.25.4",
     "cloudinary": "^2.6.1",
