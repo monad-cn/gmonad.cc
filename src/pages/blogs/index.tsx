@@ -331,7 +331,7 @@ export default function BlogsPage() {
                           {dayjs(blog.publish_time || blog.CreatedAt).format(
                             'YYYY年M月D日'
                           )}{' '}
-                          · {blog.read_time || '6 分钟'}阅读
+                          {/* · {blog.read_time || '6 分钟'}阅读 */}
                         </span>
                       </div>
                       <div className={styles.viewCount}>
