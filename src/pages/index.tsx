@@ -1,7 +1,6 @@
 import {
   Users,
   Calendar,
-  MapPin,
   Zap,
   Star,
   Code,
@@ -10,15 +9,11 @@ import {
   Database,
   BookOpen,
   Globe,
-  GitBranch,
   Rocket,
   DollarSign,
   Handshake,
-  Lock,
   Network,
   Activity,
-  Server,
-  ServerCog,
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
@@ -43,10 +38,14 @@ export default function Home() {
   const [isHovering, setIsHovering] = useState(false);
 
   // Removed stats - currently not used as the stats section is commented out
-  const [particleStyles, setParticleStyles] = useState<Array<React.CSSProperties>>([]);
+  const [particleStyles, setParticleStyles] = useState<
+    Array<React.CSSProperties>
+  >([]);
 
   const scrollGallery = (direction: 'left' | 'right') => {
-    const container = document.querySelector(`.${styles.galleryContainer}`) as HTMLElement;
+    const container = document.querySelector(
+      `.${styles.galleryContainer}`
+    ) as HTMLElement;
     if (container) {
       const scrollAmount = 312; // Width of one image (280px) plus gap (32px)
       const currentScroll = container.scrollLeft;
@@ -66,7 +65,7 @@ export default function Home() {
 
       container.scrollTo({
         left: targetScroll,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   };
@@ -84,7 +83,7 @@ export default function Home() {
           setDapps(result.data.dapps);
         }
       } catch (error) {
-        console.error("获取 DApps 列表失败:", error);
+        console.error('获取 DApps 列表失败:', error);
       }
     };
     fetchDapps();
@@ -97,7 +96,10 @@ export default function Home() {
     const scroll = () => {
       if (scrollContainer && !isHovering) {
         scrollContainer.scrollLeft += 0.5; // 每帧增加 0.5px，可根据需要调整
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+        if (
+          scrollContainer.scrollLeft >=
+          scrollContainer.scrollWidth - scrollContainer.clientWidth
+        ) {
           scrollContainer.scrollLeft = 0; // 回到开头循环滚动
         }
       }
@@ -108,7 +110,6 @@ export default function Home() {
 
     return () => cancelAnimationFrame(animationFrame);
   }, [isHovering]);
-
 
   useEffect(() => {
     setIsVisible(true);
@@ -154,7 +155,6 @@ export default function Home() {
       description: '模块化架构设计，支持水平扩展，满足大规模应用需求',
     },
   ];
-
 
   const milestones = [
     {
@@ -207,6 +207,22 @@ export default function Home() {
       src: 'https://www.binance.com/zh-CN/square/post/24006186094818',
       icon: <ShieldCheck className={styles.icon} />,
     },
+    {
+      date: '2025年11月17-22日',
+      title: 'MON 代币公开销售',
+      description:
+        '在 Coinbase 平台进行公开销售，单价 $0.025，共有 85,820 名参与者，筹集 2.69 亿美元。',
+      src: 'https://www.monad.xyz/announcements',
+      icon: <DollarSign className={styles.icon} />,
+    },
+    {
+      date: '2025年11月24日',
+      title: 'Monad 主网正式上线',
+      description:
+        '主网于 UTC 时间 14:00 正式启动，总供应量 1000 亿 MON，向 22.5 万名用户进行空投，开启高性能 EVM 新纪元。',
+      src: 'https://www.monad.xyz/announcements',
+      icon: <Rocket className={styles.icon} />,
+    },
   ];
 
   const resources = [
@@ -240,43 +256,43 @@ export default function Home() {
     {
       name: 'luluisangry',
       twitter: 'https://x.com/lulu70191243',
-      avatar: "lulu.jpg",
+      avatar: 'lulu.jpg',
     },
     {
       name: 'Harvey C',
       twitter: 'https://x.com/Harveycww',
-      avatar: "harvey.jpg",
+      avatar: 'harvey.jpg',
     },
     {
       name: 'Michael',
       twitter: 'https://x.com/michael_lwy',
-      avatar: "michael.jpg",
+      avatar: 'michael.jpg',
     },
     {
       name: 'Box',
       twitter: 'https://x.com/BoxMrChen',
-      avatar: "box.jpg",
+      avatar: 'box.jpg',
     },
     {
       name: 'Seven',
       twitter: 'https://x.com/_Seven7777777',
-      avatar: "seven.jpg",
+      avatar: 'seven.jpg',
     },
     {
       name: '大大黄',
       twitter: 'https://x.com/Alger779503577',
-      avatar: "ddh.jpg",
+      avatar: 'ddh.jpg',
     },
     {
       name: '小符',
       twitter: 'https://x.com/Phoouze',
-      avatar: "phoouze.jpg",
+      avatar: 'phoouze.jpg',
     },
     {
       name: 'hannah',
       twitter: 'https://x.com/HhhhHannah',
-      avatar: "hannah.jpg",
-    }
+      avatar: 'hannah.jpg',
+    },
   ];
 
   const duplicatedMembers = [...members];
@@ -326,110 +342,110 @@ export default function Home() {
 
               <div className={styles.galleryContainer}>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp1.jpg" 
-                    alt="Monad社区活动1" 
+                  <Image
+                    src="/community/cp1.jpg"
+                    alt="Monad社区活动1"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp2.jpg" 
-                    alt="Monad社区活动2" 
+                  <Image
+                    src="/community/cp2.jpg"
+                    alt="Monad社区活动2"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp3.jpg" 
-                    alt="Monad社区活动3" 
+                  <Image
+                    src="/community/cp3.jpg"
+                    alt="Monad社区活动3"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp4.jpg" 
-                    alt="Monad社区活动4" 
+                  <Image
+                    src="/community/cp4.jpg"
+                    alt="Monad社区活动4"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp6.jpg" 
-                    alt="Monad社区活动5" 
+                  <Image
+                    src="/community/cp6.jpg"
+                    alt="Monad社区活动5"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp7.jpg" 
-                    alt="Monad社区活动6" 
+                  <Image
+                    src="/community/cp7.jpg"
+                    alt="Monad社区活动6"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp8.jpg" 
-                    alt="Monad社区活动7" 
+                  <Image
+                    src="/community/cp8.jpg"
+                    alt="Monad社区活动7"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp9.jpg" 
-                    alt="Monad社区活动8" 
+                  <Image
+                    src="/community/cp9.jpg"
+                    alt="Monad社区活动8"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
                 <div className={styles.galleryImage}>
-                  <Image 
-                    src="/community/cp10.jpg" 
-                    alt="Monad社区活动9" 
+                  <Image
+                    src="/community/cp10.jpg"
+                    alt="Monad社区活动9"
                     width={300}
                     height={195}
                     style={{ borderRadius: '14px' }}
                     preview={{
-                      mask: false
+                      mask: false,
                     }}
                   />
                 </div>
@@ -548,7 +564,8 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>技术特色</h2>
             <p className={styles.sectionDescription}>
-              Monad 采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
+              Monad
+              采用创新的并行执行引擎和优化的共识机制，为开发者提供前所未有的性能体验
             </p>
           </div>
           <div className={styles.featuresGrid}>
@@ -579,20 +596,25 @@ export default function Home() {
               探索正在 Monad 测试网构建和活跃的优秀 DApp 项目
             </p>
           </div>
-          <div className={styles.dappsScrollContainer}
+          <div
+            className={styles.dappsScrollContainer}
             ref={scrollRef}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
           >
             {dapps.map((dapp) => (
-              <div 
-                key={dapp.ID} 
-                className={styles.dappCard} 
+              <div
+                key={dapp.ID}
+                className={styles.dappCard}
                 onClick={() => router.push(`/ecosystem/dapps/${dapp.ID}`)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className={styles.coverContainer}>
-                  <img src={dapp.cover_img} alt={`${dapp.name} cover`} className={styles.coverImage} />
+                  <img
+                    src={dapp.cover_img}
+                    alt={`${dapp.name} cover`}
+                    className={styles.coverImage}
+                  />
                   <div className={styles.cardTop}>
                     <div className={styles.cardActions}>
                       {dapp.featured && (
@@ -601,12 +623,24 @@ export default function Home() {
                         </div>
                       )}
                       {dapp.x && (
-                        <Link href={dapp.x} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                        <Link
+                          href={dapp.x}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={styles.actionButton}
+                        >
                           <SiX className={styles.actionIcon} />
                         </Link>
                       )}
                       {dapp.site && (
-                        <Link href={dapp.site} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={styles.actionButton}>
+                        <Link
+                          href={dapp.site}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={styles.actionButton}
+                        >
                           <Globe className={styles.actionIcon} />
                         </Link>
                       )}
@@ -614,7 +648,11 @@ export default function Home() {
                   </div>
                 </div>
                 <div className={styles.logoContainer}>
-                  <img src={dapp.logo || "/placeholder.svg"} alt={`${dapp.name} logo`} className={styles.logo} />
+                  <img
+                    src={dapp.logo || '/placeholder.svg'}
+                    alt={`${dapp.name} logo`}
+                    className={styles.logo}
+                  />
                 </div>
                 <div className={styles.cardContent}>
                   <h3 className={styles.dappName}>{dapp.name}</h3>
@@ -630,7 +668,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
 
       {/* Resources Section */}
       <section className={styles.resources}>
@@ -680,7 +717,8 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>贡献者</h2>
             <p className={styles.sectionDescription}>
-              感谢每一位贡献者，并期待更多热爱 Monad 的朋友加入我们，一起共建 Monad。
+              感谢每一位贡献者，并期待更多热爱 Monad 的朋友加入我们，一起共建
+              Monad。
             </p>
           </div>
 
@@ -723,14 +761,19 @@ export default function Home() {
       {/* CTA Section */}
       <section className={styles.cta}>
         <div className={styles.ctaBackground}>
-          <ClientOnly fallback={
-            <div className={styles.particleFallback}>
-              {/* 静态占位粒子，避免布局偏移 */}
-              {[...Array(30)].map((_, i) => (
-                <div key={`particle-static-${i}`} className={styles.ctaParticleStatic}></div>
-              ))}
-            </div>
-          }>
+          <ClientOnly
+            fallback={
+              <div className={styles.particleFallback}>
+                {/* 静态占位粒子，避免布局偏移 */}
+                {[...Array(30)].map((_, i) => (
+                  <div
+                    key={`particle-static-${i}`}
+                    className={styles.ctaParticleStatic}
+                  ></div>
+                ))}
+              </div>
+            }
+          >
             {particleStyles.map((style, i) => (
               <div
                 key={`particle-${i}`}
@@ -749,7 +792,7 @@ export default function Home() {
                 target="_blank"
                 className={styles.ctaPrimaryButton}
               >
-                <SiX className={styles.buttonIconX}  />
+                <SiX className={styles.buttonIconX} />
                 关注 X
               </Link>
               <Link
