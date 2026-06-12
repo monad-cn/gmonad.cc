@@ -8,18 +8,36 @@ import Image from 'next/image';
 import AuthManager from '@/lib/authManager';
 import { useAuth } from '@/contexts/AuthContext';
 
-const Auth: React.FC = () => {
-    const { message } = AntdApp.useApp();
+interface AuthProps {
+  enableLogin?: boolean;
+}
+
+const getSafeRedirectPath = (redirect: string | string[] | undefined) => {
+  const path = Array.isArray(redirect) ? redirect[0] : redirect;
+
+  if (!path || !path.startsWith('/') || path.startsWith('//')) {
+    return undefined;
+  }
+
+  return path;
+};
+
+const Auth: React.FC<AuthProps> = ({ enableLogin = true }) => {
+  const { message } = AntdApp.useApp();
   // 使用简化的认证上下文，利用 NextAuth 内置缓存机制
   const { session } = useAuth();
   const router = useRouter();
-  const { code } = router.query;
+  const { code, redirect } = router.query;
   const [loading, setLoading] = useState(false);
   const hasTriedLogin = useRef(false); // 防止重复登录
 
   // 页面初次加载时检测 query 中的 code 并尝试登录
   useEffect(() => {
     const tryLogin = async () => {
+      if (!enableLogin) {
+        return;
+      }
+
       // 如果已经尝试过登录、已有session、没有code，则跳过
       if (hasTriedLogin.current || session || !code) {
         return;
@@ -44,9 +62,12 @@ const Auth: React.FC = () => {
           if (authManager.shouldShowSuccessMessage()) {
             message.success('登录成功');
           }
-          // 清除 URL 中的 code 参数，NextAuth 会自动更新 session 状态
-          // 只有当 URL 中确实包含 code 参数时才执行替换
-          if (router.asPath.includes('code=')) {
+          const safeRedirect = getSafeRedirectPath(redirect);
+
+          if (safeRedirect) {
+            router.replace(safeRedirect);
+          } else if (router.asPath.includes('code=')) {
+            // 清除 URL 中的 code 参数，NextAuth 会自动更新 session 状态
             router.replace(router.pathname, undefined, { shallow: true });
           }
         } else {
@@ -68,12 +89,28 @@ const Auth: React.FC = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [code, session, router]);
+  }, [code, enableLogin, message, redirect, router, session]);
 
   const handleSignIn = () => {
+    if (!enableLogin) {
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_OAUTH) {
+      message.error('登录配置缺失');
+      return;
+    }
+
     setLoading(true); // 点击按钮时设置为加载状态
-    const currentUrl = window.location.origin + router.pathname;
-    const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH}&redirect_uri=${currentUrl}`;
+    const safeRedirect = getSafeRedirectPath(redirect);
+    const callbackUrl = new URL(router.pathname, window.location.origin);
+
+    if (safeRedirect) {
+      callbackUrl.searchParams.set('redirect', safeRedirect);
+    }
+
+    const separator = process.env.NEXT_PUBLIC_OAUTH.includes('?') ? '&' : '?';
+    const oauthUrl = `${process.env.NEXT_PUBLIC_OAUTH}${separator}redirect_uri=${encodeURIComponent(callbackUrl.toString())}`;
     router.push(oauthUrl); // 跳转 OAuth 授权页
   };
 
@@ -102,6 +139,10 @@ const Auth: React.FC = () => {
       label: '退出登录',
     },
   ];
+
+  if (!session?.user && !enableLogin) {
+    return null;
+  }
 
   return (
     <div className={styles.auth}>
