@@ -1,62 +1,62 @@
-.loginPage {
-  height: 100vh;
-  margin: 0;
-  font-family: 'Helvetica Neue', sans-serif;
-  background: linear-gradient(135deg, #f3e8ff, #e0eaff);
+.page {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #333;
+  justify-content: center;
+  padding: 7rem 1rem 4rem;
+  background:
+    linear-gradient(135deg, rgba(110, 84, 255, 0.08), rgba(16, 185, 129, 0.08)),
+    #f8fafc;
 }
 
-.container {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-  width: 23.5rem;
+.panel {
+  width: min(100%, 420px);
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 20px 50px rgba(31, 41, 55, 0.12);
+  backdrop-filter: blur(14px);
 }
 
-.title {
-  text-align: center;
-  background: linear-gradient(90deg, #6E54FF, #e45fcb);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 1.75rem;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
   margin-bottom: 1.5rem;
 }
 
-.link {
-  text-align: center;
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
+.logo {
+  border-radius: 8px;
 }
 
-.link a {
-  color: #6E54FF;
-  text-decoration: none;
+.title {
+  margin: 0;
+  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-.loginButton {
-  width: 100%;
-  background: linear-gradient(to right, #6E54FF, #e45fcb);
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  color: white;
-  transition: all 0.3s ease;
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
 }
 
-.loginButton:hover {
-  background: linear-gradient(to right, #6E54FF, #e45fcb) !important;
-  opacity: 0.9;
-  transform: translateY(-1px);
+.action {
+  display: flex;
+  justify-content: flex-start;
 }
 
-.googleLoginButton:hover {
-  border-color: #6E54FF !important;
-  color: #6E54FF !important;
-  opacity: 0.9;
-  transform: translateY(-1px);
+.hint {
+  margin: 1rem 0 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: 1.5rem;
+  }
 }

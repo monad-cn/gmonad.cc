@@ -4,15 +4,12 @@ import styles from '../styles/Header.module.css';
 import Link from 'next/link';
 import { Dropdown } from 'antd';
 import Auth from './Auth';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // import { SiWechat, SiX } from 'react-icons/si';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-
-  // 使用 useMemo 确保 Auth 组件只创建一次，避免重复渲染
-  const authComponent = useMemo(() => <Auth />, []);
 
   useEffect(() => {
     setMounted(true);
@@ -153,12 +150,12 @@ export default function Header() {
                 <ChevronDown className={styles.navIcon} />
               </div>
             </Dropdown>
-            {authComponent}
+            <Auth enableLogin={false} />
           </nav>
 
           {/* 移动端导航 */}
           <div className={styles.mobileNav}>
-            {authComponent}
+            <Auth enableLogin={false} />
             <button
               className={styles.mobileMenuButton}
               onClick={() => setMobileMenuOpen(true)}
