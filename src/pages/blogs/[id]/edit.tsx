@@ -28,7 +28,7 @@ import VditorEditor from '@/components/vditorEditor/VditorEditor';
 // import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { getBlogById, updateBlog } from '@/pages/api/blog';
+import { getBlogById, updateBlog } from '@/services/api/blog';
 
 const { TextArea } = Input;
 

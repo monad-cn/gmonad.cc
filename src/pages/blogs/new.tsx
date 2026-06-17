@@ -16,7 +16,7 @@ import VditorEditor from '@/components/vditorEditor/VditorEditor';
 // import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { createBlog } from '../api/blog';
+import { createBlog } from '@/services/api/blog';
 import router from 'next/router';
 
 const { TextArea } = Input;

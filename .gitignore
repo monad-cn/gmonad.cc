@@ -1,8 +1,6 @@
-package-lock.json
 .vitepress/dist
 .vitepress/cache
 ansible.sh
-pnpm-lock.yaml
 
 # Next.js 构建输出
 .next/
@@ -60,3 +58,4 @@ Thumbs.db
 
 config/config.yaml
 *config.yaml
+.vercel

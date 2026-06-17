@@ -23,8 +23,8 @@ import VditorEditor from '@/components/vditorEditor/VditorEditor';
 // import QuillEditor from '@/components/quillEditor/QuillEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { getTutorialById, updateTutorial } from '@/pages/api/tutorial';
-import { getDapps } from '@/pages/api/dapp';
+import { getTutorialById, updateTutorial } from '@/services/api/tutorial';
+import { getDapps } from '@/services/api/dapp';
 
 const { TextArea } = Input;
 const { Option } = Select;

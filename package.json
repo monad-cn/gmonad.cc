@@ -2,11 +2,17 @@
   "name": "gmonad.cc",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx src/server/db/seed.ts"
   },
   "dependencies": {
     "@ant-design/v5-patch-for-react-19": "1.0.3",
@@ -16,7 +22,9 @@
     "cloudinary": "^2.6.1",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.6",
+    "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
+    "jose": "^6.2.3",
     "jotai": "^2.15.0",
     "katex": "^0.16.25",
     "lodash": "^4.17.21",
@@ -25,6 +33,7 @@
     "marked": "^16.0.0",
     "next": "^16.0.7",
     "next-auth": "^4.24.11",
+    "postgres": "^3.4.9",
     "react": "^19.2.1",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.1",
@@ -42,10 +51,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "global-agent": "^3.0.0",
     "prettier": "^3.5.3",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }

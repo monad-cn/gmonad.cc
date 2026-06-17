@@ -11,10 +11,10 @@ import {
 } from 'lucide-react';
 import { Pagination, Tag, Input, Select, Button } from 'antd';
 import styles from './index.module.css';
-import { getCategories, getDapps } from '@/pages/api/dapp';
+import { getCategories, getDapps } from '@/services/api/dapp';
 import { SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTutorials } from '@/pages/api/tutorial';
+import { getTutorials } from '@/services/api/tutorial';
 
 interface Tutorial {
   ID: string;

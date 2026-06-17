@@ -31,7 +31,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './new.module.css';
-import { createEvent } from '../api/event';
+import { createEvent } from '@/services/api/event';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 import dynamic from 'next/dynamic';
 

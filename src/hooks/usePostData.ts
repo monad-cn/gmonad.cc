@@ -9,7 +9,7 @@ import {
   unlikePost,
   favoritePost,
   unFavoritePost,
-} from '@/pages/api/post';
+} from '@/services/api/post';
 import {
   PostType,
   PostsStats,
@@ -53,7 +53,8 @@ export function usePostData() {
       const postIds = listState.posts.map(p => p.ID);
       if (postIds.length > 0) {
         const res = await getPostsStatus(postIds);
-        if (res.success && res.data?.status && res.data?.followed) {
+        const statusData = res.data;
+        if (res.success && statusData?.status && statusData?.followed) {
           setInteractionState((prev) => {
             // 保留之前的状态
             const likeMap = new Map(prev.postLikeStates);
@@ -61,12 +62,12 @@ export function usePostData() {
             const followedMap = new Map(prev.followingStates);
 
             // 更新状态
-            res.data.status.forEach((r) => {
+            statusData.status.forEach((r) => {
               if (r.liked) likeMap.set(r.post_id, true);
               if (r.favorited) favoriteMap.set(r.post_id, r.favorited);
             });
 
-            res.data.followed.forEach((f) => {
+            statusData.followed.forEach((f) => {
               followedMap.set(f, true);
             });
 
@@ -99,11 +100,12 @@ export function usePostData() {
       try {
         const res = await getPosts(params);
 
-        if (res.success && res.data) {
+        const postsData = res.data;
+        if (res.success && postsData) {
           setListState((prev) => ({
             ...prev,
-            posts: res.data?.posts || [],
-            total: res.data?.total || res.data?.posts?.length || 0,
+            posts: postsData.posts || [],
+            total: postsData.total || postsData.posts?.length || 0,
           }));
 
           // 更新计数，保留之前的状态
@@ -112,7 +114,7 @@ export function usePostData() {
             const favoriteCountMap = new Map(prev.postFavoriteCounts);
 
             // 更新新获取的帖子的计数
-            res.data.posts.forEach((p: PostType) => {
+            postsData.posts.forEach((p: PostType) => {
               likeCountMap.set(p.ID, p.like_count ?? 0);
               favoriteCountMap.set(p.ID, p.favorite_count ?? 0);
             });

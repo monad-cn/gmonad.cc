@@ -1,5 +1,5 @@
 // Google Analytics 数据获取服务
-import { AnalyticsData, AnalyticsTrendData } from '@/pages/api/stats';
+import { AnalyticsData, AnalyticsTrendData } from '@/services/api/stats';
 
 // 定义扩展的分析数据类型
 export interface ExtendedAnalyticsData {

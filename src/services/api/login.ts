@@ -1,4 +1,4 @@
-import { apiRequest } from "./api";
+import { getApiBaseUrl } from './base';
 
 // 登录参数
 export interface LoginParams {
@@ -27,11 +27,7 @@ export interface LoginResult {
 
 export const loginUser = async (params: LoginParams): Promise<LoginResult> => {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    
-    if (!apiUrl) {
-      throw new Error('API URL is not defined');
-    }
+    const apiUrl = getApiBaseUrl();
 
     const body = {
       code: params.code.trim(),

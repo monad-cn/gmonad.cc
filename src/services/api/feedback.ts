@@ -42,6 +42,12 @@ export interface FeedbackResult {
   data?: Feedback;
 }
 
+export interface GetFeedbacksParams {
+  order?: 'asc' | 'desc';
+  page?: number;
+  page_size?: number;
+}
+
 // 创建教程
 export const createFeedback = async (
   params: CreateFeedbackParams

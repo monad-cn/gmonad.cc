@@ -19,13 +19,14 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { updateEventPublishStatus, EventWithDetails } from '@/pages/api/event';
+import { updateEventPublishStatus, EventWithDetails } from '@/services/api/event';
 import { SiX } from 'react-icons/si';
 
-import { deleteRecap } from '@/pages/api/recap';
+import { deleteRecap } from '@/services/api/recap';
 import { sanitizeMarkdown } from '@/lib/markdown';
 import SEO from '@/components/SEO';
 import { GetServerSideProps } from 'next';
+import { getApiBaseUrl } from '@/services/api/base';
 
 interface EventDetailPageProps {
   initialEvent: EventWithDetails | null;
@@ -667,7 +668,7 @@ export const getServerSideProps: GetServerSideProps<
   EventDetailPageProps
 > = async (context) => {
   const { id } = context.params as { id: string };
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = getApiBaseUrl();
 
   if (!apiUrl) {
     return {

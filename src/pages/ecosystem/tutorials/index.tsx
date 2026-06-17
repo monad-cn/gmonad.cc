@@ -16,7 +16,7 @@ import {
 import { Search, BookOpen, Filter, Plus, Trash2 } from 'lucide-react';
 import { debounce } from 'lodash';
 import styles from './index.module.css';
-import { getTutorials, deleteTutorial } from '@/pages/api/tutorial';
+import { getTutorials, deleteTutorial } from '@/services/api/tutorial';
 import { useAuth } from '@/contexts/AuthContext';
 
 const { Option } = Select;

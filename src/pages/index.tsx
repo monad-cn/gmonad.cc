@@ -25,7 +25,7 @@ import styles from './index.module.css';
 import { SiTelegram, SiX } from 'react-icons/si';
 import { Avatar, Image } from 'antd';
 import EventSection from './events/section';
-import { getDapps } from './api/dapp';
+import { getDapps } from '@/services/api/dapp';
 import ClientOnly from '../components/ClientOnly';
 
 export default function Home() {

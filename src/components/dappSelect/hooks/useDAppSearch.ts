@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { App as AntdApp } from 'antd';
-import {Dapp, getDapps} from '@/pages/api/dapp';
+import {Dapp, getDapps} from '@/services/api/dapp';
 
 export function useDAppSearch() {
   const { message } = AntdApp.useApp();

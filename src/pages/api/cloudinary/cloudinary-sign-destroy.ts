@@ -11,7 +11,7 @@ export default async function handler(
 
   const { publicId } = req.body;
   const timestamp = Math.floor(Date.now() / 1000);
-  const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
   if (!publicId || !apiSecret) {
     return res.status(400).json({ error: 'Missing publicId or API secret' });

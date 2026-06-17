@@ -28,7 +28,7 @@ import styles from './index.module.css';
 
 import router from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
-import { getBlogs,deleteBlog } from '../api/blog';
+import { getBlogs,deleteBlog } from '@/services/api/blog';
 
 const { Search: AntSearch } = Input;
 

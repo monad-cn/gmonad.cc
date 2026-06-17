@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Form, Input, Button, message } from "antd"
 import { Send, MessageSquare, LinkIcon, Mail, CheckCircle } from "lucide-react"
 import styles from "./index.module.css"
-import { createFeedback } from "../api/feedback"
+import { createFeedback } from '@/services/api/feedback'
 import { useAuth } from '@/contexts/AuthContext'
 
 const { TextArea } = Input

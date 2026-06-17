@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/v1/internal/cron/daily-stats",
+      "schedule": "10 16 * * *"
+    },
+    {
+      "path": "/api/v1/internal/cron/testnet",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/v1/internal/cron/validator",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

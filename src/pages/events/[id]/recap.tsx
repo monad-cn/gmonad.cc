@@ -5,8 +5,8 @@ import { ArrowLeft, Calendar, Users, Video, Mic, Save } from "lucide-react"
 import styles from "./recap.module.css"
 import { SiX } from "react-icons/si"
 import dynamic from "next/dynamic"
-import { getEventById } from "@/pages/api/event"
-import { createRecap, getRecapByEventId, updateRecap } from "@/pages/api/recap"
+import { getEventById } from "@/services/api/event"
+import { createRecap, getRecapByEventId, updateRecap } from "@/services/api/recap"
 import { useAuth } from "@/contexts/AuthContext"
 
 const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });

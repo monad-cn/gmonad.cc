@@ -10,11 +10,12 @@ import {
 import Link from 'next/link';
 import styles from './index.module.css';
 import { useAuth } from '@/contexts/AuthContext';
-import { getBlogById, updateBlogPublishStatus, Blog } from '@/pages/api/blog';
+import { getBlogById, updateBlogPublishStatus, Blog } from '@/services/api/blog';
 import dayjs from 'dayjs';
 import { sanitizeMarkdown } from '@/lib/markdown';
 import SEO from '@/components/SEO';
 import { GetServerSideProps } from 'next';
+import { getApiBaseUrl } from '@/services/api/base';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:MM');
@@ -99,7 +100,7 @@ export default function BlogDetailPage({ initialBlog, error }: BlogDetailPagePro
           </Link>
           <div className={styles.headerActions}>
             {status === 'authenticated' &&
-            blog.publisher_id.toString() === session?.user?.uid ? (
+            blog.publisher_id?.toString() === session?.user?.uid ? (
               <Button
                 icon={<Edit size={16} className={styles.actionIcon} />}
                 className={styles.actionButton}
@@ -212,7 +213,7 @@ export default function BlogDetailPage({ initialBlog, error }: BlogDetailPagePro
 // 服务端渲染 - 在服务器端获取博客数据
 export const getServerSideProps: GetServerSideProps<BlogDetailPageProps> = async (context) => {
   const { id } = context.params as { id: string };
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = getApiBaseUrl();
 
   if (!apiUrl) {
     return {

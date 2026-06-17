@@ -36,7 +36,7 @@ import { useRouter } from 'next/router';
 import styles from './edit.module.css'; 
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 
-import { getEventById, updateEvent, updateEventDraft } from '@/pages/api/event';
+import { getEventById, updateEvent, updateEventDraft } from '@/services/api/event';
 import dynamic from 'next/dynamic';
 
 // const QuillEditor = dynamic(() => import('@/components/quillEditor/QuillEditor'), { ssr: false });

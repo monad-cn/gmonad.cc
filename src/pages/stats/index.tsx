@@ -13,7 +13,7 @@ import {
   getAnalyticsData,
   AnalyticsData,
   AnalyticsTrendData,
-} from '../api/stats';
+} from '@/services/api/stats';
 import {
   Eye,
   Users2,

@@ -10,7 +10,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // 构建图片文件路径
-  const filePath = path.join(process.cwd(), 'src', 'docs', 'images', ...imagePath);
+  const filePath = path.join(process.cwd(), 'public', 'images', 'docs', ...imagePath);
   
   try {
     // 检查文件是否存在
@@ -19,7 +19,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // 检查文件是否在允许的目录内（安全检查）
-    const docsImagesDir = path.join(process.cwd(), 'src', 'docs', 'images');
+    const docsImagesDir = path.join(process.cwd(), 'public', 'images', 'docs');
     const resolvedPath = path.resolve(filePath);
     const resolvedDocsDir = path.resolve(docsImagesDir);
     

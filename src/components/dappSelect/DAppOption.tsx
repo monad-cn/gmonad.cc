@@ -1,5 +1,5 @@
 import { Tooltip } from 'antd';
-import {Dapp} from "@/pages/api/dapp";
+import {Dapp} from "@/services/api/dapp";
 
 interface DAppOptionProps {
   dapp: Dapp;

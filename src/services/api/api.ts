@@ -1,5 +1,6 @@
 import { getSession, signOut } from 'next-auth/react';
 import { message } from 'antd';
+import { API_BASE_PATH, getApiBaseUrl } from './base';
 
 export interface ApiResponse<T> {
   code: number;
@@ -12,12 +13,7 @@ export const apiRequest = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
   body: any = null
 ): Promise<ApiResponse<T>> => {
-  // 获取 API 域名（根据环境变量）
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  if (!apiUrl) {
-    throw new Error('API URL is not defined');
-  }
+  const apiUrl = getApiBaseUrl();
 
   const session = await getSession();
   const token = session?.user?.token;
@@ -66,4 +62,4 @@ export const apiRequest = async <T>(
 };
 
 
-export const StatisticsUrl = process.env.NEXT_PUBLIC_API_URL + "/statistics/stream"
+export const StatisticsUrl = `${API_BASE_PATH}/statistics/stream`;

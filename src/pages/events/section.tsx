@@ -2,7 +2,7 @@ import { Calendar, MapPin, Users, Video } from 'lucide-react';
 import Link from 'next/link';
 import styles from './section.module.css';
 import { Key, useEffect, useState } from 'react';
-import { getEvents } from '../api/event';
+import { getEvents } from '@/services/api/event';
 import dayjs from 'dayjs';
 import { Tag } from 'antd';
 import { useAuth } from '@/contexts/AuthContext';

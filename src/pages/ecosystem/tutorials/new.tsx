@@ -11,7 +11,7 @@ import VditorEditor from '@/components/vditorEditor/VditorEditor';
 import UploadCardImg from '@/components/uploadCardImg/UploadCardImg';
 import { DAppSelect } from '@/components/dappSelect';
 
-import { createTutorial } from '@/pages/api/tutorial';
+import { createTutorial } from '@/services/api/tutorial';
 
 const { TextArea } = Input;
 

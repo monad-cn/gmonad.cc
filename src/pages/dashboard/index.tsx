@@ -21,9 +21,9 @@ import { BookOpen, FileText, Eye, Clock, Edit, Trash2, Edit3 } from 'lucide-reac
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import styles from './index.module.css';
-import { deleteBlog, getBlogs } from '../api/blog';
-import { deleteTutorial, getTutorials } from '../api/tutorial';
-import { deletePost, getPosts, updatePost, getPostById } from '../api/post';
+import { deleteBlog, getBlogs } from '@/services/api/blog';
+import { deleteTutorial, getTutorials } from '@/services/api/tutorial';
+import { deletePost, getPosts, updatePost, getPostById } from '@/services/api/post';
 import { useAuth } from '@/contexts/AuthContext';
 import AvatarEdit from '@/components/settings/AvatarEdit';
 import NicknameEdit from '@/components/settings/NicknameEdit';
@@ -37,7 +37,7 @@ import {
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
 
-import { updateUser } from '../api/user';
+import { updateUser } from '@/services/api/user';
 import { useSession } from 'next-auth/react';
 import { parseMd } from '@/utils/posts';
 

@@ -29,7 +29,7 @@ import {
 import { SiWechat, SiX, SiTelegram, SiDiscord } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './index.module.css';
-import { getEvents, deleteEvent } from '../api/event';
+import { getEvents, deleteEvent } from '@/services/api/event';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
 

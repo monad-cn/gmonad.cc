@@ -40,9 +40,9 @@ import styles from './index.module.css';
 import { SiDiscord, SiX } from 'react-icons/si';
 import { useEffect, useRef, useState } from 'react';
 import ClientOnly from '../../components/ClientOnly';
-import { StatisticsUrl } from '../api/api';
+import { API_BASE_PATH } from '@/services/api/base';
 import CountUp from 'react-countup';
-import { getDapps } from '../api/dapp';
+import { getDapps } from '@/services/api/dapp';
 import router from 'next/router';
 const { Title, Paragraph, Text } = Typography;
 
@@ -150,42 +150,23 @@ export default function TestnetPage() {
     }));
     setStarStyles(styles);
     
-    const eventSource = new EventSource(StatisticsUrl);
-
-    eventSource.onmessage = (event) => {
+    const fetchStats = async () => {
       try {
-        const parsed = JSON.parse(event.data);
-        setStat(parsed);
+        const response = await fetch(`${API_BASE_PATH}/statistics`);
+        const result = await response.json();
+        if (result.code === 200) {
+          setStat(result.data);
+        }
       } catch (err) {
-        console.error('解析 SSE 数据失败:', err);
+        console.error('获取统计数据失败:', err);
       }
     };
 
-    eventSource.onerror = (err) => {
-      console.error('SSE 连接错误:', err);
-      eventSource.close();
-    };
+    fetchStats();
+    const timer = window.setInterval(fetchStats, 10000);
 
     return () => {
-      eventSource.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    const eventSource = new EventSource(StatisticsUrl);
-    eventSource.onmessage = (event) => {
-      try {
-        const parsed = JSON.parse(event.data);
-        setStat(parsed);
-      } catch (err) {
-        console.error('解析 SSE 数据失败:', err);
-      }
-    };
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
-    return () => {
-      eventSource.close();
+      window.clearInterval(timer);
     };
   }, []);
 

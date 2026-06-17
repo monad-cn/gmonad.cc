@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { AnalyticsTrendData } from '../../pages/api/stats';
+import { AnalyticsTrendData } from '@/services/api/stats';
 import { AnalyticsTrendChartProps, TooltipData,  } from './types';
 import styles from '../../pages/stats/index.module.css';
 

@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePostData } from '@/hooks/usePostData';
 import { parseMarkdown } from '@/lib/markdown';
-import { createPost, updatePost, deletePost, getPostById, getPostsStatus } from '../api/post';
+import { createPost, updatePost, deletePost, getPostById, getPostsStatus } from '@/services/api/post';
 import {
   PostType,
   CreatePostState,
@@ -20,7 +20,7 @@ import PostDetailModal from '@/components/posts/PostDetailModal';
 import CreatePostModal from '@/components/posts/CreatePostModal';
 
 import styles from './index.module.css';
-import { followUser, unfollowUser } from '../api/user';
+import { followUser, unfollowUser } from '@/services/api/user';
 
 export default function PostsList() {
   const { message } = AntdApp.useApp();

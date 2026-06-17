@@ -26,8 +26,8 @@ import TwitterShare, {
 } from '@/components/social/TwitterShare';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
-import { getEvents } from '../../api/event';
-import type { Event } from '../../api/event';
+import { getEvents } from '@/services/api/event';
+import type { Event } from '@/services/api/event';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   selectedDateAtom,

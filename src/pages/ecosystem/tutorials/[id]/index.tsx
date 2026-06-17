@@ -16,11 +16,12 @@ import {
   getTutorialById,
   updateTutorialPublishStatus,
   Tutorial,
-} from '@/pages/api/tutorial';
+} from '@/services/api/tutorial';
 import dayjs from 'dayjs';
 import { sanitizeMarkdown } from '@/lib/markdown';
 import SEO from '@/components/SEO';
 import { GetServerSideProps } from 'next';
+import { getApiBaseUrl } from '@/services/api/base';
 
 export function formatTime(isoTime: string): string {
   return dayjs(isoTime).format('YYYY-MM-DD HH:mm');
@@ -222,7 +223,7 @@ export default function TutorialDetailPage({ initialTutorial, error }: TutorialD
 // 服务端渲染 - 在服务器端获取教程数据
 export const getServerSideProps: GetServerSideProps<TutorialDetailPageProps> = async (context) => {
   const { id } = context.params as { id: string };
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = getApiBaseUrl();
 
   if (!apiUrl) {
     return {
