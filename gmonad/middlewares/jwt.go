@@ -34,7 +34,8 @@ func JWT(permission string) gin.HandlerFunc {
 			return
 		}
 
-		perms, err := models.GetUserWithPermissions(claims.Uid)
+		userID := uint(claims.Uid)
+		perms, err := models.GetUserWithPermissions(userID)
 		if err != nil {
 			utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized action", nil)
 			c.Abort()
@@ -57,7 +58,7 @@ func JWT(permission string) gin.HandlerFunc {
 			}
 		}
 
-		c.Set("uid", claims.Uid)
+		c.Set("uid", userID)
 		c.Set("permissions", claims.Permissions)
 		c.Next()
 	}

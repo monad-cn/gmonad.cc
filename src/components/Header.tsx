@@ -7,6 +7,12 @@ import Auth from './Auth';
 import { useState, useEffect } from 'react';
 // import { SiWechat, SiX } from 'react-icons/si';
 
+// 官方资源导航配置：桌面下拉和移动端抽屉共用，新增入口时只维护这里即可。
+const officialResourceLinks = [
+  { key: 'blog', href: '/blogs', label: '博客', icon: '📝' },
+  { key: 'newsletter', href: '/newsletter', label: '周报', icon: '📰' },
+];
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -79,7 +85,7 @@ export default function Header() {
         <div className={styles.headerContent}>
           <Link href="/" passHref>
             <div className={styles.logoInfo} style={{ cursor: 'pointer' }}>
-              <Image preview={false} width={30} src="/logo.png" className={styles.logo} />
+              <Image preview={false} width={30} src="/logo.png" alt="Monad 中文社区 Logo" className={styles.logo} />
               <span className={styles.logoTitle}>Monad 中文社区</span>
             </div>
           </Link>
@@ -138,9 +144,10 @@ export default function Header() {
             </Dropdown>
             <Dropdown
               menu={{
-                items: [
-                  { key: 'blog', label: <Link href="/blogs">博客</Link> },
-                ],
+                items: officialResourceLinks.map(({ key, href, label }) => ({
+                  key,
+                  label: <Link href={href}>{label}</Link>,
+                })),
               }}
               placement="bottom"
               trigger={['hover']}
@@ -264,10 +271,17 @@ export default function Header() {
           <div className={styles.mobileMenuSection}>
             <h3 className={styles.mobileMenuSectionTitle}>官方资源</h3>
             <div className={styles.mobileMenuLinks}>
-              <Link href="/blogs" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
-                <span>📝</span>
-                <span>博客</span>
-              </Link>
+              {officialResourceLinks.map(({ key, href, label, icon }) => (
+                <Link
+                  key={key}
+                  href={href}
+                  className={styles.mobileMenuLink}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>{icon}</span>
+                  <span>{label}</span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

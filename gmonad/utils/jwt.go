@@ -1,7 +1,11 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,9 +15,38 @@ import (
 // JWT 密钥
 var jwtSecret = viper.GetString("jwt.secret")
 
+type UserID uint
+
+func (u *UserID) UnmarshalJSON(data []byte) error {
+	var raw any
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.UseNumber()
+	if err := decoder.Decode(&raw); err != nil {
+		return err
+	}
+
+	switch value := raw.(type) {
+	case json.Number:
+		return u.setFromString(value.String())
+	case string:
+		return u.setFromString(value)
+	default:
+		return fmt.Errorf("invalid uid type: %T", value)
+	}
+}
+
+func (u *UserID) setFromString(value string) error {
+	parsed, err := strconv.ParseUint(value, 10, 0)
+	if err != nil {
+		return fmt.Errorf("invalid uid: %q", value)
+	}
+	*u = UserID(parsed)
+	return nil
+}
+
 // 结构体定义 JWT 负载
 type Claims struct {
-	Uid         uint     `json:"uid"`
+	Uid         UserID   `json:"uid"`
 	Email       string   `json:"email"`
 	Avatar      string   `json:"avatar"`
 	Username    string   `json:"username"`
@@ -26,7 +59,7 @@ type Claims struct {
 func GenerateToken(uid uint, email, avatar, username, github string, permissions []string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour * 7)
 	claims := Claims{
-		Uid:         uid,
+		Uid:         UserID(uid),
 		Email:       email,
 		Avatar:      avatar,
 		Username:    username,
