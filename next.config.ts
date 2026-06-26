@@ -2,6 +2,14 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/v1/:path*',
+        destination: 'https://gmonad.cc/api/v1/:path*',
+      },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true, // 忽略 TypeScript 检查
   },
