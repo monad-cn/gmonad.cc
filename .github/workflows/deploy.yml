@@ -1,14 +1,10 @@
-name: Deploy to Production
+name: Legacy Server Deploy (Manual Only)
 
 on:
-  workflow_run:
-    workflows: ["CI Build Check"]  
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: SSH Deploy

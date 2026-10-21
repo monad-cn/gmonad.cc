@@ -57,6 +57,19 @@ roles, and Dapp categories required by login and publishing flows.
 
 ## Deploy
 
+Use `nvm install && nvm use` for the patched Node.js version in `.nvmrc`.
+Build/start checks require Node.js >=24.22.1 <25, including the October 2026
+Brotli, TLS and CA trust fixes. Vercel selects the 24.x major; its minor/patch
+rollout is managed by Vercel and must be verified after deployment.
+
+Deploy production candidates with `vercel deploy --prod --skip-domain` and
+verify `/api/internal/runtime` using `Authorization: Bearer <CRON_SECRET>`
+before `vercel promote <candidate>`. The endpoint returns 503 below the security
+baseline, 401 without credentials, and never includes environment values.
+Existing automatic scheduled collection continues to use the same CRON_SECRET.
+The old SSH deployment workflow is manual-only to avoid redeploying the
+uninspected legacy server after CI runs.
+
 With a logged-in Vercel CLI:
 
 ```bash

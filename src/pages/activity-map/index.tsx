@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import styles from './index.module.css';
 
@@ -32,6 +32,10 @@ export default function ActivityMap() {
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
+
+    maplibregl.setWorkerUrl(
+      new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href
+    );
 
     // Initialize map with a simple dark style
     map.current = new maplibregl.Map({
@@ -107,7 +111,7 @@ export default function ActivityMap() {
       el.className = styles.activityMarker;
 
       // Create marker
-      const marker = new maplibregl.Marker(el)
+      const marker = new maplibregl.Marker({ element: el })
         .setLngLat(location.coordinates as [number, number])
         .addTo(map.current!);
 
