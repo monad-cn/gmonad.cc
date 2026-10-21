@@ -93,9 +93,73 @@ vendor backports; a banner alone is not sufficient.
 - Build retains the eight previously known missing Markdown documents and
   the existing large-page-data warning. These do not fail the build.
 
-Production candidate deployment and runtime verification are pending at the
-time of this implementation commit. No exploit payloads or production data
-mutations were used. No conclusion about prior compromise is made.
+## Vercel Candidate Acceptance: Runtime Gate Blocked
+
+Implementation commit: `1ddcde7`, pushed to
+`origin/codex/vercel-neon-migration` on October 22, 2026 (Asia/Shanghai).
+HTTPS push was denied for the active vaincodon account; the existing GitHub SSH
+identity jueduizone successfully pushed the same branch without changing the
+repository remote or overwriting credentials.
+
+Two production-environment candidates were deployed with `--skip-domain`:
+
+| Candidate | Function region | Build Node | Actual function Node | Gate |
+| --- | --- | --- | --- | --- |
+| dpl_GXnEtiuxYEhEwVo2SF4tGQo8FEYP / gmonad-fnga5jlws-open-build.vercel.app | iad1 | 24.22.1 | 24.21.0 | 503 / patched:false |
+| dpl_9rmebpwGbNh6m8HjHaB1FWsuL8is / gmonad-25ljju9y7-open-build.vercel.app | sin1 | 24.22.1 | 24.21.0 | 503 / patched:false |
+
+Both authenticated function responses also report OpenSSL 3.5.7 and Brotli
+1.2.0. Version metadata from the project API still says only `24.x`; it does
+not resolve the observed mismatch. The authenticated endpoint has no response
+cache. These measurements establish failure to meet the selected upstream
+version baseline, not proof of exploitation or proof that every individual
+vulnerability is exploitable through this application.
+
+The sin1 candidate passed application smoke checks:
+
+- Home, login, docs, a populated documentation page and activity-map: HTTP 200.
+- Blogs, Dapps, tutorials, posts, events, stats and statistics: HTTP 200 and
+  successful API envelopes, exercising the existing Neon connection.
+- NextAuth session, CSRF and provider endpoints: HTTP 200. This does not test
+  a complete interactive account sign-in; no user credentials were submitted.
+- Runtime diagnostics: missing/wrong credentials return generic HTTP 401;
+  authorized request returns HTTP 503 and the actual unpatched-baseline version.
+- Unauthenticated post creation: HTTP 401, with no content created.
+- Cloudinary signing: HTTP 200 with signature present; no media uploaded.
+- Analytics report: HTTP 200, success:true, source:ga4. No analytics write was
+  performed. Local KaTeX rendering also passed a renderToString smoke check.
+
+**No production promotion was performed.** The gmonad.cc alias still resolves
+in the authenticated deployment API to dpl_DfSBBMsYou5f9R8vt9FiCLETLJmn, the
+pre-remediation deployment. Thus the committed dependency/runtime-policy fixes
+are available in the candidates but are not serving the main domain yet. The
+temporary gmonadcc-open-build.vercel.app alias was assigned by the CLI to the
+latest candidate; the main domain and www alias were not promoted.
+
+Vercel's supported-version documentation offers only 24.x and 22.x and says
+minor/patch versions are rolled out by the provider. No supported project
+setting was found to pin a managed function to 24.22.1. Changing package engines
+or confirming the build version alone does not fix this function runtime.
+
+Release can continue when Vercel updates the actual function runtime to
+24.22.1+ on the 24.x line, or supplies verifiable evidence of equivalent security
+backports. Re-run the authenticated runtime check, deploy a new candidate if
+required, repeat smoke checks, and then promote the accepted deployment.
+Do not lower the runtime gate merely to obtain a green result.
+
+Provider support evidence, prepared for the project owner (not sent):
+
+> Project gmonad.cc, project ID prj_JfGgw83c50DChF5LLL4TWkN52VHb, OpenBuild team
+> team_jdKwYH5K67gHpkE5vr43CPAc. On October 22, 2026, two new deployments in
+> iad1/sin1 build with Node 24.22.1 but their functions report Node 24.21.0 /
+> OpenSSL 3.5.7. See the candidate IDs above. Please confirm rollout of the
+> October 21 Node security fixes to the actual managed function runtime,
+> including the Brotli, TLS and certificate-trust changes, and whether a fresh
+> deployment is required. No tokens or application secrets are attached.
+
+No exploit payloads, production content mutations or credential rotations
+were used. No conclusion about prior compromise is made. The legacy Linux
+host's kernel, NGINX and trust stores still require its confirmed SSH target.
 
 ## Sources
 
