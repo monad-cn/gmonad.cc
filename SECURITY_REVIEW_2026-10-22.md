@@ -5,11 +5,11 @@ Vercel deployment, the public TLS chain, and the local development runtime.
 This is not an intrusion investigation or a completed inspection of the old
 Linux host. The following findings record the initial, pre-remediation state.
 
-Current release status: the managed-runtime blocker has been resolved in a
-tested Vercel Container Runtime candidate. Its actual runtime is Node.js
-24.22.1 / OpenSSL 3.5.9, HTTP 200, patched:true. Final release acceptance is
-recorded below; the older findings and failed managed-runtime attempts remain
-as historical evidence.
+Current release status: **released and verified on gmonad.cc and www.gmonad.cc**.
+Vercel Container Runtime runs the actual Node.js 24.22.1 / OpenSSL 3.5.9 binary;
+the authenticated production check returns HTTP 200, patched:true. Final release
+acceptance is recorded below. Earlier findings and failed managed-runtime
+attempts remain as historical evidence.
 
 ## Findings
 
@@ -99,7 +99,7 @@ vendor backports; a banner alone is not sufficient.
 - Build retains the eight previously known missing Markdown documents and
   the existing large-page-data warning. These do not fail the build.
 
-## Vercel Candidate Acceptance: Runtime Gate Blocked
+## Earlier Managed-Node Candidates: Runtime Gate Blocked
 
 Implementation commit: `1ddcde7`, pushed to
 `origin/codex/vercel-neon-migration` on October 22, 2026 (Asia/Shanghai).
@@ -216,6 +216,56 @@ the Vercel infrastructure/kernel still remains provider-managed. Native Vercel
 Next.js function splitting and distributed incremental caching do not apply to
 the standalone container. Do not interpret this as an audit of the old Linux
 server, a complete account-login test, or proof of absence of prior compromise.
+
+## Final Production Acceptance
+
+On October 22, 2026 (Asia/Shanghai), implementation commit
+`3cd2b62d8fea52e6638ac9afa40c99914160535e` was pushed to
+`origin/codex/vercel-neon-migration`, built as container deployment
+`dpl_5RdG7bJQd6p459ZR67qrTEVyCYXz` and promoted after its candidate checks passed.
+The image is pinned to
+`vcr.vercel.com/open-build/gmonad-cc/dockerfile@sha256:7ccd6ffe1c41152112ec4e189e8a93be85d0c583e360ff5cbab9eae2f018fc27`.
+
+Authenticated Vercel API resolves both gmonad.cc and www.gmonad.cc to that
+deployment, framework container, region sin1, Git commit 3cd2b62d8fea52e6638ac9afa40c99914160535e.
+The reusable verifier, run against **https://gmonad.cc**, reports:
+
+```json
+{
+  "status": 200,
+  "node": "24.22.1",
+  "minimumNode": "24.22.1",
+  "patched": true,
+  "openssl": "3.5.9",
+  "brotli": "1.2.0"
+}
+```
+
+The final image build passed all 13 reported tests, TypeScript checking and
+Next.js production generation. Official-registry production npm audit reports
+zero vulnerabilities; the nine previously documented development-tool findings
+remain. Container CI was added, but GitHub Actions itself was not run during
+this branch release; the actual production container build executed the same
+tests/typecheck/build. No local Docker daemon is installed on the workstation.
+
+The committed candidate passed all application smoke checks, all six existing
+NEXT_PUBLIC settings were found in the actual browser bundles, both direct and
+API-served document PNGs returned 200 image/png, and JPEG optimization returned
+200 image/jpeg. Its unauthenticated cron endpoint returned 401.
+
+After promotion, the same smoke checks passed against gmonad.cc: page HTML,
+Neon-backed reads, NextAuth session/CSRF/providers, diagnostic authorization,
+unauthenticated post-creation rejection, Cloudinary signing and a real GA4 read
+(source:ga4). www.gmonad.cc returns HTTP 200. Browser verification on the main
+domain confirms the map renders seven markers without JavaScript errors, and
+the login page renders its sign-in button without errors. A complete OAuth
+sign-in was not attempted, and no user account/content/media was created.
+
+The production runtime gate is now satisfied. The remaining limitations are
+the documented dev-tool advisories, pre-existing missing documentation files,
+Container Runtime's Beta status and owner-maintained image patching, plus the
+old Linux host whose SSH identity and OS patch status are still unverified.
+No claim is made about that host or historical compromise.
 
 ## Sources
 
