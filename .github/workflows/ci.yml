@@ -29,6 +29,56 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
+  container-check:
+    name: Verify Production Container
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Prepare public test configuration
+        run: |
+          node --input-type=module <<'JS'
+          import { mkdirSync, writeFileSync } from 'node:fs';
+          mkdirSync('.container-build', { recursive: true });
+          writeFileSync('.container-build/public-env.json', JSON.stringify({
+            NEXT_PUBLIC_API_URL: '/api/v1',
+            NEXT_PUBLIC_OAUTH: 'https://example.com/oauth',
+            NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: 'ci-example',
+          }));
+          JS
+      - name: Build production image
+        run: docker build -f Dockerfile.vercel -t gmonad-runtime:ci .
+      - name: Verify container runtime and assets
+        run: |
+          docker run -d --name gmonad-runtime-ci -p 127.0.0.1:3107:3000 -e CRON_SECRET=ci-diagnostic-only -e NEXTAUTH_SECRET=ci-session-only -e NEXTAUTH_URL=http://localhost:3107 gmonad-runtime:ci
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { setTimeout } from 'node:timers/promises';
+          import { isPatchedRuntime } from './src/server/runtime-policy.mjs';
+          const base = 'http://127.0.0.1:3107';
+          let response;
+          for (let attempt = 0; attempt < 30; attempt++) {
+            response = await fetch(`${base}/api/internal/runtime`).catch(() => null);
+            if (response) break;
+            await setTimeout(500);
+          }
+          assert.equal(response?.status, 401);
+          response = await fetch(`${base}/api/internal/runtime`, { headers: { Authorization: 'Bearer ci-diagnostic-only' } });
+          assert.equal(response.status, 200);
+          const runtime = await response.json();
+          assert.equal(runtime.patched, true);
+          assert.ok(isPatchedRuntime(runtime.node));
+          for (const path of ['/login', '/docs', '/activity-map', '/_next/image?url=%2Fmonadintro.jpg&w=640&q=75']) {
+            assert.equal((await fetch(`${base}${path}`)).status, 200, path);
+          }
+          JS
+      - name: Stop test container
+        if: always()
+        run: docker rm -f gmonad-runtime-ci || true
+
   backend-build:
     name: Build Go Backend
     runs-on: ubuntu-latest
@@ -43,4 +93,3 @@ jobs:
       - name: Build Go Backend
         working-directory: ./gmonad
         run: go build -v .
-

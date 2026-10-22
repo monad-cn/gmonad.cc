@@ -11,7 +11,7 @@
     "build": "next build",
     "prestart": "node scripts/check-runtime.mjs",
     "start": "next start",
-    "test:runtime": "node --test tests/runtime-policy.test.mjs && tsx --test tests/runtime-health.test.ts",
+    "test:runtime": "node --test tests/runtime-policy.test.mjs tests/public-build-config.test.mjs && tsx --test tests/runtime-health.test.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",

@@ -1,0 +1,14 @@
+.git/
+.github/
+.next/
+.vercel/
+node_modules/
+.env
+.env.*
+!.env.example
+config/
+**/config.yaml
+*.dump
+*.tsbuildinfo
+coverage/
+gmonad/

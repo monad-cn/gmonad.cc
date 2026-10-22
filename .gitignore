@@ -59,3 +59,4 @@ Thumbs.db
 config/config.yaml
 *config.yaml
 .vercel
+.container-build/

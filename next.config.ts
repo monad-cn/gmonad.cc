@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   /* config options here */
   typescript: {
     ignoreBuildErrors: true, // 忽略 TypeScript 检查

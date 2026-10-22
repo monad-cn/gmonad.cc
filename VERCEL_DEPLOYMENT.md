@@ -6,7 +6,7 @@ database configured by `DATABASE_URL`.
 
 ## Required Environment Variables
 
-Set these in the OpenBuild Vercel project:
+Set these in the OpenBuild Vercel project `gmonad-cc` (project ID unchanged):
 
 ```env
 NEXT_PUBLIC_API_URL=/api/v1
@@ -21,6 +21,7 @@ OAUTH_CLIENT_ID=
 OAUTH_CLIENT_SECRET=
 OAUTH_ACCESS_API=
 OAUTH_GET_USER=
+NEXT_PUBLIC_OAUTH=
 
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 NEXT_PUBLIC_CLOUDINARY_API_KEY=
@@ -59,30 +60,56 @@ roles, and Dapp categories required by login and publishing flows.
 
 Use `nvm install && nvm use` for the patched Node.js version in `.nvmrc`.
 Build/start checks require Node.js >=24.22.1 <25, including the October 2026
-Brotli, TLS and CA trust fixes. Vercel selects the 24.x major; its minor/patch
-rollout is managed by Vercel and must be verified after deployment.
+Brotli, TLS and CA trust fixes. This deployment uses Vercel's official Container
+Runtime (currently Beta), with the Node.js base image pinned by version and
+SHA256 digest in `Dockerfile.vercel`. The normal managed Node runtime was still
+24.21.0 despite builds using 24.22.1. Containers let the application run the
+patched binary without waiting for the provider's managed-runtime rollout.
 
-Deploy production candidates with `vercel deploy --prod --skip-domain` and
-verify `/api/internal/runtime` using `Authorization: Bearer <CRON_SECRET>`
-before `vercel promote <candidate>`. The endpoint returns 503 below the security
-baseline, 401 without credentials, and never includes environment values.
-Existing automatic scheduled collection continues to use the same CRON_SECRET.
-The old SSH deployment workflow is manual-only to avoid redeploying the
-uninspected legacy server after CI runs.
+The image runs Next.js standalone as the non-root `node` user on port 3000 in
+sin1, with its image cache under `/tmp`. Public assets and Markdown documents
+are copied explicitly. Runtime credentials stay in Vercel environment variables
+and are not copied into the Docker context or image. Maintaining the pinned
+Node/base-image updates is now the application's responsibility. The Next.js
+server handles image optimization and static assets; this does not use Vercel's
+native Next.js function splitting or distributed incremental cache.
 
-With a logged-in Vercel CLI:
+Use the deployment helper rather than invoking `vercel deploy` directly. It
+exports only the allowlisted public browser settings from production Vercel
+configuration into a temporary `.container-build/public-env.json`, deploys a
+candidate with CLI 64.7.0 and `--skip-domain`, then removes the file. No database,
+OAuth client secret, Cloudinary secret or diagnostic secret enters that file.
+The current container builder did not forward project build arguments, including
+explicit `--build-env` values, so the generated file is required. Direct Git
+deployment must prepare that file through an equivalent pipeline first.
 
 ```bash
-npx vercel link
-npx vercel --prod
+nvm use
+keyrail use vercel --reference open-build -- node scripts/deploy-vercel-container.mjs
+keyrail use vercel --reference open-build -- node scripts/verify-vercel-runtime.mjs https://CANDIDATE.vercel.app
 ```
 
-Or with a token:
+The verifier resolves deployment ownership before reading/sending CRON_SECRET,
+then requires HTTP 200, `patched:true` and the supported Node patch baseline.
+Also smoke-test pages, authenticated boundaries, database reads, media and login
+configuration before promotion. The diagnostic endpoint is private, disables
+caching and returns 401 without valid credentials or 503 below the baseline.
+
+After all checks pass, promote using the candidate URL:
 
 ```bash
-npx vercel link --token "$VERCEL_TOKEN"
-npx vercel --prod --token "$VERCEL_TOKEN"
+keyrail use vercel --reference open-build -- sh -lc 'npm exec --yes --package=vercel@64.7.0 -- vercel promote https://CANDIDATE.vercel.app --yes --scope open-build --token "$VERCEL_TOKEN"'
+keyrail use vercel --reference open-build -- node scripts/verify-vercel-runtime.mjs https://gmonad.cc
 ```
+
+Project name `gmonad.cc` was changed to `gmonad-cc` because VCR rejected the old
+project slug with `NAME_INVALID`. The project ID, existing custom domains and
+database are unchanged. Do not roll back to the older managed-Node deployment
+without checking its actual runtime and security dependencies.
+
+CI validates the container with dummy public settings and a temporary local
+diagnostic credential. The old SSH deployment workflow is manual-only; it does
+not deploy or patch the old Linux host as a side effect of CI.
 
 The project includes `vercel.json` cron jobs for:
 

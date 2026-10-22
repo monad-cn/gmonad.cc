@@ -5,6 +5,12 @@ Vercel deployment, the public TLS chain, and the local development runtime.
 This is not an intrusion investigation or a completed inspection of the old
 Linux host. The following findings record the initial, pre-remediation state.
 
+Current release status: the managed-runtime blocker has been resolved in a
+tested Vercel Container Runtime candidate. Its actual runtime is Node.js
+24.22.1 / OpenSSL 3.5.9, HTTP 200, patched:true. Final release acceptance is
+recorded below; the older findings and failed managed-runtime attempts remain
+as historical evidence.
+
 ## Findings
 
 | Area | Observed evidence | Assessment |
@@ -161,6 +167,56 @@ No exploit payloads, production content mutations or credential rotations
 were used. No conclusion about prior compromise is made. The legacy Linux
 host's kernel, NGINX and trust stores still require its confirmed SSH target.
 
+## Container Runtime Resolution, October 22
+
+Vercel now officially supports OCI Container Runtime on all plans (Beta). The
+application uses that supported deployment path so the runtime binary can be
+pinned independently of the managed Node rollout. `Dockerfile.vercel` pins the
+official Node.js 24.22.1 bookworm-slim image to index digest
+`sha256:55fb5f5a527ea2c5c4a95f963e48ef90aa38c7b346054fdc8ee9957a2b55d205`.
+The image builds/tests Next.js, copies only standalone runtime assets and
+documents into the final stage, runs as the node user, and checks the Node
+security baseline before starting the HTTP server. The image cache is directed
+to `/tmp`, verified by an actual successful JPEG optimization request.
+
+The first container build exposed a separate VCR constraint: project name
+`gmonad.cc` was rejected by the registry with HTTP 400 NAME_INVALID / invalid
+project slug. Renaming the existing project to `gmonad-cc` fixed image uploads.
+Project ID prj_JfGgw83c50DChF5LLL4TWkN52VHb, OpenBuild ownership, custom domains,
+production credentials and the shared Neon database remain unchanged.
+
+The deployed container builder also omitted Docker build arguments, including
+explicit CLI --build-env values. The deployment helper therefore reads only
+seven allowlisted public browser settings from production configuration and
+generates a temporary public JSON build input, deleted after deployment. The
+build rejects private/unrecognized keys, non-string values or missing OAuth /
+Cloudinary browser settings. Private runtime environment values never enter
+that build input or the Docker context. Git-triggered deployment must use an
+equivalent preparation pipeline; direct Docker/Vercel builds without the public
+input intentionally fail. See VERCEL_DEPLOYMENT.md for the supported workflow.
+
+Container candidate dpl_At8akuuebc6CVjAUD4CKcxdwgKqY at
+gmonad-k8jzvhdnm-open-build.vercel.app built and uploaded successfully in sin1.
+Its authenticated runtime endpoint reports Node 24.22.1 / OpenSSL 3.5.9 /
+Brotli 1.2.0, HTTP 200, patched:true. The same application smoke checks listed
+above pass, including real GA4 reads, Neon-backed API reads, generic 401
+diagnostic responses and unauthenticated creation rejection. JPEG image
+optimization returns HTTP 200 image/jpeg; unauthenticated cron invocation is
+rejected with HTTP 401. No authenticated cron or content mutation was triggered
+as a test.
+
+The final implementation adds public-build-boundary tests (13 reported tests
+including the handler parent test) and a CI job that builds/runs the production
+container with dummy browser configuration. A reusable runtime verifier first
+resolves target project ownership before sending its diagnostic credential.
+The final committed candidate will be rechecked before production promotion.
+
+Container Runtime is Beta. The project now owns Node/base-image patch updates;
+the Vercel infrastructure/kernel still remains provider-managed. Native Vercel
+Next.js function splitting and distributed incremental caching do not apply to
+the standalone container. Do not interpret this as an audit of the old Linux
+server, a complete account-login test, or proof of absence of prior compromise.
+
 ## Sources
 
 - Supplied article: https://mp.weixin.qq.com/s/xie0TOiTlte-H77AdDcdtA
@@ -170,6 +226,9 @@ host's kernel, NGINX and trust stores still require its confirmed SSH target.
 - PHP security announcement: https://www.php.net/
 - NGINX advisories: https://nginx.org/en/security_advisories.html
 - Vercel runtime policy: https://vercel.com/docs/functions/runtimes/node-js/node-js-versions
+- Vercel Container Runtime: https://vercel.com/docs/functions/runtimes/container
+- Official container builder: https://github.com/vercel/vercel/tree/main/packages/container
+- Next.js standalone container example: https://github.com/vercel/next.js/tree/canary/examples/with-docker
 - Measured evidence: authenticated Vercel project/deployment/build API responses,
   public HTTP/TLS probes, current terminal process.versions/tls.rootCertificates,
   and local repository inspection on October 22, 2026 (Asia/Shanghai).

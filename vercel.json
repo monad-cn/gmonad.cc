@@ -1,4 +1,9 @@
 {
+  "framework": "container",
+  "regions": ["sin1"],
+  "env": {
+    "PORT": "3000"
+  },
   "crons": [
     {
       "path": "/api/v1/internal/cron/daily-stats",
